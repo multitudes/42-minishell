@@ -11,7 +11,7 @@ NAME = minishell
 LIBFTDIR = lib/libft
 LIBFT = $(LIBFTDIR)/libft.a
 
-LDLIBS = -lm
+LDLIBS = -lm -lreadline
 
 UNAME = $(shell uname -s)
 ifeq ($(UNAME), Linux)
