@@ -23,7 +23,7 @@ all: $(LIBFT) $(NAME)
 
 $(LIBFT):
 	@if [ ! -d $(LIBFTDIR) ]; then \
-	git clone git@github.com:multitudes/42-libft.git $(LIBFTDIR); \
+	git clone https://github.com/multitudes/42-libft.git $(LIBFTDIR); \
 	fi
 	$(MAKE) -C $(LIBFTDIR) all
 

@@ -6,8 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 18:02:38 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/02/19 18:02:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/02/19 18:12:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
- 
+#include <libft.h>
+
+int	main(void)
+{
+	ft_printf("Hello, World!\n");
+	return (0);
+}
