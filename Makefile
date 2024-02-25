@@ -1,8 +1,8 @@
 CFLAGS = -Wall -Werror -Wextra
 CFLAGS += -g
 CC = cc
-INCLUDES = -I./lib/libft
-SRCS = $(addprefix src/, main.c)
+INCLUDES = -I./lib/libft -I./include
+SRCS = $(addprefix src/, main.c builtins.c env.c error.c exec.c parser.c prompt.c signal.c utils.c)
 
 OBJS = $(SRCS:.c=.o)
 
