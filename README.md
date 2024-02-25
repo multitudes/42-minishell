@@ -79,3 +79,113 @@ dup, dup2, pipe, opendir, readdir, closedir,
 strerror, perror, isatty, ttyname, ttyslot, ioctl,
 getenv, tcsetattr, tcgetattr, tgetent, tgetflag,
 tgetnum, tgetstr, tgoto, tputs
+
+## structure 
+- Phases of the interpreter—scanning, parsing, and
+evaluating code.
+
+The first step is scanning, also known as lexing,
+A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like ( and , . Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min )
+
+
+The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts
+
+A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar.
+
+
+## links
+https://medium.com/@winfrednginakilonzo/guide-to-code-a-simple-shell-in-c-bd4a3a4c41cd
+
+
+What is a shell?
+
+A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them. Generally, a shell is a user interface that allows us to use computer resources such as memory. Think of a command-line interface such as Bash of Fish. 
+
+
+Data streams: standard input, output and error
+
+Interactive and non-interactive shells and scripts
+
+One important aspect to consider when creating a simple shell is whether it is running in interactive mode or non-interactive mode.
+
+In interactive mode, the shell is running in a command line interface and accepts input from the user. This is the mode that most users will be familiar with, and it is important to display a prompt to the user so that they know when the shell is ready to accept input.
+
+In non-interactive mode, the shell is being used to run a script or a batch of commands, and does not accept input from the user. In this mode, there is no need to display a prompt, and the shell should exit once it has executed all the commands in the script.
+
+To check whether the shell is running in interactive mode or non-interactive mode, we can use the isatty() function. This function checks whether a file descriptor refers to a terminal or not. If it returns true, then the shell is running in interactive mode and we should display a prompt. If it returns false, then the shell is running in non-interactive mode and we should not display a prompt.
+
+Create an infinite loop for the prompt
+
+Once we have determined whether the shell is running in interactive mode or non-interactive mode, we can display a prompt to the user.
+Display prompt on interactive mode
+
+Step 2: Design the Shell
+
+The first step in designing your shell is to decide what features you want to include. Do you want your shell to have built-in commands, support for input/output redirection, pipes, or background jobs? Once you have a clear idea of the features you want to include, you can start designing the shell’s architecture.
+
+Step 3: Read input from the user
+
+The first step in making a shell is to read input from the user. This input can be a single command or multiple commands separated by a semicolon. To read input from the user, we can use the getline function which reads a line of input from the user. 
+
+Step 4: Parse User Input
+
+The next step is to parse the user’s input. You will need to read the input from the user and split it into tokens. These tokens can then be analyzed to determine the command the user wants to execute and any arguments or options they have provided. 
+
+Step 5: Execute Commands
+
+Once you have parsed the user’s input, you will need to execute the command. This involves creating a child process to run the command and using system calls to execute it. To execute the command, we can use the execve() function which executes a command by searching for the executable file in the system’s path environment variable. You will also need to handle any errors that may occur during command execution.
+
+Step 6: Handle the PATH
+
+A path is a list of directories that the shell uses to search for executable files. When a user enters a command in the shell, the shell searches for the corresponding executable file in each directory listed in the path until it finds the executable.
+
+One way to handle paths using a linked list is to create a data structure that stores the directories in the path. The data structure can be implemented as a linked list, where each node in the list represents a directory in the path.
+
+To create the linked list, you can start by parsing the path string and splitting it into its individual directories. Then, you can create a node for each directory and link them together using pointers.
+
+Once you have the linked list of directories, you can use it to search for executable files when a user enters a command in the shell. 
+
+Step 7: Implement Built-In Commands
+
+Built-in commands are special commands that are implemented by the shell itself rather than being external programs. Some common built-in commands include cd, echo, and exit. You will need to implement these commands yourself. Built-in commands such as “cd” or “exit” which cannot be executed using the execve() function. To handle built-in commands, we can use if statements to check if the command is a built-in command by doing string comparison of the user input and the command and then execute the command accordingly.
+
+Step 8: Support Input/Output Redirection
+
+Input/output redirection allows the user to redirect the input or output of a command to a file instead of the screen or keyboard (standard input or output). To implement I/O redirection, we can use the dup2() function to redirect input or output to a file descriptor.
+
+Step 9: Support Pipes
+
+We can also implement pipes to allow the user to pipe the output of one command to the input of another command. To implement pipes, we can use the pipe() function to create a pipe and the fork() function to create a child process for each command.
+
+Step 10: Support Background Jobs
+
+Background jobs allow a command to be executed in the background, allowing the user to continue working in the shell while the command runs. 
+
+Step 11: Test the Shell
+
+Once you have implemented all the features you want, you should create tests for your shell 
+
+ERROR HANDLING
+
+One important aspect of error handling in a shell is checking the return value of system calls and library functions. These calls may fail for various reasons, such as invalid input, insufficient memory, or resource constraints. For example, if the fork() system call fails, it may indicate that the system is out of process resources.
+
+Another aspect of error handling is handling signals. Signals are used by the operating system to notify a process of various events, such as a segmentation fault or a user interrupt. 
+
+Finally, a shell should provide meaningful error messages to the user when a command fails. For example, if the user enters an invalid command, the shell should display an error message indicating that the command is not recognized. Similarly, if a command fails due to a system error, the shell should display an appropriate error message to the user.
+
+Examples of the types of errors that a simple shell may encounter and how they can be handled
+ex
+Incorrect command:
+
+Incorrect number of arguments:
+
+Permission denied:
+
+System call error:
+
+Memory Leaks
+
+Memory leaks can occur when a program dynamically allocates memory but fails to free it, causing the program to consume more and more memory until it crashes or becomes unusable. Therefore, use valgrind to check whether your program has memory leaks, since you have to free() the memory allocations made with malloc(). Valgrind is a powerful tool that can detect memory leaks, as well as other common programming errors such as buffer overflows and null pointer dereferences. To use Valgrind, simply run your program with the “valgrind” command followed by the name of your executable.
+
+valgrind ./myprogram
+
