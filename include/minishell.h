@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/02/25 13:31:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/02/25 13:42:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,21 +36,22 @@
 
 /*
 */
-enum TokenType {
+typedef enum e_tokentype {
     // Single-character tokens.
     LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
     COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
+	PIPE, AMPERSAND, QUESTION, COLON,
     // One or two character tokens.
     BANG, BANG_EQUAL,
     EQUAL, EQUAL_EQUAL,
     GREATER, GREATER_EQUAL,
-    LESS, LESS_EQUAL,
+    LESS, LESS_EQUAL, 
 // Literals.
     IDENTIFIER, STRING, NUMBER,
 // Keywords.
     AND, ELSE, _FALSE, FOR, IF, _NULL, OR,
     PRINT, RETURN, _TRUE, VAR, WHILE,
 	_EOF
-};
+} 			t_tokentype;
 
 # endif

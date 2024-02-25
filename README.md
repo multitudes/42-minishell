@@ -152,10 +152,50 @@ Built-in commands are special commands that are implemented by the shell itself 
 Step 8: Support Input/Output Redirection
 
 Input/output redirection allows the user to redirect the input or output of a command to a file instead of the screen or keyboard (standard input or output). To implement I/O redirection, we can use the dup2() function to redirect input or output to a file descriptor.
+Redirection operators in Bash are used to control the input and output of commands. They allow you to manipulate where a command reads its input from and where it writes its output to. Here are some common redirection operators:
+
+1. **`>` (Output Redirection):**
+   - Redirects the output of a command to a file.
+   - Example: `ls > output.txt`
+   - This command lists the contents of the current directory and writes the output to a file named `output.txt`.
+
+2. **`<` (Input Redirection):**
+   - Takes the input for a command from a file.
+   - Example: `sort < input.txt`
+   - This command sorts the lines from the file `input.txt`.
+
+3. **`>>` (Append Output):**
+   - Appends the output of a command to a file (instead of overwriting it).
+   - Example: `echo "new line" >> output.txt`
+   - This command appends the text "new line" to the end of the file `output.txt`.
+
+4. **`<<` (Here Document):**
+   - Allows you to pass multiple lines of input to a command.
+   - Example:
+     ```bash
+     cat << EOF
+     Line 1
+     Line 2
+     EOF
+     ```
+     This command uses a here document to pass multiple lines to the `cat` command.
 
 Step 9: Support Pipes
 
 We can also implement pipes to allow the user to pipe the output of one command to the input of another command. To implement pipes, we can use the pipe() function to create a pipe and the fork() function to create a child process for each command.
+
+5. **`|` (Pipe):**
+   - Connects the output of one command as the input to another command.
+   - Example: `ls | grep "pattern"`
+   - This command lists the files in the current directory and pipes the output to `grep` to filter lines containing the specified pattern.
+
+this is not needed in our minishell but leaving it here for completeness.
+6. **`2>` and `2>>` (Standard Error Redirection):**
+   - Redirects the standard error output of a command to a file (similar to `>` and `>>` for standard output).
+   - Example: `command 2> error.log`
+   - This command runs `command` and redirects any error messages to a file named `error.log`.
+
+These redirection operators provide a flexible way to manipulate the flow of data between commands and files in Bash scripts.
 
 Step 10: Support Background Jobs
 
@@ -189,3 +229,86 @@ Memory leaks can occur when a program dynamically allocates memory but fails to 
 
 valgrind ./myprogram
 
+## bonus
+Certainly! Here are examples of using `&&` (logical AND) and `||` (logical OR) with parentheses for priorities in Bash:
+
+### Using `&&` (Logical AND):
+
+1. **Basic `&&` Example:**
+   ```bash
+   command1 && command2
+   ```
+   - If `command1` succeeds (returns a zero exit status), then `command2` will be executed.
+
+2. **Multiple Commands with `&&`:**
+   ```bash
+   (command1 && command2) && command3
+   ```
+   - `command1` and `command2` are executed in sequence. If both succeed, then `command3` is executed.
+
+3. **Mixing `&&` and `||`:**
+   ```bash
+   (command1 && command2) || command3
+   ```
+   - If `command1` and `command2` succeed, then `command3` will not be executed. If either `command1` or `command2` fails, then `command3` will be executed.
+
+### Using `||` (Logical OR):
+
+1. **Basic `||` Example:**
+   ```bash
+   command1 || command2
+   ```
+   - If `command1` fails (returns a non-zero exit status), then `command2` will be executed.
+
+2. **Multiple Commands with `||`:**
+   ```bash
+   (command1 || command2) || command3
+   ```
+   - `command1` is executed. If it fails, then `command2` is executed. If both fail, then `command3` is executed.
+
+3. **Mixing `&&` and `||`:**
+   ```bash
+   (command1 || command2) && command3
+   ```
+   - If `command1` succeeds, then `command2` will not be executed, and `command3` will be executed. If `command1` fails, then `command2` is executed, and `command3` will not be executed.
+
+These examples showcase the use of `&&` and `||` for logical operations in Bash, and the parentheses are used to control the order of execution.
+Certainly! Wildcards, such as `*`, are used for pattern matching in file names. Here are some examples of using wildcards in the current working directory:
+
+1. **List all files in the current directory:**
+   ```bash
+   ls *
+   ```
+   - This command lists all files (and directories) in the current directory.
+
+2. **Remove all text files in the current directory:**
+   ```bash
+   rm *.txt
+   ```
+   - This command removes all files with a `.txt` extension in the current directory.
+
+3. **Copy all `.jpg` files to another directory:**
+   ```bash
+   cp *.jpg /path/to/destination/
+   ```
+   - This command copies all files with a `.jpg` extension to the specified destination directory.
+
+4. **Count the lines in all `.log` files:**
+   ```bash
+   wc -l *.log
+   ```
+   - This command counts the number of lines in each file with a `.log` extension in the current directory.
+
+5. **Grep for a specific pattern in all `.md` files:**
+   ```bash
+   grep "pattern" *.md
+   ```
+   - This command searches for the specified pattern in all files with a `.md` extension.
+
+6. **Archive all `.txt` files into a tarball:**
+   ```bash
+   tar -cvf archive.tar *.txt
+   ```
+   - This command creates a tarball (`archive.tar`) containing all files with a `.txt` extension in the current directory.
+
+These examples demonstrate how wildcards can be used in combination with various commands for file manipulation and processing in the current working directory.
