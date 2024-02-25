@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/02/25 13:42:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/02/25 15:17:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@
 # include <sys/ioctl.h>
 
 /*
+ths is just an example of an enum to tokenize the input
+which I found on a compiler tutorial. need to adatp it to
+minishell and bash syntax
 */
 typedef enum e_tokentype {
     // Single-character tokens.

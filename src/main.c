@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 18:02:38 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/02/25 13:51:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/02/25 15:17:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,7 +243,30 @@ Certainly! Wildcards, such as `*`, are used for pattern matching in file names. 
    - This command creates a tarball (`archive.tar`) containing all files with a `.txt` extension in the current directory.
 
 These examples demonstrate how wildcards can be used in combination with various commands for file manipulation and processing in the current working directory.
+
+-- handle $?
+
+My apologies for the confusion. You're correct. The reason `echo $?` prints 0 is because it's executed in a separate shell instance.
+
+In the command:
+
+```bash
+echo "Hello" | grep "Helli" | echo $?
+```
+
+The `echo $?` is not capturing the exit status of the `grep` command in the pipeline because each command in a pipeline runs in a subshell, and `$?` is capturing the exit status of the last command executed within its own subshell, which is the `echo $?` itself.
+
+So, the `grep` command in the middle doesn't directly affect the exit status seen by the outer shell, and `$?` in the outer shell remains 0.
+
+If you want to capture the exit status of the `grep` command, you can use an alternative approach, like assigning the exit status to a variable:
+
+```bash
+echo "Hello" | grep "Helli"; status=$?; echo $status
+```
+
+This way, the `$status` variable captures the exit status of the `grep` command, and `echo $status` will correctly print 1.
 ...
 
+do we need to need to tell users where errors occurred. ?
 
 */
