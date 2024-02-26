@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/19 18:02:38 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/02/25 15:17:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/02/26 13:50:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+/*
+main is first of all a loop that runs the shell taking inputs from the user 
+and executing them until the user decides to exit it.
+*/
 int	main(void)
 {
 	/*
@@ -33,7 +37,7 @@ int	main(void)
 
 	// readline example
 	char *input;
-    input = readline("Enter some text: ");
+    input = readline("minishell $ ");
     if (input != NULL) {
         printf("You entered: %s\n", input);
         free(input);
