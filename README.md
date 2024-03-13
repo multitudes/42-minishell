@@ -318,4 +318,6 @@ These examples demonstrate how wildcards can be used in combination with various
 Compilers: Principles, Techniques, and Tools (universally known as “the Dragon Book”) is the canonical reference.
 
 [Bash manual](https://www.gnu.org/software/bash/manual/bash.html)  
-[Implement your own shell - GustavoRodriguez-RiveraandJustinEnnen](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf)
+[Implement your own shell - GustavoRodriguez-RiveraandJustinEnnen](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf)  
+[Tutorial - Write a Shell in C - Stephen Brennan](https://brennan.io/2015/01/16/write-a-shell-in-c/)  
+
