@@ -1,7 +1,33 @@
 # 42-minishell
-This project is about creating a simple shell
+This project is about creating a simple shell. 
 
-## authorised
+We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  Below are some exerpts from the bash manual.
+
+## what is a shell
+Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
+
+A shell allows execution of GNU commands, both synchronously and asynchronously. The shell waits for synchronous commands to complete before accepting more input; asynchronous commands continue to execute in parallel with the shell while it reads and executes additional commands. The redirection constructs permit fine-grained control of the input and output of those commands. Moreover, the shell allows control over the contents of commands’ environments.
+
+Shells also provide a small set of built-in commands (builtins) implementing functionality impossible or inconvenient to obtain via separate utilities. For example, cd, break, continue, and exec cannot be implemented outside of the shell because they directly manipulate the shell itself. The history, getopts, kill, or pwd builtins, among others, could be implemented in separate utilities, but they are more convenient to use as builtin commands. All of the shell builtins are described in subsequent sections.
+
+## Shell Syntax (from the BASH manual)
+
+When the shell reads input, it proceeds through a sequence of operations. If the input indicates the beginning of a comment, the shell ignores the comment symbol (‘#’), and the rest of that line.
+
+Otherwise, roughly speaking, the shell reads its input and divides the input into words and operators, employing the quoting rules to select which meanings to assign various words and characters.
+
+The shell then parses these tokens into commands and other constructs, removes the special meaning of certain words or characters, expands others, redirects input and output as needed, executes the specified command, waits for the command’s exit status, and makes that exit status available for further inspection or processing.
+
+## The map
+- The first step is scanning, also known as lexing, or (if you’re trying to impress someone) lexical analysis.
+- A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like ( and , . Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ).
+- The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. 
+A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. These trees have a couple of different names—“parse tree” or “abstract syntax tree”In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”.
+- Everything up to this point is considered the front end of the implementation.
+
+
+
+## functions authorised
 ### readline
 The readline() function is not a standard C library function, but rather a function provided by the GNU Readline library. The GNU Readline library is used for reading lines of text with interactive features, such as line editing, history, and tab-completion.
 
@@ -26,9 +52,6 @@ int main() {
 
 ```
 need linking with `-lreadline`
-
-
-
 
 
 ### rl_clear_history
@@ -92,9 +115,6 @@ The next step is parsing. This is where our syntax gets a grammar—the ability 
 
 A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar.
 
-
-## links
-https://medium.com/@winfrednginakilonzo/guide-to-code-a-simple-shell-in-c-bd4a3a4c41cd
 
 
 What is a shell?
@@ -321,3 +341,5 @@ Compilers: Principles, Techniques, and Tools (universally known as “the Dragon
 [Implement your own shell - GustavoRodriguez-RiveraandJustinEnnen](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf)   
 [Tutorial - Write a Shell in C - Stephen Brennan](https://brennan.io/2015/01/16/write-a-shell-in-c/)  
 
+
+https://medium.com/@winfrednginakilonzo/guide-to-code-a-simple-shell-in-c-bd4a3a4c41cd
