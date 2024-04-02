@@ -24,13 +24,59 @@ The shell then parses these tokens into commands and other constructs, removes t
 - The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. 
 A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. These trees have a couple of different names—“parse tree” or “abstract syntax tree”In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”.
 - Everything up to this point is considered the front end of the implementation.
+- Tree-walk interpreters 
+ To run the program, the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
 
+## Lexeme
+Our job is to scan through the list of characters and group them together into the smallest sequences that still represent something. Each of these blobs of characters is called a lexeme.
+example of lexeme
+```
+  enum TokenType {
+    // Single-character tokens.
+    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
+    COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
+    // One or two character tokens.
+    BANG, BANG_EQUAL,
+    EQUAL, EQUAL_EQUAL,
+    GREATER, GREATER_EQUAL,
+    LESS, LESS_EQUAL,
+// Literals.
+    IDENTIFIER, STRING, NUMBER,
+// Keywords.
+    AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
+    PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
+EOF
+}
+```
+To add:
 
+metacharacter
+A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
+
+A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
+
+A sequence of characters considered a single unit by the shell. It is either a word or an operator.
+
+word
+A sequence of characters treated as a unit by the shell. Words may not include unquoted metacharacters.
+
+The core of the scanner is a loop. Starting at the first character of the source code, it figures out what lexeme it belongs to, and consumes it and any following characters that are part of that lexeme. When it reaches the end of that lexeme, it emits a token.
+
+## context-free grammar (CFG). 
+A formal grammar takes a set of atomic pieces it calls its “alphabet”. Then it defines a (usually infinite) set of “strings” that are “in” the grammar. Each string is a sequence of “letters” in the alphabet.
+
+If you start with the rules, you can use them to generate strings that are in the grammar. Strings created this way are called derivations because each is “derived” from the rules of the grammar. In each step of the game, you pick a rule and follow what it tells you to do. Most of the lingo around formal grammars comes from playing them in this direction. Rules are called productions because they produce strings in the grammar.
+Each production in a context-free grammar has a head—its name—and a body which describes what it generates. In its pure form, the body is simply a list of symbols. Symbols come in two delectable flavors:
+A terminal is a letter from the grammar’s alphabet. You can think of it like a literal value. In the syntactic grammar we’re defining, the terminals are individual lexemes—tokens coming from the scanner like if or 1234.
+These are called “terminals”, in the sense of an “end point” because they don’t lead to any further “moves” in the game. You simply produce that one symbol.
+A nonterminal is a named reference to another rule in the grammar. It means “play that rule and insert whatever it produces here”. In this way, the grammar composes.
+
+To make this concrete, we need a way to write down these production rules. People have been trying to crystallize grammar all the way back to Pāṇini’s Ashtadhyayi, which codified Sanskrit grammar a mere couple thousand years ago. Not much progress happened until John Backus and company needed a notation for specifying ALGOL 58 and came up with Backus-Naur form.
 
 ## functions authorised
 ### readline
 The readline() function is not a standard C library function, but rather a function provided by the GNU Readline library. The GNU Readline library is used for reading lines of text with interactive features, such as line editing, history, and tab-completion.
-
+ 
 The readline() function is used to read a line of text from the user, providing a simple interface for interactive command-line programs. Here's a basic example:
 ```
 #include <stdio.h>
