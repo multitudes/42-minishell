@@ -27,6 +27,9 @@ A parser takes the flat sequence of tokens and builds a tree structure that mirr
 - Tree-walk interpreters 
  To run the program, the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
 
+## Context free grammar
+The syntax of a programming language is defined by a grammar. The syntax of a programming language is a precise description of all its grammatically correct programs. Noam Chomsky defined four categories of grammars: regular, context-free, context- sensitive, and unrestricted.
+
 ## Lexeme
 Our job is to scan through the list of characters and group them together into the smallest sequences that still represent something. Each of these blobs of characters is called a lexeme.
 example of lexeme
@@ -381,9 +384,17 @@ These examples demonstrate how wildcards can be used in combination with various
 
 
 ## links
-Compilers: Principles, Techniques, and Tools (universally known as “the Dragon Book”) is the canonical reference.  
+The Bash reference manual:  
+https://www.gnu.org/software/bash/manual/bash.html  
+the canonical reference for all things compiler:  
+Compilers: Principles, Techniques, and Tools (universally known as “the Dragon Book”) .  
+Another compiler book. There is a nice explanation of creating a AST or syntax tree
+https://craftinginterpreters.com
+Also the web version is freely available:
 
-[Bash manual](https://www.gnu.org/software/bash/manual/bash.html)   
+
+
+some blog posts:  
 [Implement your own shell - GustavoRodriguez-RiveraandJustinEnnen](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf)   
 [Tutorial - Write a Shell in C - Stephen Brennan](https://brennan.io/2015/01/16/write-a-shell-in-c/)  
 
