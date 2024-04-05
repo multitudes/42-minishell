@@ -2,7 +2,7 @@ CFLAGS = -Wall -Werror -Wextra
 CFLAGS += -g
 CC = cc
 INCLUDES = -I./lib/libft -I./include
-SRCS = $(addprefix src/, main.c builtins.c env.c error.c exec.c parser.c prompt.c signal.c utils.c)
+SRCS = $(addprefix src/, main.c)
 
 OBJS = $(SRCS:.c=.o)
 
@@ -27,7 +27,7 @@ $(LIBFT):
 	fi
 	$(MAKE) -C $(LIBFTDIR) all
 
-# Static pattern rule for compilation - with includes will alow the <> notation  
+# Static pattern rule for compilation - with includes for the libft that will allow the <libft.h> notation 
 $(OBJS) : %.o: %.c
 	 $(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ 
 
