@@ -41,6 +41,7 @@ $(LIBFT):
 	$(MAKE) -C $(LIBFTDIR) all
 
 # Static pattern rule for compilation - with includes for the libft that will allow the <libft.h> notation 
+# Static pattern rule for compilation - with includes for the libft that will allow the <libft.h> notation 
 $(OBJS) : %.o: %.c
 	 $(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ 
 
