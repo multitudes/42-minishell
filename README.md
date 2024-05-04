@@ -922,8 +922,9 @@ The Bash reference manual:
 https://www.gnu.org/software/bash/manual/bash.html  
 the canonical reference for all things compiler:  
 Compilers: Principles, Techniques, and Tools (universally known as “the Dragon Book”) .  
-Another compiler book. There is a nice explanation of creating a AST or syntax tree
-https://craftinginterpreters.com
+Another compiler book. There is a nice explanation of creating a AST or syntax tree  
+https://craftinginterpreters.com  
+
 Also the web version is freely available:  
 https://craftinginterpreters.com/parsing-expressions.html  
 
@@ -936,6 +937,26 @@ some blog posts:
 
 Tutorial - Write a Shell in C - Stephen Brennan  
 https://brennan.io/2015/01/16/write-a-shell-in-c/  
+
+this is the posix shell grammar  
+https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html  
+
+A very simple approach to start:  
 https://medium.com/@winfrednginakilonzo/guide-to-code-a-simple-shell-in-c-bd4a3a4c41cd   
+
 https://www.peroxide.dk/download/tutorials/pxdscript/chapter1.html  
+
+test your shell:  
 https://github.com/LucasKuhn/minishell_tester?tab=readme-ov-file  
+
+the linux man page about pipes:  
+https://man7.org/linux/man-pages/man2/pipe.2.html  
+
+shell posix standard grammar  
+https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#export  
+
+redirections and pipes 
+http://www.cs.loyola.edu/~jglenn/702/S2005/Examples/dup2.html
+
+more pipes  
+https://people.cs.rutgers.edu/~pxk/416/notes/c-tutorials/pipe.html  
