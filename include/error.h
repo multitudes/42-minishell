@@ -1,17 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   error.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/25 13:27:29 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/02/26 13:48:13 by lbrusa           ###   ########.fr       */
+/*   Created: 2024/04/19 11:23:18 by lbrusa            #+#    #+#             */
+/*   Updated: 2024/04/19 11:42:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-/*
-start by displaying the environment variables of the current shell
+#ifndef ERROR_H
+# define ERROR_H
 
-*/
+# include "minishell.h"
+
+int	err_stop(char *msg);
+
+#endif  // ERROR_H_
+

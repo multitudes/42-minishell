@@ -1,18 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec.c                                             :+:      :+:    :+:   */
+/*   handle_path.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/25 13:28:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/02/26 13:49:45 by lbrusa           ###   ########.fr       */
+/*   Created: 2024/04/13 17:48:29 by lbrusa            #+#    #+#             */
+/*   Updated: 2024/04/22 12:15:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#ifndef HANDLE_PATH_H
+# define HANDLE_PATH_H
 
-/*
-we have the scanner, the parser, and this will be the executor.
-functions to execute the commands and builtins
-*/
+# include "minishell.h"
+// forward declaration
+typedef struct s_mini_data t_mini_data;
+
+t_list	*get_path_linked_list(char *path);
+void	print_path_list(t_list *path_list);
+bool	add_path(t_mini_data *data);
+
+#endif

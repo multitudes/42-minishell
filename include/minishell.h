@@ -6,10 +6,9 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/02/25 15:17:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/04 14:06:44 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
@@ -33,28 +32,62 @@
 # include <curses.h>
 # include <term.h>
 # include <sys/ioctl.h>
+# include <stdbool.h>
+# include <stdarg.h>
+# include "environment.h"
+# include "../lib/libft/libft.h"
+# include "scanner.h"
+# include <stdio.h>
+# include <errno.h>
+# include <string.h>
+# include <stdlib.h>
+# include <assert.h>
+# include <limits.h>
+# include "handle_path.h"
+# include "parser.h"
+# include "history.h"
+# include "analyser.h"
+# include "executer.h"
+# include "error.h"
+# include "darray.h"
+
+// This allows us to use the debug macro to print debug messages but to compile them out when NDEBUG is defined.
+// If we define NDEBUG in the makefile or as a flag -DNDEBUG, the debug macro will be replaced with an empty macro.
+#ifdef NDEBUG
+#define debug(M, ...)
+#else
+#define debug(M, ...) fprintf(stderr, "DEBUG %s:%d: " M "\n",\
+        __FILE__, __LINE__, ##__VA_ARGS__)
+#endif
+
+// for the history - can override with -DMINIHISTFILE='"new relative path"' -DHISTSIZE=1000
+#define MINIHISTFILEPATH "/.minishell_history"
+#define MINIHISTFILESIZE  1000
+
+// needed for the tests - leave it here
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
-ths is just an example of an enum to tokenize the input
-which I found on a compiler tutorial. need to adatp it to
-minishell and bash syntax
+enviroment list
+path list
 */
-typedef enum e_tokentype {
-    // Single-character tokens.
-    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
-    COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
-	PIPE, AMPERSAND, QUESTION, COLON,
-    // One or two character tokens.
-    BANG, BANG_EQUAL,
-    EQUAL, EQUAL_EQUAL,
-    GREATER, GREATER_EQUAL,
-    LESS, LESS_EQUAL, 
-// Literals.
-    IDENTIFIER, STRING, NUMBER,
-// Keywords.
-    AND, ELSE, _FALSE, FOR, IF, _NULL, OR,
-    PRINT, RETURN, _TRUE, VAR, WHILE,
-	_EOF
-} 			t_tokentype;
+struct s_mini_data 
+{
+	t_darray	*env_arr;
+	t_ast_node	*ast;
+	char		*heredoc_delimiter;
+	int			exit_status;
+};
+typedef struct s_mini_data t_mini_data;
+
+int		loop(int argc, char **argv);
+int		init_data(t_mini_data **data);
+void	free_data(t_mini_data *data);
+
+#ifdef __cplusplus
+}
+#endif
 
 # endif

@@ -1,24 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   prompt.c                                           :+:      :+:    :+:   */
+/*   test_norm.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/25 13:28:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/02/26 14:15:52 by lbrusa           ###   ########.fr       */
+/*   Created: 2024/04/18 16:49:51 by lbrusa            #+#    #+#             */
+/*   Updated: 2024/04/18 16:51:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-
-/*
-we can choose what we want to display as a prompt
-ex 
-minishell $>
-or 
-minishell >
-or 
-minishell $
- 
-*/
