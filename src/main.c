@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/19 18:02:38 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/04 14:50:58 by lbrusa           ###   ########.fr       */
+/*   Created: 2024/05/05 09:40:56 by lbrusa            #+#    #+#             */
+/*   Updated: 2024/05/05 09:41:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 /*
 main is first of all a loop that runs the shell taking inputs from the user
