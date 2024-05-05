@@ -8,6 +8,8 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 
+t_mini_data *g_mini_data;
+
 /*
 file delimiters (for what is not accepted in file names)
 
@@ -48,7 +50,9 @@ const char* test_scanner_ident_space() {
 	
 	std::string str = "my_co2mmand ";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -65,7 +69,9 @@ const char* test_scanner_ident_allrandom() {
 	
 	std::string str = "w-+*}[]=w{~or^%ld";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -82,7 +88,9 @@ const char* test_scanner_ident_comment() {
 	
 	std::string str = "cd #hello world";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -103,7 +111,9 @@ const char* test_scanner_ident_comment2() {
 	
 	std::string str = "/#hello";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -123,7 +133,9 @@ const char* test_scanner_ident_comment3() {
 	
 	std::string str = "\\#hello";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -144,11 +156,13 @@ open for further classification eventually!
 const char* test_scanner_ident_number() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "42 -42 42.42 -42.42 42. -42. 42.42.42 42.42.";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -170,11 +184,13 @@ const char* test_scanner_ident_number() {
 const char* test_scanner_ident_pathname() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "./mydir/myfile.txt /mydir/myfile.txt ./ ../ / mydir/myfile.txt";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;

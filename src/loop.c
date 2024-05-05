@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 13:41:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 14:22:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	free_data(t_mini_data *data)
 	if (data == NULL)
 		return ;
 	// free the environ
-	free(data->input);
+	free((void*)data->input);
 	darray_clear_destroy(data->env_arr);
 	free(data->ast);
 	free(data);
@@ -268,10 +268,10 @@ int loop(int argc, char **argv)
 			if (!handle_history(data))
 				debug("failed to handle history\n");
 			// debug("You entered: %s\n", input);
-			t_list *tokens = scan_this(data->input);
+			t_list *tokens = tokenizer(data);
 			if (tokens != NULL)
 			{
-				t_ast_node *asttree = create_ast(tokens);
+				t_ast_node *asttree = create_ast(data, tokens);
 				if (asttree == NULL)
 				{
 					// TODO define error handling

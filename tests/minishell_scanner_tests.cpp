@@ -8,6 +8,7 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 
+t_mini_data *g_mini_data;
 /*
 I am still looking for a way to make this function common to all tests files
 but it is complicated by the fact that it is a mix of C and C++ code
@@ -43,11 +44,13 @@ RUN_TESTS will run all the tests and print the results
 const char* test_scanner_identifiers() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "hello world";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -64,11 +67,13 @@ const char* test_scanner_identifiers() {
 const char* test_scanner_identifiers2() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "echo he_-3llo world";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	int i = 0;
 

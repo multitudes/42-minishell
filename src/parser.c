@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 11:14:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 14:22:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ introducing a new node type for the tree, t_ast_node.
 The tree will be composed of nodes, each node will have a type,
 a left and a right node, and a list of tokens as a t_list.
 */
-t_ast_node *create_ast(t_list *input_tokens)
+t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 {
 	t_list *expr_token_list;
 	t_ast_node *node;
@@ -178,7 +178,7 @@ t_ast_node *create_ast(t_list *input_tokens)
 		{
 			debug("PIPE");
 			if (is_redirection(expr_token_list))
-				left = create_ast(expr_token_list);
+				left = create_ast(data, expr_token_list);
 			else 
 				left = new_node(NODE_TERMINAL, NULL, NULL, expr_token_list);
 			if (left == NULL)
@@ -186,7 +186,7 @@ t_ast_node *create_ast(t_list *input_tokens)
 				debug("left is NULL");	
 				return (NULL);
 			}
-			right = create_ast(tmp->next);
+			right = create_ast(data, tmp->next);
 			if (right == NULL)
 				return (NULL);
 			node = new_node(NODE_PIPE, left, right, ft_lstnew(token));
@@ -227,7 +227,7 @@ t_ast_node *create_ast(t_list *input_tokens)
 				debug("left is NULL");	
 				return (NULL);
 			}
-			right = create_ast(tmp->next);
+			right = create_ast(data, tmp->next);
 			if (right == NULL)
 			{
 				debug("right is NULL");
@@ -260,12 +260,13 @@ t_ast_node *create_ast(t_list *input_tokens)
 				debug("lexem %s", lexem);
 				token->type = COMMAND;
 				// create a new token list
-				t_list *new_token_list = scan_this(lexem);
+				data->input = lexem;
+				t_list *new_token_list = tokenizer(data);
 				if (new_token_list == NULL)
 					return (NULL);
 				// free the old token list
 				// ft_lstclear(&expr_token_list, free);	
-				return (create_ast(new_token_list));					
+				return (create_ast(data, new_token_list));					
 			}
 		// as long as I dont find an expression I will add the token to the list
 		ft_lstadd_back(&expr_token_list, ft_lstnew(token));

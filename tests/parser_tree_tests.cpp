@@ -8,6 +8,9 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 #include "../include/parser.h"
+
+t_mini_data *g_mini_data;
+
 /*
 testing for     
 > This operator redirects the output of a command to a file. 
@@ -94,11 +97,13 @@ in this test I will just have one node in the tree
 const char* test_parser_tree_simple_command() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "/bin/ls -la";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;
@@ -108,7 +113,7 @@ const char* test_parser_tree_simple_command() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	t_ast_node *ast = create_ast(lexemes);
+	t_ast_node *ast = create_ast(g_mini_data, lexemes);
 	t_token *token = (t_token *)ast->token_list->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
@@ -128,11 +133,13 @@ in this test I will just have one node in the tree
 const char* test_parser_tree_simple_command2() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "echo \"hello world\"";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;
@@ -142,7 +149,7 @@ const char* test_parser_tree_simple_command2() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	t_ast_node *ast = create_ast(lexemes);
+	t_ast_node *ast = create_ast(g_mini_data, lexemes);
 	t_token *token = (t_token *)ast->token_list->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);

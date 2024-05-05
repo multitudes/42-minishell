@@ -8,8 +8,9 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 
-/*
+t_mini_data *g_mini_data;
 
+/*
 • Your shell must implement the following builtins:
 ◦ echo with option -n
 ◦ echo without any options
@@ -57,11 +58,13 @@ RUN_TESTS will run all the tests and print the results
 const char* test_scanner_builtins_echo() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "echo hello world";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -78,11 +81,13 @@ const char* test_scanner_builtins_echo() {
 const char* test_scanner_builtins_echo_n() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "echo -n hello world";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -100,11 +105,13 @@ const char* test_scanner_builtins_echo_n() {
 const char* test_scanner_builtins_cd() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "cd";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -119,11 +126,13 @@ const char* test_scanner_builtins_cd() {
 const char* test_scanner_builtins_cd_dir() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "cd /hello/world";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -139,11 +148,13 @@ const char* test_scanner_builtins_cd_dir() {
 const char* test_scanner_builtins_export() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "export";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -158,11 +169,13 @@ const char* test_scanner_builtins_export() {
 const char* test_scanner_builtins_export_var() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "export MY_VAR=hello";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -178,11 +191,13 @@ const char* test_scanner_builtins_export_var() {
 const char* test_scanner_builtins_unset() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "unset MY_VAR";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -200,11 +215,13 @@ const char* test_scanner_builtins_unset() {
 const char* test_scanner_builtins_env() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "env";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -220,7 +237,9 @@ const char* test_scanner_builtins_env() {
 const char* test_scanner_builtins_exit() {
 	std::string str = "exit";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -235,11 +254,13 @@ const char* test_scanner_builtins_exit() {
 const char* test_scanner_builtins_pwd() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "pwd pwdecho pwd echo";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -257,11 +278,13 @@ const char* test_scanner_builtins_pwd() {
 const char* test_scanner_builtins_dot() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = ". /bin/ls . ./bin/ls";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;

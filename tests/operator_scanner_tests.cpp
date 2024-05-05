@@ -8,6 +8,8 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 
+t_mini_data *g_mini_data;
+
 /*
 testing for     
 > This operator redirects the output of a command to a file. 
@@ -71,11 +73,13 @@ RUN_TESTS will run all the tests and print the results
 const char* test_scanner_redirections() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "a>file.txt a>|file.txt a>&file.txt a&>file.txt a>>file.txt ls&>>file.txt";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;
@@ -108,11 +112,13 @@ const char* test_scanner_redirections() {
 const char* test_scanner_redirections2() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "cat<file.txt cat< file cat < file cat <file";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -147,11 +153,13 @@ cat << EOF | grep 'foo'
 const char* test_scanner_heredoc() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "cat << EOF | grep 'foo' \n This is a line. \n This is another line. \n This line contains foo. \n EOF";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -189,11 +197,13 @@ after <<
 const char* test_scanner_heredoc2() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "cat<<EOF<<foo";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -217,11 +227,13 @@ more redirection -> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2
 const char* test_scanner_redirections3() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "cat<cat>cat>>cat>>&cat";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -251,11 +263,13 @@ more redirection -> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2
 const char* test_scanner_redirections4() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "cat2>cat2>&cat&>cat>&cat&>>cat2>>cat<>cat>|cat";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 11:40:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 14:22:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ typedef struct s_token_list t_token_list;
 
 void	print_token_description(const t_list *token_list); 
 t_list	*create_token(t_tokentype type, const char *lexeme, int *start);
-t_list	*scan_this(const char *input);
+t_list	*tokenizer(t_mini_data *data);
 bool	peek(const char *input, const char *identifier, bool end_space);
 bool	is_space(const char c);
 int		strncicmp(char const *a, char const *b, int n);
@@ -206,7 +206,6 @@ void	init_open_close(t_open_close *open_close);
 int		check_paren_quotes(t_list *token_list);
 t_list	*create_token(t_tokentype type, const char *lexeme, int *i);
 int		str_is_number(const char *identifier);
-
 int		str_is_alphanum(const char *identifier);
 bool	filename_delimiter(const char ch);
 int		isprint_no_space(const char *identifier);

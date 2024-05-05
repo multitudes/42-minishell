@@ -8,6 +8,8 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 
+t_mini_data *g_mini_data;
+
 /*
 testing for     
     DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
@@ -57,11 +59,13 @@ RUN_TESTS will run all the tests and print the results
 const char* test_scanner_dollar() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "a$$ a$* a$@ a$# a$! a$- a$0 $";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -93,11 +97,13 @@ const char* test_scanner_subst_dollar() {
 	// characters or underscores, and must start with a letter or underscore.
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "w$(my_var)w w${my_var}w w$my_var w$ w`echo hello`w w$((2+2))w";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -128,11 +134,13 @@ const char* test_scanner_subst_dollar() {
 const char* test_scanner_subst_dollar_digit() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "w$0w w$1w w$2w w$3w w$4w w$5w w$6w w$7w w$8w w$9w $10";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -182,11 +190,13 @@ BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA,
 const char* test_scanner_history_exp() {
 	
 	// i want to check the output of the call to the function in scanner.c file
-	// scan_this(char *input) returning a t_list of lexemes
+	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
 	std::string str = "!! !1 !-1 !a !?a? !?b";
 	const char* input = str.c_str();
-	t_list *lexemes = scan_this(input);
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;

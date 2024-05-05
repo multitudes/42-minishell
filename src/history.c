@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 13:40:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 14:09:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,15 +77,16 @@ inline int ft_isascii(const int c)
 /*
 The char input is sanitized by removing all non ascii characters
 andn it is coming from a dynamic memory allocation so I can 
-overwrite it
+overwrite it- interestingly the compiler did not complain about it
+but I will check it later
 */
-void	sanitize_input(char *input)
+void	sanitize_input(const char *input)
 {
 	int i;
 	char *tmp;
 
 	i = 0;
-	tmp = input;
+	tmp = (char *)input;
 	while (input[i])
 	{
 		if (!ft_isascii(input[i]))
@@ -143,7 +144,7 @@ s an env var containing the path to the history file
 and if it doesnt exist I will creat it. 644 are permission for the file
 read only for others and W/R for the owner.
 */
-int add_to_hist_file(char *input)
+int add_to_hist_file(const char *input)
 {
 	int fd;
 	char *path;

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 12:23:09 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 14:22:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -454,15 +454,17 @@ note: we dont need to action some of them but fir completeness I added
 as much as I could. for instance we do not action the last & on a command
 or redirections like 
 */
-t_list *scan_this(const char *input)
+t_list *tokenizer(t_mini_data *data)
 {
-	debug("scanning input: %s", input);
 	int i;
 	char *tmp;
 	t_list *token;
 	t_list *token_list;
+	const char *input;
 	
 	i = 0;
+	input = data->input;
+	debug("scanning input: %s", input);
 	token_list = NULL;
 	while (i < (int)ft_strlen(input))
 	{
