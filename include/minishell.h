@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 10:59:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 11:45:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@
 # include <sys/ioctl.h>
 # include <stdbool.h>
 # include <stdarg.h>
+# include <libft.h>
 # include "environment.h"
-# include "../lib/libft/libft.h"
 # include "scanner.h"
 # include <stdio.h>
 # include <errno.h>

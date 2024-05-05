@@ -54,7 +54,7 @@ $(NAME): $(OBJS) $(HDRS)
 
 clean:
 	rm -f $(OBJS)
-	$(MAKE) -C $(LIBFTDIR) clean
+# $(MAKE) -C $(LIBFTDIR) clean
 	
 fclean: clean
 	rm -f $(NAME)

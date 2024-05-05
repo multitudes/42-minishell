@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/04/30 17:28:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 11:41:02 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,9 @@ bool is_space(const char c)
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r');
 }
 
-// string compare case insensitive
+/*
+string compare case insensitive
+*/
 int strncicmp(char const *a, char const *b, int n)
 {
 	while (*a && *b && n--)
@@ -53,8 +55,6 @@ bool is_delimiter(const char ch)
 		return (true);
     return (false);
 }
-
-
 
 /*
 ok these char cannot be in a file name.. even if officially
@@ -105,17 +105,23 @@ bool filename_delimiter(const char ch)
 		return (true);
     return (false);
 }
-// Returns 'true' if the character is a digit
+
+/*
+Returns 'true' if the character is a digit
+*/
 bool is_digit(char c) {
       return c >= '0' && c <= '9';
 }
 
-// Returns 'true' if the character is char a letter or a digit or underscore.
+/*
+Returns 'true' if the character is char a letter or a digit or underscore.
+btw This 65-character set, [-._a-zA-Z0-9], 
+is referred to in SUSv3 as the portable filename character set.
+*/
 bool is_alpha(char c) 
 {
-      return (c >= 'a' && c <= 'z') ||
-             (c >= 'A' && c <= 'Z') ||
-			  c == '_';
+	return ((c >= 'a' && c <= 'z') || \
+    (c >= 'A' && c <= 'Z') || c == '_');
 }
 
 /*
@@ -127,24 +133,18 @@ bool is_alnum(char c)
 }
 
 /*
-btw This 65-character set, [-._a-zA-Z0-9], 
-is referred to in SUSv3 as the portable filename character set.
-*/
-
-/*
 either is alnum including the _ or is a . / ~
 */
 bool is_pathname(char c) 
 {
 	return is_alnum(c) || c == '.' || c == '-' || c == '/' || c == '~' ;
-
 }
 
 /*
 peek wil look ahead to see if my string is beginning with a word which 
-is in identifier
+is an identifier
 */
-bool	peek(const char *input, const char *identifier)
+bool	peek(const char *input, const char *identifier, bool end_space)
 {
 	int i;
 	int n;
@@ -153,6 +153,11 @@ bool	peek(const char *input, const char *identifier)
 	n = ft_strlen(identifier);
 	while (i < n && input[i] == identifier[i])
 		i++;
+	if (end_space)
+	{
+		if (i != n && input[i] != ' ' && input[i] != '\0')
+			return (false);
+	}
 	// debug("peeking %s i is %d n is %d", identifier, i, n);
 	if (i != n)
 		return (false);
@@ -164,7 +169,6 @@ bool	peek(const char *input, const char *identifier)
  bash lets me create a var while and print it with $while... 	
  so not for identifier.  they cannot be used for commands...!
  IF, THEN, ELSE, ELIF, FI, DO, DONE, WHILE, UNTIL, FOR, CASE, ESAC, SELECT, FUNCTION,
- 
 */
 bool is_reserved(t_list **token_list, char *identifier,int *start)
 {
@@ -204,11 +208,12 @@ bool is_reserved(t_list **token_list, char *identifier,int *start)
 		return (false);
 	return true;
 }
+
 /*
 bash builtins which we do not implement are in this list (taken from the 
 bash manual but enhanced by copilot)
 "alias bg bind break builtin caller command compgen 
-. : omplete continue declare dirs disown enable eval exec fc fg getopts hash 
+. : complete continue declare dirs disown enable eval exec fc fg getopts hash 
 help history jobs kill let local logout mapfile popd printf pushd read 
 readonly return set shift shopt source suspend test times trap type 
 typeset ulimit umask unalias wait readarray"
@@ -399,7 +404,7 @@ t_list *create_token(t_tokentype type, const char *lexeme, int *i)
 including numbers preceded by a - or + 
 and with and without a dot
 */
-int str_is_number(char *identifier)
+int str_is_number(const char *identifier)
 {
     int dot_seen = 0;
 
@@ -421,47 +426,23 @@ int str_is_number(char *identifier)
 
     return 1;
 }
-// else if (is_digit(input[i]))
-		// {
-		// 	int start = i;
-		// 	while (is_digit(input[i]))
-		// 	{
-		// 		i++;
-		// 		if (input[i] == '.')
-		// 		{
-		// 			i++;
-		// 			while (is_digit(input[i]))
-		// 				i++;
-		// 		}
-		// 	}
-// int	is_comment(char *identifier)
-// {
-// 	while (*identifier)
-// 	{
-// 		if (*identifier == '#')
-// 		{
-// 			*identifier = '\0';	
-// 			return (1);
-// 		}
-// 		identifier++;
-// 	}
-// 	return (0);
-// }
-int	str_is_alphanum(char *identifier)
+
+
+int str_is_alphanum(const char *str)
 {
-	while (*identifier)
-		if (!is_alnum(*(identifier++)))
+	while (*str)
+		if (!is_alnum(*(str++)))
 			return (0);
 	return (1);
 }
 
-int	isprint_no_space(const char *identifier)
+int	isprint_no_space(const char *str)
 {
-	while (*(identifier))
+	while (*(str))
 	{
-		if (is_space(*identifier) || !isprint(*identifier))
+		if (is_space(*str) || !isprint(*str))
 			return (0);
-		identifier++;
+		str++;
 	}
 	return (1);
 }
@@ -478,13 +459,14 @@ t_list *scan_this(const char *input)
 	debug("scanning input: %s", input);
 	int i;
 	char *tmp;
-	t_list *token_list;
 	t_list *token;
+	t_list *token_list;
+	
 	i = 0;
 	token_list = NULL;
 	while (i < (int)ft_strlen(input))
 	{
-	 	if (peek(input, "||"))
+	 	if (peek(input, "||", false))
 		{
 			token = create_token(OR_TOK, "||", &i);
 			if (token)
@@ -913,7 +895,7 @@ t_list *scan_this(const char *input)
 		{
 			// debug("- pathname - NUMBER or identifier? ");
 			int start = i;
-			while (ft_isprint(input[i]) && !filename_delimiter(input[i]) && !peek(&input[i], "2>>") && !peek(&input[i], "2>") && !peek(&input[i], "2>&"))
+			while (ft_isprint(input[i]) && !filename_delimiter(input[i]) && !peek(&input[i], "2>>", false) && !peek(&input[i], "2>", false) && !peek(&input[i], "2>&", false))
 				i++;
 			if (i != start)
 			{			
@@ -922,7 +904,7 @@ t_list *scan_this(const char *input)
 				//check for reserved words
 				if (!is_reserved(&token_list,identifier,&start) && !is_builtin(&token_list, identifier, &start))
 				{
-					if (ft_strchr(identifier, '/') || peek(identifier, " .") || peek(identifier, "./") || peek(identifier, "../") || peek(identifier, "~/") || peek(identifier, "~+"))
+					if (ft_strchr(identifier, '/') || peek(identifier, " .", false) || peek(identifier, "./", false) || peek(identifier, "../", false) || peek(identifier, "~/", false) || peek(identifier, "~+", false))
 						ft_lstadd_back(&token_list, create_token(PATHNAME, identifier, &start));
 					else if (str_is_number(identifier))
 						ft_lstadd_back(&token_list, create_token(NUMBER, identifier, &start));
