@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 11:41:02 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 12:23:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -947,4 +947,3 @@ t_list *scan_this(const char *input)
 
 	return token_list;
 }
-

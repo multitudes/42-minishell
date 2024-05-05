@@ -29,7 +29,7 @@ else ifeq ($(UNAME), Darwin)
 endif
 
 # target
-all: $(LIBFT) $(NAME) tests 
+all: $(LIBFT) $(NAME) tests
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
@@ -41,7 +41,6 @@ $(LIBFT):
 	$(MAKE) -C $(LIBFTDIR) all
 
 # Static pattern rule for compilation - with includes for the libft that will allow the <libft.h> notation 
-# Static pattern rule for compilation - with includes for the libft that will allow the <libft.h> notation 
 $(OBJS) : %.o: %.c
 	 $(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ 
 
@@ -49,8 +48,6 @@ $(OBJS) : %.o: %.c
 $(NAME): LDLIBS += $(LIBFT)
 $(NAME): $(OBJS) $(HDRS)
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBS) $(LDLIBS) -o $(NAME)
-
-#$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDLIBS) 
 
 clean:
 	rm -f $(OBJS)

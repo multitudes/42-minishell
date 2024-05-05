@@ -1,10 +1,32 @@
 # 42-minishell
-This project is about creating a simple shell. 
+
+>  treat your codebase like a good camper does their campsite: always try to leave it a little better than you found it.  - Bob Nystrom
+
+This team project is about creating a simple shell.  
 
 We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  Below are some exerpts from the bash manual.
 
+> Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
+
+> A shell allows execution of GNU commands, both synchronously and asynchronously. The shell waits for synchronous commands to complete before accepting more input; asynchronous commands continue to execute in parallel with the shell while it reads and executes additional commands. The redirection constructs permit fine-grained control of the input and output of those commands. Moreover, the shell allows control over the contents of commands’ environments.
+
+> Shells also provide a small set of built-in commands (builtins) implementing functionality impossible or inconvenient to obtain via separate utilities. For example, cd, break, continue, and exec cannot be implemented outside of the shell because they directly manipulate the shell itself. The history, getopts, kill, or pwd builtins, among others, could be implemented in separate utilities, but they are more convenient to use as builtin commands. 
+
+### Some definitions from the bash manual
+- POSIX  A family of open system standards based on Unix.
+- builtin A command that is implemented internally by the shell itself, rather than by an executable program somewhere in the file system.
+- control operator : A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
+- exit status : The value returned by a command to its caller. The value is restricted to eight bits, so the maximum value is 255.
+- metacharacter: A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
+- operator : A control operator or a redirection operator.
+- reserved word: A word that has a special meaning to the shell. Most reserved words introduce shell flow control constructs, such as for and while. (not strictly enforced by the shell)
+- signal : A mechanism by which a process may be notified by the kernel of an event occurring in the system.
+- token:  A sequence of characters considered a single unit by the shell. It is either a word or an operator.
+- word A sequence of characters treated as a unit by the shell. Words may not include unquoted metacharacters.
+
 ### allowed functions
 
+Here at 42 we are allowed to use the following functions for this project:
 readline, rl_clear_history, rl_on_new_line,
 rl_replace_line, rl_redisplay, add_history,
 printf, malloc, free, write, access, open, read,
@@ -16,13 +38,9 @@ strerror, perror, isatty, ttyname, ttyslot, ioctl,
 getenv, tcsetattr, tcgetattr, tgetent, tgetflag,
 tgetnum, tgetstr, tgoto, tputs
 
+Also we follow the NORM, a series of rules about linting and formatting of the code. EX functions cannot have more than 25 lines, and we are not allowed to use for loops, but while loops are allowed. 
+Declaring and defining variables in one line is not allowed. etc.
 
-## what is a shell
-Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
-
-A shell allows execution of GNU commands, both synchronously and asynchronously. The shell waits for synchronous commands to complete before accepting more input; asynchronous commands continue to execute in parallel with the shell while it reads and executes additional commands. The redirection constructs permit fine-grained control of the input and output of those commands. Moreover, the shell allows control over the contents of commands’ environments.
-
-Shells also provide a small set of built-in commands (builtins) implementing functionality impossible or inconvenient to obtain via separate utilities. For example, cd, break, continue, and exec cannot be implemented outside of the shell because they directly manipulate the shell itself. The history, getopts, kill, or pwd builtins, among others, could be implemented in separate utilities, but they are more convenient to use as builtin commands. All of the shell builtins are described in subsequent sections.
 
 ## Shell Syntax (from the BASH manual)
 
@@ -37,10 +55,11 @@ The shell then parses these tokens into commands and other constructs, removes t
 A well defined architecture is a better experience for team work, but it doesnt come free. Takes work. Modularity is key. But when modularity doesn’t end up being helpful, it quickly becomes actively harmful and it spirals out of control.
 
 ### Decoupling
-
-- scanning into tokens.
-- The parsing phase will be responsible for reading the user input, tokenizing it, and building a data structure that represents the command to be executed.
-- expansions of variables and expressions.
+A part of creating a good architecture is decoupling. Decoupling is the process of separating the different parts of a system so that they are not dependent on each other. This makes the system more flexible and easier to maintain.  
+Our minishell will be divided into a few main parts:
+- The scanner or lexemer, splitting the input into tokens.
+- The parsing phase will be responsible for taking the tokens, and building a data structure that represents the command to be executed.
+- The expander, expansions of variables and expressions.
 - The execution phase will be responsible for taking the data structure produced by the parsing phase and executing the command it represents.
 - integration tests and unit tests. To be able to make changes and refactor our code with confidence, we will need to have a suite of tests that we can run to ensure that our shell is working as expected.
 
@@ -64,11 +83,9 @@ A parser takes the flat sequence of tokens and builds a tree structure that mirr
 
 - Our shell should also have a working history.
 
-
-
 ## Context free grammar
 
-I really liked the explanation of context-free grammar in the book Crafting Interpreters. Looking in chapter 4 of the book, it explains that the first step is scanning. 
+I really liked the explanation of context-free grammar in the book Crafting Interpreters by Rob Nystrom. Looking in chapter 4 of the book, he explains that the first step is scanning. 
 
 > Scanning is a good starting point for us too because the code isn’t very hard—pretty much a switch statement with delusions of grandeur.
 
@@ -114,7 +131,7 @@ How do we write down a grammar that contains an infinite number of valid strings
 <img src="assets/expression_grammar.png" alt="Expression Grammar" width="400">
 
 
-## Lexeme
+## Lexemes
 Our job is to scan through the list of characters and group them together into the smallest sequences that still represent something. Each of these blobs of characters is called a lexeme.
 example of lexeme
 ```
