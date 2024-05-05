@@ -868,6 +868,34 @@ delimiter is the string that marks the beginning and end of the heredoc.
 NEWLINE separates the delimiter from the content of the heredoc and the content from the ending delimiter.
 content is the text of the heredoc.
 The expression before "<<" in the heredoc rule ensures that a heredoc is associated with a command, which is necessary because a heredoc is a form of input redirection.
+## Traversing an Abstract Syntax Tree (AST) 
+typically involves using a depth-first search. There are three types of depth-first traversals: pre-order, in-order, and post-order.  
+ 
+example:
+```c
+typedef struct ASTNode {
+    char* value;
+    struct ASTNode* left;
+    struct ASTNode* right;
+} ASTNode;
+
+void preOrderTraversal(ASTNode* node) {
+    if (node == NULL) {
+        return;
+    }
+
+    // Visit the node (you can replace this with whatever operation you need to perform on the node)
+    printf("%s\n", node->value);
+
+    // Recursively traverse the left and right children
+    preOrderTraversal(node->left);
+    preOrderTraversal(node->right);
+}
+```
+You can perform in-order or post-order traversal by changing the order of the operations in this function. For in-order traversal, you would first traverse the left child, then visit the node, then traverse the right child. For post-order traversal, you would first traverse the left child, then the right child, then visit the node.  
+
+
+
 ## Execute a shell command
 Use fork() to create a new process, and then use `execve()` in the child process to replace it with a shell that executes the command. Here's an example:
 ```
