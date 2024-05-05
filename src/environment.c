@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 11:44:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 16:18:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,27 @@
 /*
 util function to update the environ variable
 This function will join three strings together
+I could do this as often used (see man page for strlcpy and strlcat)
+size_t n = ft_strlcpy(result, s1, total_length)
+if (n > total_length)
+	return (NULL); 
+but since in this function I know the total length of the string
+because I allocate it such checks are not needed
 */
-char *ft_strjoin3(const char *key, const char *mid, const char *value)
-{
-	char *new_str1;
-	char *new_str2;
+char* ft_strjoin3(const char* s1, const char* s2, const char* s3) {
+    // Allocate enough memory for the new string
+    size_t total_length = strlen(s1) + strlen(s2) + strlen(s3) + 1;
+    char* result = malloc(total_length);
 
-	new_str1 = ft_strjoin(key, mid);
-	if (!new_str1)
-		return (NULL);
-	new_str2 = ft_strjoin(new_str1, value);
-	if (!new_str2)
-	{
-		free(new_str1);
-		return (NULL);
-	}
-	free(new_str1);
-	return (new_str2);
+    // Concatenate the strings
+    ft_strlcpy(result, s1, total_length);
+	debug("result: -%s-", result);
+    ft_strlcat(result, s2, total_length);
+	debug("result: -%s-", result);
+    ft_strlcat(result, s3, total_length);
+	debug("result: -%s-", result);
+
+    return result;
 }
 
 /*

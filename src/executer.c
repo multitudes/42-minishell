@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/04 14:23:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 16:03:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ int	execute_command(t_list *tokenlist, t_mini_data *data)
 	int i;
 
 	i = 0;
+	// convert token list to argvs
 	while (tokenlist)
 	{
 		token = (t_token *)tokenlist->content;
@@ -80,10 +81,50 @@ int	execute_command(t_list *tokenlist, t_mini_data *data)
 		tokenlist = tokenlist->next;
 	}
 	argv[i] = NULL;
-	
+	// this is starting with / so it is a absolute path
+	if (argv[0][0] == '/')
+	{
+		debug("path found\n");
+		if (access(argv[0], X_OK) == -1)
+		{
+			perror("access");
+		}
+	}
+	else 
+	{
+		// print getcwd
+		char cwd[1024];
+		if (getcwd(cwd, sizeof(cwd)) != NULL)
+		{
+			debug("Current working dir: %s", cwd);
+			// check if the current dir plus the command is executable
+			// add the current directory and the argv[0] 
+			char *new_command = ft_strjoin3(cwd, "/", argv[0]);
+			debug("new_command: %s", new_command);
+			if (access(new_command, X_OK) == 0)
+			{
+				debug("new_command found");
+			}
+			else
+			{
+				perror("access");
+			}
+			{
+				perror("access");
+			}
+		}
+		else
+		{
+			perror("getcwd");
+		}
+		// check the PATH variable for a path corresponding to the command
+		
+	}
+
     execve(argv[0], argv, (char **)data->env_arr->contents);
 
     // If execve returns at all, an error occurred.
+	write(2, "minishell: command not found\n", 30);
     perror("execve");
     return 1;
 }

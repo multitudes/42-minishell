@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 14:22:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 15:27:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,67 +227,74 @@ int loop(int argc, char **argv)
 	while (data->input != NULL)
 	{
 		sanitize_input(data->input);
-		
-		// check if the input contains a << heredoc operator and change 
-		// the prompt to indicate that it expects more... however tis 
-		// is probably not what we will do in the end because we need to 
-		// make it working with pipes.
-		// so keep it here for now..
-		// if (contains_heredoc(input, &data->heredoc_delimiter))
-		// {
-		// 	if (data->heredoc_delimiter == NULL || ft_strncmp(data->heredoc_delimiter, "", 1) == 0)
-		// 	{
-		// 		// perror("malloc data->heredoc_delimiter");
-		// 		free(input);
-		// 	}
-		// 	// add newline to my input
-		// 	input = add_newline(input);
-		// 	// read the next input prompt	
-		// 	char *here_content;
-		// 	while(1)
-		// 	{
-		// 		here_content = readline("> ");
-		// 		here_content = add_newline(here_content);
-		// 		debug("here_content: %s\n", here_content);
-		// 		sanitize_input(here_content);
-		// 		input = ft_strjoin(input, here_content);
-		// 		if (contains_string(here_content, data->heredoc_delimiter))
-		// 		{
-		// 			debug("break\n");
-		// 			debug("input: %s\n", input);
-		// 			free(here_content);
-		// 			break;
-		// 		}
-		// 		free(here_content);
-		// 	}
-		// }
-		// else 
-		if (ft_strncmp(data->input, "", 1) != 0)
+		if (data->input[strlen(data->input) - 1] == '\\')
 		{
-			// check best error handling
-			if (!handle_history(data))
-				debug("failed to handle history\n");
-			// debug("You entered: %s\n", input);
-			t_list *tokens = tokenizer(data);
-			if (tokens != NULL)
+			printf("line continuation feature not implemented yet\n");
+			data->input = readline("minishell $ ");
+		}
+		else 
+		{
+			// check if the input contains a << heredoc operator and change 
+			// the prompt to indicate that it expects more... however tis 
+			// is probably not what we will do in the end because we need to 
+			// make it working with pipes.
+			// so keep it here for now..
+			// if (contains_heredoc(input, &data->heredoc_delimiter))
+			// {
+			// 	if (data->heredoc_delimiter == NULL || ft_strncmp(data->heredoc_delimiter, "", 1) == 0)
+			// 	{
+			// 		// perror("malloc data->heredoc_delimiter");
+			// 		free(input);
+			// 	}
+			// 	// add newline to my input
+			// 	input = add_newline(input);
+			// 	// read the next input prompt	
+			// 	char *here_content;
+			// 	while(1)
+			// 	{
+			// 		here_content = readline("> ");
+			// 		here_content = add_newline(here_content);
+			// 		debug("here_content: %s\n", here_content);
+			// 		sanitize_input(here_content);
+			// 		input = ft_strjoin(input, here_content);
+			// 		if (contains_string(here_content, data->heredoc_delimiter))
+			// 		{
+			// 			debug("break\n");
+			// 			debug("input: %s\n", input);
+			// 			free(here_content);
+			// 			break;
+			// 		}
+			// 		free(here_content);
+			// 	}
+			// }
+			// else 
+			if (ft_strncmp(data->input, "", 1) != 0)
 			{
-				t_ast_node *asttree = create_ast(data, tokens);
-				if (asttree == NULL)
+				// check best error handling
+				if (!handle_history(data))
+					debug("failed to handle history\n");
+				// debug("You entered: %s\n", input);
+				t_list *tokens = tokenizer(data);
+				if (tokens != NULL)
 				{
-					// TODO define error handling
-					debug("failed to create_ast - parse error");
-				}
-				else
-				{
-					print_ast(asttree);
-					data->ast = asttree;
-					analyse_expand(data->ast, data);
-					execute_ast(data->ast, data);
+					t_ast_node *asttree = create_ast(data, tokens);
+					if (asttree == NULL)
+					{
+						// TODO define error handling
+						debug("failed to create_ast - parse error");
+					}
+					else
+					{
+						print_ast(asttree);
+						data->ast = asttree;
+						analyse_expand(data->ast, data);
+						execute_ast(data->ast, data);
+					}
 				}
 			}
+			// read the next input (prompt
+			data->input = readline("minishell $ ");
 		}
-		// read the next input (prompt
-		data->input = readline("minishell $ ");
 	}
 	/*
 	The readLine() function, reads a line of input from

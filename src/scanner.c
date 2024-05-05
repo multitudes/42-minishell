@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 14:33:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 15:05:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@ string compare case insensitive
 */
 int strncicmp(char const *a, char const *b, int n)
 {
+	if (n == 0)
+		return 0;
+	if (a == NULL || b == NULL || n < 0)
+		return -1;
 	while (*a && *b && n--)
 	{
 		int d = ft_tolower(*a) - ft_tolower(*b);
@@ -469,10 +473,13 @@ t_list *tokenizer(t_mini_data *data)
 	
 	i = 0;
 	input = data->input;
-	debug("scanning input: %s", input);
+	debug("scanning input: %s of char %d", input, (int)ft_strlen(input));
 	token_list = NULL;
 	while (i < (int)ft_strlen(input))
 	{
+		// check for \ and \n
+		if (peek(input, "\\\n", false))
+			i += 2;
 	 	if (peek(input, "||", false))
 		{
 			token = create_token(OR_TOK, "||", &i);
