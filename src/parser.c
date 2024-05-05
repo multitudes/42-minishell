@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/04/26 12:03:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 11:14:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,9 +110,15 @@ t_ast_node* new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_lis
 		return (NULL);
 	}
 	node->type = type;
+	node->parent = NULL;
 	node->left = left;
 	node->right = right;
 	node->token_list = expr_token_list;
+	if (left != NULL && right != NULL)
+	{
+		left->parent = node;
+		right->parent = node;
+	}
 	return (node);
 }
 /*
