@@ -12,7 +12,7 @@ INCLUDES = -I./lib/libft -I./include
 
 SRCS = $(addprefix src/, main.c loop.c history.c scanner.c environment.c handle_path.c parser.c analyser.c executer.c error.c darray.c)
 OBJS = $(SRCS:.c=.o)
-
+HDRS = $(addprefix include/, minishell.h scanner.h environment.h handle_path.h parser.h analyser.h executer.h error.h darray.h) 
 NAME = minishell
 
 LIBFTDIR = lib/libft
@@ -47,7 +47,7 @@ $(OBJS) : %.o: %.c
 
 # Target $(NAME) depends on object files $(OBJS) and libft library.
 $(NAME): LDLIBS += $(LIBFT)
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) $(HDRS)
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBS) $(LDLIBS) -o $(NAME)
 
 #$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDLIBS) 
