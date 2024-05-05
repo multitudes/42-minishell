@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 16:03:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 16:55:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,31 @@ void	execute_builtin(t_list *tokenlist, t_mini_data *data)
 	
 }
 
+
+/*
+split the PATH variable into base paths
+check if the base path is in the PATH variable
+if it is return true
+else return false
+*/
+bool is_on_path(char *base, t_mini_data *data)
+{
+	char **envpaths = ft_split(mini_get_env(data, "PATH"), ':');
+
+	int i = 0;
+	while (envpaths[i])
+	{
+		debug("path: %s", envpaths[i]);
+		if (ft_strncmp(envpaths[i], base, ft_strlen(base)) == 0)
+		{
+			return (true);
+		}
+		i++;
+	}
+	return (0);
+}
+
+
 int	execute_command(t_list *tokenlist, t_mini_data *data)
 {
 	t_token *token;
@@ -84,10 +109,26 @@ int	execute_command(t_list *tokenlist, t_mini_data *data)
 	// this is starting with / so it is a absolute path
 	if (argv[0][0] == '/')
 	{
-		debug("path found\n");
-		if (access(argv[0], X_OK) == -1)
+		// check if the path is in the PATH variable
+		char *base = ft_strdup(argv[0]);
+		char* slash = strrchr(base, '/');
+		if (slash != NULL && slash != base) 
 		{
-			perror("access");
+			*slash = '\0';
+		}
+		debug("base: %s", base);
+		// look for the base path in the env variable PATH
+		if (!is_on_path(base, data))
+		{
+			debug("not valid path\n");
+		}
+		else 
+		{
+			debug("path found\n");
+			if (access(argv[0], X_OK) == -1)
+			{
+				perror("access");
+			}
 		}
 	}
 	else 
@@ -106,9 +147,6 @@ int	execute_command(t_list *tokenlist, t_mini_data *data)
 				debug("new_command found");
 			}
 			else
-			{
-				perror("access");
-			}
 			{
 				perror("access");
 			}
