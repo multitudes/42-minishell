@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 13:31:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 13:41:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	free_data(t_mini_data *data)
 	if (data == NULL)
 		return ;
 	// free the environ
-
+	free(data->input);
 	darray_clear_destroy(data->env_arr);
 	free(data->ast);
 	free(data);
@@ -188,7 +188,7 @@ int	init_data(t_mini_data **data)
 	(*data)->ast = NULL;
 	(*data)->heredoc_delimiter = NULL;
 	(*data)->exit_status = 0;
-	(*data)->input_str = NULL;
+	(*data)->input = NULL;
 	return (1);
 }
 
@@ -198,7 +198,6 @@ int loop(int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
-	char *input;
 	// main data structure for the shell
 	t_mini_data *data;
 
@@ -224,10 +223,10 @@ int loop(int argc, char **argv)
 	
 	// load the history from the file
 	load_history();
-	input = readline("minishell $ ");
-	while (input != NULL)
+	data->input = readline("minishell $ ");
+	while (data->input != NULL)
 	{
-		sanitize_input(input);
+		sanitize_input(data->input);
 		
 		// check if the input contains a << heredoc operator and change 
 		// the prompt to indicate that it expects more... however tis 
@@ -263,13 +262,13 @@ int loop(int argc, char **argv)
 		// 	}
 		// }
 		// else 
-		if (ft_strncmp(input, "", 1) != 0)
+		if (ft_strncmp(data->input, "", 1) != 0)
 		{
 			// check best error handling
-			if (!handle_history(input, data))
+			if (!handle_history(data))
 				debug("failed to handle history\n");
 			// debug("You entered: %s\n", input);
-			t_list *tokens = scan_this(input);
+			t_list *tokens = scan_this(data->input);
 			if (tokens != NULL)
 			{
 				t_ast_node *asttree = create_ast(tokens);
@@ -288,9 +287,8 @@ int loop(int argc, char **argv)
 			}
 		}
 		// read the next input (prompt
-		input = readline("minishell $ ");
+		data->input = readline("minishell $ ");
 	}
-	free(input);
 	/*
 	The readLine() function, reads a line of input from
 	the user on the command line and returns the result.
@@ -303,7 +301,7 @@ int loop(int argc, char **argv)
 	// the isatty() function returns 1 if the file descriptor is an open file,
 	// 0 if it is not, and -1 if an error occurs.
 
-	debug("freeing ===================\n");
+	debug("freeing ===================");
 	free_data(data);
 	return (0);
 }

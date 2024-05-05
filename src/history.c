@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 11:47:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 13:40:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,36 +105,35 @@ we will check if the input is a command to delete the history!
 This would be
 history -c or history --clear
 */
-bool	handle_history(char *input, t_mini_data *data)
+bool	handle_history(t_mini_data *data)
 {
-	if (input == NULL || ft_strlen(input) <= 0 || (ft_strlen(input) == 1 \
-	&& (input[0] < 32 || input[0] > 126)))
-		return (0);
-	if (ft_strncmp(input, "history -c", 11) == 0 || ft_strncmp(input, "history --clear", 16) == 0)
+	// if (data->input == NULL || ft_strlen(data->input) <= 0 || (ft_strlen(data->input) == 1 \
+	// && (data->input[0] < 32 || data->input[0] > 126)))
+	// 	return (0);
+	if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
 	{
 		debug("clearing history\n");
 		clear_hist_file();
 		rl_clear_history();
 		return (0);
 	}
-	else if (ft_strncmp(input, "history", 7) == 0)
+	else if (ft_strncmp(data->input, "history", 7) == 0)
 	{
 		print_history();
 		return (0);
 	}
-	if (add_to_hist_file(input))
+	if (add_to_hist_file(data->input))
 	{
 		perror("add_to_hist_file");
 		return (0);
 	}
-	add_history(input);
+	add_history(data->input);
 	// need debugging
-	if (update_env(data, "_", input) == FALSE)
+	if (update_env(data, "_", data->input) == FALSE)
 	{
 		perror("update_env for _ with history input");
 		return (0);
 	}
-	(void)data;
 	return (TRUE);
 }
 
