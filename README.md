@@ -984,6 +984,9 @@ https://man7.org/linux/man-pages/man2/pipe.2.html
 shell posix standard grammar  
 https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#export  
 
+token recognition  
+https://pubs.opengroup.org/onlinepubs/009604499/utilities/xcu_chap02.html#tag_02_03
+
 redirections and pipes 
 http://www.cs.loyola.edu/~jglenn/702/S2005/Examples/dup2.html
 

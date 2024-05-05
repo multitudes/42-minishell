@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 14:22:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 14:33:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,19 +143,24 @@ bool is_pathname(char c)
 /*
 peek wil look ahead to see if my string is beginning with a word which 
 is an identifier
+input is the string to check
+identifier is the string to check for
+end_space is true if the identifier must be followed by a space to be valid
+ex '||' works without spaces at the end but 'echo' is valid with space only or with 
+one of the metacharacters : ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
 */
 bool	peek(const char *input, const char *identifier, bool end_space)
 {
 	int i;
 	int n;
-	
+
 	i = 0;
 	n = ft_strlen(identifier);
 	while (i < n && input[i] == identifier[i])
 		i++;
 	if (end_space)
 	{
-		if (i != n && input[i] != ' ' && input[i] != '\0')
+		if (i != n && strchr(" |&;()<>", input[i]) == NULL && input[i] != '\0')
 			return (false);
 	}
 	// debug("peeking %s i is %d n is %d", identifier, i, n);
