@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/04 14:06:44 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 10:02:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,14 @@
 # include "error.h"
 # include "darray.h"
 
-// This allows us to use the debug macro to print debug messages but to compile them out when NDEBUG is defined.
-// If we define NDEBUG in the makefile or as a flag -DNDEBUG, the debug macro will be replaced with an empty macro.
+/*
+This allows us to use the debug macro to print debug messages but to 
+compile them out when NDEBUG is defined.
+If we define NDEBUG in the makefile or as a flag -DNDEBUG, 
+the debug macro will be replaced with an empty macro.
+during submission we will remove the debug macro from the code
+including the macro below which is not allowed by norminette.
+*/
 #ifdef NDEBUG
 #define debug(M, ...)
 #else
@@ -60,18 +66,22 @@
         __FILE__, __LINE__, ##__VA_ARGS__)
 #endif
 
-// for the history - can override with -DMINIHISTFILE='"new relative path"' -DHISTSIZE=1000
+// for the history - can override with 
+// -DMINIHISTFILE='"new relative path"' -DHISTSIZE=1000
 #define MINIHISTFILEPATH "/.minishell_history"
 #define MINIHISTFILESIZE  1000
 
-// needed for the tests - leave it here
+// needed for the tests - leave it here - norminette allows it I think 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*
-enviroment list
-path list
+env_arr = enviroment variables array
+ast = abstract syntax tree for parser as linked lists of nodes
+heredoc_delimiter for heredoc
+exit_status for the exit status of the last command
+scanner_error when the mallocs in the scanner failed. 
 */
 struct s_mini_data 
 {
@@ -79,6 +89,8 @@ struct s_mini_data
 	t_ast_node	*ast;
 	char		*heredoc_delimiter;
 	int			exit_status;
+	bool		scanner_error;
+	int 		scanner_tokens_nr;
 };
 typedef struct s_mini_data t_mini_data;
 
