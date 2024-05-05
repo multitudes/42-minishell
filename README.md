@@ -32,6 +32,18 @@ Otherwise, roughly speaking, the shell reads its input and divides the input int
 
 The shell then parses these tokens into commands and other constructs, removes the special meaning of certain words or characters, expands others, redirects input and output as needed, executes the specified command, waits for the command’s exit status, and makes that exit status available for further inspection or processing.
 
+## ideas
+### architecture
+A well defined architecture is a better experience for team work, but it doesnt come free. Takes work. Modularity is key. But when modularity doesn’t end up being helpful, it quickly becomes actively harmful and it spirals out of control.
+
+### Decoupling
+
+- scanning into tokens.
+- The parsing phase will be responsible for reading the user input, tokenizing it, and building a data structure that represents the command to be executed.
+- expansions of variables and expressions.
+- The execution phase will be responsible for taking the data structure produced by the parsing phase and executing the command it represents.
+- integration tests and unit tests. To be able to make changes and refactor our code with confidence, we will need to have a suite of tests that we can run to ensure that our shell is working as expected.
+
 ## The map
 - we start by implementing a loop that reads the user input with the readline() function. The readline function is part of the part of the GNU Readline library and offers other functions like rl_clear_history, rl_on_new_line, rl_replace_line, rl_redisplay,add_history that we are allowed to use in our project.
 - The first step is scanning, also known as lexing, or (if you’re trying to impress someone) lexical analysis.

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 10:02:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 10:59:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,9 @@ ast = abstract syntax tree for parser as linked lists of nodes
 heredoc_delimiter for heredoc
 exit_status for the exit status of the last command
 scanner_error when the mallocs in the scanner failed. 
+keep track of how many tokens were created
+pipe_open : am I in a piped process?
+pipe_fd : file descriptors for the pipe
 */
 struct s_mini_data 
 {
@@ -91,6 +94,8 @@ struct s_mini_data
 	int			exit_status;
 	bool		scanner_error;
 	int 		scanner_tokens_nr;
+	bool		pipe_open;
+	int 		pipe_fd[2];
 };
 typedef struct s_mini_data t_mini_data;
 
