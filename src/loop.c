@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/04/30 18:43:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 13:31:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,7 @@ int	init_data(t_mini_data **data)
 	(*data)->ast = NULL;
 	(*data)->heredoc_delimiter = NULL;
 	(*data)->exit_status = 0;
+	(*data)->input_str = NULL;
 	return (1);
 }
 
@@ -268,10 +269,10 @@ int loop(int argc, char **argv)
 			if (!handle_history(input, data))
 				debug("failed to handle history\n");
 			// debug("You entered: %s\n", input);
-			t_list *lexemes = scan_this(input);
-			if (lexemes != NULL)
+			t_list *tokens = scan_this(input);
+			if (tokens != NULL)
 			{
-				t_ast_node *asttree = create_ast(lexemes);
+				t_ast_node *asttree = create_ast(tokens);
 				if (asttree == NULL)
 				{
 					// TODO define error handling
