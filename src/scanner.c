@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 13:27:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 13:46:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,8 +188,10 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
  so not for identifier.  they cannot be used for commands...!
  IF, THEN, ELSE, ELIF, FI, DO, DONE, WHILE, UNTIL, FOR, CASE, ESAC, SELECT, FUNCTION,
 */
-bool is_reserved(t_list **token_list, char *identifier, int *start)
+bool is_reserved(t_mini_data *data, t_list **token_list, char *identifier, int *start)
 {
+	// I will implement data->error once I refactor the code
+	(void)data;
 	if (strncicmp(identifier, "if", 3) == 0)
 		ft_lstadd_back(token_list, create_token(IF, "if", start));
 	else if (strncicmp(identifier, "then", 5) == 0)
@@ -222,6 +224,7 @@ bool is_reserved(t_list **token_list, char *identifier, int *start)
 		ft_lstadd_back(token_list, create_token(IN, "in", start));
 	else 
 		return (false);
+	
 	return true;
 }
 
@@ -268,8 +271,10 @@ bool	not_implemented_builtin(const char *id)
 /*
 is_builtin checks if the identifier is a builtin command
 */
-bool is_builtin(t_list **token_list, char *identifier,int *start)
+bool is_builtin(t_mini_data *data, t_list **token_list, char *identifier,int *start)
 {
+	// I will implement data->error once I refactor the code
+	(void)data;
 	if (strncicmp(identifier, "echo", 5) == 0)
 		ft_lstadd_back(token_list, create_token(BUILTIN, "echo", start));
 	else if (strncicmp(identifier, "cd", 3) == 0)
@@ -505,14 +510,14 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&token_list, create_token(PIPE_AND, "|&", &i));
 		else if (input[i] == '&' && input[i + 1] == '&')
 			ft_lstadd_back(&token_list, create_token(AND_IF, "&&", &i));
-		else if (input[i] == ';')
-			ft_lstadd_back(&token_list, create_token(SEMI, ";", &i));
 		else if (input[i] == ';' && input[i + 1] == '&')
 			ft_lstadd_back(&token_list, create_token(SEMI_AND, ";&", &i));
 		else if (input[i] == ';' && input[i + 1] == ';')
 			ft_lstadd_back(&token_list, create_token(DSEMI, ";;", &i));
 		else if (input[i] == ';' && input[i + 1] == ';' && input[i + 2] == '&')
 			ft_lstadd_back(&token_list, create_token(DSEMI_AND, ";;&", &i));
+		else if (input[i] == ';')
+			ft_lstadd_back(&token_list, create_token(SEMI, ";", &i));
 		
 		// wanna create an expression token
 		else if (input[i] == '(')
@@ -722,6 +727,10 @@ t_list *tokenizer(t_mini_data *data)
 			free(tmp);
 			i += 3;
 		}
+
+		/****************************************/
+		/* redirections							*/
+		/****************************************/
 		else if (input[i] == '>' && input[i + 1] == '|')
 			ft_lstadd_back(&token_list, create_token(CLOBBER, ">|", &i));
 		else if (input[i] == '>' && input[i + 1] == '>' && input[i + 2] == '&')
@@ -907,28 +916,26 @@ t_list *tokenizer(t_mini_data *data)
 		{
 			// debug("- pathname - NUMBER or identifier? ");
 			int start = i;
-			while (ft_isprint(input[i]) && !filename_delimiter(input[i]) && !peek(&input[i], "2>>", false) && !peek(&input[i], "2>", false) && !peek(&input[i], "2>&", false))
-				i++;
-			if (i != start)
-			{			
-				char *identifier = ft_substr(input, start, i - start);
-				debug("identifier: -%s-", identifier);
-				//check for reserved words
-				if (!is_reserved(&token_list,identifier,&start) && !is_builtin(&token_list, identifier, &start))
-				{
-					if (ft_strchr(identifier, '/') || peek(identifier, " .", false) || peek(identifier, "./", false) || peek(identifier, "../", false) || peek(identifier, "~/", false) || peek(identifier, "~+", false))
-						ft_lstadd_back(&token_list, create_token(PATHNAME, identifier, &start));
-					else if (str_is_number(identifier))
-						ft_lstadd_back(&token_list, create_token(NUMBER, identifier, &start));
-					// else if (is_comment(identifier))
-					// 	ft_lstadd_back(&token_list, create_token(COMMENT, identifier, &start));
-					// else if (str_is_alphanum(identifier))
-					// 	ft_lstadd_back(&token_list, create_token(WORD, identifier, &start));
-					else
-						ft_lstadd_back(&token_list, create_token(WORD, identifier, &start));
-				}
-				free(identifier);
+			while (ft_isprint(input[i]) && !filename_delimiter(input[i]))
+				i++;			
+			char *identifier = ft_substr(input, start, i - start);
+			debug("identifier: -%s-", identifier);
+			//check for reserved words
+			if (!is_reserved(data, &token_list,identifier,&start) && !is_builtin(data, &token_list, identifier, &start))
+			{
+				if (ft_strchr(identifier, '/') || peek(identifier, " .", false) || peek(identifier, "./", false) || peek(identifier, "../", false) || peek(identifier, "~/", false) || peek(identifier, "~+", false))
+					ft_lstadd_back(&token_list, create_token(PATHNAME, identifier, &start));
+				else if (str_is_number(identifier))
+					ft_lstadd_back(&token_list, create_token(NUMBER, identifier, &start));
+				// else if (is_comment(identifier))
+				// 	ft_lstadd_back(&token_list, create_token(COMMENT, identifier, &start));
+				// else if (str_is_alphanum(identifier))
+				// 	ft_lstadd_back(&token_list, create_token(WORD, identifier, &start));
+				else
+					ft_lstadd_back(&token_list, create_token(WORD, identifier, &start));
 			}
+			free(identifier);
+		
 		}
 		// else if (is_alpha(input[i]))
 		// {

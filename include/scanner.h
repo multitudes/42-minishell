@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 12:54:42 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 13:45:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,8 +202,8 @@ bool	is_delimiter(const char ch);
 bool	is_digit(char c); 
 bool	is_alnum(char c);
 bool	is_pathname(char c); 
-bool	is_reserved(t_list **token_list, char *identifier,int *start);
-bool 	is_builtin(t_list **token_list, char *identifier,int *start);
+bool	is_reserved(t_mini_data *data, t_list **token_list, char *identifier,int *start);
+bool 	is_builtin(t_mini_data *data, t_list **token_list, char *identifier,int *start);
 void	print_token_description(const t_list *current); 
 void	print_token_list(t_list *token_list);
 void	init_open_close(t_open_close *open_close);
