@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 12:49:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 12:51:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -409,8 +409,11 @@ I need to pass this function to my ft_lstclear to clear the list
 because the content is a token which has a lexeme which needs to be free
 and then the token itself needs to be freed
 */
-void	free_token(t_token *token)
+void	free_token(void *content)
 {
+	t_token *token;
+	
+	token = (t_token *)content;
 	free(token->lexeme);
 	free(token);
 }
