@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 12:51:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 13:19:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -610,7 +610,6 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&token_list, create_token(BANG, "!", &i));
 		else if (input[i] == '=')
 			ft_lstadd_back(&token_list, create_token(EQUAL, "=", &i));
-		
 /*
     DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
     DOLLAR_DOLLAR, // '$$' ‘$’ is used to get the process ID of the shell.
@@ -621,7 +620,6 @@ t_list *tokenizer(t_mini_data *data)
 	DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.	 
 	DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
 */
-
 		else if (input[i] == '$' && input[i + 1] == '?')
 			ft_lstadd_back(&token_list, create_token(DOLLAR_QUESTION, "$?", &i));
 		else if (input[i] == '$' && input[i + 1] == '$')
@@ -636,10 +634,7 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&token_list, create_token(DOLLAR_BANG, "$!", &i));
 		else if (input[i] == '$' && input[i + 1] == '-')
 			ft_lstadd_back(&token_list, create_token(DOLLAR_HYPHEN, "$-", &i));
-		else if (input[i] == '$' && (input[i + 1] == '0' || input[i + 1] == '1' || \
-		input[i + 1] == '2' || input[i + 1] == '3' || input[i + 1] == '4' || \
-		input[i + 1] == '5' || input[i + 1] == '6' || input[i + 1] == '7' || \
-		input[i + 1] == '8' || input[i + 1] == '9'))
+		else if (input[i] == '$' && is_digit(input[i + 1]))
 		{
 			int start = i;
 			while (is_digit(input[i + 1]))
@@ -658,7 +653,7 @@ t_list *tokenizer(t_mini_data *data)
 			if (input[i] == '\0')
 			{
 				debug("error: unclosed expansion\n");
-				return NULL;
+				data->exit_status = 1;;
 			}
 			tmp = ft_substr(input, start, i - start + 1);
 			ft_lstadd_back(&token_list, create_token(VAR_EXPANSION, tmp, &start));
@@ -680,12 +675,12 @@ t_list *tokenizer(t_mini_data *data)
 		else if (input[i] == '$' && input[i + 1] == '(' && input[i + 2] != '(')
 		{
 			int start = i++;
-			while (input[i] != ')' && input[i] != '\0')
+			while (input[i] && input[i] != ')')
 				i++;
 			if (input[i] == '\0')
 			{
 				debug("error: unclosed expansion\n");
-				return NULL;
+				data->exit_status = 1;
 			}
 			tmp = ft_substr(input, start, i - start + 1);
 			ft_lstadd_back(&token_list, create_token(COM_EXPANSION, tmp, &start));
@@ -702,36 +697,30 @@ t_list *tokenizer(t_mini_data *data)
 			if (input[i] == '\0')
 			{
 				debug("error: unclosed expansion\n");
-				return NULL;
+								data->exit_status = 1;;
 			}
 			tmp = ft_substr(input, start, i - start + 1);
 			ft_lstadd_back(&token_list, create_token(COM_EXPANSION, tmp, &start));
 			free(tmp);
 			i++;
 		}
+		// arythmetic expansion
 		else if (input[i] == '$' && input[i + 1] == '(' && input[i + 2] == '(')
 		{
 			int start = i++;
-			while (input[i] != ')' && input[i + 1] != ')' && input[i] != '\0')
+			while (input[i] && input[i] != ')' && input[i + 1] && input[i + 1] != ')') 
 				i++;
-			if (input[i] == '\0')
+			// if I got to the end of the string but did not get '))'
+			if (input[i] == '\0' || input[i + 1] == '\0')
 			{
 				debug("error: unclosed expansion\n");
-				return NULL;
+								data->exit_status = 1;;
 			}
 			tmp = ft_substr(input, start, i - start + 3);
 			ft_lstadd_back(&token_list, create_token(EXPR_EXPANSION, tmp, &start));
 			free(tmp);
 			i += 3;
 		}
-		// 
-		// >|
-		// else if (input[i] == '2' && input[i + 1] == '>' && input[i + 2] == '>')
-		// 	ft_lstadd_back(&token_list, create_token(REDIRECT_ERR_APP, "2>>", &i));
-		// else if (input[i] == '2' && input[i + 1] == '>' && input[i + 2] == '&')
-		// 	ft_lstadd_back(&token_list, create_token(REDIRECT_ERR_FD, "2>&", &i));
-		// else if (input[i] == '2' && input[i + 1] == '>')
-		// 	ft_lstadd_back(&token_list, create_token(REDIRECT_ERR, "2>", &i));
 		else if (input[i] == '>' && input[i + 1] == '|')
 			ft_lstadd_back(&token_list, create_token(CLOBBER, ">|", &i));
 		else if (input[i] == '>' && input[i + 1] == '>' && input[i + 2] == '&')
@@ -752,8 +741,6 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&token_list, create_token(LESSGREAT, "<>", &i));
 		else if (input[i] == '>' && input[i + 1] == '>')
 			ft_lstadd_back(&token_list, create_token(DGREAT, ">>", &i));
-		// DLESSs << dont need to be preceded or followed by a space 
-		
 		else if (input[i] == '<' && input[i + 1] && input[i + 1] == '<')
 		{
 			ft_lstadd_back(&token_list, create_token(DLESS, "<<", &i));
@@ -763,7 +750,7 @@ t_list *tokenizer(t_mini_data *data)
 			if (input[i] == '\0' || is_delimiter(input[i]))
 			{
 				debug("error: unclosed DLESS\n");
-				return (NULL);
+				data->exit_status = 1;;
 			}
 			int start = i;
 			while (input[i] && !is_delimiter(input[i]))
@@ -779,12 +766,12 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&token_list, create_token(LESS_EQUAL, "<=", &i));
 		else if (input[i] == '!' && input[i + 1] == '=')
 			ft_lstadd_back(&token_list, create_token(BANG_EQUAL, "!=", &i));
-		else if (input[i] == '=' && input[i + 1] == '=')
-			ft_lstadd_back(&token_list, create_token(EQUAL_EQUAL, "==", &i));
 		else if (input[i] == '>')
 			ft_lstadd_back(&token_list, create_token(REDIRECT_OUT, ">", &i));
 		else if (input[i] == '<')
 			ft_lstadd_back(&token_list, create_token(REDIRECT_IN, "<", &i));
+		else if (input[i] == '=' && input[i + 1] == '=')
+			ft_lstadd_back(&token_list, create_token(EQUAL_EQUAL, "==", &i));
 		else if (input[i] == ',')
 			ft_lstadd_back(&token_list, create_token(COMMA, ",", &i));
 		else if (input[i] == '-' && input[i + 1] == ' ')
@@ -805,7 +792,7 @@ t_list *tokenizer(t_mini_data *data)
 		// 	if (is_pathname(input[i]))
 		// 	{
 		// 		debug("error: invalid path\n");
-		// 		return (NULL);
+		// 		data->exit_status = 1;;
 		// 	}
 		// 	tmp = ft_substr(input, start, i - start);
 		// 	// no expansion in those unless they are part of a double quoted string
@@ -832,7 +819,7 @@ t_list *tokenizer(t_mini_data *data)
 			if (input[i] == '\0')
 			{
 				debug("error: unclosed single quotes\n");
-				return (NULL);
+				data->exit_status = 1;;
 			}
 			tmp = ft_substr(input, start, i - start + 1);
 			// no expansion in those unless they are part of a double quoted string
@@ -851,7 +838,7 @@ t_list *tokenizer(t_mini_data *data)
 			if (input[i] == '\0')
 			{
 				debug("error: unclosed quotes\n");
-				return (NULL);
+				data->exit_status = 1;;
 			}
 			tmp = ft_substr(input, start, i - start + 1);
 			// expand later $() ${} and $VAR and '...'  and ` ... `  ?
@@ -970,6 +957,7 @@ t_list *tokenizer(t_mini_data *data)
 		ft_lstclear(&token_list, free_token);
 		return (NULL);
 	}
+	data->token_list = token_list;
 	// print_token_list(token_list);
 
 	// analysing if the paren are closing and the quotes are closed

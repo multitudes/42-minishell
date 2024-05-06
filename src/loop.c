@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 12:43:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 12:57:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,7 @@ int	init_data(t_mini_data **data)
 	(*data)->DLESS_delimiter = NULL;
 	(*data)->exit_status = 0;
 	(*data)->input = NULL;
+	(*data)->token_list = NULL;
 	return (1);
 }
 

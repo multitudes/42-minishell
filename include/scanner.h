@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 12:31:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 12:54:42 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,8 @@ typedef enum e_tokentype {
 	DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
 	DOLLAR,
 
-	QUOTE, SINGLE_QUOTE, BACKSLASH,
+	QUOTE, SINGLE_QUOTE, 
+	BACKSLASH,  
 
 	DIGIT, CHAR,
 	// end of file
@@ -213,6 +214,7 @@ int		str_is_alphanum(const char *identifier);
 bool	filename_delimiter(const char ch);
 int		isprint_no_space(const char *identifier);
 bool	not_implemented_builtin(const char *identifier);
+void	free_token(void *content);
 
 #ifdef __cplusplus
 }

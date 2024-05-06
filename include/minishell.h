@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 11:37:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 12:57:22 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ pipe_fd : file descriptors for the pipe
 struct s_mini_data 
 {
 	const char	*input;
+	t_list		*token_list;
 	t_darray	*env_arr;
 	t_ast_node	*ast;
 	char		*DLESS_delimiter;
