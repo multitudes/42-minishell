@@ -84,24 +84,24 @@ const char* test_scanner_redirections() {
 	const char *result = NULL;
 	int i = 0;
 
-	result = process_token(&current, &i, "a", IDENTIFIER);
+	result = process_token(&current, &i, "a", WORD);
 	result = process_token(&current, &i, ">", REDIRECT_OUT);
-	result = process_token(&current, &i, "file.txt", IDENTIFIER);
-	result = process_token(&current, &i, "a", IDENTIFIER);
+	result = process_token(&current, &i, "file.txt", WORD);
+	result = process_token(&current, &i, "a", WORD);
 	result = process_token(&current, &i, ">|", CLOBBER);
-	result = process_token(&current, &i, "file.txt", IDENTIFIER);
-	result = process_token(&current, &i, "a", IDENTIFIER);
+	result = process_token(&current, &i, "file.txt", WORD);
+	result = process_token(&current, &i, "a", WORD);
 	result = process_token(&current, &i, ">&", GREATAND);
-	result = process_token(&current, &i, "file.txt", IDENTIFIER);
-	result = process_token(&current, &i, "a", IDENTIFIER);
+	result = process_token(&current, &i, "file.txt", WORD);
+	result = process_token(&current, &i, "a", WORD);
 	result = process_token(&current, &i, "&>", REDIRECT_BOTH);
-	result = process_token(&current, &i, "file.txt", IDENTIFIER);
-	result = process_token(&current, &i, "a", IDENTIFIER);
+	result = process_token(&current, &i, "file.txt", WORD);
+	result = process_token(&current, &i, "a", WORD);
 	result = process_token(&current, &i, ">>", DGREAT);
-	result = process_token(&current, &i, "file.txt", IDENTIFIER);
-	result = process_token(&current, &i, "ls", IDENTIFIER);
+	result = process_token(&current, &i, "file.txt", WORD);
+	result = process_token(&current, &i, "ls", WORD);
 	result = process_token(&current, &i, "&>>", REDIRECT_OUT_APP);
-	result = process_token(&current, &i, "file.txt", IDENTIFIER);
+	result = process_token(&current, &i, "file.txt", WORD);
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
@@ -123,18 +123,18 @@ const char* test_scanner_redirections2() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "<", REDIRECT_IN);
-	result = process_token(&current, &i, "file.txt", IDENTIFIER);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "file.txt", WORD);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "<", REDIRECT_IN);
-	result = process_token(&current, &i, "file", IDENTIFIER);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "file", WORD);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "<", REDIRECT_IN);
-	result = process_token(&current, &i, "file", IDENTIFIER);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "file", WORD);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "<", REDIRECT_IN);
-	result = process_token(&current, &i, "file", IDENTIFIER);
+	result = process_token(&current, &i, "file", WORD);
 
 
 	// this is how I check for the end of the list
@@ -164,25 +164,25 @@ const char* test_scanner_DLESS() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "<<", DLESS);
 	result = process_token(&current, &i, "EOF", DLESS_DELIM);
 	result = process_token(&current, &i, "|", PIPE);
-	result = process_token(&current, &i, "grep", IDENTIFIER);
+	result = process_token(&current, &i, "grep", WORD);
 	result = process_token(&current, &i, "'foo'", SINGLE_QUOTED_STRING);
-	result = process_token(&current, &i, "This", IDENTIFIER);
-	result = process_token(&current, &i, "is", IDENTIFIER);
-	result = process_token(&current, &i, "a", IDENTIFIER);
-	result = process_token(&current, &i, "line.", IDENTIFIER);
-	result = process_token(&current, &i, "This", IDENTIFIER);
-	result = process_token(&current, &i, "is", IDENTIFIER);
-	result = process_token(&current, &i, "another", IDENTIFIER);
-	result = process_token(&current, &i, "line.", IDENTIFIER);
-	result = process_token(&current, &i, "This", IDENTIFIER);
-	result = process_token(&current, &i, "line", IDENTIFIER);
-	result = process_token(&current, &i, "contains", IDENTIFIER);
-	result = process_token(&current, &i, "foo.", IDENTIFIER);
-	result = process_token(&current, &i, "EOF", IDENTIFIER);
+	result = process_token(&current, &i, "This", WORD);
+	result = process_token(&current, &i, "is", WORD);
+	result = process_token(&current, &i, "a", WORD);
+	result = process_token(&current, &i, "line.", WORD);
+	result = process_token(&current, &i, "This", WORD);
+	result = process_token(&current, &i, "is", WORD);
+	result = process_token(&current, &i, "another", WORD);
+	result = process_token(&current, &i, "line.", WORD);
+	result = process_token(&current, &i, "This", WORD);
+	result = process_token(&current, &i, "line", WORD);
+	result = process_token(&current, &i, "contains", WORD);
+	result = process_token(&current, &i, "foo.", WORD);
+	result = process_token(&current, &i, "EOF", WORD);
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
@@ -208,7 +208,7 @@ const char* test_scanner_DLESS2() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "<<", DLESS);
 	result = process_token(&current, &i, "EOF", DLESS_DELIM);
 	result = process_token(&current, &i, "<<", DLESS);
@@ -238,15 +238,15 @@ const char* test_scanner_redirections3() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "<", REDIRECT_IN);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, ">", REDIRECT_OUT);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, ">>", DGREAT);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, ">>&", REDIRECT_BOTH_APP);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 
 
 	// this is how I check for the end of the list
@@ -274,26 +274,26 @@ const char* test_scanner_redirections4() {
 	const char *result = NULL;
 	int i = 0;
 
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "2", IO_NUMBER);
 	result = process_token(&current, &i, ">", REDIRECT_OUT);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "2", IO_NUMBER);
 	result = process_token(&current, &i, ">&", GREATAND);	
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "&>", REDIRECT_BOTH);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, ">&", GREATAND);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "&>>", REDIRECT_OUT_APP);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "2", IO_NUMBER);
 	result = process_token(&current, &i, ">>", DGREAT);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "<>", LESSGREAT);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, ">|", CLOBBER);
-	result = process_token(&current, &i, "cat", IDENTIFIER);
+	result = process_token(&current, &i, "cat", WORD);
 
 	//this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);

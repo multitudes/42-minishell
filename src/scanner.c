@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 11:53:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 12:31:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -922,9 +922,9 @@ t_list *tokenizer(t_mini_data *data)
 					// else if (is_comment(identifier))
 					// 	ft_lstadd_back(&token_list, create_token(COMMENT, identifier, &start));
 					// else if (str_is_alphanum(identifier))
-					// 	ft_lstadd_back(&token_list, create_token(IDENTIFIER, identifier, &start));
+					// 	ft_lstadd_back(&token_list, create_token(WORD, identifier, &start));
 					else
-						ft_lstadd_back(&token_list, create_token(IDENTIFIER, identifier, &start));
+						ft_lstadd_back(&token_list, create_token(WORD, identifier, &start));
 				}
 				free(identifier);
 			}
@@ -939,7 +939,7 @@ t_list *tokenizer(t_mini_data *data)
 		// 	char *identifier = ft_substr(input, start, i - start);
 		// 	//check for reservee words
 		// 	if (!is_reserved(&token_list,identifier,&start))
-		// 		ft_lstadd_back(&token_list, create_token(IDENTIFIER, identifier, &start));
+		// 		ft_lstadd_back(&token_list, create_token(WORD, identifier, &start));
 		// 	free(identifier);
 		// }
 		else if (input[i] == '.')

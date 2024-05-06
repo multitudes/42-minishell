@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 11:42:54 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 12:31:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ DLESS -> 	expression "<<" delimiter;
 delimiter -> STRING;
 content -> MULTIPLE_LINE_TEXT;
 
-name -> IDENTIFIER | COM_EXPANSION | VAR_EXPANSION;
-args -> FLAGS | IDENTIFIER | STRING | QUOTED_STRING | SIMPLE_QUOTED_STRING | VAR_EXPANSION | EXPR_EXPANSION;
+name -> WORD | COM_EXPANSION | VAR_EXPANSION;
+args -> FLAGS | WORD | STRING | QUOTED_STRING | SIMPLE_QUOTED_STRING | VAR_EXPANSION | EXPR_EXPANSION;
 
 
 ex

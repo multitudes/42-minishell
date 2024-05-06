@@ -70,8 +70,8 @@ const char* test_scanner_builtins_echo() {
 	int i = 0;
 
 	result = process_token(&current, &i, "echo", BUILTIN);
-	result = process_token(&current, &i, "hello", IDENTIFIER);
-	result = process_token(&current, &i, "world", IDENTIFIER);	
+	result = process_token(&current, &i, "hello", WORD);
+	result = process_token(&current, &i, "world", WORD);	
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
@@ -94,8 +94,8 @@ const char* test_scanner_builtins_echo_n() {
 
 	result = process_token(&current, &i, "echo", BUILTIN);
 	result = process_token(&current, &i, "-n", FLAGS);
-	result = process_token(&current, &i, "hello", IDENTIFIER);
-	result = process_token(&current, &i, "world", IDENTIFIER);	
+	result = process_token(&current, &i, "hello", WORD);
+	result = process_token(&current, &i, "world", WORD);	
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
@@ -181,7 +181,7 @@ const char* test_scanner_builtins_export_var() {
 	int i = 0;
 
 	result = process_token(&current, &i, "export", BUILTIN);
-	result = process_token(&current, &i, "MY_VAR=hello", IDENTIFIER);
+	result = process_token(&current, &i, "MY_VAR=hello", WORD);
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
@@ -203,7 +203,7 @@ const char* test_scanner_builtins_unset() {
 	int i = 0;
 
 	result = process_token(&current, &i, "unset", BUILTIN);
-	result = process_token(&current, &i, "MY_VAR", IDENTIFIER);
+	result = process_token(&current, &i, "MY_VAR", WORD);
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
@@ -266,7 +266,7 @@ const char* test_scanner_builtins_pwd() {
 	int i = 0;
 
 	result = process_token(&current, &i, "pwd", BUILTIN);
-	result = process_token(&current, &i, "pwdecho", IDENTIFIER);
+	result = process_token(&current, &i, "pwdecho", WORD);
 	result = process_token(&current, &i, "pwd", BUILTIN);
 	result = process_token(&current, &i, "echo", BUILTIN);
 	// this is how I check for the end of the list

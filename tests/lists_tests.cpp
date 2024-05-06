@@ -25,7 +25,7 @@ const char* process_token(t_list **current, int *i, const char* expected_lexeme,
     debug("token number %d ", *i);
     debug("token type: %d ", token->type);
     debug("token lexeme: %s ", token->lexeme);
-    my_assert(token->type == expected_tokentype, "token type is not IDENTIFIER");
+    my_assert(token->type == expected_tokentype, "token type is not WORD");
     my_assert(strcmp(token->lexeme, expected_lexeme) == 0, "token lexeme is not expected");
     *current = (*current)->next;
     (*i)++;
@@ -56,13 +56,13 @@ const char* test_lists_identifiers() {
 	const char *result;
 	int i = 0;
 
-	// result = process_token(&current, &i, "false", IDENTIFIER);
+	// result = process_token(&current, &i, "false", WORD);
 	// result = process_token(&current, &i, "&&", AND_IF);
-	// result = process_token(&current, &i, "echo", IDENTIFIER);
-	// result = process_token(&current, &i, "foo", IDENTIFIER);
+	// result = process_token(&current, &i, "echo", WORD);
+	// result = process_token(&current, &i, "foo", WORD);
 	// result = process_token(&current, &i, "||", OR_IF);
-	// result = process_token(&current, &i, "echo", IDENTIFIER);
-	// result = process_token(&current, &i, "bar", IDENTIFIER);
+	// result = process_token(&current, &i, "echo", WORD);
+	// result = process_token(&current, &i, "bar", WORD);
 	
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
@@ -84,13 +84,13 @@ const char* test_lists_identifiers2() {
 	const char *result;
 	int i = 0;
 
-	// result = process_token(&current, &i, "false", IDENTIFIER);
+	// result = process_token(&current, &i, "false", WORD);
 	// result = process_token(&current, &i, "&&", AND_IF);
-	// result = process_token(&current, &i, "echo", IDENTIFIER);
-	// result = process_token(&current, &i, "foo", IDENTIFIER);
+	// result = process_token(&current, &i, "echo", WORD);
+	// result = process_token(&current, &i, "foo", WORD);
 	// result = process_token(&current, &i, "||", OR_IF);
-	// result = process_token(&current, &i, "echo", IDENTIFIER);
-	// result = process_token(&current, &i, "bar", IDENTIFIER);
+	// result = process_token(&current, &i, "echo", WORD);
+	// result = process_token(&current, &i, "bar", WORD);
 	
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);

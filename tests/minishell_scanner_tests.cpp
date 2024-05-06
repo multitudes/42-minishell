@@ -25,7 +25,7 @@ const char* process_token(t_list **current, int *i, const char* expected_lexeme,
     debug("token number %d ", *i);
     debug("token type: %d ", token->type);
     debug("token lexeme: %s ", token->lexeme);
-    my_assert(token->type == expected_tokentype, "token type is not IDENTIFIER");
+    my_assert(token->type == expected_tokentype, "token type is not WORD");
     my_assert(strcmp(token->lexeme, expected_lexeme) == 0, "token lexeme is not expected");
     *current = (*current)->next;
     (*i)++;
@@ -55,8 +55,8 @@ const char* test_scanner_identifiers() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "hello", IDENTIFIER);
-	result = process_token(&current, &i, "world", IDENTIFIER);	
+	result = process_token(&current, &i, "hello", WORD);
+	result = process_token(&current, &i, "world", WORD);	
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
@@ -76,8 +76,8 @@ const char* test_scanner_identifiers2() {
 	int i = 0;
 
 	result = process_token(&current, &i, "echo", BUILTIN);
-	result = process_token(&current, &i, "he_-3llo", IDENTIFIER);	
-	result = process_token(&current, &i, "world", IDENTIFIER);	
+	result = process_token(&current, &i, "he_-3llo", WORD);	
+	result = process_token(&current, &i, "world", WORD);	
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);	
 
@@ -113,11 +113,11 @@ const char* test_scanner_identifiers4() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "this", IDENTIFIER);
-	result = process_token(&current, &i, "is", IDENTIFIER);
-	result = process_token(&current, &i, "a", IDENTIFIER);
+	result = process_token(&current, &i, "this", WORD);
+	result = process_token(&current, &i, "is", WORD);
+	result = process_token(&current, &i, "a", WORD);
 	result = process_token(&current, &i, "\"quoted\'string\'maybe\"", QUOTED_STRING);
-	result = process_token(&current, &i, "?", IDENTIFIER);
+	result = process_token(&current, &i, "?", WORD);
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
@@ -152,16 +152,16 @@ const char *test_scanner_identifiers5() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "echo", IDENTIFIER);
+	result = process_token(&current, &i, "echo", WORD);
 	result = process_token(&current, &i, "\2", BACKSLASH);
 	result = process_token(&current, &i, ">", REDIRECT_OUT);
-	result = process_token(&current, &i, "a", IDENTIFIER);
-	result = process_token(&current, &i, "echo", IDENTIFIER);
-	result = process_token(&current, &i, "2\\>a", IDENTIFIER);
-	result = process_token(&current, &i, "echo", IDENTIFIER);
+	result = process_token(&current, &i, "a", WORD);
+	result = process_token(&current, &i, "echo", WORD);
+	result = process_token(&current, &i, "2\\>a", WORD);
+	result = process_token(&current, &i, "echo", WORD);
 	result = process_token(&current, &i, "2", IO_NUMBER);
 	result = process_token(&current, &i, ">", REDIRECT_OUT);
-	result = process_token(&current, &i, "a", IDENTIFIER);
+	result = process_token(&current, &i, "a", WORD);
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	

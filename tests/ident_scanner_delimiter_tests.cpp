@@ -57,7 +57,7 @@ const char* test_scanner_ident_space() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "my_co2mmand", IDENTIFIER);
+	result = process_token(&current, &i, "my_co2mmand", WORD);
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
@@ -76,7 +76,7 @@ const char* test_scanner_ident_allrandom() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "w-+*}[]=w{~or^%ld", IDENTIFIER);
+	result = process_token(&current, &i, "w-+*}[]=w{~or^%ld", WORD);
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
@@ -140,7 +140,7 @@ const char* test_scanner_ident_comment3() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "\\#hello", IDENTIFIER);
+	result = process_token(&current, &i, "\\#hello", WORD);
 	// comments are ignored!
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
@@ -150,7 +150,7 @@ const char* test_scanner_ident_comment3() {
 
 /*
 a number is either an integer or a float
-but this is not 42.42.42 as it is not a valid number is IDENTIFIER
+but this is not 42.42.42 as it is not a valid number is WORD
 open for further classification eventually!
 */
 const char* test_scanner_ident_number() {
@@ -174,8 +174,8 @@ const char* test_scanner_ident_number() {
 	result = process_token(&current, &i, "-42.42", NUMBER);
 	result = process_token(&current, &i, "42.", NUMBER);
 	result = process_token(&current, &i, "-42.", NUMBER);
-	result = process_token(&current, &i, "42.42.42", IDENTIFIER);
-	result = process_token(&current, &i, "42.42.", IDENTIFIER);
+	result = process_token(&current, &i, "42.42.42", WORD);
+	result = process_token(&current, &i, "42.42.", WORD);
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
 	return result;

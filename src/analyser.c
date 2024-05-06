@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 11:45:02 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 12:31:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	which_ast_node(t_ast_node *ast)
 		return ;
 	}
 	// provisionally
-	else if (token->type == PATHNAME || token->type == IDENTIFIER)
+	else if (token->type == PATHNAME || token->type == WORD)
 	{
 		ast->type = NODE_COMMAND;
 		debug("NODE_COMMAND");

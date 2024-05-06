@@ -145,7 +145,7 @@ example of lexeme
     GREATER, GREATER_EQUAL,
     LESS, LESS_EQUAL,
 // Literals.
-    IDENTIFIER, STRING, NUMBER,
+    WORD, STRING, NUMBER,
 // Keywords.
     AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
     PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
@@ -611,7 +611,7 @@ typedef enum e_tokentype {
     // Command substitution
     COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
     // Literals
-    IDENTIFIER, // Any sequence of letters, digits, and underscores
+    WORD, // Any sequence of letters, digits, and underscores
     STRING_TOK, // Any sequence of characters surrounded by quotes
     NUMBER_TOK, // Any sequence of digits
     // Keywords

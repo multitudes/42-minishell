@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 11:52:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 12:31:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ control operator
 A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
 */
 typedef enum e_tokentype {
-	IDENTIFIER, 
+	WORD, 
 	// Any sequence of letters, digits, and underscores
 	//| and |& have higher precedence than &&, ||, ;, and &. 
 	// They allow you to create pipelines, where the output of 
