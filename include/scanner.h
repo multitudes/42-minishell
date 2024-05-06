@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 11:42:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 11:52:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,8 @@ typedef enum e_tokentype {
 	
 	//The <> operator in bash is used for opening a file in read-write mode. Here's an example:
 	// command <> file.txt
-	READ_WRITE_MODE, 
-	
+	LESSGREAT, 		// '<>'
+	DLESSDASH,	 // '<<-' The here-document delimiter is treated as a literal string,
 	GREATER_AND_GREATER, 
 	COMMA, DOT, MINUS, PLUS, SLASH, STAR,
 	// One or two character tokens.
@@ -137,7 +137,9 @@ typedef enum e_tokentype {
 	AMPERSAND,
 
     // reserved Keywords
-    IF, THEN, ELSE, ELIF, FI, DO, DONE, WHILE, UNTIL, FOR, CASE, 
+	
+    IF, THEN, ELSE, ELIF, FI, DO, DONE, IN,
+	WHILE, UNTIL, FOR, CASE, 
 	ESAC, SELECT, FUNCTION,
     // Special variables
     DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.

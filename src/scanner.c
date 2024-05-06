@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 11:42:56 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 11:53:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,10 +218,8 @@ bool is_reserved(t_list **token_list, char *identifier, int *start)
 		ft_lstadd_back(token_list, create_token(SELECT, "select", start));
 	else if (strncicmp(identifier, "function", 8) == 0)
 		ft_lstadd_back(token_list, create_token(FUNCTION, "function", start));
-	// else if (strncimp(identifier, "2>>", 3))
-	// 	ft_lstadd_back(token_list, create_token(REDIRECT_ERR_APP, "2>>", start));
-	// else if (strncimp(identifier, "2>", 2))
-	// 	ft_lstadd_back(token_list, create_token(REDIRECT_ERR, "2>", start));
+	else if (strncicmp(identifier, "in", 3) == 0)
+		ft_lstadd_back(token_list, create_token(IN, "in", start));
 	else 
 		return (false);
 	return true;
@@ -722,6 +720,8 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&token_list, create_token(CLOBBER, ">|", &i));
 		else if (input[i] == '>' && input[i + 1] == '>' && input[i + 2] == '&')
 			ft_lstadd_back(&token_list, create_token(REDIRECT_BOTH_APP, ">>&", &i));
+		else if (input[i] == '<' && input[i + 1] == '<' && input[i + 2] == '-')
+			ft_lstadd_back(&token_list, create_token(DLESSDASH, "<<-", &i));
 		else if (input[i] == '&' && input[i + 1] == '>' && input[i + 2] == '>')
 			ft_lstadd_back(&token_list, create_token(REDIRECT_OUT_APP, "&>>", &i));
 		else if (input[i] == '>' && input[i + 1] == '&' && input[i + 2] == '>')
@@ -733,7 +733,7 @@ t_list *tokenizer(t_mini_data *data)
 		else if (input[i] == '>' && input[i + 1] == '&')
 			ft_lstadd_back(&token_list, create_token(GREATAND, ">&", &i));
 		else if (input[i] == '<' && input[i + 1] == '>')
-			ft_lstadd_back(&token_list, create_token(READ_WRITE_MODE, "<>", &i));
+			ft_lstadd_back(&token_list, create_token(LESSGREAT, "<>", &i));
 		else if (input[i] == '>' && input[i + 1] == '>')
 			ft_lstadd_back(&token_list, create_token(DGREAT, ">>", &i));
 		// DLESSs << dont need to be preceded or followed by a space 

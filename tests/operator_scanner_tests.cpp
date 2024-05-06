@@ -290,7 +290,7 @@ const char* test_scanner_redirections4() {
 	result = process_token(&current, &i, "2", IO_NUMBER);
 	result = process_token(&current, &i, ">>", DGREAT);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
-	result = process_token(&current, &i, "<>", READ_WRITE_MODE);
+	result = process_token(&current, &i, "<>", LESSGREAT);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
 	result = process_token(&current, &i, ">|", CLOBBER);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
