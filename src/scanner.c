@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 13:19:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 13:27:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -519,7 +519,7 @@ t_list *tokenizer(t_mini_data *data)
 		{
 			int start = i;
 			i++;
-			while (input[i] != ')' && input[i] != '\0')
+			while (input[i] != ')')
 				i++;
 			if (input[i] == '\0')
 			{
@@ -672,6 +672,7 @@ t_list *tokenizer(t_mini_data *data)
 			free(tmp);
 			i++;
 		}
+		// command expansion $(command) or `command`
 		else if (input[i] == '$' && input[i + 1] == '(' && input[i + 2] != '(')
 		{
 			int start = i++;
@@ -758,7 +759,6 @@ t_list *tokenizer(t_mini_data *data)
 			tmp = ft_substr(input, start, i - start);
 			ft_lstadd_back(&token_list, create_token(DLESS_DELIM, tmp, &start));
 			free(tmp);
-			// debug("ADD DLESS CONTENT CODE!");
 		}
 		else if (input[i] == '>' && input[i + 1] == '=')
 			ft_lstadd_back(&token_list, create_token(GREATER_EQUAL, ">=", &i));
@@ -849,8 +849,6 @@ t_list *tokenizer(t_mini_data *data)
 		}
 		// else if (input[i] == '\\')
 		// 	ft_lstadd_back(&token_list, create_token(BACKSLASH, "\\", &i));
-		else if (input[i] == EOF)
-			ft_lstadd_back(&token_list, create_token(EOF_TOK, "EOF", &i));
 		else if (input[i] == '-' && is_alpha(input[i + 1]))
 		{
 			// create a lexeme for flag in this conf -[a-zA-Z]
@@ -945,8 +943,8 @@ t_list *tokenizer(t_mini_data *data)
 		// 		ft_lstadd_back(&token_list, create_token(WORD, identifier, &start));
 		// 	free(identifier);
 		// }
-		else if (input[i] == '.')
-			ft_lstadd_back(&token_list, create_token(PATHNAME, ".", &i));
+		// else if (input[i] == '.')
+		// 	ft_lstadd_back(&token_list, create_token(PATHNAME, ".", &i));
 		else if (is_space(input[i]))
 			i++;
 		// else
