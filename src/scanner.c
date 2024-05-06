@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 08:38:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 08:43:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,7 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
  so not for identifier.  they cannot be used for commands...!
  IF, THEN, ELSE, ELIF, FI, DO, DONE, WHILE, UNTIL, FOR, CASE, ESAC, SELECT, FUNCTION,
 */
-bool is_reserved(t_list **token_list, char *identifier,int *start)
+bool is_reserved(t_list **token_list, char *identifier, int *start)
 {
 	if (strncicmp(identifier, "if", 3) == 0)
 		ft_lstadd_back(token_list, create_token(IF, "if", start));
@@ -293,28 +293,17 @@ bool is_builtin(t_list **token_list, char *identifier,int *start)
 		return false;
 	return true;
 }
-/*
-utility 
-*/
-void	print_token_description(const t_list *current) 
-{
-	t_token *token;
-
-	token = (t_token *)(current)->content;
-	debug("token type :%u, lexeme: %s position %d", token->type, token->lexeme, token->start);
-	// if (token->type != SPACE && token->type != NEWLINE_TOK)
-	// 	debug("%s", token->lexeme);
-	return ;
-}
 
 void print_token_list(t_list *token_list)
 {
 	t_list *current;
-
+	t_token *token;
+	
 	current = token_list;
 	while (current != NULL)
 	{
-		print_token_description(current);
+		token = (t_token *)(current)->content;
+		debug("token type :%u, lexeme: %s position %d", token->type, token->lexeme, token->start);
 		current = current->next;
 	}
 	return ;

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 16:18:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 08:45:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@ char* ft_strjoin3(const char* s1, const char* s2, const char* s3) {
 
     // Concatenate the strings
     ft_strlcpy(result, s1, total_length);
-	debug("result: -%s-", result);
+	// debug("result: -%s-", result);
     ft_strlcat(result, s2, total_length);
-	debug("result: -%s-", result);
+	// debug("result: -%s-", result);
     ft_strlcat(result, s3, total_length);
-	debug("result: -%s-", result);
+	// debug("result: -%s-", result);
 
     return result;
 }
@@ -59,19 +59,19 @@ bool update_env(t_mini_data *data, const char *key, const char *value)
 	int			i;
 
 	i = 0;
-	debug("data->env_arr->end %d\n", data->env_arr->end);
+	// debug("data->env_arr->end %d\n", data->env_arr->end);
 	while (i < data->env_arr->end - 1)
 	{
 		env_str = darray_get(data->env_arr, i);
-		debug("env_str i %d: %s\n", i, env_str);
+		// debug("env_str i %d: %s\n", i, env_str);
 		position = ft_strchr(env_str, '=');
-		debug("position of equal: %s\n", position);
+		// debug("position of equal: %s\n", position);
 		if (!position)
 			return (false);
 		if (ft_strncmp(env_str, key, position - env_str) == 0)
 		{
 			// 	//in the environ char ** we have this format: _=/bin/ls
-			debug("found key: %s\n", key);
+			// debug("found key: %s\n", key);
 			new_env_str = ft_strjoin3(key, "=", value);
 			debug("new_env_str: %s\n", new_env_str);
 			if (!new_env_str)
