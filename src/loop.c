@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 11:37:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 12:43:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	free_data(t_mini_data *data)
 to move to utilities header
 */
 char 	*add_newline(char *input);
-bool	contains_DLESS(const char *input, char **here_delimiter);
+bool	contains_heredoc(const char *input, char **here_delimiter);
 
 
 /*
@@ -51,7 +51,7 @@ functions to be moved to utilities!
 check if the input contains a << DLESS operator and change 
 the prompt to indicate that it expects more...
 */
-bool	contains_DLESS(const char *input, char **here_delimiter)
+bool	contains_heredoc(const char *input, char **here_delimiter)
 {
 	int	i;
 	int start;
@@ -239,7 +239,7 @@ int loop(int argc, char **argv)
 			// is probably not what we will do in the end because we need to 
 			// make it working with pipes.
 			// so keep it here for now..
-			// if (contains_DLESS(input, &data->DLESS_delimiter))
+			// if (contains_heredoc(input, &data->DLESS_delimiter))
 			// {
 			// 	if (data->DLESS_delimiter == NULL || ft_strncmp(data->DLESS_delimiter, "", 1) == 0)
 			// 	{

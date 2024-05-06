@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 12:31:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 12:49:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,7 +261,7 @@ bool	not_implemented_builtin(const char *id)
 	strncicmp(id, "typeset", 7) == 0 || strncicmp(id, "ulimit", 6) == 0 || \
 	strncicmp(id, "umask", 5) == 0 || strncicmp(id, "unalias", 7) == 0 || \
 	strncicmp(id, "wait", 4) == 0 || strncicmp(id, "readarray", 9) == 0 || \
-	strncicmp(id, ":", 2) == 0)
+	strncicmp(id, ":", 2) == 0 || strncicmp(id, ".", 2) == 0)
 		return (true);
 	return (false);
 }
@@ -284,8 +284,6 @@ bool is_builtin(t_list **token_list, char *identifier,int *start)
 		ft_lstadd_back(token_list, create_token(BUILTIN, "exit", start));
 	else if (strncicmp(identifier, "pwd", 3) == 0)
 		ft_lstadd_back(token_list, create_token(BUILTIN, "pwd", start));
-	else if (strncicmp(identifier, ".", 2) == 0)
-		ft_lstadd_back(token_list, create_token(BUILTIN, ".", start));
 	else if (not_implemented_builtin(identifier))
 		ft_lstadd_back(token_list, create_token(BUILTIN, identifier, start));
 	else
@@ -406,6 +404,18 @@ t_list *create_token(t_tokentype type, const char *lexeme, int *i)
 }
 
 /*
+I have a linked lists of nodes. each node's content is a token
+I need to pass this function to my ft_lstclear to clear the list
+because the content is a token which has a lexeme which needs to be free
+and then the token itself needs to be freed
+*/
+void	free_token(t_token *token)
+{
+	free(token->lexeme);
+	free(token);
+}
+
+/*
 including numbers preceded by a - or + 
 and with and without a dot
 */
@@ -441,6 +451,9 @@ int str_is_alphanum(const char *str)
 	return (1);
 }
 
+/*
+printable chars include a space. This is for the identifiers
+*/
 int	isprint_no_space(const char *str)
 {
 	while (*(str))
@@ -948,7 +961,12 @@ t_list *tokenizer(t_mini_data *data)
 			i++;
 		// else
 		// 	i++;
-	}	 
+	}
+	if (data->exit_status != 0)
+	{
+		ft_lstclear(&token_list, free_token);
+		return (NULL);
+	}
 	// print_token_list(token_list);
 
 	// analysing if the paren are closing and the quotes are closed
