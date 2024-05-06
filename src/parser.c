@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 14:22:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 18:02:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,14 @@ in:dflt out:file1 rr:dflt
 this table will use wildcard expansion and variable substitution
 
 to get the final table
-
-statement ->  expression  (("|" | "|&" | ";" | "&&" | "||" )expression)*  "&"? ;
+list      -> pipeline ((";" | "&" | "&&" | "||") pipeline)* [";"] ["&"] ["\n"];
+pipeline ->  expression  (("|" | "|&" | ";" | "&&" | "||" )expression)* ;
 
 expression ->  	  command 
 				| builtin 
 				| heredoc 
 				| redirection
+				| [time [-p]] [!] expression
 				| "(" statement ")";
 
 command -> name (args)* ;

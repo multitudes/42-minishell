@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 15:05:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/05 17:25:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -477,9 +477,6 @@ t_list *tokenizer(t_mini_data *data)
 	token_list = NULL;
 	while (i < (int)ft_strlen(input))
 	{
-		// check for \ and \n
-		if (peek(input, "\\\n", false))
-			i += 2;
 	 	if (peek(input, "||", false))
 		{
 			token = create_token(OR_TOK, "||", &i);
@@ -488,7 +485,7 @@ t_list *tokenizer(t_mini_data *data)
 			else
 			{
 				//free
-				return (NULL);
+				// return (NULL); or break;
 			} 
 		}
 		else if (input[i] == '|' && input[i + 1] == '&')
