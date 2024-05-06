@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 13:45:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 14:00:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,8 +209,9 @@ void	print_token_list(t_list *token_list);
 void	init_open_close(t_open_close *open_close);
 int		check_paren_quotes(t_list *token_list);
 t_list	*create_token(t_tokentype type, const char *lexeme, int *i);
-int		str_is_number(const char *identifier);
-int		str_is_alphanum(const char *identifier);
+bool	is_io_number(const char *identifier);
+bool	str_is_number(const char *identifier);
+bool	str_is_alphanum(const char *identifier);
 bool	filename_delimiter(const char ch);
 int		isprint_no_space(const char *identifier);
 bool	not_implemented_builtin(const char *identifier);

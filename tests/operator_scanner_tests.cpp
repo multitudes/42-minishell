@@ -144,83 +144,6 @@ const char* test_scanner_redirections2() {
 }
 
 /*
-cat << EOF | grep 'foo'
-> This is a line.
-> This is another line.
-> This line contains foo.
-> EOF
-*/
-const char* test_scanner_DLESS() {
-	
-	// i want to check the output of the call to the function in scanner.c file
-	// tokenizer(char *input) returning a t_list of lexemes
-	// I will create a string and check the output of the function
-	std::string str = "cat << EOF | grep 'foo' \n This is a line. \n This is another line. \n This line contains foo. \n EOF";
-	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
-	t_list *current = lexemes;
-	const char *result;
-	int i = 0;
-
-	result = process_token(&current, &i, "cat", WORD);
-	result = process_token(&current, &i, "<<", DLESS);
-	result = process_token(&current, &i, "EOF", DLESS_DELIM);
-	result = process_token(&current, &i, "|", PIPE);
-	result = process_token(&current, &i, "grep", WORD);
-	result = process_token(&current, &i, "'foo'", SINGLE_QUOTED_STRING);
-	result = process_token(&current, &i, "This", WORD);
-	result = process_token(&current, &i, "is", WORD);
-	result = process_token(&current, &i, "a", WORD);
-	result = process_token(&current, &i, "line.", WORD);
-	result = process_token(&current, &i, "This", WORD);
-	result = process_token(&current, &i, "is", WORD);
-	result = process_token(&current, &i, "another", WORD);
-	result = process_token(&current, &i, "line.", WORD);
-	result = process_token(&current, &i, "This", WORD);
-	result = process_token(&current, &i, "line", WORD);
-	result = process_token(&current, &i, "contains", WORD);
-	result = process_token(&current, &i, "foo.", WORD);
-	result = process_token(&current, &i, "EOF", WORD);
-
-	// this is how I check for the end of the list
-	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
-	return result;
-}
-
-/*
-they do not need a space bef or after as long as they have a delimiter string
-after <<
-*/
-const char* test_scanner_DLESS2() {
-	
-	// i want to check the output of the call to the function in scanner.c file
-	// tokenizer(char *input) returning a t_list of lexemes
-	// I will create a string and check the output of the function
-	std::string str = "cat<<EOF<<foo";
-	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
-	t_list *current = lexemes;
-	const char *result;
-	int i = 0;
-
-	result = process_token(&current, &i, "cat", WORD);
-	result = process_token(&current, &i, "<<", DLESS);
-	result = process_token(&current, &i, "EOF", DLESS_DELIM);
-	result = process_token(&current, &i, "<<", DLESS);
-	result = process_token(&current, &i, "foo", DLESS_DELIM);
-
-	// this is how I check for the end of the list
-	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
-	return result;
-}
-
-/*
 more redirection -> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
 
 */
@@ -301,6 +224,83 @@ const char* test_scanner_redirections4() {
 	return result;
 }
 
+/*
+cat << EOF | grep 'foo'
+> This is a line.
+> This is another line.
+> This line contains foo.
+> EOF
+*/
+const char* test_scanner_append() {
+	
+	// i want to check the output of the call to the function in scanner.c file
+	// tokenizer(char *input) returning a t_list of lexemes
+	// I will create a string and check the output of the function
+	std::string str = "cat << EOF | grep 'foo' \n This is a line. \n This is another line. \n This line contains foo. \n EOF";
+	const char* input = str.c_str();
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *current = lexemes;
+	const char *result;
+	int i = 0;
+
+	result = process_token(&current, &i, "cat", WORD);
+	result = process_token(&current, &i, "<<", DLESS);
+	result = process_token(&current, &i, "EOF", DLESS_DELIM);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "grep", WORD);
+	result = process_token(&current, &i, "'foo'", SINGLE_QUOTED_STRING);
+	result = process_token(&current, &i, "This", WORD);
+	result = process_token(&current, &i, "is", WORD);
+	result = process_token(&current, &i, "a", WORD);
+	result = process_token(&current, &i, "line.", WORD);
+	result = process_token(&current, &i, "This", WORD);
+	result = process_token(&current, &i, "is", WORD);
+	result = process_token(&current, &i, "another", WORD);
+	result = process_token(&current, &i, "line.", WORD);
+	result = process_token(&current, &i, "This", WORD);
+	result = process_token(&current, &i, "line", WORD);
+	result = process_token(&current, &i, "contains", WORD);
+	result = process_token(&current, &i, "foo.", WORD);
+	result = process_token(&current, &i, "EOF", WORD);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	return result;
+}
+
+/*
+they do not need a space bef or after as long as they have a delimiter string
+after <<
+*/
+const char* test_scanner_append2() {
+	
+	// i want to check the output of the call to the function in scanner.c file
+	// tokenizer(char *input) returning a t_list of lexemes
+	// I will create a string and check the output of the function
+	std::string str = "cat<<EOF<<foo";
+	const char* input = str.c_str();
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *current = lexemes;
+	const char *result;
+	int i = 0;
+
+	result = process_token(&current, &i, "cat", WORD);
+	result = process_token(&current, &i, "<<", DLESS);
+	result = process_token(&current, &i, "EOF", DLESS_DELIM);
+	result = process_token(&current, &i, "<<", DLESS);
+	result = process_token(&current, &i, "foo", DLESS_DELIM);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	return result;
+}
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -310,9 +310,9 @@ const char *all_tests()
 	run_test(test_scanner_redirections);	
 	run_test(test_scanner_redirections2);
 	run_test(test_scanner_redirections3);
-	// run_test(test_scanner_redirections4);
-	run_test(test_scanner_DLESS);
-	run_test(test_scanner_DLESS2);
+	run_test(test_scanner_redirections4);
+	run_test(test_scanner_append);
+	run_test(test_scanner_append2);
 
 	return NULL;
 }

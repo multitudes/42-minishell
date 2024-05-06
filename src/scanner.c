@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 13:46:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 14:28:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,23 +58,10 @@ bool is_delimiter(const char ch)
 {
     if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '|' || \
 	ch == '&' || ch == ';' || ch == '(' || ch == ')' || \
-	ch == '>' || ch == '<' || ch == EOF || ch == '\0')
+	ch == '>' || ch == '<' || ch == '\0')
 		return (true);
     return (false);
 }
-// bool is_delimiter(const char ch)
-// {
-//     if (ch == ' ' || ch == '+' || ch == '-' || ch == '*' || 
-//         ch == '/' || ch == ',' || ch == ';' || ch == '>' || 
-//         ch == '<' || ch == '=' || ch == '(' || ch == ')' || 
-//         ch == '[' || ch == ']' || ch == '{' || ch == '}' ||
-//         ch == '|' || ch == '&' || ch == '$' || ch == '`' ||
-//         ch == '"' || ch == '\'' || ch == '\\' || ch == '!' ||
-//         ch == '~' || ch == '^' || ch == '%' || ch == '\t' ||
-//         ch == '\n' || ch == '\v' || ch == '\f' || ch == '\r' || ch == EOF || ch == '\0')
-// 		return (true);
-//     return (false);
-// }
 
 /*
  ... touch w$orld is creating w because dereferencing 
@@ -310,73 +297,77 @@ void print_token_list(t_list *token_list)
 	}
 	return ;
 }
-/*
-Too many vars for norminette so I made a struct
-This is only to check if the parentheses and braces etc are
-closing. If not I should not continue with the execution
-*/
-void init_open_close(t_open_close *open_close)
-{
-	open_close->paren = 0;
-	open_close->curlys = 0;
-	open_close->quotes = 0;
-	open_close->single_quotes = 0;
-	open_close->backslash = 0;
-	open_close->square_brackets = 0;
-}
 
-/* 
-will go through the list of tokens and check if the paren are closed and the quotes are closed
-*/
-int	check_paren_quotes(t_list *token_list)
-{
-	t_open_close open_close;
-	t_list *current;
-	t_token *token;
+// maybe not needded since I always check in the scanner if 
+// the parentheses are closed
 
-	init_open_close(&open_close);
-	current = token_list;
-	while (current)
-	{
-		token = (t_token *)current->content;
-		// debug("checking token %s\n", token->lexeme);
-		if (token->type == LEFT_CURLY)
-			open_close.curlys++;
-		else if (token->type == RIGHT_CURLY)
-			open_close.curlys--;
-		else if (token->type == QUOTE)
-			open_close.quotes++;
-		else if (token->type == SINGLE_QUOTE)
-			open_close.single_quotes++;
-		else if (token->type == LEFT_SQUARE)
-			open_close.square_brackets++;
-		else if (token->type == RIGHT_SQUARE)
-			open_close.square_brackets--;
-		else if (token->type == LEFT_PAREN)
-			open_close.paren++;
-		else if (token->type == RIGHT_PAREN)
-			open_close.paren--;
-		// else if (token->type == BACKSLASH)
-		// 	open_close.backslash++;
-		if (open_close.curlys < 0 || open_close.square_brackets < 0 || open_close.paren < 0)
-			break;
-		current = current->next;
-	}
-	debug("open close backslash = %d\n", open_close.backslash);
-	if (open_close.paren != 0)
-		return (err_stop("error: unclosed parenthesis\n"));
-	else if (open_close.curlys != 0)
-		return (err_stop("error: unclosed curly brackets\n"));
-	else if (open_close.quotes % 2 != 0)
-		return (err_stop("error: unclosed quotes\n"));
-	else if (open_close.single_quotes % 2 != 0)
-		return (err_stop("error: unclosed single quotes\n"));
-	else if (open_close.square_brackets != 0)
-		return (err_stop("error: unclosed square brackets\n"));
-	// else if (open_close.backslash % 2 != 0)
-	// 	return (err_stop("error: unclosed backslash\n"));
-	return (1);
-}
+// /*
+// Too many vars for norminette so I made a struct
+// This is only to check if the parentheses and braces etc are
+// closing. If not I should not continue with the execution
+// */
+// void init_open_close(t_open_close *open_close)
+// {
+// 	open_close->paren = 0;
+// 	open_close->curlys = 0;
+// 	open_close->quotes = 0;
+// 	open_close->single_quotes = 0;
+// 	open_close->backslash = 0;
+// 	open_close->square_brackets = 0;
+// }
+
+// /* 
+// will go through the list of tokens and check if the paren are closed and the quotes are closed
+// */
+// int	check_paren_quotes(t_list *token_list)
+// {
+// 	t_open_close open_close;
+// 	t_list *current;
+// 	t_token *token;
+
+// 	init_open_close(&open_close);
+// 	current = token_list;
+// 	while (current)
+// 	{
+// 		token = (t_token *)current->content;
+// 		// debug("checking token %s\n", token->lexeme);
+// 		if (token->type == LEFT_CURLY)
+// 			open_close.curlys++;
+// 		else if (token->type == RIGHT_CURLY)
+// 			open_close.curlys--;
+// 		else if (token->type == QUOTE)
+// 			open_close.quotes++;
+// 		else if (token->type == SINGLE_QUOTE)
+// 			open_close.single_quotes++;
+// 		else if (token->type == LEFT_SQUARE)
+// 			open_close.square_brackets++;
+// 		else if (token->type == RIGHT_SQUARE)
+// 			open_close.square_brackets--;
+// 		else if (token->type == LEFT_PAREN)
+// 			open_close.paren++;
+// 		else if (token->type == RIGHT_PAREN)
+// 			open_close.paren--;
+// 		// else if (token->type == BACKSLASH)
+// 		// 	open_close.backslash++;
+// 		if (open_close.curlys < 0 || open_close.square_brackets < 0 || open_close.paren < 0)
+// 			break;
+// 		current = current->next;
+// 	}
+// 	debug("open close backslash = %d\n", open_close.backslash);
+// 	if (open_close.paren != 0)
+// 		return (err_stop("error: unclosed parenthesis\n"));
+// 	else if (open_close.curlys != 0)
+// 		return (err_stop("error: unclosed curly brackets\n"));
+// 	else if (open_close.quotes % 2 != 0)
+// 		return (err_stop("error: unclosed quotes\n"));
+// 	else if (open_close.single_quotes % 2 != 0)
+// 		return (err_stop("error: unclosed single quotes\n"));
+// 	else if (open_close.square_brackets != 0)
+// 		return (err_stop("error: unclosed square brackets\n"));
+// 	// else if (open_close.backslash % 2 != 0)
+// 	// 	return (err_stop("error: unclosed backslash\n"));
+// 	return (1);
+// }
 /*
 creates a simple t_list node - the token is in the content of the node
 in form of a string that will need to be freed
@@ -422,12 +413,25 @@ void	free_token(void *content)
 	free(token->lexeme);
 	free(token);
 }
-
+/*
+io numbers are the one preceding a < or >
+cannot start with a 0
+*/
+bool	is_io_number(const char *str)
+{
+	if (*str == '0' && is_digit(*(str + 1)))
+		return (false);
+	while (is_digit(*str))
+		str++;
+	if (*str == '\0')
+		return (true);
+	return (false);
+}
 /*
 including numbers preceded by a - or + 
 and with and without a dot
 */
-int str_is_number(const char *identifier)
+bool	str_is_number(const char *identifier)
 {
     int dot_seen = 0;
 
@@ -439,24 +443,24 @@ int str_is_number(const char *identifier)
         if (*identifier == '.')
         {
             if (dot_seen) // if we've already seen a dot, it's not a valid number
-                return 0;
+                return (false);
             dot_seen = 1;
         }
         else if (!is_digit(*identifier))
-            return 0;
+            return (false);
         identifier++;
     }
 
-    return 1;
+    return (true);
 }
 
 
-int str_is_alphanum(const char *str)
+bool	str_is_alphanum(const char *str)
 {
 	while (*str)
 		if (!is_alnum(*(str++)))
-			return (0);
-	return (1);
+			return (false);
+	return (true);
 }
 
 /*
@@ -911,51 +915,52 @@ t_list *tokenizer(t_mini_data *data)
 				i++;
 			break ;
 		}
-		// try pathname again!
+		/*********************************************/
+		/* try pathname again!                       */
+		/*********************************************/
 		else if (isprint(input[i]) && !filename_delimiter(input[i]))
 		{
 			// debug("- pathname - NUMBER or identifier? ");
 			int start = i;
 			while (ft_isprint(input[i]) && !filename_delimiter(input[i]))
-				i++;			
-			char *identifier = ft_substr(input, start, i - start);
-			debug("identifier: -%s-", identifier);
-			//check for reserved words
-			if (!is_reserved(data, &token_list,identifier,&start) && !is_builtin(data, &token_list, identifier, &start))
+				i++;	
+			char *str = ft_substr(input, start, i - start);
+			// check for io number
+			if (input[i] == '<' || input[i] == '>')
 			{
-				if (ft_strchr(identifier, '/') || peek(identifier, " .", false) || peek(identifier, "./", false) || peek(identifier, "../", false) || peek(identifier, "~/", false) || peek(identifier, "~+", false))
-					ft_lstadd_back(&token_list, create_token(PATHNAME, identifier, &start));
-				else if (str_is_number(identifier))
-					ft_lstadd_back(&token_list, create_token(NUMBER, identifier, &start));
-				// else if (is_comment(identifier))
-				// 	ft_lstadd_back(&token_list, create_token(COMMENT, identifier, &start));
-				// else if (str_is_alphanum(identifier))
-				// 	ft_lstadd_back(&token_list, create_token(WORD, identifier, &start));
-				else
-					ft_lstadd_back(&token_list, create_token(WORD, identifier, &start));
+				if (is_io_number(str))
+					ft_lstadd_back(&token_list, create_token(IO_NUMBER, str, &start));
+
 			}
-			free(identifier);
-		
+			else 
+			{
+				debug("identifier: -%s-", str);
+				//check for reserved words and builtin first which they will be added 
+				// automatically if the check is true
+				if (!is_reserved(data, &token_list,str,&start) && !is_builtin(data, &token_list, str, &start))
+				{
+					// check if it is a path name
+					if (ft_strchr(str, '/') || peek(str, " .", false) || peek(str, "./", false) || peek(str, "../", false) || peek(str, "~/", false) || peek(str, "~+", false))
+						ft_lstadd_back(&token_list, create_token(PATHNAME, str, &start));
+					// if not a path name maybe a number?
+					else if (str_is_number(str))
+						ft_lstadd_back(&token_list, create_token(NUMBER, str, &start));
+					// if not a number maybe a variable name or anything else!
+					else
+						ft_lstadd_back(&token_list, create_token(WORD, str, &start));
+				}
+			}
+			free(str);
 		}
-		// else if (is_alpha(input[i]))
-		// {
-		// 	// debug("is alpha\n");
-		// 	int start = i;
-		// 	while (is_alnum(input[i]))
-		// 		i++;
-		// 	// add the rest of the string as an identifier
-		// 	char *identifier = ft_substr(input, start, i - start);
-		// 	//check for reservee words
-		// 	if (!is_reserved(&token_list,identifier,&start))
-		// 		ft_lstadd_back(&token_list, create_token(WORD, identifier, &start));
-		// 	free(identifier);
-		// }
-		// else if (input[i] == '.')
-		// 	ft_lstadd_back(&token_list, create_token(PATHNAME, ".", &i));
 		else if (is_space(input[i]))
 			i++;
-		// else
-		// 	i++;
+		// this is just in case!
+		else
+		{
+			i++;
+			data->exit_status = 1;
+			debug("error: token not recognized character\n");
+		}
 	}
 	if (data->exit_status != 0)
 	{
