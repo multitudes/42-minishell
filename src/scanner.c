@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 08:43:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 09:40:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ A metacharacter is a space, tab, newline,
 or one of the following characters: 
 ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
 I use this function to understand where to break the string
+into tokens
 */
 bool is_delimiter(const char ch)
 {
@@ -472,17 +473,18 @@ t_list *tokenizer(t_mini_data *data)
 	input = data->input;
 	debug("scanning input: %s of num char %d", input, (int)ft_strlen(input));
 	token_list = NULL;
-	while (i < (int)ft_strlen(input))
+	while (i < (int)ft_strlen(input) && data->exit_status == 0)
 	{
-	 	if (peek(input, "||", false))
+	 	if (peek(input + i, "||", false))
 		{
+			debug("found || at %d", i);
 			token = create_token(OR_TOK, "||", &i);
 			if (token)
 				ft_lstadd_back(&token_list, token);
 			else
 			{
-				//free
-				// return (NULL); or break;
+				debug("error: malloc token failed\n");
+				data->exit_status = 1;
 			} 
 		}
 		else if (input[i] == '|' && input[i + 1] == '&')
@@ -497,6 +499,7 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&token_list, create_token(SEMI_SEMI, ";;", &i));
 		else if (input[i] == ';' && input[i + 1] == ';' && input[i + 2] == '&')
 			ft_lstadd_back(&token_list, create_token(SEMI_SEMI_AND, ";;&", &i));
+		
 		// wanna create an expression token
 		else if (input[i] == '(')
 		{
@@ -798,8 +801,8 @@ t_list *tokenizer(t_mini_data *data)
 		// }
 		else if (input[i] == '*')
 			ft_lstadd_back(&token_list, create_token(STAR, "*", &i));
-		else if (input[i] == '?')
-			ft_lstadd_back(&token_list, create_token(QUESTION, "?", &i));
+		// else if (input[i] == '?')
+		// 	ft_lstadd_back(&token_list, create_token(QUESTION, "?", &i));
 		// if there is a double quote I need to create a string token
 		else if (input[i] == '|' && (input[i + 1] != '|' || input[i+1] != '&'))
 			ft_lstadd_back(&token_list, create_token(PIPE, "|", &i));

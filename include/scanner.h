@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 14:22:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 09:39:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,6 @@ typedef enum e_tokentype {
 	
 	GREATER_AND_GREATER, 
 	COMMA, DOT, MINUS, PLUS, SLASH, STAR,
-	QUESTION, 
 	// One or two character tokens.
 	BANG_EQUAL,	BANG,
 	// for the history expansion

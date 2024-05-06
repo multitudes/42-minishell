@@ -10,7 +10,7 @@ CXX = c++
 # the file to tests (SUT = System Under Test)
 SUT_SRCS = $(addprefix ../src/, loop.c history.c scanner.c environment.c \
 handle_path.c parser.c analyser.c executer.c error.c darray.c)
-
+SUT_HDRS = $(addprefix ../include/, minishell.h scanner.h environment.h handle_path.h parser.h analyser.h executer.h error.h darray.h) 
 # will be compiled into object files
 SUT_OBJS = $(SUT_SRCS:.c=.o)
 
@@ -45,7 +45,7 @@ all: tests
 	
 tests: $(TESTS) runtests
 
-$(TESTS): $(SUT_OBJS) $(TEST_SRCS) 
+$(TESTS): $(SUT_OBJS) $(TEST_SRCS) $(SUT_HDRS)
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(SUT_OBJS) $@.cpp $(LDLIBS) -o $@
 
 runtests:

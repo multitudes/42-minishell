@@ -40,12 +40,12 @@ my_assert will check a condition and return an error message if it fails
 run_test will run a test function and return the error message if it fails
 RUN_TESTS will run all the tests and print the results
 
+I want to check the output of the call to the function in scanner.c file
+tokenizer(char *input) returning a t_list of lexemes
+I will create a string and check the output of the function
 */
 const char* test_scanner_identifiers() {
-	
-	// i want to check the output of the call to the function in scanner.c file
-	// tokenizer(char *input) returning a t_list of lexemes
-	// I will create a string and check the output of the function
+
 	std::string str = "hello world";
 	const char* input = str.c_str();
 	init_data(&g_mini_data);
@@ -65,42 +65,63 @@ const char* test_scanner_identifiers() {
 
 
 const char* test_scanner_identifiers2() {
-	
-	// i want to check the output of the call to the function in scanner.c file
-	// tokenizer(char *input) returning a t_list of lexemes
-	// I will create a string and check the output of the function
+
 	std::string str = "echo he_-3llo world";
 	const char* input = str.c_str();
 	init_data(&g_mini_data);
 	g_mini_data->input = input;
 	t_list *lexemes = tokenizer(g_mini_data);
 	t_list *current = lexemes;
+	const char *result;
 	int i = 0;
 
-	t_token *token = (t_token *)current->content;
-	debug("token number %d ", i);
-	debug("token type: %d ", token->type);
-	debug("token lexeme: %s ", token->lexeme);
-	my_assert(token->type == IDENTIFIER, "token type is not IDENTIFIER");
-	my_assert(strcmp(token->lexeme, "echo") == 0, "token lexeme is not echo");
-	current = current->next;
-	i++;
-	token = (t_token *)current->content;
-	debug("token number %d ", i);
-	debug("token type: %d ", token->type);
-	debug("token lexeme: %s ", token->lexeme);
-	my_assert(token->type == IDENTIFIER, "token type is not IDENTIFIER");
-	my_assert(strcmp(token->lexeme, "he_-3llo") == 0, "token lexeme is not IDENTIFIER");
-	current = current->next;
-	i++;
-	token = (t_token *)current->content;
-	debug("token number %d ", i);
-	debug("token type: %d ", token->type);
-	debug("token lexeme: %s ", token->lexeme);
-	my_assert(token->type == IDENTIFIER, "token type is not IDENTIFIER");
-	my_assert(strcmp(token->lexeme, "world") == 0, "token lexeme is not IDENTIFIER");	
+	result = process_token(&current, &i, "echo", BUILTIN);
+	result = process_token(&current, &i, "he_-3llo", IDENTIFIER);	
+	result = process_token(&current, &i, "world", IDENTIFIER);	
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);	
 
-	return NULL;
+	return result;
+}
+
+
+const char* test_scanner_identifiers3() {
+	std::string str = "||\"\"";
+	const char* input = str.c_str();
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *current = lexemes;
+	const char *result;
+	int i = 0;
+
+	result = process_token(&current, &i, "||", OR_TOK);
+	result = process_token(&current, &i, "\"\"", QUOTED_STRING);	
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);	
+	
+	return result;
+}
+
+const char* test_scanner_identifiers4() {
+	std::string str = "this is a \"quoted\'string\'maybe\"?";
+	const char* input = str.c_str();
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *current = lexemes;
+	const char *result;
+	int i = 0;
+
+	result = process_token(&current, &i, "this", IDENTIFIER);
+	result = process_token(&current, &i, "is", IDENTIFIER);
+	result = process_token(&current, &i, "a", IDENTIFIER);
+	result = process_token(&current, &i, "\"quoted\'string\'maybe\"", QUOTED_STRING);
+	result = process_token(&current, &i, "?", IDENTIFIER);
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+	
+	return result;
 }
 
 const char *all_tests()
@@ -110,7 +131,10 @@ const char *all_tests()
 	
 	// run the tests
 	run_test(test_scanner_identifiers);	
-	// run_test(test_scanner_identifiers2);
+	run_test(test_scanner_identifiers2);
+	run_test(test_scanner_identifiers3);
+	run_test(test_scanner_identifiers4);
+
 	return NULL;
 }
 
