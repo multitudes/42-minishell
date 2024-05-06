@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 09:39:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 11:42:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,14 @@ typedef enum e_tokentype {
 	BUILTIN,
 	FLAGS,
 	PATHNAME, 
-	PIPE, 
-	OR_TOK, 
-	PIPE_AND, 
-	AND_TOK,
+	PIPE, // |
+	PIPE_AND, // |&
+	AND_TOK, // &
 	//&& and || have the same precedence and are left-associative. 
 	//They allow you to execute a command based on the success 
 	//(&&) or failure (||) of the previous command.
-	AND_AND, 	
+	AND_IF, 	// &&
+	OR_IF, // || 
 	//; and & have the same precedence, which is lower than && 
 	//and ||. They allow you to separate commands (;) 
 	//or run a command in the background (&).
@@ -78,8 +78,8 @@ typedef enum e_tokentype {
 	SEMI_AND,
 	// ;;, ;&, and ;;& are used in the context of a case 
 	// statement to separate different cases.
- 	SEMI_SEMI, 
-	SEMI_SEMI_AND,
+ 	DSEMI, 
+	DSEMI_AND,
 	EXPRESSION,
 	// Command expansion or substitution
     COM_EXPANSION, // '$(command)' or '`command`'
@@ -95,21 +95,23 @@ typedef enum e_tokentype {
  	LEFT_CURLY, RIGHT_CURLY,
 
     // Redirection operators
+	IO_NUMBER, // 'n>' or 'n>>' or 'n>&' or 'n<&' or 'n<>' a numberfollowed by a redirection operator < or >
     REDIRECT_OUT, // '>'
+	CLOBBER, // '>|'
 	REDIRECT_BOTH, // '&>'
-	REDIRECT_FD, // '>&'
-    REDIRECT_ERR, // '2>'
-	REDIRECT_ERR_FD, //2>&
+	GREATAND, // '>&'
+    // REDIRECT_ERR, // '2>'
+	// REDIRECT_ERR_FD, //2>&
 
     REDIRECT_IN, // '<'
- 
-    APPEND, // '>>'
+	LESSAND, // '<&'
+    DGREAT, // '>>'
 	REDIRECT_OUT_APP, // '&>>'	
-	HEREDOC_DELIM,
-	REDIRECT_ERR_APP, //2>>
+	DLESS_DELIM,
+	// REDIRECT_ERR_APP, //2>>
 	REDIRECT_BOTH_APP, //">>&"
  
-    HEREDOC, // '<<'
+    DLESS, // '<<'
 	
 	//The <> operator in bash is used for opening a file in read-write mode. Here's an example:
 	// command <> file.txt
@@ -131,7 +133,7 @@ typedef enum e_tokentype {
 	NEWLINE_TOK, // A newline
 	// metacharacter : A character that, when unquoted, separates words. 
 	// A metacharacter is a space, tab, newline, or: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
-	SPACE_TOK, TAB_TOK, LESS_AND, GREATER_AND, 
+	SPACE_TOK, TAB_TOK, GREATER_AND, 
 	AMPERSAND,
 
     // reserved Keywords

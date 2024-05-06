@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 13:59:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 11:37:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ extern "C" {
 /*
 env_arr = enviroment variables array
 ast = abstract syntax tree for parser as linked lists of nodes
-heredoc_delimiter for heredoc
+DLESS_delimiter for DLESS
 exit_status for the exit status of the last command
 scanner_error when the mallocs in the scanner failed. 
 keep track of how many tokens were created
@@ -91,7 +91,7 @@ struct s_mini_data
 	const char	*input;
 	t_darray	*env_arr;
 	t_ast_node	*ast;
-	char		*heredoc_delimiter;
+	char		*DLESS_delimiter;
 	int			exit_status;
 	bool		scanner_error;
 	int 		scanner_tokens_nr;

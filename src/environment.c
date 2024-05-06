@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 08:45:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 11:37:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ struct s_mini_data
 	t_darray	*env_arr;
 	t_list		*path_list;
 	t_ast_node	*ast;
-	char		*heredoc_delimiter;
+	char		*DLESS_delimiter;
 };
 in the environ char ** we have this format: _=/bin/ls
 need to test this func!

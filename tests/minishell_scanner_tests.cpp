@@ -95,7 +95,7 @@ const char* test_scanner_identifiers3() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "||", OR_TOK);
+	result = process_token(&current, &i, "||", OR_IF);
 	result = process_token(&current, &i, "\"\"", QUOTED_STRING);	
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);	
@@ -123,7 +123,50 @@ const char* test_scanner_identifiers4() {
 	
 	return result;
 }
+/*
+ Redirection
+ The overall format used for redirection is:
 
+[n]redir-op word
+The number n is an optional decimal number designating the file descriptor number; 
+the application shall ensure it is delimited from any preceding text and immediately 
+precede the redirection operator redir-op. If n is quoted, 
+the number shall not be recognized as part of the redirection expression. 
+For example:
+echo \2>a
+writes the character 2 into file a. If any part of redir-op is quoted, 
+no redirection expression is recognized. 
+For example:
+echo 2\>a 
+writes the characters 2>a to standard output. 
+The optional number, redirection operator, and word shall not appear in the 
+arguments provided to the command to be executed (if any).
+*/
+const char *test_scanner_identifiers5() {
+	std::string str = "echo \2>a echo 2\\>a echo 2>a";
+	const char* input = str.c_str();
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *current = lexemes;
+	const char *result;
+	int i = 0;
+
+	result = process_token(&current, &i, "echo", IDENTIFIER);
+	result = process_token(&current, &i, "\2", BACKSLASH);
+	result = process_token(&current, &i, ">", REDIRECT_OUT);
+	result = process_token(&current, &i, "a", IDENTIFIER);
+	result = process_token(&current, &i, "echo", IDENTIFIER);
+	result = process_token(&current, &i, "2\\>a", IDENTIFIER);
+	result = process_token(&current, &i, "echo", IDENTIFIER);
+	result = process_token(&current, &i, "2", IO_NUMBER);
+	result = process_token(&current, &i, ">", REDIRECT_OUT);
+	result = process_token(&current, &i, "a", IDENTIFIER);
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+	
+	return result;
+}
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -134,6 +177,7 @@ const char *all_tests()
 	run_test(test_scanner_identifiers2);
 	run_test(test_scanner_identifiers3);
 	run_test(test_scanner_identifiers4);
+	// run_test(test_scanner_identifiers5);
 
 	return NULL;
 }

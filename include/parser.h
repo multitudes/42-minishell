@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 13:53:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 11:37:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ typedef enum	e_nodetype
 	NODE_COMMAND, 
 	NODE_PIPE, 
 	NODE_REDIRECT, 
-	NODE_HEREDOC
+	NODE_DLESS
 } 				t_nodetype;
 
 if it is a terminal node I will have the args
@@ -64,7 +64,7 @@ typedef enum	e_nodetype
 	NODE_COMMAND, 
 	NODE_PIPE, 
 	NODE_REDIRECT, 
-	NODE_HEREDOC,
+	NODE_DLESS,
 	NODE_NULL
 } 				t_nodetype;
 

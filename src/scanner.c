@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 09:40:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 11:42:56 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -478,7 +478,7 @@ t_list *tokenizer(t_mini_data *data)
 	 	if (peek(input + i, "||", false))
 		{
 			debug("found || at %d", i);
-			token = create_token(OR_TOK, "||", &i);
+			token = create_token(OR_IF, "||", &i);
 			if (token)
 				ft_lstadd_back(&token_list, token);
 			else
@@ -490,15 +490,15 @@ t_list *tokenizer(t_mini_data *data)
 		else if (input[i] == '|' && input[i + 1] == '&')
 			ft_lstadd_back(&token_list, create_token(PIPE_AND, "|&", &i));
 		else if (input[i] == '&' && input[i + 1] == '&')
-			ft_lstadd_back(&token_list, create_token(AND_AND, "&&", &i));
+			ft_lstadd_back(&token_list, create_token(AND_IF, "&&", &i));
 		else if (input[i] == ';')
 			ft_lstadd_back(&token_list, create_token(SEMI, ";", &i));
 		else if (input[i] == ';' && input[i + 1] == '&')
 			ft_lstadd_back(&token_list, create_token(SEMI_AND, ";&", &i));
 		else if (input[i] == ';' && input[i + 1] == ';')
-			ft_lstadd_back(&token_list, create_token(SEMI_SEMI, ";;", &i));
+			ft_lstadd_back(&token_list, create_token(DSEMI, ";;", &i));
 		else if (input[i] == ';' && input[i + 1] == ';' && input[i + 2] == '&')
-			ft_lstadd_back(&token_list, create_token(SEMI_SEMI_AND, ";;&", &i));
+			ft_lstadd_back(&token_list, create_token(DSEMI_AND, ";;&", &i));
 		
 		// wanna create an expression token
 		else if (input[i] == '(')
@@ -531,6 +531,7 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&token_list, create_token(STAR_EQUAL, "*=", &i));
 		
 		/*
+		History expansion - (not implemented)
 		!!: Re-run the previous command. 
 		This is useful if you forgot to use sudo for a command that 
 		requires it. You can simply type sudo !! to re-run the previous command with sudo.
@@ -711,15 +712,14 @@ t_list *tokenizer(t_mini_data *data)
 		}
 		// 
 		// >|
+		// else if (input[i] == '2' && input[i + 1] == '>' && input[i + 2] == '>')
+		// 	ft_lstadd_back(&token_list, create_token(REDIRECT_ERR_APP, "2>>", &i));
+		// else if (input[i] == '2' && input[i + 1] == '>' && input[i + 2] == '&')
+		// 	ft_lstadd_back(&token_list, create_token(REDIRECT_ERR_FD, "2>&", &i));
+		// else if (input[i] == '2' && input[i + 1] == '>')
+		// 	ft_lstadd_back(&token_list, create_token(REDIRECT_ERR, "2>", &i));
 		else if (input[i] == '>' && input[i + 1] == '|')
-			ft_lstadd_back(&token_list, create_token(REDIRECT_OUT, ">|", &i));
-		//2>>
-		else if (input[i] == '2' && input[i + 1] == '>' && input[i + 2] == '>')
-			ft_lstadd_back(&token_list, create_token(REDIRECT_ERR_APP, "2>>", &i));
-		else if (input[i] == '2' && input[i + 1] == '>' && input[i + 2] == '&')
-			ft_lstadd_back(&token_list, create_token(REDIRECT_ERR_FD, "2>&", &i));
-		else if (input[i] == '2' && input[i + 1] == '>')
-			ft_lstadd_back(&token_list, create_token(REDIRECT_ERR, "2>", &i));
+			ft_lstadd_back(&token_list, create_token(CLOBBER, ">|", &i));
 		else if (input[i] == '>' && input[i + 1] == '>' && input[i + 2] == '&')
 			ft_lstadd_back(&token_list, create_token(REDIRECT_BOTH_APP, ">>&", &i));
 		else if (input[i] == '&' && input[i + 1] == '>' && input[i + 2] == '>')
@@ -729,33 +729,33 @@ t_list *tokenizer(t_mini_data *data)
 		else if (input[i] == '&' && input[i + 1] == '>')
 			ft_lstadd_back(&token_list, create_token(REDIRECT_BOTH, "&>", &i));
 		else if (input[i] == '<' && input[i + 1] == '&')
-			ft_lstadd_back(&token_list, create_token(LESS_AND, "<&", &i));
+			ft_lstadd_back(&token_list, create_token(LESSAND, "<&", &i));
 		else if (input[i] == '>' && input[i + 1] == '&')
-			ft_lstadd_back(&token_list, create_token(REDIRECT_FD, ">&", &i));
+			ft_lstadd_back(&token_list, create_token(GREATAND, ">&", &i));
 		else if (input[i] == '<' && input[i + 1] == '>')
 			ft_lstadd_back(&token_list, create_token(READ_WRITE_MODE, "<>", &i));
 		else if (input[i] == '>' && input[i + 1] == '>')
-			ft_lstadd_back(&token_list, create_token(APPEND, ">>", &i));
-		// heredocs << dont need to be preceded or followed by a space 
+			ft_lstadd_back(&token_list, create_token(DGREAT, ">>", &i));
+		// DLESSs << dont need to be preceded or followed by a space 
 		
 		else if (input[i] == '<' && input[i + 1] && input[i + 1] == '<')
 		{
-			ft_lstadd_back(&token_list, create_token(HEREDOC, "<<", &i));
-			debug("heredoc tokens");
+			ft_lstadd_back(&token_list, create_token(DLESS, "<<", &i));
+			debug("DLESS tokens");
 			while (input[i] && is_space(input[i]))
 				i++;
 			if (input[i] == '\0' || is_delimiter(input[i]))
 			{
-				debug("error: unclosed heredoc\n");
+				debug("error: unclosed DLESS\n");
 				return (NULL);
 			}
 			int start = i;
 			while (input[i] && !is_delimiter(input[i]))
 				i++;
 			tmp = ft_substr(input, start, i - start);
-			ft_lstadd_back(&token_list, create_token(HEREDOC_DELIM, tmp, &start));
+			ft_lstadd_back(&token_list, create_token(DLESS_DELIM, tmp, &start));
 			free(tmp);
-			// debug("ADD HEREDOC CONTENT CODE!");
+			// debug("ADD DLESS CONTENT CODE!");
 		}
 		else if (input[i] == '>' && input[i + 1] == '=')
 			ft_lstadd_back(&token_list, create_token(GREATER_EQUAL, ">=", &i));

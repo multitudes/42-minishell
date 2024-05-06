@@ -571,7 +571,7 @@ typedef enum e_tokentype {
     PIPE, // '|'
     PIPE_AND, // '|&'
     OR_OR, // '||'
-    AND_AND, // '&&'
+    AND_IF, // '&&'
     AND, // '&'
     SEMICOLON, // ';'
     // Grouping commands
@@ -604,8 +604,8 @@ typedef enum e_tokentype {
     // Redirection operators
     REDIRECT_OUT, // '>'
     REDIRECT_IN, // '<'
-    APPEND_OUT, // '>>'
-    HEREDOC, // '<<'
+    DGREAT_OUT, // '>>'
+    DLESS, // '<<'
     REDIRECT_OUT_AND_ERR, // '&>'
     REDIRECT_ERR, // '2>'
     // Command substitution
@@ -782,7 +782,7 @@ So, if var="world", your command will output Hello' world'.
 
 ## redirections
 Bash does handle redirections without a command. It's just that there's no command to execute, so nothing will be written to/read from the redirections.
-Regarding the problematic case, heredocs should (preferably) be handled during or right after parsing.
+Regarding the problematic case, DLESSs should (preferably) be handled during or right after parsing.
 Look at these cases in bash:
 
 ### case 1 (no syntax error):
@@ -799,12 +799,12 @@ Look at these cases in bash:
 ```
 <<1 cat | <<2 cat | ( <<3 cat | <<4 cat || <<5 cat | ( <<6 cat ) && <<7 cat ) | <<8 cat <<9 () | <<10 cat
 ```
-In the first case, you can press CTRL+D 10 times, no error, heredocs are handles left-to-right.
+In the first case, you can press CTRL+D 10 times, no error, DLESSs are handles left-to-right.
 In the second case, you'll get a syntax error as soon as you press enter.
-In the third case, you can press CTRL+D until heredoc #8 is handled, afterwards you'll get a syntax error.
-In the fourth case, you can press CTRL+D until heredoc #9 is handled, afterwards you'll get a syntax error.
+In the third case, you can press CTRL+D until DLESS #8 is handled, afterwards you'll get a syntax error.
+In the fourth case, you can press CTRL+D until DLESS #9 is handled, afterwards you'll get a syntax error.
 Of course, the cat commands could've been left out, but i kept them for clarity.
-Now, of course you don't have to handle it like bash, but bash shows a good way to handle heredocs. (edited) 
+Now, of course you don't have to handle it like bash, but bash shows a good way to handle DLESSs. (edited) 
 
 ## environmental and local variables
 In Bash, when you create a variable using the var="heyhey" syntax, you're creating a shell variable. Shell variables are only available in the current shell (i.e., the current terminal session). They are not passed to child processes (i.e., commands or scripts that you run from the current shell).
@@ -832,8 +832,8 @@ In our shell implementation, you would need to handle these two types of variabl
 
 Shell variables can be stored in a local data structure, while environment variables can be stored in the environ global variable or managed using the getenv, setenv, and unsetenv functions.
 
-## HEREDOC
-In Bash scripting, a here document (heredoc) is a type of redirection that allows to pass a block of input to a command. The syntax for a heredoc is as follows (, in Backus–Naur form):
+## DLESS
+In Bash scripting, a here document (DLESS) is a type of redirection that allows to pass a block of input to a command. The syntax for a DLESS is as follows (, in Backus–Naur form):
 ```
 command <<DELIMITER
 text block
@@ -841,9 +841,9 @@ DELIMITER
 ```
 Here's how it works:
 - command is the command that will receive the text block as input.  
-- `<<` DELIMITER starts the heredoc. DELIMITER can be any string. It marks the beginning and the end of the text block.  
+- `<<` DELIMITER starts the DLESS. DELIMITER can be any string. It marks the beginning and the end of the text block.  
 - text block is the input that will be passed to the command. It can be multiple lines.  
-- DELIMITER on a line by itself ends the heredoc.  
+- DELIMITER on a line by itself ends the DLESS.  
 
 Here's an example:
 ```
@@ -854,20 +854,20 @@ DELIMITER
 
 This will pass the two lines of text to the cat command, which will print them.  
 
-In our parser, we would need to handle heredocs as a special case of redirection. When we encounter a `<<DELIMITER`, we would need to read lines until you encounter a line that contains only `DELIMITER`. The lines in between become the input for the command.
+In our parser, we would need to handle DLESSs as a special case of redirection. When we encounter a `<<DELIMITER`, we would need to read lines until you encounter a line that contains only `DELIMITER`. The lines in between become the input for the command.
 
-The heredoc syntax in a grammar could be represented as follows:
+The DLESS syntax in a grammar could be represented as follows:
 ```
-heredoc -> 	expression "<<" delimiter NEWLINE content delimiter NEWLINE;
+DLESS -> 	expression "<<" delimiter NEWLINE content delimiter NEWLINE;
 ```
-The heredoc -> expression "<<" delimiter NEWLINE content delimiter NEWLINE; rule correctly captures the structure of a heredoc, where:
+The DLESS -> expression "<<" delimiter NEWLINE content delimiter NEWLINE; rule correctly captures the structure of a DLESS, where:
 
-expression is the command that will receive the heredoc as input.
-"<<" is the heredoc operator.
-delimiter is the string that marks the beginning and end of the heredoc.
-NEWLINE separates the delimiter from the content of the heredoc and the content from the ending delimiter.
-content is the text of the heredoc.
-The expression before "<<" in the heredoc rule ensures that a heredoc is associated with a command, which is necessary because a heredoc is a form of input redirection.
+expression is the command that will receive the DLESS as input.
+"<<" is the DLESS operator.
+delimiter is the string that marks the beginning and end of the DLESS.
+NEWLINE separates the delimiter from the content of the DLESS and the content from the ending delimiter.
+content is the text of the DLESS.
+The expression before "<<" in the DLESS rule ensures that a DLESS is associated with a command, which is necessary because a DLESS is a form of input redirection.
 ## Traversing an Abstract Syntax Tree (AST) 
 typically involves using a depth-first search. There are three types of depth-first traversals: pre-order, in-order, and post-order.  
  

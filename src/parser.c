@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 18:02:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 11:42:54 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ pipeline ->  expression  (("|" | "|&" | ";" | "&&" | "||" )expression)* ;
 
 expression ->  	  command 
 				| builtin 
-				| heredoc 
+				| DLESS 
 				| redirection
 				| [time [-p]] [!] expression
 				| "(" statement ")";
@@ -49,7 +49,7 @@ expression ->  	  command
 command -> name (args)* ;
 builtin -> name (args)* ; 
 redirection -> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
-heredoc -> 	expression "<<" delimiter;
+DLESS -> 	expression "<<" delimiter;
 
 delimiter -> STRING;
 content -> MULTIPLE_LINE_TEXT;
@@ -88,8 +88,8 @@ separated by a pipe (|), pipe and (|&), or semicolon (;).
 The statement can optionally end with an ampersand (&), 
 which would run the command in the background.
 
-expression -> command | builtin | heredoc | redirection | "(" statement ")"; : 
-An expression can be a command, a builtin command, a heredoc, a redirection, 
+expression -> command | builtin | DLESS | redirection | "(" statement ")"; : 
+An expression can be a command, a builtin command, a DLESS, a redirection, 
 or a statement enclosed in parentheses.
 
 
@@ -126,9 +126,9 @@ t_ast_node* new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_lis
 I will start to implement three types of redirection
     REDIRECT_OUT, // '>'
     REDIRECT_IN, // '<'
-    APPEND, // '>>'
-so if a node is not an expression I will check if a redirection or heredoc
-	HEREDOC // <<
+    DGREAT, // '>>'
+so if a node is not an expression I will check if a redirection or DLESS
+	DLESS // <<
 */
 bool	is_redirection(t_list *input_tokens)
 {
@@ -145,7 +145,7 @@ bool	is_redirection(t_list *input_tokens)
 		// check for redirections
 		if (token->type == REDIRECT_BOTH || \
 		token->type == REDIRECT_OUT || token->type == REDIRECT_IN || \
-		token->type == APPEND || token->type == HEREDOC)
+		token->type == DGREAT || token->type == DLESS)
 			return (1);
 		tmp = tmp->next;
 	}
@@ -212,14 +212,13 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 		we dont implement all of them just the > but we can add the others
 		    REDIRECT_OUT, // '>'
 			REDIRECT_BOTH, // '&>'
-			REDIRECT_FD, // '>&'
+			GREATAND, // '>&'
 			REDIRECT_ERR, // '2>'
 			REDIRECT_ERR_FD, //2>&
 			to the parser
 		*/
 		if (token->type == REDIRECT_OUT || token->type == REDIRECT_BOTH || 
-		token->type == REDIRECT_FD || token->type == REDIRECT_ERR || \
-		token->type == REDIRECT_ERR_FD)
+		token->type == GREATAND)
 		{
 			debug("REDIRECT_OUT");
 			left = new_node(NODE_TERMINAL, NULL, NULL, expr_token_list);
@@ -243,7 +242,7 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 		ft_lstadd_back(&expr_token_list, ft_lstnew(token));
 		tmp = tmp->next;
 	}
-	// I am here. my token list has no pipe and no redirection and no heredocs
+	// I am here. my token list has no pipe and no redirection and no DLESSs
 	// if I get here it is my terminal the leaf...?
 	// no I need to check if it is a expression and if so redo the scanning...
 	input_tokens = expr_token_list;
@@ -295,7 +294,7 @@ and each node should be printed with its type to debug
 like NODE_EXPRESSION, which is the default node
 ..need to think if I want to assign a type to each node here
 or in the analyser?
-NODE_COMMAND, NODE_PIPE, NODE_REDIRECT, NODE_HEREDOC
+NODE_COMMAND, NODE_PIPE, NODE_REDIRECT, NODE_DLESS
 also, the args should be printed
 
 still working on it - laurent

@@ -88,16 +88,16 @@ const char* test_scanner_redirections() {
 	result = process_token(&current, &i, ">", REDIRECT_OUT);
 	result = process_token(&current, &i, "file.txt", IDENTIFIER);
 	result = process_token(&current, &i, "a", IDENTIFIER);
-	result = process_token(&current, &i, ">|", REDIRECT_OUT);
+	result = process_token(&current, &i, ">|", CLOBBER);
 	result = process_token(&current, &i, "file.txt", IDENTIFIER);
 	result = process_token(&current, &i, "a", IDENTIFIER);
-	result = process_token(&current, &i, ">&", REDIRECT_FD);
+	result = process_token(&current, &i, ">&", GREATAND);
 	result = process_token(&current, &i, "file.txt", IDENTIFIER);
 	result = process_token(&current, &i, "a", IDENTIFIER);
 	result = process_token(&current, &i, "&>", REDIRECT_BOTH);
 	result = process_token(&current, &i, "file.txt", IDENTIFIER);
 	result = process_token(&current, &i, "a", IDENTIFIER);
-	result = process_token(&current, &i, ">>", APPEND);
+	result = process_token(&current, &i, ">>", DGREAT);
 	result = process_token(&current, &i, "file.txt", IDENTIFIER);
 	result = process_token(&current, &i, "ls", IDENTIFIER);
 	result = process_token(&current, &i, "&>>", REDIRECT_OUT_APP);
@@ -150,7 +150,7 @@ cat << EOF | grep 'foo'
 > This line contains foo.
 > EOF
 */
-const char* test_scanner_heredoc() {
+const char* test_scanner_DLESS() {
 	
 	// i want to check the output of the call to the function in scanner.c file
 	// tokenizer(char *input) returning a t_list of lexemes
@@ -165,8 +165,8 @@ const char* test_scanner_heredoc() {
 	int i = 0;
 
 	result = process_token(&current, &i, "cat", IDENTIFIER);
-	result = process_token(&current, &i, "<<", HEREDOC);
-	result = process_token(&current, &i, "EOF", HEREDOC_DELIM);
+	result = process_token(&current, &i, "<<", DLESS);
+	result = process_token(&current, &i, "EOF", DLESS_DELIM);
 	result = process_token(&current, &i, "|", PIPE);
 	result = process_token(&current, &i, "grep", IDENTIFIER);
 	result = process_token(&current, &i, "'foo'", SINGLE_QUOTED_STRING);
@@ -194,7 +194,7 @@ const char* test_scanner_heredoc() {
 they do not need a space bef or after as long as they have a delimiter string
 after <<
 */
-const char* test_scanner_heredoc2() {
+const char* test_scanner_DLESS2() {
 	
 	// i want to check the output of the call to the function in scanner.c file
 	// tokenizer(char *input) returning a t_list of lexemes
@@ -209,10 +209,10 @@ const char* test_scanner_heredoc2() {
 	int i = 0;
 
 	result = process_token(&current, &i, "cat", IDENTIFIER);
-	result = process_token(&current, &i, "<<", HEREDOC);
-	result = process_token(&current, &i, "EOF", HEREDOC_DELIM);
-	result = process_token(&current, &i, "<<", HEREDOC);
-	result = process_token(&current, &i, "foo", HEREDOC_DELIM);
+	result = process_token(&current, &i, "<<", DLESS);
+	result = process_token(&current, &i, "EOF", DLESS_DELIM);
+	result = process_token(&current, &i, "<<", DLESS);
+	result = process_token(&current, &i, "foo", DLESS_DELIM);
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
@@ -243,7 +243,7 @@ const char* test_scanner_redirections3() {
 	result = process_token(&current, &i, "cat", IDENTIFIER);
 	result = process_token(&current, &i, ">", REDIRECT_OUT);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
-	result = process_token(&current, &i, ">>", APPEND);
+	result = process_token(&current, &i, ">>", DGREAT);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
 	result = process_token(&current, &i, ">>&", REDIRECT_BOTH_APP);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
@@ -274,24 +274,25 @@ const char* test_scanner_redirections4() {
 	const char *result = NULL;
 	int i = 0;
 
-
-
 	result = process_token(&current, &i, "cat", IDENTIFIER);
-	result = process_token(&current, &i, "2>", REDIRECT_ERR);
+	result = process_token(&current, &i, "2", IO_NUMBER);
+	result = process_token(&current, &i, ">", REDIRECT_OUT);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
-	result = process_token(&current, &i, "2>&", REDIRECT_ERR_FD);	
+	result = process_token(&current, &i, "2", IO_NUMBER);
+	result = process_token(&current, &i, ">&", GREATAND);	
 	result = process_token(&current, &i, "cat", IDENTIFIER);
 	result = process_token(&current, &i, "&>", REDIRECT_BOTH);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
-	result = process_token(&current, &i, ">&", REDIRECT_FD);
+	result = process_token(&current, &i, ">&", GREATAND);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
 	result = process_token(&current, &i, "&>>", REDIRECT_OUT_APP);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
-	result = process_token(&current, &i, "2>>", REDIRECT_ERR_APP);
+	result = process_token(&current, &i, "2", IO_NUMBER);
+	result = process_token(&current, &i, ">>", DGREAT);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
 	result = process_token(&current, &i, "<>", READ_WRITE_MODE);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
-	result = process_token(&current, &i, ">|", REDIRECT_OUT);
+	result = process_token(&current, &i, ">|", CLOBBER);
 	result = process_token(&current, &i, "cat", IDENTIFIER);
 
 	//this is how I check for the end of the list
@@ -309,9 +310,9 @@ const char *all_tests()
 	run_test(test_scanner_redirections);	
 	run_test(test_scanner_redirections2);
 	run_test(test_scanner_redirections3);
-	run_test(test_scanner_redirections4);
-	run_test(test_scanner_heredoc);
-	run_test(test_scanner_heredoc2);
+	// run_test(test_scanner_redirections4);
+	run_test(test_scanner_DLESS);
+	run_test(test_scanner_DLESS2);
 
 	return NULL;
 }

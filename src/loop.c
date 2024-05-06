@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 15:27:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 11:37:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,16 @@ void	free_data(t_mini_data *data)
 to move to utilities header
 */
 char 	*add_newline(char *input);
-bool	contains_heredoc(const char *input, char **here_delimiter);
+bool	contains_DLESS(const char *input, char **here_delimiter);
 
 
 /*
 functions to be moved to utilities!
 
-check if the input contains a << heredoc operator and change 
+check if the input contains a << DLESS operator and change 
 the prompt to indicate that it expects more...
 */
-bool	contains_heredoc(const char *input, char **here_delimiter)
+bool	contains_DLESS(const char *input, char **here_delimiter)
 {
 	int	i;
 	int start;
@@ -66,7 +66,7 @@ bool	contains_heredoc(const char *input, char **here_delimiter)
 				i++;
 			if (input[i] == '\0')
 			{
-				debug("heredoc delimiter is missing\n");
+				debug("DLESS delimiter is missing\n");
 				here_delimiter = NULL;
 				return (true);
 			}
@@ -77,7 +77,7 @@ bool	contains_heredoc(const char *input, char **here_delimiter)
 				here_delimiter = NULL;
 			else
 				*here_delimiter = ft_substr(input, start, i - start);
-			printf("heredoc delimiter: %s\n", *here_delimiter);
+			printf("DLESS delimiter: %s\n", *here_delimiter);
 			return (true);
 		}
 		i++;	
@@ -86,28 +86,28 @@ bool	contains_heredoc(const char *input, char **here_delimiter)
 }
 
 /*
-in case the input contains a << heredoc operator, we need to check if the
+in case the input contains a << DLESS operator, we need to check if the
 input contains the delimiter string
 if not we need to keep reading the input until we find it
 */
-bool contains_string(char *here_content, char *heredoc_delimiter)
+bool contains_string(char *here_content, char *DLESS_delimiter)
 {
-	// the heredoc can be any string
+	// the DLESS can be any string
 	int i = 0;
 	int j = 0;
 	int k = 0;
 	while (here_content[i])
 	{
-		if (here_content[i] == heredoc_delimiter[0])
+		if (here_content[i] == DLESS_delimiter[0])
 		{
 			k = i;
-			while (here_content[k] && heredoc_delimiter[j] && here_content[k] == heredoc_delimiter[j])
+			while (here_content[k] && DLESS_delimiter[j] && here_content[k] == DLESS_delimiter[j])
 			{
-				// debug("here_content[k] == heredoc_delimiter[j] %c %c\n", here_content[k], heredoc_delimiter[j]);	
+				// debug("here_content[k] == DLESS_delimiter[j] %c %c\n", here_content[k], DLESS_delimiter[j]);	
 				k++;
 				j++;
 			}
-			if ((int)ft_strlen(heredoc_delimiter) == j)
+			if ((int)ft_strlen(DLESS_delimiter) == j)
 			{
 				debug("they are equal\n");
 				return (true);
@@ -120,7 +120,7 @@ bool contains_string(char *here_content, char *heredoc_delimiter)
 }
 
 /*
-used for a heredoc test but not implemented yet
+used for a DLESS test but not implemented yet
 */
 char *add_newline(char *input)
 {
@@ -186,7 +186,7 @@ int	init_data(t_mini_data **data)
 	}
 	(*data)->env_arr = env_array;
 	(*data)->ast = NULL;
-	(*data)->heredoc_delimiter = NULL;
+	(*data)->DLESS_delimiter = NULL;
 	(*data)->exit_status = 0;
 	(*data)->input = NULL;
 	return (1);
@@ -234,16 +234,16 @@ int loop(int argc, char **argv)
 		}
 		else 
 		{
-			// check if the input contains a << heredoc operator and change 
+			// check if the input contains a << DLESS operator and change 
 			// the prompt to indicate that it expects more... however tis 
 			// is probably not what we will do in the end because we need to 
 			// make it working with pipes.
 			// so keep it here for now..
-			// if (contains_heredoc(input, &data->heredoc_delimiter))
+			// if (contains_DLESS(input, &data->DLESS_delimiter))
 			// {
-			// 	if (data->heredoc_delimiter == NULL || ft_strncmp(data->heredoc_delimiter, "", 1) == 0)
+			// 	if (data->DLESS_delimiter == NULL || ft_strncmp(data->DLESS_delimiter, "", 1) == 0)
 			// 	{
-			// 		// perror("malloc data->heredoc_delimiter");
+			// 		// perror("malloc data->DLESS_delimiter");
 			// 		free(input);
 			// 	}
 			// 	// add newline to my input
@@ -257,7 +257,7 @@ int loop(int argc, char **argv)
 			// 		debug("here_content: %s\n", here_content);
 			// 		sanitize_input(here_content);
 			// 		input = ft_strjoin(input, here_content);
-			// 		if (contains_string(here_content, data->heredoc_delimiter))
+			// 		if (contains_string(here_content, data->DLESS_delimiter))
 			// 		{
 			// 			debug("break\n");
 			// 			debug("input: %s\n", input);
