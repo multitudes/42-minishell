@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 17:25:30 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/06 08:38:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 /*
  ``\t''``\n''``\v''``\f''``\r''`` -> is space 
+ overkill I think. From the bash manual they talk only tab and space and newline which
+ in my case it is impossible because caught by the readline func
 */
 bool is_space(const char c)
 {
@@ -45,25 +47,36 @@ int strncicmp(char const *a, char const *b, int n)
 can be unofficially almost anything, the delimiter is a character that
 should not be part of an identifier. Recommended char for identifiers
 are underscore and alphanumeric characters.
+but from the bash manual:
+A metacharacter is a space, tab, newline, 
+or one of the following characters: 
+‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
+I use this function to understand where to break the string
 */
 bool is_delimiter(const char ch)
 {
-    if (ch == ' ' || ch == '+' || ch == '-' || ch == '*' || 
-        ch == '/' || ch == ',' || ch == ';' || ch == '>' || 
-        ch == '<' || ch == '=' || ch == '(' || ch == ')' || 
-        ch == '[' || ch == ']' || ch == '{' || ch == '}' ||
-        ch == '|' || ch == '&' || ch == '$' || ch == '`' ||
-        ch == '"' || ch == '\'' || ch == '\\' || ch == '!' ||
-        ch == '~' || ch == '^' || ch == '%' || ch == '\t' ||
-        ch == '\n' || ch == '\v' || ch == '\f' || ch == '\r' || ch == EOF || ch == '\0')
+    if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '|' || \
+	ch == '&' || ch == ';' || ch == '(' || ch == ')' || \
+	ch == '>' || ch == '<' || ch == EOF || ch == '\0')
 		return (true);
     return (false);
 }
+// bool is_delimiter(const char ch)
+// {
+//     if (ch == ' ' || ch == '+' || ch == '-' || ch == '*' || 
+//         ch == '/' || ch == ',' || ch == ';' || ch == '>' || 
+//         ch == '<' || ch == '=' || ch == '(' || ch == ')' || 
+//         ch == '[' || ch == ']' || ch == '{' || ch == '}' ||
+//         ch == '|' || ch == '&' || ch == '$' || ch == '`' ||
+//         ch == '"' || ch == '\'' || ch == '\\' || ch == '!' ||
+//         ch == '~' || ch == '^' || ch == '%' || ch == '\t' ||
+//         ch == '\n' || ch == '\v' || ch == '\f' || ch == '\r' || ch == EOF || ch == '\0')
+// 		return (true);
+//     return (false);
+// }
 
 /*
-ok these char cannot be in a file name.. even if officially
-it is recommended to use only the 65 characters [-._a-zA-Z0-9]
-for files and directories ... touch w$orld is creating w because dereferencing 
+ ... touch w$orld is creating w because dereferencing 
 the $ and the rest is nulll...
 otherwise 
 touch w-+*}\,[]=w{$HOME
@@ -75,8 +88,6 @@ bash: orld: command not found
 [1]+  Done                    touch w-+*}\,[]=w{
 The command touch w-+*}\,[]=w{|orld is being interpreted by the 
 shell (bash in this case) before it's passed to the touch command.
-The | character is a pipe in bash, which is used to pass the output 
-of one command as input to another command.
 In this case, touch w-+*}\,[]=w{ is being 
 run as one command, and orld is being interpreted as a 
 separate command.
@@ -86,10 +97,7 @@ However, orld is not a valid command,
 so bash gives an error message: bash: orld: command not found.
 The [1]+ Done touch w-+*}\,[]=w{ message is from bash's job 
 control system. It's telling you that the touch w-+*}\,[]=w{ command has finished running.
-If you want to create a file with a | in the name, you'll need to 
-escape it with a backslash (\|), or enclose the filename in quotes.  
-However, it's generally best to avoid such characters in filenames, 
-as they can cause confusion and errors.
+
 
 touch w-+*},[]=w{\o!rld bash: !rld: event not found
 
@@ -98,6 +106,10 @@ including bash. It is used for history expansion,
 allowing you to re-run previous commands.
 In your command touch w-+*}\,[]=w{\o!rld, the ! character 
 is causing bash to attempt to perform history expansion
+
+ok these char cannot be in a file name.. 
+officially it is recommended to use only the 65 characters [-._a-zA-Z0-9]
+for files and directories ...
 */
 bool filename_delimiter(const char ch)
 {
@@ -149,11 +161,11 @@ peek wil look ahead to see if my string is beginning with a word which
 is an identifier
 input is the string to check
 identifier is the string to check for
-end_space is true if the identifier must be followed by a space to be valid
+need_delim is true if the identifier must be followed by a space to be valid
 ex '||' works without spaces at the end but 'echo' is valid with space only or with 
 one of the metacharacters : ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
 */
-bool	peek(const char *input, const char *identifier, bool end_space)
+bool	peek(const char *input, const char *identifier, bool need_delim)
 {
 	int i;
 	int n;
@@ -162,15 +174,11 @@ bool	peek(const char *input, const char *identifier, bool end_space)
 	n = ft_strlen(identifier);
 	while (i < n && input[i] == identifier[i])
 		i++;
-	if (end_space)
-	{
-		if (i != n && strchr(" |&;()<>", input[i]) == NULL && input[i] != '\0')
-			return (false);
-	}
+	if (i == n && ((need_delim && is_delimiter(input[i])) || !need_delim)) 
+		return (true);
 	// debug("peeking %s i is %d n is %d", identifier, i, n);
-	if (i != n)
+	else
 		return (false);
-	return (true);
 }
 
 /*
@@ -473,7 +481,7 @@ t_list *tokenizer(t_mini_data *data)
 	
 	i = 0;
 	input = data->input;
-	debug("scanning input: %s of char %d", input, (int)ft_strlen(input));
+	debug("scanning input: %s of num char %d", input, (int)ft_strlen(input));
 	token_list = NULL;
 	while (i < (int)ft_strlen(input))
 	{
