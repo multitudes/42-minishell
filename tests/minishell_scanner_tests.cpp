@@ -143,7 +143,7 @@ The optional number, redirection operator, and word shall not appear in the
 arguments provided to the command to be executed (if any).
 */
 const char *test_scanner_identifiers5() {
-	std::string str = "echo \2>a echo 2\\>a echo 2>a";
+	std::string str = "echo \\2>a echo 2\\>a echo 2>a";
 	const char* input = str.c_str();
 	init_data(&g_mini_data);
 	g_mini_data->input = input;
@@ -153,7 +153,7 @@ const char *test_scanner_identifiers5() {
 	int i = 0;
 
 	result = process_token(&current, &i, "echo", WORD);
-	result = process_token(&current, &i, "\2", BACKSLASH);
+	result = process_token(&current, &i, "\\2", BACKSLASH);
 	result = process_token(&current, &i, ">", REDIRECT_OUT);
 	result = process_token(&current, &i, "a", WORD);
 	result = process_token(&current, &i, "echo", WORD);
@@ -167,6 +167,124 @@ const char *test_scanner_identifiers5() {
 	
 	return result;
 }
+
+/*
+
+*/
+const char *test_scanner_identifiers6() 
+{
+	std::string str = "false && echo foo || echo bar ; false&&echo foo||echo bar";
+	const char* input = str.c_str();
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *current = lexemes;
+	const char *result;
+	int i = 0;
+
+	result = process_token(&current, &i, "false", FALSETOK);
+	result = process_token(&current, &i, "&&", AND_IF);
+	result = process_token(&current, &i, "echo", BUILTIN);
+	result = process_token(&current, &i, "foo", WORD);
+	result = process_token(&current, &i, "||", OR_IF);
+	result = process_token(&current, &i, "echo", BUILTIN);
+	result = process_token(&current, &i, "bar", WORD);
+	result = process_token(&current, &i, ";", SEMI);
+	result = process_token(&current, &i, "false", FALSETOK);
+	result = process_token(&current, &i, "&&", AND_IF);
+	result = process_token(&current, &i, "echo", BUILTIN);
+	result = process_token(&current, &i, "foo", WORD);
+	result = process_token(&current, &i, "||", OR_IF);
+	result = process_token(&current, &i, "echo", BUILTIN);
+	result = process_token(&current, &i, "bar", WORD);	
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+	
+	return result;
+}
+
+/*
+
+*/
+const char *test_scanner_identifiers7() 
+{
+	std::string str = "true || echo foo && echo bar ; true||echo foo&&echo bar";
+	const char* input = str.c_str();
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *current = lexemes;
+	const char *result;
+	int i = 0;
+
+	result = process_token(&current, &i, "true", TRUETOK);
+	result = process_token(&current, &i, "||", OR_IF);
+	result = process_token(&current, &i, "echo", BUILTIN);
+	result = process_token(&current, &i, "foo", WORD);
+	result = process_token(&current, &i, "&&", AND_IF);
+	result = process_token(&current, &i, "echo", BUILTIN);
+	result = process_token(&current, &i, "bar", WORD);
+	result = process_token(&current, &i, ";", SEMI);
+	result = process_token(&current, &i, "true", TRUETOK);
+	result = process_token(&current, &i, "||", OR_IF);
+	result = process_token(&current, &i, "echo", BUILTIN);
+	result = process_token(&current, &i, "foo", WORD);
+	result = process_token(&current, &i, "&&", AND_IF);
+	result = process_token(&current, &i, "echo", BUILTIN);
+	result = process_token(&current, &i, "bar", WORD);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+	
+	return result;
+}
+
+/*
+This is the entry point for the tests
+*/
+const char *test_scanner_true_false() 
+{
+	std::string str = "true false";
+	const char* input = str.c_str();
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *current = lexemes;
+	const char *result;
+	int i = 0;
+
+	result = process_token(&current, &i, "true", TRUETOK);
+	result = process_token(&current, &i, "false", FALSETOK);
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+	
+	return result;
+}
+
+/*
+This is the entry point for the tests
+*/
+const char *test_scanner_true_false2() 
+{
+	std::string str = "true;false";
+	const char* input = str.c_str();
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *current = lexemes;
+	const char *result;
+	int i = 0;
+
+	result = process_token(&current, &i, "true", TRUETOK);
+	result = process_token(&current, &i, ";", SEMI);
+	result = process_token(&current, &i, "false", FALSETOK);
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+	
+	return result;
+}
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -177,7 +295,13 @@ const char *all_tests()
 	run_test(test_scanner_identifiers2);
 	run_test(test_scanner_identifiers3);
 	run_test(test_scanner_identifiers4);
+
 	// run_test(test_scanner_identifiers5);
+	run_test(test_scanner_identifiers6);
+	run_test(test_scanner_identifiers7);
+
+	run_test(test_scanner_true_false);
+	run_test(test_scanner_true_false2);
 
 	return NULL;
 }

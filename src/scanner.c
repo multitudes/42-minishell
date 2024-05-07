@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 14:28:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/07 14:09:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,6 +282,24 @@ bool is_builtin(t_mini_data *data, t_list **token_list, char *identifier,int *st
 		return false;
 	return true;
 }
+
+/*
+ * is_true_false checks if the identifier is a boolean value
+ * like in bash true and false are not builtins but reserved words
+ */
+bool	is_true_false(t_mini_data *data, t_list **token_list, char *str,int *start)
+{
+	(void)data;
+	debug("checking for true or false");
+	if (strncicmp(str, "true", 5) == 0)
+		ft_lstadd_back(token_list, create_token(TRUETOK, "true", start));
+	else if (strncicmp(str, "false", 6) == 0)
+		ft_lstadd_back(token_list, create_token(FALSETOK, "false", start));
+	else
+		return false;
+	return true;
+}
+
 
 void print_token_list(t_list *token_list)
 {
@@ -916,7 +934,7 @@ t_list *tokenizer(t_mini_data *data)
 			break ;
 		}
 		/*********************************************/
-		/* try pathname again!                       */
+		/* try string/ pathname again!               */
 		/*********************************************/
 		else if (isprint(input[i]) && !filename_delimiter(input[i]))
 		{
@@ -930,14 +948,15 @@ t_list *tokenizer(t_mini_data *data)
 			{
 				if (is_io_number(str))
 					ft_lstadd_back(&token_list, create_token(IO_NUMBER, str, &start));
-
 			}
 			else 
 			{
 				debug("identifier: -%s-", str);
 				//check for reserved words and builtin first which they will be added 
 				// automatically if the check is true
-				if (!is_reserved(data, &token_list,str,&start) && !is_builtin(data, &token_list, str, &start))
+				if (!is_reserved(data, &token_list,str,&start) && \
+				!is_builtin(data, &token_list, str, &start) &&\
+				!is_true_false(data, &token_list, str, &start))
 				{
 					// check if it is a path name
 					if (ft_strchr(str, '/') || peek(str, " .", false) || peek(str, "./", false) || peek(str, "../", false) || peek(str, "~/", false) || peek(str, "~+", false))

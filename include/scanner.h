@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 14:00:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/07 12:33:59 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef enum e_tokentype {
 	//(&&) or failure (||) of the previous command.
 	AND_IF, 	// &&
 	OR_IF, // || 
+	
 	//; and & have the same precedence, which is lower than && 
 	//and ||. They allow you to separate commands (;) 
 	//or run a command in the background (&).
@@ -89,10 +90,15 @@ typedef enum e_tokentype {
 	SINGLE_QUOTED_STRING, // quoted string 'string'
 	// ( and ) can be used to group commands, 
 	// which can override the default precedence rules.
-	
-	LEFT_PAREN, RIGHT_PAREN, 
-	LEFT_SQUARE, RIGHT_SQUARE,
- 	LEFT_CURLY, RIGHT_CURLY,
+
+	// to use the && and || operators the true and false will be assigned to these tokens
+	TRUETOK,
+	FALSETOK, 
+
+	// maybe we dont need them ?
+	// LEFT_PAREN, RIGHT_PAREN, 
+	// LEFT_SQUARE, RIGHT_SQUARE,
+ 	// LEFT_CURLY, RIGHT_CURLY,
 
     // Redirection operators
 	IO_NUMBER, // 'n>' or 'n>>' or 'n>&' or 'n<&' or 'n<>' a numberfollowed by a redirection operator < or >

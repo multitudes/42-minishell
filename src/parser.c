@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 12:31:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/07 13:47:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,24 +250,24 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 	tmp = input_tokens;
 	while (tmp)
 	{
-			// debug("EXPRESSION");
-			token = (t_token *)tmp->content;
-			if (token->type == EXPRESSION)
-			{
-				debug("EXPRESSION");
-				// remove parenthesis from content
-				char *lexem = ft_substr(token->lexeme, 1, ft_strlen(token->lexeme) - 2);
-				debug("lexem %s", lexem);
-				token->type = COMMAND;
-				// create a new token list
-				data->input = lexem;
-				t_list *new_token_list = tokenizer(data);
-				if (new_token_list == NULL)
-					return (NULL);
-				// free the old token list
-				// ft_lstclear(&expr_token_list, free);	
-				return (create_ast(data, new_token_list));					
-			}
+		// debug("EXPRESSION");
+		token = (t_token *)tmp->content;
+		if (token->type == EXPRESSION)
+		{
+			debug("EXPRESSION");
+			// remove parenthesis from content
+			char *lexem = ft_substr(token->lexeme, 1, ft_strlen(token->lexeme) - 2);
+			debug("lexem %s", lexem);
+			token->type = COMMAND;
+			// create a new token list
+			data->input = lexem;
+			t_list *new_token_list = tokenizer(data);
+			if (new_token_list == NULL)
+				return (NULL);
+			// free the old token list
+			// ft_lstclear(&expr_token_list, free);	
+			return (create_ast(data, new_token_list));					
+		}
 		// as long as I dont find an expression I will add the token to the list
 		ft_lstadd_back(&expr_token_list, ft_lstnew(token));
 		tmp = tmp->next;	
