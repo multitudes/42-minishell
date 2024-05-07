@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/07 14:09:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/07 15:20:14 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,76 +316,6 @@ void print_token_list(t_list *token_list)
 	return ;
 }
 
-// maybe not needded since I always check in the scanner if 
-// the parentheses are closed
-
-// /*
-// Too many vars for norminette so I made a struct
-// This is only to check if the parentheses and braces etc are
-// closing. If not I should not continue with the execution
-// */
-// void init_open_close(t_open_close *open_close)
-// {
-// 	open_close->paren = 0;
-// 	open_close->curlys = 0;
-// 	open_close->quotes = 0;
-// 	open_close->single_quotes = 0;
-// 	open_close->backslash = 0;
-// 	open_close->square_brackets = 0;
-// }
-
-// /* 
-// will go through the list of tokens and check if the paren are closed and the quotes are closed
-// */
-// int	check_paren_quotes(t_list *token_list)
-// {
-// 	t_open_close open_close;
-// 	t_list *current;
-// 	t_token *token;
-
-// 	init_open_close(&open_close);
-// 	current = token_list;
-// 	while (current)
-// 	{
-// 		token = (t_token *)current->content;
-// 		// debug("checking token %s\n", token->lexeme);
-// 		if (token->type == LEFT_CURLY)
-// 			open_close.curlys++;
-// 		else if (token->type == RIGHT_CURLY)
-// 			open_close.curlys--;
-// 		else if (token->type == QUOTE)
-// 			open_close.quotes++;
-// 		else if (token->type == SINGLE_QUOTE)
-// 			open_close.single_quotes++;
-// 		else if (token->type == LEFT_SQUARE)
-// 			open_close.square_brackets++;
-// 		else if (token->type == RIGHT_SQUARE)
-// 			open_close.square_brackets--;
-// 		else if (token->type == LEFT_PAREN)
-// 			open_close.paren++;
-// 		else if (token->type == RIGHT_PAREN)
-// 			open_close.paren--;
-// 		// else if (token->type == BACKSLASH)
-// 		// 	open_close.backslash++;
-// 		if (open_close.curlys < 0 || open_close.square_brackets < 0 || open_close.paren < 0)
-// 			break;
-// 		current = current->next;
-// 	}
-// 	debug("open close backslash = %d\n", open_close.backslash);
-// 	if (open_close.paren != 0)
-// 		return (err_stop("error: unclosed parenthesis\n"));
-// 	else if (open_close.curlys != 0)
-// 		return (err_stop("error: unclosed curly brackets\n"));
-// 	else if (open_close.quotes % 2 != 0)
-// 		return (err_stop("error: unclosed quotes\n"));
-// 	else if (open_close.single_quotes % 2 != 0)
-// 		return (err_stop("error: unclosed single quotes\n"));
-// 	else if (open_close.square_brackets != 0)
-// 		return (err_stop("error: unclosed square brackets\n"));
-// 	// else if (open_close.backslash % 2 != 0)
-// 	// 	return (err_stop("error: unclosed backslash\n"));
-// 	return (1);
-// }
 /*
 creates a simple t_list node - the token is in the content of the node
 in form of a string that will need to be freed
@@ -419,9 +349,10 @@ t_list *create_token(t_tokentype type, const char *lexeme, int *i)
 
 /*
 I have a linked lists of nodes. each node's content is a token
-I need to pass this function to my ft_lstclear to clear the list
-because the content is a token which has a lexeme which needs to be free
-and then the token itself needs to be freed
+I need to pass this function to my ft_lstclear to clear the list contents
+and because the content is a token which 
+-has a lexeme which needs to be free
+-and then the token itself needs to be freed
 */
 void	free_token(void *content)
 {
@@ -445,6 +376,7 @@ bool	is_io_number(const char *str)
 		return (true);
 	return (false);
 }
+
 /*
 including numbers preceded by a - or + 
 and with and without a dot
@@ -516,7 +448,30 @@ t_list *tokenizer(t_mini_data *data)
 	token_list = NULL;
 	while (i < (int)ft_strlen(input) && data->exit_status == 0)
 	{
-	 	if (peek(input + i, "||", false))
+		// backslash
+		if (input[i] == '\\')
+		{
+			if (input[++i] == '\0')
+			{
+				debug("error: unclosed backslash\n");
+				data->exit_status = 1;
+			}
+			else if (is_alnum(input[i]))
+			{
+				// I just remove the backslash and add it as a token
+				ft_lstadd_back(&token_list, create_token(BACKSLASH, "\\", &i));
+				i--;
+			}	
+			else if (ft_isprint(input[i]))
+			{
+				// it is not alnum but a special char but printable I will add it as a word token
+				// to remove any special significance
+				const char *tmp = ft_substr(input, i, 1);
+				ft_lstadd_back(&token_list, create_token(WORD, tmp, &i));
+				free((char *)tmp);
+			}
+		}
+	 	else if (peek(input + i, "||", false))
 		{
 			debug("found || at %d", i);
 			token = create_token(OR_IF, "||", &i);
