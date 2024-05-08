@@ -153,7 +153,7 @@ const char *test_scanner_identifiers5() {
 	int i = 0;
 
 	result = process_token(&current, &i, "echo", WORD);
-	result = process_token(&current, &i, "\\2", BACKSLASH);
+	result = process_token(&current, &i, "\\2", WORD);
 	result = process_token(&current, &i, ">", REDIRECT_OUT);
 	result = process_token(&current, &i, "a", WORD);
 	result = process_token(&current, &i, "echo", WORD);

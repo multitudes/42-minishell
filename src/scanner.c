@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/07 15:53:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/08 15:37:56 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -448,25 +448,8 @@ t_list *tokenizer(t_mini_data *data)
 	token_list = NULL;
 	while (i < (int)ft_strlen(input) && data->exit_status == 0)
 	{
-		// backslash '\\' is a single char!! 
-		if (input[i] == '\\')
-		{
-			if (is_alnum(input[++i]))
-			{
-				// I just remove the backslash and add it as a token
-				ft_lstadd_back(&token_list, create_token(BACKSLASH, "\\", &i));
-				i--;
-			}	
-			else if (ft_isprint(input[i]))
-			{
-				// it is not alnum but a special char but printable I will add it as a word token
-				// to remove any special significance
-				const char *tmp = ft_substr(input, i, 1);
-				ft_lstadd_back(&token_list, create_token(WORD, tmp, &i));
-				free((char *)tmp);
-			}
-		}
-	 	else if (peek(input + i, "||", false))
+		// backslash '\\' as special char is not implemented
+		if (peek(input + i, "||", false))
 		{
 			debug("found || at %d", i);
 			token = create_token(OR_IF, "||", &i);
@@ -790,7 +773,7 @@ t_list *tokenizer(t_mini_data *data)
 		// if there is a double quote I need to create a string token
 		else if (input[i] == '|' && (input[i + 1] != '|' || input[i+1] != '&'))
 			ft_lstadd_back(&token_list, create_token(PIPE, "|", &i));
-		//SINGLE_QUOTED_STRING, single quoted string 'string'
+		//S_QUOTED_STRING, single quoted string 'string'
 		else if (input[i] == '\'')
 		{
 			int start = i++;
@@ -806,7 +789,7 @@ t_list *tokenizer(t_mini_data *data)
 			// no expansion in those unless they are part of a double quoted string
 			// expand later $() ${} and $VAR and '...'  and ` ... `  ?
 			
-			ft_lstadd_back(&token_list, create_token(SINGLE_QUOTED_STRING, tmp, &start));
+			ft_lstadd_back(&token_list, create_token(S_QUOTED_STRING, tmp, &start));
 			free(tmp);
 			i++;
 		}
@@ -828,8 +811,6 @@ t_list *tokenizer(t_mini_data *data)
 			free(tmp);
 			i++;
 		}
-		// else if (input[i] == '\\')
-		// 	ft_lstadd_back(&token_list, create_token(BACKSLASH, "\\", &i));
 		else if (input[i] == '-' && is_alpha(input[i + 1]))
 		{
 			// create a lexeme for flag in this conf -[a-zA-Z]

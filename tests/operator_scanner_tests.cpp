@@ -250,7 +250,7 @@ const char* test_scanner_append() {
 	result = process_token(&current, &i, "EOF", DLESS_DELIM);
 	result = process_token(&current, &i, "|", PIPE);
 	result = process_token(&current, &i, "grep", WORD);
-	result = process_token(&current, &i, "'foo'", SINGLE_QUOTED_STRING);
+	result = process_token(&current, &i, "'foo'", S_QUOTED_STRING);
 	result = process_token(&current, &i, "This", WORD);
 	result = process_token(&current, &i, "is", WORD);
 	result = process_token(&current, &i, "a", WORD);

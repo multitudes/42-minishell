@@ -133,7 +133,7 @@ the string is not a comment anymore!
 */
 const char* test_scanner_ident_comment3() {
 	
-	std::string str = "\\#hello #hello world";
+	std::string str = "#hello world";
 	const char* input = str.c_str();
 	init_data(&g_mini_data);
 	g_mini_data->input = input;
@@ -142,9 +142,7 @@ const char* test_scanner_ident_comment3() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "\\", BACKSLASH);
-	result = process_token(&current, &i, "#", WORD);	
-	result = process_token(&current, &i, "hello", WORD);
+	// result = process_token(&current, &i, "#hello world", COMMENT);
 	// comments are ignored!
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);

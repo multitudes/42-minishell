@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/07 15:43:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/08 09:44:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,40 +229,6 @@ int loop(int argc, char **argv)
 	{
 		sanitize_input(data->input);
 		
-		// check if the input contains a << DLESS operator and change 
-		// the prompt to indicate that it expects more... however tis 
-		// is probably not what we will do in the end because we need to 
-		// make it working with pipes.
-		// so keep it here for now..
-		// if (contains_heredoc(input, &data->DLESS_delimiter))
-		// {
-		// 	if (data->DLESS_delimiter == NULL || ft_strncmp(data->DLESS_delimiter, "", 1) == 0)
-		// 	{
-		// 		// perror("malloc data->DLESS_delimiter");
-		// 		free(input);
-		// 	}
-		// 	// add newline to my input
-		// 	input = add_newline(input);
-		// 	// read the next input prompt	
-		// 	char *here_content;
-		// 	while(1)
-		// 	{
-		// 		here_content = readline("> ");
-		// 		here_content = add_newline(here_content);
-		// 		debug("here_content: %s\n", here_content);
-		// 		sanitize_input(here_content);
-		// 		input = ft_strjoin(input, here_content);
-		// 		if (contains_string(here_content, data->DLESS_delimiter))
-		// 		{
-		// 			debug("break\n");
-		// 			debug("input: %s\n", input);
-		// 			free(here_content);
-		// 			break;
-		// 		}
-		// 		free(here_content);
-		// 	}
-		// }
-		// else 
 		if (ft_strncmp(data->input, "", 1) != 0)
 		{
 			// check best error handling

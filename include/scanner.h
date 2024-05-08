@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/07 15:55:41 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/08 15:35:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,45 +51,33 @@ control operator
 A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
 */
 typedef enum e_tokentype {
-	WORD, 
-	// Any sequence of letters, digits, and underscores
-	//| and |& have higher precedence than &&, ||, ;, and &. 
-	// They allow you to create pipelines, where the output of 
-	// one command is used as the input of the next command (|), 
-	//or where both the output and error output of one command are 
-	// used as the input of the next command (|&).
-	NUMBER, 
-	STRING, 
+	WORD,  // Any sequence of letters, digits, and underscores
+	NUMBER, // like 42 42.42 -2 etc 
 	BUILTIN,
 	FLAGS,
 	PATHNAME, 
-	PIPE, // |
+	PIPE, // | - | and |& have higher precedence than &&, ||, ;, and &. 
 	PIPE_AND, // |&
+
 	AND_TOK, // &
-	//&& and || have the same precedence and are left-associative. 
-	//They allow you to execute a command based on the success 
-	//(&&) or failure (||) of the previous command.
 	AND_IF, 	// &&
 	OR_IF, // || 
 	
 	//; and & have the same precedence, which is lower than && 
 	//and ||. They allow you to separate commands (;) 
 	//or run a command in the background (&).
-	SEMI, 
-	SEMI_AND,
+	SEMI, // ;
+	SEMI_AND, // ;&
 	// ;;, ;&, and ;;& are used in the context of a case 
 	// statement to separate different cases.
- 	DSEMI, 
-	DSEMI_AND,
-	EXPRESSION,
-	// Command expansion or substitution
-    COM_EXPANSION, // '$(command)' or '`command`'
-	VAR_EXPANSION,  EXPR_EXPANSION, // ${parameter} or $parameter or $(command) or $((arythm expression))
-
-	// escaping?	
-	BACKSLASH,  
+ 	DSEMI, // double semi colon ;; not implemented
+	DSEMI_AND, // ;;& not implemented
+	EXPRESSION, // (....) will be expanded 
+	COM_EXPANSION, // '$(command)' or '`command`'
+	VAR_EXPANSION,  // ${parameter} or $parameter or $variable
+	EXPR_EXPANSION, // $(command) or $((arythm expression))
 	QUOTED_STRING, // quoted string "string" 
-	SINGLE_QUOTED_STRING, // quoted string 'string'
+	S_QUOTED_STRING, // single quoted string like 'string'
 	// ( and ) can be used to group commands, 
 	// which can override the default precedence rules.
 
@@ -108,15 +96,12 @@ typedef enum e_tokentype {
 	CLOBBER, // '>|'
 	REDIRECT_BOTH, // '&>'
 	GREATAND, // '>&'
-    // REDIRECT_ERR, // '2>'
-	// REDIRECT_ERR_FD, //2>&
 
     REDIRECT_IN, // '<'
 	LESSAND, // '<&'
     DGREAT, // '>>'
 	REDIRECT_OUT_APP, // '&>>'	
 	DLESS_DELIM,
-	// REDIRECT_ERR_APP, //2>>
 	REDIRECT_BOTH_APP, //">>&"
  
     DLESS, // '<<'
