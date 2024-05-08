@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/07 12:33:59 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/07 15:55:41 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,9 @@ typedef enum e_tokentype {
 	// Command expansion or substitution
     COM_EXPANSION, // '$(command)' or '`command`'
 	VAR_EXPANSION,  EXPR_EXPANSION, // ${parameter} or $parameter or $(command) or $((arythm expression))
-	
+
+	// escaping?	
+	BACKSLASH,  
 	QUOTED_STRING, // quoted string "string" 
 	SINGLE_QUOTED_STRING, // quoted string 'string'
 	// ( and ) can be used to group commands, 
@@ -136,7 +138,6 @@ typedef enum e_tokentype {
 	// Keywords.
 
 	// control operators
-	NEWLINE_TOK, // A newline
 	// metacharacter : A character that, when unquoted, separates words. 
 	// A metacharacter is a space, tab, newline, or: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
 	SPACE_TOK, TAB_TOK, GREATER_AND, 
@@ -157,9 +158,7 @@ typedef enum e_tokentype {
 	DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.	 
 	DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
 	DOLLAR,
-
-	QUOTE, SINGLE_QUOTE, 
-	BACKSLASH,  
+ 
 
 	DIGIT, CHAR,
 	// end of file

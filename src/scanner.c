@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/07 15:20:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/07 15:53:04 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -448,15 +448,10 @@ t_list *tokenizer(t_mini_data *data)
 	token_list = NULL;
 	while (i < (int)ft_strlen(input) && data->exit_status == 0)
 	{
-		// backslash
+		// backslash '\\' is a single char!! 
 		if (input[i] == '\\')
 		{
-			if (input[++i] == '\0')
-			{
-				debug("error: unclosed backslash\n");
-				data->exit_status = 1;
-			}
-			else if (is_alnum(input[i]))
+			if (is_alnum(input[++i]))
 			{
 				// I just remove the backslash and add it as a token
 				ft_lstadd_back(&token_list, create_token(BACKSLASH, "\\", &i));
