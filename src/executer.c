@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 15:30:30 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 16:01:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,42 +115,42 @@ int	execute_command(t_list *tokenlist, t_mini_data *data)
 
 	i = 0;
 	// convert token list to argvs
-		while (tokenlist)
-		{
-			token = (t_token *)tokenlist->content;
-			argv[i] = token->lexeme;
-			debug("argv[%d]: -%s-", i, argv[i]);
-			i++;
-			tokenlist = tokenlist->next;
-		}
-		argv[i] = NULL;
+	while (tokenlist)
+	{
+		token = (t_token *)tokenlist->content;
+		argv[i] = token->lexeme;
+		debug("argv[%d]: -%s-", i, argv[i]);
+		i++;
+		tokenlist = tokenlist->next;
+	}
+	argv[i] = NULL;
 
-		// If the command name contains no slashes, the shell attempts to locate it. 
-		if (ft_strchr(argv[0], '/') == NULL)
-		{
+	// If the command name contains no slashes, the shell attempts to locate it. 
+	if (ft_strchr(argv[0], '/') == NULL)
+	{
 
-			// check if the path is in the PATH variable
-			cmd = create_path(argv[0], data);
-			if (!cmd)
-			{
-				debug("not on path\n");
-			}
-			else 
-			{
-				debug("command found on path: %s", cmd);
-				argv[0] = cmd;
-			}
+		// check if the path is in the PATH variable
+		cmd = create_path(argv[0], data);
+		if (!cmd)
+		{
+			debug("not on path\n");
 		}
 		else 
 		{
-			// trying to execute the command with access
-			if (access(argv[0], X_OK) == -1)
-			{
-				debug("command not executable\n");
-				return 1;
-			}
-			else
-				debug("command executable\n");
+			debug("command found on path: %s", cmd);
+			argv[0] = cmd;
+		}
+	}
+	else 
+	{
+		// trying to execute the command with access
+		if (access(argv[0], X_OK) == -1)
+		{
+			debug("command not executable\n");
+			return 1;
+		}
+		else
+			debug("command executable\n");
 	}
 
     execve(argv[0], argv, (char **)data->env_arr->contents);
@@ -158,7 +158,7 @@ int	execute_command(t_list *tokenlist, t_mini_data *data)
     // If execve returns at all, an error occurred.
 	write(2, "minishell: command not found\n", 30);
     perror("execve");
-    return 1;
+    return 127;
 }
 /*
 traverse the ast and execute the commands node by node left to right
@@ -175,7 +175,9 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 	t_list *tokenlist;
 	t_token *token;
 	t_nodetype astnodetype;
+	int status;
 
+	status = 0;
 	if (ast == NULL)
 		return (0);
 	debug("\nexecute:");
@@ -190,19 +192,23 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 	if (astnodetype == NODE_LIST)
 	{
 		debug("NODE_LIST || &&");
-		execute_ast(ast->left, data);
-		execute_ast(ast->right, data);
+		// get the token from the tokenlist
+		t_token *token = (t_token *)ast->token_list->content;
+		debug("node value, %s - status now %d", token->lexeme, status);
+		status = execute_ast(ast->left, data);
+
+		status = execute_ast(ast->right, data);
 	}
 	else if (astnodetype == NODE_PIPELINE)
 	{
 		debug("NODE_PIPELINE");
 
 		
-		// create a pipe
-		int pfd[2];
+
 		pid_t pid1, pid2;
 		
-		if (pipe(pfd) == -1)
+		// create a pipe
+		if (pipe(data->pipe_fd) == -1)
 		{
 			perror("pipe");
 			return (0); // should be error
@@ -222,7 +228,7 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 			// child process
 			// redirect the stdout to the write end of the pipe
 			// close the read end of the pipe (unused)
-			if (close(pfd[0]) == -1)
+			if (close(data->pipe_fd[0]) == -1)
 			{
 				perror("close 1 - child read end of the pipe");
 				return (0);
@@ -232,14 +238,14 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 			defensive check
 			need duplicate and close one of the file descriptors	
 			*/
-			if (pfd[1] != STDOUT_FILENO) 
+			if (data->pipe_fd[1] != STDOUT_FILENO) 
 			{
-				if (dup2(pfd[1], STDOUT_FILENO) == -1)
+				if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
 				{
 					perror("dup2 1");
 					return (0);
 				}
-        		if (close(pfd[1]) == -1)
+        		if (close(data->pipe_fd[1]) == -1)
 				{
 					perror("close 2");
 					return (0);
@@ -272,7 +278,7 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 			// second child process
 			debug("second child process pid1: %d", pid2);
 			// close the write end of the pipe (unused)
-			if (close(pfd[1]) == -1)
+			if (close(data->pipe_fd[1]) == -1)
 			{
 				perror("close 3 - child write end of the pipe");
 				return (0);
@@ -282,14 +288,14 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 			defensive check
 			need duplicate and close one of the file descriptors	
 			*/
-			if (pfd[0] != STDIN_FILENO) 
+			if (data->pipe_fd[0] != STDIN_FILENO) 
 			{
-				if (dup2(pfd[0], STDIN_FILENO) == -1)
+				if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
 				{
 					perror("dup2 2");
 					return (0);
 				}
-        		if (close(pfd[0]) == -1)
+        		if (close(data->pipe_fd[0]) == -1)
 				{
 					perror("close 4");
 					return (0);
@@ -308,12 +314,12 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 		}
 		
 		/* Parent closes unused file descriptors for pipe, and waits for children */
-		if (close(pfd[0]) == -1)
+		if (close(data->pipe_fd[0]) == -1)
 		{
 			perror("close 5");
 			return (0);
 		}
-		if (close(pfd[1]) == -1)
+		if (close(data->pipe_fd[1]) == -1)
 		{
 			perror("close 6");
 			return (0);

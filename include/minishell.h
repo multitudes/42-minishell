@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 12:57:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 15:52:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ DLESS_delimiter for DLESS
 exit_status for the exit status of the last command
 scanner_error when the mallocs in the scanner failed. 
 keep track of how many tokens were created
-pipe_open : am I in a piped process?
+pipe_open : am I in a piped process? the last process in a pipe will set it to zero
 pipe_fd : file descriptors for the pipe
 */
 struct s_mini_data 
