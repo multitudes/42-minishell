@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/08 15:35:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 11:00:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,31 +93,29 @@ typedef enum e_tokentype {
     // Redirection operators
 	IO_NUMBER, // 'n>' or 'n>>' or 'n>&' or 'n<&' or 'n<>' a numberfollowed by a redirection operator < or >
     REDIRECT_OUT, // '>'
+    REDIRECT_IN, // '<'
+    DGREAT, // '>>'
+    DLESS, // '<<'
+	DLESS_DELIM,
+	
 	CLOBBER, // '>|'
 	REDIRECT_BOTH, // '&>'
 	GREATAND, // '>&'
-
-    REDIRECT_IN, // '<'
 	LESSAND, // '<&'
-    DGREAT, // '>>'
 	REDIRECT_OUT_APP, // '&>>'	
-	DLESS_DELIM,
 	REDIRECT_BOTH_APP, //">>&"
+	EQUAL, // =
  
-    DLESS, // '<<'
 	
 	//The <> operator in bash is used for opening a file in read-write mode. Here's an example:
 	// command <> file.txt
 	LESSGREAT, 		// '<>'
 	DLESSDASH,	 // '<<-' The here-document delimiter is treated as a literal string,
-	GREATER_AND_GREATER, 
-	COMMA, DOT, MINUS, PLUS, SLASH, STAR,
-	// One or two character tokens.
-	BANG_EQUAL,	BANG,
+	GREATER_AND_GREATER, // ">&>",
+	COMMA, DOT, MINUS, PLUS, SLASH, STAR, BANG_EQUAL, BANG,
 	// for the history expansion
 	BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA,
-
-	EQUAL, EQUAL_EQUAL,
+	EQUAL_EQUAL,
 	GREATER_EQUAL, LESS_EQUAL, MINUS_MINUS, PLUS_PLUS,
 	MINUS_EQUAL, PLUS_EQUAL, SLASH_EQUAL, STAR_EQUAL,
 	// Keywords.
@@ -156,16 +154,7 @@ typedef enum e_tokentype {
 	
 }		t_tokentype;
 
-// I will create a struct to keep track of all these
-struct s_open_close {
-	int paren;
-	int curlys;
-	int quotes;
-	int single_quotes;
-	int backslash;
-	int square_brackets;	
-};
-typedef struct s_open_close t_open_close;
+
 
 struct s_token {
 	t_tokentype	type;
@@ -176,6 +165,7 @@ typedef struct s_token t_token;
 
 /*
 is this used?
+can we go without?
 */
 struct s_token_list {
 	t_list *head;
@@ -196,8 +186,6 @@ bool	is_reserved(t_mini_data *data, t_list **token_list, char *identifier,int *s
 bool 	is_builtin(t_mini_data *data, t_list **token_list, char *identifier,int *start);
 void	print_token_description(const t_list *current); 
 void	print_token_list(t_list *token_list);
-void	init_open_close(t_open_close *open_close);
-int		check_paren_quotes(t_list *token_list);
 t_list	*create_token(t_tokentype type, const char *lexeme, int *i);
 bool	is_io_number(const char *identifier);
 bool	str_is_number(const char *identifier);

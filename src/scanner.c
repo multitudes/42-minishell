@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/08 15:37:56 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 11:01:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -461,18 +461,11 @@ t_list *tokenizer(t_mini_data *data)
 				data->exit_status = 1;
 			} 
 		}
-		else if (input[i] == '|' && input[i + 1] == '&')
-			ft_lstadd_back(&token_list, create_token(PIPE_AND, "|&", &i));
 		else if (input[i] == '&' && input[i + 1] == '&')
 			ft_lstadd_back(&token_list, create_token(AND_IF, "&&", &i));
-		else if (input[i] == ';' && input[i + 1] == '&')
-			ft_lstadd_back(&token_list, create_token(SEMI_AND, ";&", &i));
-		else if (input[i] == ';' && input[i + 1] == ';')
-			ft_lstadd_back(&token_list, create_token(DSEMI, ";;", &i));
-		else if (input[i] == ';' && input[i + 1] == ';' && input[i + 2] == '&')
-			ft_lstadd_back(&token_list, create_token(DSEMI_AND, ";;&", &i));
-		else if (input[i] == ';')
-			ft_lstadd_back(&token_list, create_token(SEMI, ";", &i));
+		
+		
+		
 		
 		// wanna create an expression token
 		else if (input[i] == '(')
@@ -491,6 +484,16 @@ t_list *tokenizer(t_mini_data *data)
 			free(tmp);
 			i++;
 		}
+		else if (input[i] == '|' && input[i + 1] == '&')
+			ft_lstadd_back(&token_list, create_token(PIPE_AND, "|&", &i));
+		else if (input[i] == ';' && input[i + 1] == '&')
+			ft_lstadd_back(&token_list, create_token(SEMI_AND, ";&", &i));
+		else if (input[i] == ';' && input[i + 1] == ';')
+			ft_lstadd_back(&token_list, create_token(DSEMI, ";;", &i));
+		else if (input[i] == ';' && input[i + 1] == ';' && input[i + 2] == '&')
+			ft_lstadd_back(&token_list, create_token(DSEMI_AND, ";;&", &i));
+		else if (input[i] == ';')
+			ft_lstadd_back(&token_list, create_token(SEMI, ";", &i));
 		else if (input[i] == '-' && input[i + 1] == '-' && input[i + 2] == ' ')
 			ft_lstadd_back(&token_list, create_token(MINUS_MINUS, "--", &i));
 		else if (input[i] == '+' && input[i + 1] == '+' && input[i + 2] == ' ')
@@ -648,23 +651,6 @@ t_list *tokenizer(t_mini_data *data)
 			free(tmp);
 			i++;
 		}
-		// Command substitution
-   		// COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
-		else if (input[i] == '`')
-		{
-			int start = i++;
-			while (input[i] != '`' && input[i] != '\0')
-				i++;
-			if (input[i] == '\0')
-			{
-				debug("error: unclosed expansion\n");
-								data->exit_status = 1;;
-			}
-			tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&token_list, create_token(COM_EXPANSION, tmp, &start));
-			free(tmp);
-			i++;
-		}
 		// arythmetic expansion
 		else if (input[i] == '$' && input[i + 1] == '(' && input[i + 2] == '(')
 		{
@@ -742,30 +728,6 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&token_list, create_token(MINUS, "-", &i));
 		else if (input[i] == '+')
 			ft_lstadd_back(&token_list, create_token(PLUS, "+", &i));
-		/* 
-		is always a directory in bash so might as well get a lexeme like this
-		starts with ~ or / but a directory cannot start with - (or ~)
-		*/
-		// else if (input[i] == '/' || input[i] == '~' )
-		// {
-		// 	int start = i;
-
-		// 	while (is_pathname(input[i]) && !((input[i] == '/') && input[i + 1] == '-')  && !((input[i] == '/') && input[i + 1] == '~'))
-		// 		i++;
-		// 	// thid is a first check but it is more complicated than that - TODO
-		// 	if (is_pathname(input[i]))
-		// 	{
-		// 		debug("error: invalid path\n");
-		// 		data->exit_status = 1;;
-		// 	}
-		// 	tmp = ft_substr(input, start, i - start);
-		// 	// no expansion in those unless they are part of a double quoted string
-		// 	// expand later $() ${} and $VAR and '...'  and ` ... `  ?
-			
-		// 	ft_lstadd_back(&token_list, create_token(PATHNAME, tmp, &start));
-		// 	free(tmp);
-		// 	i++;	
-		// }
 		else if (input[i] == '*')
 			ft_lstadd_back(&token_list, create_token(STAR, "*", &i));
 		// else if (input[i] == '?')
@@ -826,26 +788,6 @@ t_list *tokenizer(t_mini_data *data)
 			free(tmp);
 			i++;
 		}
-		// else if (is_digit(input[i]))
-		// {
-		// 	int start = i;
-		// 	while (is_digit(input[i]))
-		// 	{
-		// 		i++;
-		// 		if (input[i] == '.')
-		// 		{
-		// 			i++;
-		// 			while (is_digit(input[i]))
-		// 				i++;
-		// 		}
-		// 	}
-		// 	// add the rest of the string as a digit
-		// 	tmp = ft_substr(input, start, i - start);
-		// 	ft_lstadd_back(&token_list, create_token(NUMBER, tmp, &start));
-		// 	if (!is_delimiter(input[i]))
-		// 		debug("error: invalid number missing delimiter\n");
-		// 	free(tmp);
-		// }
 		else if (input[i] == '&')
 			ft_lstadd_back(&token_list, create_token(AND_TOK, "&", &i));
 		else if (input[i] == '^')
@@ -856,7 +798,24 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&token_list, create_token(TILDE, "~", &i));
 		else if (input[i] == '$')
 			ft_lstadd_back(&token_list, create_token(DOLLAR, "$", &i));
-		// hash # case the rest of the string will be a comment
+		// Command substitution not implemented
+   		// COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
+		else if (input[i] == '`')
+		{
+			int start = i++;
+			while (input[i] != '`' && input[i] != '\0')
+				i++;
+			if (input[i] == '\0')
+			{
+				debug("error: unclosed expansion\n");
+								data->exit_status = 1;;
+			}
+			tmp = ft_substr(input, start, i - start + 1);
+			ft_lstadd_back(&token_list, create_token(COM_EXPANSION, tmp, &start));
+			free(tmp);
+			i++;
+		}
+		// hash # case the rest of the string will be a comment but we dont create a token, we ignore
 		else if (input[i] == '#')
 		{
 			// add the rest of the string as a comment
@@ -918,12 +877,6 @@ t_list *tokenizer(t_mini_data *data)
 		return (NULL);
 	}
 	data->token_list = token_list;
-	// print_token_list(token_list);
-
-	// analysing if the paren are closing and the quotes are closed
-	// if not print an error message
-	// if (!check_paren_quotes(token_list))
-	// 	return (NULL);
 
 	return token_list;
 }
