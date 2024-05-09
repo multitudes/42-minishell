@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 11:52:44 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 17:06:04 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	which_ast_node(t_ast_node *ast)
 	}
 	else if (token->type == TRUETOK || token->type == FALSETOK)
 	{
-		
+		debug("NODE_TRUE or NODE_FALSE");
 	}
 	else
 		debug("not TERMINAL");	

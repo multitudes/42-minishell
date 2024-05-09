@@ -6,14 +6,20 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 16:10:09 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 17:13:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executer.h"
 
+/*
+posix compliant
+*/
 extern char **environ;
 
+/*
+NOT yet implemented - TODO
+*/
 void	execute_builtin(t_list *tokenlist, t_mini_data *data)
 {
 	t_token *token;
@@ -62,7 +68,9 @@ void	execute_builtin(t_list *tokenlist, t_mini_data *data)
 	}
 	
 }
-
+/*
+free a **char array
+*/
 int	free_array(char **envpaths)
 {
 	int i = 0;
@@ -180,6 +188,7 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 	status = 0;
 	if (ast == NULL)
 		return (0);
+
 	debug("\nexecute:");
 	debug("ast node type: %d ", ast->type);
 	tokenlist = ast->token_list;
@@ -194,16 +203,14 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 	if (astnodetype == NODE_TRUE)
 	{
 		debug("NODE_TRUE");
-		return (1);
+		return (0);
 	}
 	else if (astnodetype == NODE_FALSE)
 	{
 		debug("NODE_FALSE");
-		return (0);
+		return (1);
 	}
-	else
-
-	if (astnodetype == NODE_LIST)
+	else if (astnodetype == NODE_LIST)
 	{
 		debug("NODE_LIST || &&");
 		// get the token from the tokenlist
@@ -220,6 +227,8 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 			debug("ORTOKEN");
 			status = execute_ast(ast->right, data);
 		}
+		debug("status now %d", status);
+		return (status);
 	}
 	else if (astnodetype == NODE_PIPELINE)
 	{
