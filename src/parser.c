@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 11:54:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 17:03:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,29 @@ bool	is_redirection(t_list *input_tokens)
 }
 
 /*
+ count the number of nodes in the t_list
+*/
+int 	count_list(t_list *input_tokens)
+{
+	t_list *tmp;
+	int count;
+	
+	tmp = input_tokens;
+	count = 0;
+	if (input_tokens == NULL)
+		return (0);		
+	while (tmp)
+	{
+		count++;
+		tmp = tmp->next;
+	}
+	return (count);
+}
+
+
+
+
+/*
 introducing a new node type for the tree, t_ast_node.
 The tree will be composed of nodes, each node will have a type,
 a left and a right node, and a list of tokens as a t_list.
@@ -274,7 +297,6 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 	tmp = input_tokens;
 	while (tmp)
 	{
-		// debug("EXPRESSION");
 		token = (t_token *)tmp->content;
 		if (token->type == EXPRESSION)
 		{
@@ -296,9 +318,23 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 		ft_lstadd_back(&expr_token_list, ft_lstnew(token));
 		tmp = tmp->next;	
 	}
-	// if I get here I am a terminal node 
-	debug("TERMINAL");
-	node = new_node(NODE_TERMINAL, NULL, NULL, expr_token_list);
+	// check if I have a true or false
+	
+	// input_tokens = expr_token_list;
+	// expr_token_list = NULL;
+	// tmp = input_tokens;
+	token = (t_token *)expr_token_list->content;
+	if (count_list(expr_token_list) == 1 && strncicmp(token->lexeme, "true", 4) == 0)
+		node = new_node(NODE_TRUE, NULL, NULL, ft_lstnew(token));
+	else if (count_list(expr_token_list) == 1 && strncicmp(token->lexeme, "false", 5) == 0)
+		node = new_node(NODE_FALSE, NULL, NULL, ft_lstnew(token));
+	else
+	{
+		// if I get here I am a terminal node (command or builtin)
+		debug("TERMINAL");
+		node = new_node(NODE_TERMINAL, NULL, NULL, expr_token_list);
+	}
+
 	return (node);
 }
 

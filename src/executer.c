@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 16:01:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 16:10:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,20 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 	token = (t_token *)tokenlist->content;
 	debug("token type: %d", (t_tokentype)(token->type));
 	// debug("lexeme %s\n", (char *)(token->lexeme));
+
+	// true and false keywords
+	if (astnodetype == NODE_TRUE)
+	{
+		debug("NODE_TRUE");
+		return (1);
+	}
+	else if (astnodetype == NODE_FALSE)
+	{
+		debug("NODE_FALSE");
+		return (0);
+	}
+	else
+
 	if (astnodetype == NODE_LIST)
 	{
 		debug("NODE_LIST || &&");
@@ -196,8 +210,16 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 		t_token *token = (t_token *)ast->token_list->content;
 		debug("node value, %s - status now %d", token->lexeme, status);
 		status = execute_ast(ast->left, data);
-
-		status = execute_ast(ast->right, data);
+		if (status == 0 && token->type == AND_IF)
+		{
+			debug("ANDTOKEN");
+			status = execute_ast(ast->right, data);
+		}
+		else if (status != 0 && token->type == OR_IF)
+		{
+			debug("ORTOKEN");
+			status = execute_ast(ast->right, data);
+		}
 	}
 	else if (astnodetype == NODE_PIPELINE)
 	{

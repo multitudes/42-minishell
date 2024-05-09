@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 11:54:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 16:10:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ typedef struct s_list
 typedef enum	e_nodetype 
 {
 	NODE_LIST,
+	NODE_TRUE,
+	NODE_FALSE,
 	NODE_PIPELINE, 
 	NODE_REDIRECT, 
 	NODE_BUILTIN,
