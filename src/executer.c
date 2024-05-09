@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 13:07:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 15:30:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,17 +90,13 @@ char	*create_path(char *base, t_mini_data *data)
 	{
 		debug("path: %s", envpaths[i]);
 		char *checkpath = ft_strjoin3(envpaths[i], "/", base);
-		debug("checkpath: %s", checkpath);
 		if (access(checkpath, X_OK) == 0)
 		{
-			debug("command found");
 			free_array(envpaths);
 			return (checkpath);
 		}
 		else
-		{
 			debug("command not found");
-		}
 		free(checkpath);
 		i++;
 	}
@@ -119,58 +115,42 @@ int	execute_command(t_list *tokenlist, t_mini_data *data)
 
 	i = 0;
 	// convert token list to argvs
-	while (tokenlist)
-	{
-		token = (t_token *)tokenlist->content;
-		argv[i] = token->lexeme;
-		debug("argv[%d]: -%s-", i, argv[i]);
-		i++;
-		tokenlist = tokenlist->next;
-	}
-	argv[i] = NULL;
-
-	// If the command name contains no slashes, the shell attempts to locate it. 
-	if (ft_strchr(argv[0], '/') == NULL)
-	{
-		debug("no slash in command\n");
-		// check if the path is in the PATH variable
-		cmd = create_path(argv[0], data);
-		if (!cmd)
+		while (tokenlist)
 		{
-			debug("not on path\n");
+			token = (t_token *)tokenlist->content;
+			argv[i] = token->lexeme;
+			debug("argv[%d]: -%s-", i, argv[i]);
+			i++;
+			tokenlist = tokenlist->next;
+		}
+		argv[i] = NULL;
+
+		// If the command name contains no slashes, the shell attempts to locate it. 
+		if (ft_strchr(argv[0], '/') == NULL)
+		{
+
+			// check if the path is in the PATH variable
+			cmd = create_path(argv[0], data);
+			if (!cmd)
+			{
+				debug("not on path\n");
+			}
+			else 
+			{
+				debug("command found on path: %s", cmd);
+				argv[0] = cmd;
+			}
 		}
 		else 
 		{
-			debug("command found on path: %s", cmd);
-			argv[0] = cmd;
-		}
-	}
-	else 
-	{
-		// print getcwd
-		char cwd[1024];
-		if (getcwd(cwd, sizeof(cwd)) != NULL)
-		{
-			debug("Current working dir: %s", cwd);
-			// check if the current dir plus the command is executable
-			// add the current directory and the argv[0] 
-			char *new_command = ft_strjoin3(cwd, "/", argv[0]);
-			debug("new_command: %s", new_command);
-			if (access(new_command, X_OK) == 0)
+			// trying to execute the command with access
+			if (access(argv[0], X_OK) == -1)
 			{
-				debug("new_command found");
+				debug("command not executable\n");
+				return 1;
 			}
 			else
-			{
-				perror("access");
-			}
-		}
-		else
-		{
-			perror("getcwd");
-		}
-		// check the PATH variable for a path corresponding to the command
-		
+				debug("command executable\n");
 	}
 
     execve(argv[0], argv, (char **)data->env_arr->contents);
