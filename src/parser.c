@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 17:03:30 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 17:04:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,10 +319,6 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 		tmp = tmp->next;	
 	}
 	// check if I have a true or false
-	
-	// input_tokens = expr_token_list;
-	// expr_token_list = NULL;
-	// tmp = input_tokens;
 	token = (t_token *)expr_token_list->content;
 	if (count_list(expr_token_list) == 1 && strncicmp(token->lexeme, "true", 4) == 0)
 		node = new_node(NODE_TRUE, NULL, NULL, ft_lstnew(token));
