@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 11:54:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 13:07:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,17 @@ void	execute_builtin(t_list *tokenlist, t_mini_data *data)
 	
 }
 
+int	free_array(char **envpaths)
+{
+	int i = 0;
+	while (envpaths[i])
+	{
+		free(envpaths[i]);
+		i++;
+	}
+	free(envpaths);
+	return (0);
+}
 
 /*
 split the PATH variable into base paths
@@ -70,7 +81,7 @@ check if the base path is in the PATH variable
 if it is return true
 else return false
 */
-bool is_on_path(char *base, t_mini_data *data)
+char	*create_path(char *base, t_mini_data *data)
 {
 	char **envpaths = ft_split(mini_get_env(data, "PATH"), ':');
 
@@ -78,13 +89,23 @@ bool is_on_path(char *base, t_mini_data *data)
 	while (envpaths[i])
 	{
 		debug("path: %s", envpaths[i]);
-		if (ft_strncmp(envpaths[i], base, ft_strlen(base)) == 0)
+		char *checkpath = ft_strjoin3(envpaths[i], "/", base);
+		debug("checkpath: %s", checkpath);
+		if (access(checkpath, X_OK) == 0)
 		{
-			return (true);
+			debug("command found");
+			free_array(envpaths);
+			return (checkpath);
 		}
+		else
+		{
+			debug("command not found");
+		}
+		free(checkpath);
 		i++;
 	}
-	return (0);
+	free_array(envpaths);
+	return (NULL);
 }
 
 
@@ -93,6 +114,7 @@ int	execute_command(t_list *tokenlist, t_mini_data *data)
 	t_token *token;
 	(void)data;
 	char *argv[100];
+	char *cmd;
 	int i;
 
 	i = 0;
@@ -106,29 +128,21 @@ int	execute_command(t_list *tokenlist, t_mini_data *data)
 		tokenlist = tokenlist->next;
 	}
 	argv[i] = NULL;
-	// this is starting with / so it is a absolute path
-	if (argv[0][0] == '/')
+
+	// If the command name contains no slashes, the shell attempts to locate it. 
+	if (ft_strchr(argv[0], '/') == NULL)
 	{
+		debug("no slash in command\n");
 		// check if the path is in the PATH variable
-		char *base = ft_strdup(argv[0]);
-		char* slash = strrchr(base, '/');
-		if (slash != NULL && slash != base) 
+		cmd = create_path(argv[0], data);
+		if (!cmd)
 		{
-			*slash = '\0';
-		}
-		debug("base: %s", base);
-		// look for the base path in the env variable PATH
-		if (!is_on_path(base, data))
-		{
-			debug("not valid path\n");
+			debug("not on path\n");
 		}
 		else 
 		{
-			debug("path found\n");
-			if (access(argv[0], X_OK) == -1)
-			{
-				perror("access");
-			}
+			debug("command found on path: %s", cmd);
+			argv[0] = cmd;
 		}
 	}
 	else 
@@ -373,6 +387,11 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 	{
 		debug("NODE_COMMAND");
 		execute_command(tokenlist, data);
+		return (0);
+	}
+	else if (astnodetype == NODE_TERMINAL)
+	{
+		debug("NODE_TERMINAL\n");
 		return (0);
 	}
 	else
