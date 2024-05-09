@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 12:31:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 11:52:44 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ struct s_token {
 typedef struct s_token t_token;
 
 	tmp = ast->token_list;
-	if (ast->type == NODE_EXPRESSION)
+	if (ast->type == NODE_LIST)
 	{
-		debug("NODE_EXPRESSION\n");
+		debug("NODE_LIST\n");
 		while (tmp)
 		{
 			debug("-> %s\n", (char*)tmp->content);
@@ -64,6 +64,10 @@ void	which_ast_node(t_ast_node *ast)
 		debug("NODE_COMMAND");
 		return ;
 	}
+	else if (token->type == TRUETOK || token->type == FALSETOK)
+	{
+		
+	}
 	else
 		debug("not TERMINAL");	
 }
@@ -91,11 +95,11 @@ void analyse_expand(t_ast_node *ast, t_mini_data *data)
 	debug("---------left -----------");
 	if (ast->left)
 		analyse_expand(ast->left, data);
-	else
-		debug("left is NULL");
+	// else
+	// 	debug("left is NULL");
 	debug("---------right -----------");
 	if (ast->right)
 		analyse_expand(ast->right, data);
-	else
-		debug("right is NULL");
+	// else
+	// 	debug("right is NULL");
 }

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/07 13:47:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 11:54:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,10 +171,40 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 	expr_token_list = NULL;
 	if (input_tokens == NULL)
 		return (NULL);		
+	
 	while (tmp)
 	{
 		token = (t_token *)tmp->content;
-		// debug("token type: %d, %s", token->type, token->lexeme);
+		debug("token type: %d, %s", token->type, token->lexeme);
+
+		// first we  check for && and ||
+		if (token->type == AND_IF || token->type == OR_IF)
+		{
+			debug("AND OR");
+			left = create_ast(data, expr_token_list);
+			if (left == NULL)
+				return (NULL);
+			right = create_ast(data, tmp->next);
+			if (right == NULL)
+				return (NULL);
+			node = new_node(NODE_LIST, left, right, ft_lstnew(token));
+			// free the token list?
+			// ft_lstclear(&expr_token_list, free);
+			return (node);
+		}
+		// as long as I dont find a && or || I will add the token to the list
+		ft_lstadd_back(&expr_token_list, ft_lstnew(token));
+		tmp = tmp->next;
+	}
+
+	// here I need to traverse my list again to check for pipes
+	input_tokens = expr_token_list;
+	expr_token_list = NULL;
+	tmp = input_tokens;
+	// che ck for the pipes
+	while (tmp)
+	{
+		token = (t_token *)tmp->content;
 		if (token->type == PIPE || token->type == PIPE_AND)
 		{
 			debug("PIPE");
@@ -190,7 +220,7 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 			right = create_ast(data, tmp->next);
 			if (right == NULL)
 				return (NULL);
-			node = new_node(NODE_PIPE, left, right, ft_lstnew(token));
+			node = new_node(NODE_PIPELINE, left, right, ft_lstnew(token));
 			// free the token list ? not here because the pointer is used in the tree!
 			// ft_lstclear(&expr_token_list, free);
 			return (node);
@@ -199,6 +229,8 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 		ft_lstadd_back(&expr_token_list, ft_lstnew(token));
 		tmp = tmp->next;
 	}
+	
+	// I am here. my token list has no pipe
 	// chedck for the redirections if I do not have any pipe
 	// here I need to traverse my list again to check for redirections
 	input_tokens = expr_token_list;
@@ -208,15 +240,7 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 	{
 		token = (t_token *)tmp->content;
 		debug("check redir token type: %d, %s", token->type, token->lexeme);
-		/*
-		we dont implement all of them just the > but we can add the others
-		    REDIRECT_OUT, // '>'
-			REDIRECT_BOTH, // '&>'
-			GREATAND, // '>&'
-			REDIRECT_ERR, // '2>'
-			REDIRECT_ERR_FD, //2>&
-			to the parser
-		*/
+
 		if (token->type == REDIRECT_OUT || token->type == REDIRECT_BOTH || 
 		token->type == GREATAND)
 		{
@@ -233,7 +257,7 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 				debug("right is NULL");
 				return (NULL);
 			}
-			node = new_node(NODE_EXPRESSION, left, right, ft_lstnew(token));
+			node = new_node(NODE_REDIRECT, left, right, ft_lstnew(token));
 			// free the token list?
 			// ft_lstclear(&expr_token_list, free);
 			return (node);
@@ -273,6 +297,7 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 		tmp = tmp->next;	
 	}
 	// if I get here I am a terminal node 
+	debug("TERMINAL");
 	node = new_node(NODE_TERMINAL, NULL, NULL, expr_token_list);
 	return (node);
 }
@@ -291,10 +316,10 @@ void		free_ast(t_ast_node *ast)
 /* 
 need to print the ast tree  
 and each node should be printed with its type to debug
-like NODE_EXPRESSION, which is the default node
+like NODE_LIST, which is the default node
 ..need to think if I want to assign a type to each node here
 or in the analyser?
-NODE_COMMAND, NODE_PIPE, NODE_REDIRECT, NODE_DLESS
+NODE_COMMAND, NODE_PIPELINE, NODE_REDIRECT, NODE_DLESS
 also, the args should be printed
 
 still working on it - laurent

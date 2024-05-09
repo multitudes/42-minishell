@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 16:55:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 11:54:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,13 +191,17 @@ int	execute_ast(t_ast_node *ast, t_mini_data *data)
 		return (0);
 	astnodetype = ast->type;
 	token = (t_token *)tokenlist->content;
-	// check if the token list is a builtin
 	debug("token type: %d", (t_tokentype)(token->type));
 	// debug("lexeme %s\n", (char *)(token->lexeme));
-
-	if (astnodetype == NODE_PIPE)
+	if (astnodetype == NODE_LIST)
 	{
-		debug("NODE_PIPE");
+		debug("NODE_LIST || &&");
+		execute_ast(ast->left, data);
+		execute_ast(ast->right, data);
+	}
+	else if (astnodetype == NODE_PIPELINE)
+	{
+		debug("NODE_PIPELINE");
 
 		
 		// create a pipe

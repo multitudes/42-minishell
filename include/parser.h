@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 11:37:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/09 11:54:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,14 @@ extern "C" {
 I am creating a ast tree for my context free grammar with these structs...
 typedef enum	e_nodetype 
 {
-	NODE_EXPRESSION,
-	NODE_TERMINAL,
+	NODE_LIST,
+	NODE_PIPELINE, 
+	NODE_REDIRECT, 
 	NODE_BUILTIN,
 	NODE_COMMAND, 
-	NODE_PIPE, 
-	NODE_REDIRECT, 
-	NODE_DLESS
+	NODE_DLESS,
+	NODE_TERMINAL,
+	NODE_NULL
 } 				t_nodetype;
 
 if it is a terminal node I will have the args
@@ -58,13 +59,13 @@ typedef struct s_list
 
 typedef enum	e_nodetype 
 {
-	NODE_EXPRESSION,
-	NODE_TERMINAL,
+	NODE_LIST,
+	NODE_PIPELINE, 
+	NODE_REDIRECT, 
 	NODE_BUILTIN,
 	NODE_COMMAND, 
-	NODE_PIPE, 
-	NODE_REDIRECT, 
 	NODE_DLESS,
+	NODE_TERMINAL,
 	NODE_NULL
 } 				t_nodetype;
 
