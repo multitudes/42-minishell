@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/10 09:35:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/10 09:48:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -465,7 +465,7 @@ t_list *tokenizer(t_mini_data *data)
 {
 	int i;
 	char *tmp;
-	t_list *token;
+	// t_list *token;
 	t_list *token_list;
 	const char *input;
 	
@@ -476,30 +476,12 @@ t_list *tokenizer(t_mini_data *data)
 	while (i < (int)ft_strlen(input) && data->exit_status == 0)
 	{
 		// extract tokens
-		// extract_tokens(data, &i)
+		extract_tokens(data, &i);
 
-		// backslash '\\' as special char is not implemented
-		if (peek(data->input + i, "||", false))
-		{
-			//debug("found || at %d", i);
-			enum e_tokentype type = OR_IF;
-			token = create_token(type, "||", &i);
-			if (token)
-				ft_lstadd_back(&token_list, token);
-			else
-			{
-				debug("error: malloc token failed\n");
-				data->exit_status = 1;
-			} 
-		}
-		else if (input[i] == '&' && input[i + 1] == '&')
-			ft_lstadd_back(&token_list, create_token(AND_IF, "&&", &i));
-		
-		
-		
+
 		
 		// wanna create an expression token
-		else if (input[i] == '(')
+		if (input[i] == '(')
 		{
 			int start = i;
 			i++;
