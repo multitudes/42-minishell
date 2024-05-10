@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/10 09:48:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/10 10:17:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -440,17 +440,54 @@ void	add_token(t_mini_data *data, int *i, char *lxm, enum e_tokentype type)
 	} 
 }
 
-/*
-*/
-void	extract_tokens(t_mini_data *data, int *i)
+bool	extract_redirections(t_mini_data *data, int *i)
 {
-	// extract tokens
-	// extract_tokens(data, &i)
-	// backslash '\\' as special char is not implemented
+	int tmp;
+	tmp = *i;
 	if (peek(data->input + *i, "||", false))
 		add_token(data, i, "||", OR_IF);
-	else if (data->input[*i] == '&' && data->input[*i + 1] == '&')
-		ft_lstadd_back(&data->token_list, create_token(AND_IF, "&&", i));
+	else if (peek(data->input + *i, "&&", false))
+		add_token(data, i, "&&", AND_IF);
+	else if (peek(data->input + *i, "|&", false))
+		add_token(data, i, "|&", PIPE_AND);
+	else if (peek(data->input + *i, ";&", false))
+		add_token(data, i, ";&", SEMI_AND);
+	if (tmp != *i)
+		return (true);
+	return (false);
+}
+
+/*
+
+*/
+bool	extract_tokens(t_mini_data *data, int *i)
+{
+	int tmp;
+	tmp = *i;
+	if (extract_redirections(data, i))
+		return (true);
+
+	else if (peek(data->input + *i, ";;", false))
+		add_token(data, i, ";;", DSEMI);
+	else if (peek(data->input + *i, ";;&", false))
+		add_token(data, i, ";;&", DSEMI_AND);
+	else if (peek(data->input + *i, ";", false))
+		add_token(data, i, ";", SEMI);
+	else if (peek(data->input + *i, "--", false))
+		add_token(data, i, "--", MINUS_MINUS);
+	else if (peek(data->input + *i, "++", false))
+		add_token(data, i, "++", PLUS_PLUS);
+	else if (peek(data->input + *i, "-=", false))
+		add_token(data, i, "-=", MINUS_EQUAL);
+	else if (peek(data->input + *i, "+=", false))
+		add_token(data, i, "+=", PLUS_EQUAL);
+	else if (peek(data->input + *i, "/=", false))
+		add_token(data, i, "/=", SLASH_EQUAL);
+	else if (peek(data->input + *i, "*=", false))
+		add_token(data, i, "*=", STAR_EQUAL);
+	if (tmp != *i)
+		return (true);
+	return (false);
 }
 
 
@@ -473,15 +510,15 @@ t_list *tokenizer(t_mini_data *data)
 	input = data->input;
 	debug("scanning input: %s of num char %d", input, (int)ft_strlen(input));
 	token_list = NULL;
+	data->exit_status = 0;
 	while (i < (int)ft_strlen(input) && data->exit_status == 0)
 	{
 		// extract tokens
-		extract_tokens(data, &i);
+		if (extract_tokens(data, &i))
+			continue;
 
-
-		
 		// wanna create an expression token
-		if (input[i] == '(')
+		else if (input[i] == '(')
 		{
 			int start = i;
 			i++;
@@ -497,28 +534,9 @@ t_list *tokenizer(t_mini_data *data)
 			free(tmp);
 			i++;
 		}
-		else if (input[i] == '|' && input[i + 1] == '&')
-			ft_lstadd_back(&token_list, create_token(PIPE_AND, "|&", &i));
-		else if (input[i] == ';' && input[i + 1] == '&')
-			ft_lstadd_back(&token_list, create_token(SEMI_AND, ";&", &i));
-		else if (input[i] == ';' && input[i + 1] == ';')
-			ft_lstadd_back(&token_list, create_token(DSEMI, ";;", &i));
-		else if (input[i] == ';' && input[i + 1] == ';' && input[i + 2] == '&')
-			ft_lstadd_back(&token_list, create_token(DSEMI_AND, ";;&", &i));
-		else if (input[i] == ';')
-			ft_lstadd_back(&token_list, create_token(SEMI, ";", &i));
-		else if (input[i] == '-' && input[i + 1] == '-' && input[i + 2] == ' ')
-			ft_lstadd_back(&token_list, create_token(MINUS_MINUS, "--", &i));
-		else if (input[i] == '+' && input[i + 1] == '+' && input[i + 2] == ' ')
-			ft_lstadd_back(&token_list, create_token(PLUS_PLUS, "++", &i));
-		else if (input[i] == '-' && input[i + 1] == '=')
-			ft_lstadd_back(&token_list, create_token(MINUS_EQUAL, "-=", &i));
-		else if (input[i] == '+' && input[i + 1] == '=')
-			ft_lstadd_back(&token_list, create_token(PLUS_EQUAL, "+=", &i));
-		else if (input[i] == '/' && input[i + 1] == '=')
-			ft_lstadd_back(&token_list, create_token(SLASH_EQUAL, "/=", &i));
-		else if (input[i] == '*' && input[i + 1] == '=')
-			ft_lstadd_back(&token_list, create_token(STAR_EQUAL, "*=", &i));
+
+
+
 		
 		/*
 		History expansion - (not implemented)
