@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/10 14:55:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/10 15:54:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ typedef enum e_tokentype {
 	EXPRESSION, // (....) will be expanded 
 	COM_EXPANSION, // '$(command)' or '`command`'
 	VAR_EXPANSION,  // ${parameter} or $parameter or $variable
-	EXPR_EXPANSION, // $(command) or $((arythm expression))
+	EXPR_EXPANSION, //$((arythm expression))
 	QUOTED_STRING, // quoted string "string" 
 	S_QUOTED_STRING, // single quoted string like 'string'
 	// ( and ) can be used to group commands, 

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/10 14:56:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/10 16:34:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -586,6 +586,120 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 	return (false);
 }
 
+
+/*
+    DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
+    DOLLAR_DOLLAR, // '$$' ‘$’ is used to get the process ID of the shell.
+    DOLLAR_STAR, // '$*' ‘*’ is used to get all the positional parameters.
+    DOLLAR_AT, // '$@'  ‘@’ is used to get all the positional parameters, except for the zeroth positional parameter.
+    DOLLAR_HASH, // '$#'  ‘#’ is used to get the number of positional parameters.
+    DOLLAR_BANG, // '$!'  ‘!’ is used to get the process ID of the last background command.
+	DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.	 
+	DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
+*/
+bool is_a_dollar_exp(t_mini_data *data, int *i)
+{	
+	if (peek(data->input + *i, "$?", false))
+		add_token(data, i, "$?", DOLLAR_QUESTION);
+	else if (peek(data->input + *i, "$$", false))
+		add_token(data, i, "$$", DOLLAR_DOLLAR);
+	else if (peek(data->input + *i, "$*", false))
+		add_token(data, i, "$*", DOLLAR_STAR);
+	else if (peek(data->input + *i, "$@", false))
+		add_token(data, i, "$@", DOLLAR_AT);
+	else if (peek(data->input + *i, "$#", false))
+		add_token(data, i, "$#", DOLLAR_HASH);
+	else if (peek(data->input + *i, "$!", false))
+		add_token(data, i, "$!", DOLLAR_BANG);
+	else if (peek(data->input + *i, "$-", false))
+		add_token(data, i, "$-", DOLLAR_HYPHEN);
+
+	// command expansion $(command) or `command`
+	else if (peek(data->input + *i, "$((", false))
+	{
+		debug("found $((");
+		int start = (*i)++;
+		while (peek(data->input + *i, "))", false) == false)
+			(*i)++;
+		// if I got to the end of the string but did not get '))'
+		// debug("last two chars are %c %c", *(data->input + *i), *(data->input + *i + 1));
+		if (*(data->input + *i + 1) == '\0')
+			return (scanner_error(data, "error: unclosed expansion"));
+		char *tmp = ft_substr(data->input, start, *i - start + 2);
+		if (!tmp)
+			return (scanner_error(data, "error: malloc tmp failed"));
+		*i = start;
+		add_token(data, i, tmp, EXPR_EXPANSION);
+		free(tmp);
+		// (*i) += 1;
+	}
+	// $1 to $9
+	else if (peek(data->input + *i, "$", false) && is_digit(*(data->input + *i + 1)))
+	{
+		int start = *i;
+		while (is_digit(*(data->input + *i + 1)))
+			(*i)++;
+		char *tmp = ft_substr(data->input, start, *i - start + 1);
+		if (!tmp)
+			return (scanner_error(data, "error: malloc tmp failed"));
+		*i = start;
+		add_token(data, i, tmp, DOLLAR_DIGIT);
+		free(tmp);
+		(*i)++;
+	}
+	// expansion ${parameter} or $parameter or $(command) or $((arythm expression))
+	else if (peek(data->input + *i, "${", false))
+	{
+		int start = (*i)++;
+		while (*(data->input + *i) != '}')
+			(*i)++;
+		if (*(data->input + *i) == '\0')
+			return (scanner_error(data, "error: unclosed expansion"));
+		char *tmp = ft_substr(data->input, start, *i - start + 1);
+		if (!tmp)
+			return (scanner_error(data, "error: malloc tmp failed"));
+		*i = start;
+		add_token(data, i, tmp, VAR_EXPANSION);
+		free(tmp);
+		// (*i)++;
+	}
+	// Parameter names in bash can only contain alphanumeric 
+	// characters or underscores, and must start with a letter or underscore.
+	else if (peek(data->input + *i, "$", false) && is_alnum(*(data->input + *i + 1)))
+	{
+		int start = (*i)++;
+		while (is_alnum(*(data->input + *i)))
+			(*i)++;
+		char *tmp = ft_substr(data->input, start, *i - start);
+		debug("VAR_EXPANSION found %s", tmp);
+		if (!tmp)
+			return (scanner_error(data, "error: malloc tmp failed"));
+		*i = start;
+		add_token(data, i, tmp, VAR_EXPANSION);	
+		free(tmp);
+		// (*i)++;
+	}
+	// arythmetic expansion
+	else if (peek(data->input + *i, "$(", false))
+	{
+		int start = (*i)++;
+		while (*(data->input + *i) != ')')
+			(*i)++;
+		if (*(data->input + *i) == '\0')
+			return (scanner_error(data, "error: unclosed expansion"));
+		char *tmp = ft_substr(data->input, start, *i - start + 1);
+		if (!tmp)
+			return (scanner_error(data, "error: malloc tmp failed"));
+		*i = start;
+		add_token(data, i, tmp, COM_EXPANSION);
+		free(tmp);
+		// (*i)++;
+	}
+	else
+		return (false);
+	return (true);
+}
+
 /*
 
 */
@@ -597,6 +711,8 @@ bool	extract_tokens(t_mini_data *data, int *i)
 		return (true);
 	else if (is_a_hist_expansion(data, i))
 		return (true);
+	else if (is_a_dollar_exp(data, i))
+		return (true);
 	else if (peek(data->input + *i, ";;", false))
 		add_token(data, i, ";;", DSEMI);
 	else if (peek(data->input + *i, ";;&", false))
@@ -607,7 +723,6 @@ bool	extract_tokens(t_mini_data *data, int *i)
 		add_token(data, i, "!", BANG); 
 	else if (peek(data->input + *i, "=", false))
 		add_token(data, i, "=", EQUAL);
-
 	
 	else
 		return (false);
@@ -643,102 +758,6 @@ t_list *tokenizer(t_mini_data *data)
 		}
 
 
-/*
-    DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
-    DOLLAR_DOLLAR, // '$$' ‘$’ is used to get the process ID of the shell.
-    DOLLAR_STAR, // '$*' ‘*’ is used to get all the positional parameters.
-    DOLLAR_AT, // '$@'  ‘@’ is used to get all the positional parameters, except for the zeroth positional parameter.
-    DOLLAR_HASH, // '$#'  ‘#’ is used to get the number of positional parameters.
-    DOLLAR_BANG, // '$!'  ‘!’ is used to get the process ID of the last background command.
-	DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.	 
-	DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
-*/
-		else if (input[i] == '$' && input[i + 1] == '?')
-			ft_lstadd_back(&data->token_list, create_token(DOLLAR_QUESTION, "$?", &i));
-		else if (input[i] == '$' && input[i + 1] == '$')
-			ft_lstadd_back(&data->token_list, create_token(DOLLAR_DOLLAR, "$$", &i));
-		else if (input[i] == '$' && input[i + 1] == '*')
-			ft_lstadd_back(&data->token_list, create_token(DOLLAR_STAR, "$*", &i));
-		else if (input[i] == '$' && input[i + 1] == '@')
-			ft_lstadd_back(&data->token_list, create_token(DOLLAR_AT, "$@", &i));
-		else if (input[i] == '$' && input[i + 1] == '#')
-			ft_lstadd_back(&data->token_list, create_token(DOLLAR_HASH, "$#", &i));
-		else if (input[i] == '$' && input[i + 1] == '!')
-			ft_lstadd_back(&data->token_list, create_token(DOLLAR_BANG, "$!", &i));
-		else if (input[i] == '$' && input[i + 1] == '-')
-			ft_lstadd_back(&data->token_list, create_token(DOLLAR_HYPHEN, "$-", &i));
-		
-		else if (input[i] == '$' && is_digit(input[i + 1]))
-		{
-			int start = i;
-			while (is_digit(input[i + 1]))
-				i++;
-			char *tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&data->token_list, create_token(DOLLAR_DIGIT, tmp, &start));
-			free(tmp);
-			i++;
-		}
-		// expansion ${parameter} or $parameter or $(command) or $((arythm expression))
-		else if (input[i] == '$' && (input[i + 1] == '{'))
-		{
-			int start = i++;
-			while (input[i] != '}' && input[i] != '\0')
-				i++;
-			if (input[i] == '\0')
-			{
-				debug("error: unclosed expansion\n");
-				data->exit_status = 1;;
-			}
-			tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&data->token_list, create_token(VAR_EXPANSION, tmp, &start));
-			free(tmp);
-			i++;
-		}
-		// Parameter names in bash can only contain alphanumeric 
-		// characters or underscores, and must start with a letter or underscore.
-		else if (input[i] == '$' && is_alnum(input[i + 1]))
-		{
-			int start = i++;
-			while (is_alnum(input[i]))
-				i++;
-			tmp = ft_substr(input, start, i - start);
-			ft_lstadd_back(&data->token_list, create_token(VAR_EXPANSION, tmp, &start));
-			free(tmp);
-			i++;
-		}
-		// command expansion $(command) or `command`
-		else if (input[i] == '$' && input[i + 1] == '(' && input[i + 2] != '(')
-		{
-			int start = i++;
-			while (input[i] && input[i] != ')')
-				i++;
-			if (input[i] == '\0')
-			{
-				debug("error: unclosed expansion\n");
-				data->exit_status = 1;
-			}
-			tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&data->token_list, create_token(COM_EXPANSION, tmp, &start));
-			free(tmp);
-			i++;
-		}
-		// arythmetic expansion
-		else if (input[i] == '$' && input[i + 1] == '(' && input[i + 2] == '(')
-		{
-			int start = i++;
-			while (input[i] && input[i] != ')' && input[i + 1] && input[i + 1] != ')') 
-				i++;
-			// if I got to the end of the string but did not get '))'
-			if (input[i] == '\0' || input[i + 1] == '\0')
-			{
-				debug("error: unclosed expansion\n");
-								data->exit_status = 1;;
-			}
-			tmp = ft_substr(input, start, i - start + 3);
-			ft_lstadd_back(&data->token_list, create_token(EXPR_EXPANSION, tmp, &start));
-			free(tmp);
-			i += 3;
-		}
 
 		/****************************************/
 		/* redirections							*/
@@ -872,7 +891,7 @@ t_list *tokenizer(t_mini_data *data)
 			if (input[i] == '\0')
 			{
 				debug("error: unclosed expansion\n");
-								data->exit_status = 1;;
+				data->exit_status = 1;;
 			}
 			tmp = ft_substr(input, start, i - start + 1);
 			ft_lstadd_back(&data->token_list, create_token(COM_EXPANSION, tmp, &start));
@@ -904,6 +923,7 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&data->token_list, create_token(TILDE, "~", &i));
 		else if (input[i] == '$')
 			ft_lstadd_back(&data->token_list, create_token(DOLLAR, "$", &i));
+
 		// hash # case the rest of the string will be a comment but we dont create a token, we ignore
 		else if (input[i] == '#')
 		{
