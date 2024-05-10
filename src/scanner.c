@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/10 10:17:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/10 11:50:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -440,7 +440,7 @@ void	add_token(t_mini_data *data, int *i, char *lxm, enum e_tokentype type)
 	} 
 }
 
-bool	extract_redirections(t_mini_data *data, int *i)
+bool	is_a_redirection(t_mini_data *data, int *i)
 {
 	int tmp;
 	tmp = *i;
@@ -457,23 +457,12 @@ bool	extract_redirections(t_mini_data *data, int *i)
 	return (false);
 }
 
-/*
-
-*/
-bool	extract_tokens(t_mini_data *data, int *i)
+bool	is_a_math_op(t_mini_data *data, int *i)
 {
 	int tmp;
 	tmp = *i;
-	if (extract_redirections(data, i))
-		return (true);
 
-	else if (peek(data->input + *i, ";;", false))
-		add_token(data, i, ";;", DSEMI);
-	else if (peek(data->input + *i, ";;&", false))
-		add_token(data, i, ";;&", DSEMI_AND);
-	else if (peek(data->input + *i, ";", false))
-		add_token(data, i, ";", SEMI);
-	else if (peek(data->input + *i, "--", false))
+	if (peek(data->input + *i, "--", false))
 		add_token(data, i, "--", MINUS_MINUS);
 	else if (peek(data->input + *i, "++", false))
 		add_token(data, i, "++", PLUS_PLUS);
@@ -485,6 +474,149 @@ bool	extract_tokens(t_mini_data *data, int *i)
 		add_token(data, i, "/=", SLASH_EQUAL);
 	else if (peek(data->input + *i, "*=", false))
 		add_token(data, i, "*=", STAR_EQUAL);
+	if (tmp != *i)
+		return (true);
+	return (false);
+}
+
+/*
+	History expansion - (not implemented)
+	!!: Re-run the previous command. 
+	This is useful if you forgot to use sudo for a command that 
+	requires it. You can simply type sudo !! to re-run the previous command with sudo.
+
+	!n: Re-run the nth command in your history. 
+	For example, !100 would re-run the 100th command.
+
+	!-n: Re-run the command n lines back. 
+	For example, !-2 would re-run the second most recent command.
+
+	!string: Re-run the most recent command that 
+	starts with string. For example, !ls would re-run the most recent command that starts with ls.
+
+	!?string?: Re-run the most recent command 
+	that contains string anywhere. For example, !?txt? would re-run the most recent command that includes txt.
+	BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA
+	*/
+bool is_a_hist_expansion(t_mini_data *data, int *i)
+{
+	if (peek(data->input + *i, "!!", false)) 
+	{
+		debug("found !!\n");
+		int start = *i;
+		while (!is_delimiter(*(data->input + *i)))
+			(*i)++;
+		char *tmp = ft_substr(data->input, start, *i - start);
+		if (!tmp)
+		{
+			debug("error: malloc tmp failed\n");
+			data->scanner_err_str = "error: malloc tmp failed";
+			data->scanner_error = 1;
+			return (false);
+		}
+		*i = start;
+		add_token(data, i, tmp, BANG_BANG);
+		free(tmp);
+		return (true);
+	}
+	else if (peek(data->input + *i, "!", false) && is_digit(*(data->input + *i + 1)))
+	{
+		int start = (*i)++;
+		while (is_digit(*(data->input + *i)))
+			(*i)++;
+		char *tmp = ft_substr(data->input, start, *i - start);
+		if (!tmp)
+		{
+			debug("error: malloc tmp failed\n");
+			data->scanner_err_str = "error: malloc tmp failed";
+			data->scanner_error = 1;
+			return (false);
+		}	
+		*i = start;
+		add_token(data, i, tmp, BANG_DIGIT);
+		free(tmp);
+		return (true);
+	}
+	
+	else if (peek(data->input + *i, "!-", false) && is_digit(*(data->input + *i + 2)))
+	{
+		int start = *i;
+		while (is_digit(*(data->input + *i + 2)))
+			(*i)++;
+		char *tmp = ft_substr(data->input, start, *i - start + 2);
+		if (!tmp)
+		{
+			debug("error: malloc tmp failed\n");
+			data->scanner_err_str = "error: malloc tmp failed";
+			data->scanner_error = 1;
+			return (false);
+		}	
+		*i = start;
+		add_token(data, i, tmp, BANG_HYPHEN_DIGIT);
+		free(tmp);
+		return (true);
+	}
+	else if (peek(data->input + *i, "!", false) && is_alnum(*(data->input + *i + 1)))
+	{
+		int start = (*i)++;
+		while (is_alpha(*(data->input + *i)))
+			(*i)++;
+		char *tmp = ft_substr(data->input, start, *i - start);
+		if (!tmp)
+		{
+			debug("error: malloc tmp failed\n");
+			data->scanner_err_str = "error: malloc tmp failed";
+			data->scanner_error = 1;
+			return (false);
+		}
+		*i = start;
+		add_token(data, i, tmp, BANG_ALPHA);
+		free(tmp);
+	}
+	if (peek(data->input + *i, "!?", false)) 
+	{
+		debug("found !?\n");
+		int start = *i;
+		while (!is_delimiter(*(data->input + *i)))
+			(*i)++;
+		char *tmp = ft_substr(data->input, start, *i - start);
+		if (!tmp)
+		{
+			debug("error: malloc tmp failed\n");
+			data->scanner_err_str = "error: malloc tmp failed";
+			data->scanner_error = 1;
+			return (false);
+		}
+		*i = start;
+		add_token(data, i, tmp, BANG_QUESTION_ALPHA);
+		free(tmp);
+		return (true);
+	}
+	return (false);
+}
+
+/*
+
+*/
+bool	extract_tokens(t_mini_data *data, int *i)
+{
+	int tmp;
+	tmp = *i;
+	if (is_a_redirection(data, i))
+		return (true);
+	else if (is_a_math_op(data, i))
+		return (true);
+	else if (is_a_hist_expansion(data, i))
+		return (true);
+
+	else if (peek(data->input + *i, ";;", false))
+		add_token(data, i, ";;", DSEMI);
+	else if (peek(data->input + *i, ";;&", false))
+		add_token(data, i, ";;&", DSEMI_AND);
+	else if (peek(data->input + *i, ";", false))
+		add_token(data, i, ";", SEMI);
+	else if (peek(data->input + *i, "!", true))
+		add_token(data, i, "!", BANG); 
 	if (tmp != *i)
 		return (true);
 	return (false);
@@ -502,20 +634,21 @@ t_list *tokenizer(t_mini_data *data)
 {
 	int i;
 	char *tmp;
-	// t_list *token;
-	t_list *token_list;
 	const char *input;
 	
 	i = 0;
 	input = data->input;
+	data->token_list = NULL;
 	debug("scanning input: %s of num char %d", input, (int)ft_strlen(input));
-	token_list = NULL;
 	data->exit_status = 0;
 	while (i < (int)ft_strlen(input) && data->exit_status == 0)
 	{
 		// extract tokens
 		if (extract_tokens(data, &i))
+		{
+			debug("extracted token\n");
 			continue;
+		}
 
 		// wanna create an expression token
 		else if (input[i] == '(')
@@ -530,80 +663,15 @@ t_list *tokenizer(t_mini_data *data)
 				return (NULL);
 			}
 			tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&token_list, create_token(EXPRESSION, tmp, &start));
+			ft_lstadd_back(&data->token_list, create_token(EXPRESSION, tmp, &start));
 			free(tmp);
 			i++;
 		}
-
-
 
 		
-		/*
-		History expansion - (not implemented)
-		!!: Re-run the previous command. 
-		This is useful if you forgot to use sudo for a command that 
-		requires it. You can simply type sudo !! to re-run the previous command with sudo.
 
-		!n: Re-run the nth command in your history. 
-		For example, !100 would re-run the 100th command.
-
-		!-n: Re-run the command n lines back. 
-		For example, !-2 would re-run the second most recent command.
-
-		!string: Re-run the most recent command that 
-		starts with string. For example, !ls would re-run the most recent command that starts with ls.
-
-		!?string?: Re-run the most recent command 
-		that contains string anywhere. For example, !?txt? would re-run the most recent command that includes txt.
-		BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA
-		*/
-		else if (input[i] == '!' && input[i + 1] == '!') 
-			ft_lstadd_back(&token_list, create_token(BANG_BANG, "!!", &i));
-		else if (input[i] == '!' && is_digit(input[i + 1]))
-		{
-			int start = i;
-			while (is_digit(input[i + 1]))
-				i++;
-			char *tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&token_list, create_token(BANG_DIGIT, tmp, &start));
-			free(tmp);
-			i++;
-		}
-		else if (input[i] == '!' && input[i + 1] == '-' && is_digit(input[i + 2]))
-		{
-			int start = i++;
-			while (is_digit(input[i + 1]))
-				i++;
-			char *tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&token_list, create_token(BANG_HYPHEN_DIGIT, tmp, &start));
-			free(tmp);
-			i++;
-		}
-		else if (input[i] == '!' && is_alnum(input[i + 1]))
-		{
-			int start = i;
-			while (is_alpha(input[i + 1]))
-				i++;
-			char *tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&token_list, create_token(BANG_ALPHA, tmp, &start));
-			free(tmp);
-			i++;
-		}
-		else if (input[i] == '!' && input[i + 1] == '?' && is_alnum(input[i + 2]))
-		{
-			int start = i++;
-			i++;	
-			while (is_alnum(input[i]))
-				i++;
-			char *tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&token_list, create_token(BANG_QUESTION_ALPHA, tmp, &start));
-			free(tmp);
-			i++;
-		}
-		else if (input[i] == '!')
-			ft_lstadd_back(&token_list, create_token(BANG, "!", &i));
 		else if (input[i] == '=')
-			ft_lstadd_back(&token_list, create_token(EQUAL, "=", &i));
+			ft_lstadd_back(&data->token_list, create_token(EQUAL, "=", &i));
 /*
     DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
     DOLLAR_DOLLAR, // '$$' ‘$’ is used to get the process ID of the shell.
@@ -615,26 +683,26 @@ t_list *tokenizer(t_mini_data *data)
 	DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
 */
 		else if (input[i] == '$' && input[i + 1] == '?')
-			ft_lstadd_back(&token_list, create_token(DOLLAR_QUESTION, "$?", &i));
+			ft_lstadd_back(&data->token_list, create_token(DOLLAR_QUESTION, "$?", &i));
 		else if (input[i] == '$' && input[i + 1] == '$')
-			ft_lstadd_back(&token_list, create_token(DOLLAR_DOLLAR, "$$", &i));
+			ft_lstadd_back(&data->token_list, create_token(DOLLAR_DOLLAR, "$$", &i));
 		else if (input[i] == '$' && input[i + 1] == '*')
-			ft_lstadd_back(&token_list, create_token(DOLLAR_STAR, "$*", &i));
+			ft_lstadd_back(&data->token_list, create_token(DOLLAR_STAR, "$*", &i));
 		else if (input[i] == '$' && input[i + 1] == '@')
-			ft_lstadd_back(&token_list, create_token(DOLLAR_AT, "$@", &i));
+			ft_lstadd_back(&data->token_list, create_token(DOLLAR_AT, "$@", &i));
 		else if (input[i] == '$' && input[i + 1] == '#')
-			ft_lstadd_back(&token_list, create_token(DOLLAR_HASH, "$#", &i));
+			ft_lstadd_back(&data->token_list, create_token(DOLLAR_HASH, "$#", &i));
 		else if (input[i] == '$' && input[i + 1] == '!')
-			ft_lstadd_back(&token_list, create_token(DOLLAR_BANG, "$!", &i));
+			ft_lstadd_back(&data->token_list, create_token(DOLLAR_BANG, "$!", &i));
 		else if (input[i] == '$' && input[i + 1] == '-')
-			ft_lstadd_back(&token_list, create_token(DOLLAR_HYPHEN, "$-", &i));
+			ft_lstadd_back(&data->token_list, create_token(DOLLAR_HYPHEN, "$-", &i));
 		else if (input[i] == '$' && is_digit(input[i + 1]))
 		{
 			int start = i;
 			while (is_digit(input[i + 1]))
 				i++;
 			char *tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&token_list, create_token(DOLLAR_DIGIT, tmp, &start));
+			ft_lstadd_back(&data->token_list, create_token(DOLLAR_DIGIT, tmp, &start));
 			free(tmp);
 			i++;
 		}
@@ -650,7 +718,7 @@ t_list *tokenizer(t_mini_data *data)
 				data->exit_status = 1;;
 			}
 			tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&token_list, create_token(VAR_EXPANSION, tmp, &start));
+			ft_lstadd_back(&data->token_list, create_token(VAR_EXPANSION, tmp, &start));
 			free(tmp);
 			i++;
 		}
@@ -662,7 +730,7 @@ t_list *tokenizer(t_mini_data *data)
 			while (is_alnum(input[i]))
 				i++;
 			tmp = ft_substr(input, start, i - start);
-			ft_lstadd_back(&token_list, create_token(VAR_EXPANSION, tmp, &start));
+			ft_lstadd_back(&data->token_list, create_token(VAR_EXPANSION, tmp, &start));
 			free(tmp);
 			i++;
 		}
@@ -678,7 +746,7 @@ t_list *tokenizer(t_mini_data *data)
 				data->exit_status = 1;
 			}
 			tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&token_list, create_token(COM_EXPANSION, tmp, &start));
+			ft_lstadd_back(&data->token_list, create_token(COM_EXPANSION, tmp, &start));
 			free(tmp);
 			i++;
 		}
@@ -695,7 +763,7 @@ t_list *tokenizer(t_mini_data *data)
 								data->exit_status = 1;;
 			}
 			tmp = ft_substr(input, start, i - start + 3);
-			ft_lstadd_back(&token_list, create_token(EXPR_EXPANSION, tmp, &start));
+			ft_lstadd_back(&data->token_list, create_token(EXPR_EXPANSION, tmp, &start));
 			free(tmp);
 			i += 3;
 		}
@@ -704,28 +772,28 @@ t_list *tokenizer(t_mini_data *data)
 		/* redirections							*/
 		/****************************************/
 		else if (input[i] == '>' && input[i + 1] == '|')
-			ft_lstadd_back(&token_list, create_token(CLOBBER, ">|", &i));
+			ft_lstadd_back(&data->token_list, create_token(CLOBBER, ">|", &i));
 		else if (input[i] == '>' && input[i + 1] == '>' && input[i + 2] == '&')
-			ft_lstadd_back(&token_list, create_token(REDIRECT_BOTH_APP, ">>&", &i));
+			ft_lstadd_back(&data->token_list, create_token(REDIRECT_BOTH_APP, ">>&", &i));
 		else if (input[i] == '<' && input[i + 1] == '<' && input[i + 2] == '-')
-			ft_lstadd_back(&token_list, create_token(DLESSDASH, "<<-", &i));
+			ft_lstadd_back(&data->token_list, create_token(DLESSDASH, "<<-", &i));
 		else if (input[i] == '&' && input[i + 1] == '>' && input[i + 2] == '>')
-			ft_lstadd_back(&token_list, create_token(REDIRECT_OUT_APP, "&>>", &i));
+			ft_lstadd_back(&data->token_list, create_token(REDIRECT_OUT_APP, "&>>", &i));
 		else if (input[i] == '>' && input[i + 1] == '&' && input[i + 2] == '>')
-			ft_lstadd_back(&token_list, create_token(GREATER_AND_GREATER , ">&>", &i));
+			ft_lstadd_back(&data->token_list, create_token(GREATER_AND_GREATER , ">&>", &i));
 		else if (input[i] == '&' && input[i + 1] == '>')
-			ft_lstadd_back(&token_list, create_token(REDIRECT_BOTH, "&>", &i));
+			ft_lstadd_back(&data->token_list, create_token(REDIRECT_BOTH, "&>", &i));
 		else if (input[i] == '<' && input[i + 1] == '&')
-			ft_lstadd_back(&token_list, create_token(LESSAND, "<&", &i));
+			ft_lstadd_back(&data->token_list, create_token(LESSAND, "<&", &i));
 		else if (input[i] == '>' && input[i + 1] == '&')
-			ft_lstadd_back(&token_list, create_token(GREATAND, ">&", &i));
+			ft_lstadd_back(&data->token_list, create_token(GREATAND, ">&", &i));
 		else if (input[i] == '<' && input[i + 1] == '>')
-			ft_lstadd_back(&token_list, create_token(LESSGREAT, "<>", &i));
+			ft_lstadd_back(&data->token_list, create_token(LESSGREAT, "<>", &i));
 		else if (input[i] == '>' && input[i + 1] == '>')
-			ft_lstadd_back(&token_list, create_token(DGREAT, ">>", &i));
+			ft_lstadd_back(&data->token_list, create_token(DGREAT, ">>", &i));
 		else if (input[i] == '<' && input[i + 1] && input[i + 1] == '<')
 		{
-			ft_lstadd_back(&token_list, create_token(DLESS, "<<", &i));
+			ft_lstadd_back(&data->token_list, create_token(DLESS, "<<", &i));
 			debug("DLESS tokens");
 			while (input[i] && is_space(input[i]))
 				i++;
@@ -738,34 +806,34 @@ t_list *tokenizer(t_mini_data *data)
 			while (input[i] && !is_delimiter(input[i]))
 				i++;
 			tmp = ft_substr(input, start, i - start);
-			ft_lstadd_back(&token_list, create_token(DLESS_DELIM, tmp, &start));
+			ft_lstadd_back(&data->token_list, create_token(DLESS_DELIM, tmp, &start));
 			free(tmp);
 		}
 		else if (input[i] == '>' && input[i + 1] == '=')
-			ft_lstadd_back(&token_list, create_token(GREATER_EQUAL, ">=", &i));
+			ft_lstadd_back(&data->token_list, create_token(GREATER_EQUAL, ">=", &i));
 		else if (input[i] == '<' && input[i + 1] == '=')
-			ft_lstadd_back(&token_list, create_token(LESS_EQUAL, "<=", &i));
+			ft_lstadd_back(&data->token_list, create_token(LESS_EQUAL, "<=", &i));
 		else if (input[i] == '!' && input[i + 1] == '=')
-			ft_lstadd_back(&token_list, create_token(BANG_EQUAL, "!=", &i));
+			ft_lstadd_back(&data->token_list, create_token(BANG_EQUAL, "!=", &i));
 		else if (input[i] == '>')
-			ft_lstadd_back(&token_list, create_token(REDIRECT_OUT, ">", &i));
+			ft_lstadd_back(&data->token_list, create_token(REDIRECT_OUT, ">", &i));
 		else if (input[i] == '<')
-			ft_lstadd_back(&token_list, create_token(REDIRECT_IN, "<", &i));
+			ft_lstadd_back(&data->token_list, create_token(REDIRECT_IN, "<", &i));
 		else if (input[i] == '=' && input[i + 1] == '=')
-			ft_lstadd_back(&token_list, create_token(EQUAL_EQUAL, "==", &i));
+			ft_lstadd_back(&data->token_list, create_token(EQUAL_EQUAL, "==", &i));
 		else if (input[i] == ',')
-			ft_lstadd_back(&token_list, create_token(COMMA, ",", &i));
+			ft_lstadd_back(&data->token_list, create_token(COMMA, ",", &i));
 		else if (input[i] == '-' && input[i + 1] == ' ')
-			ft_lstadd_back(&token_list, create_token(MINUS, "-", &i));
+			ft_lstadd_back(&data->token_list, create_token(MINUS, "-", &i));
 		else if (input[i] == '+')
-			ft_lstadd_back(&token_list, create_token(PLUS, "+", &i));
+			ft_lstadd_back(&data->token_list, create_token(PLUS, "+", &i));
 		else if (input[i] == '*')
-			ft_lstadd_back(&token_list, create_token(STAR, "*", &i));
+			ft_lstadd_back(&data->token_list, create_token(STAR, "*", &i));
 		// else if (input[i] == '?')
-		// 	ft_lstadd_back(&token_list, create_token(QUESTION, "?", &i));
+		// 	ft_lstadd_back(&data->token_list, create_token(QUESTION, "?", &i));
 		// if there is a double quote I need to create a string token
 		else if (input[i] == '|' && (input[i + 1] != '|' || input[i+1] != '&'))
-			ft_lstadd_back(&token_list, create_token(PIPE, "|", &i));
+			ft_lstadd_back(&data->token_list, create_token(PIPE, "|", &i));
 		//S_QUOTED_STRING, single quoted string 'string'
 		else if (input[i] == '\'')
 		{
@@ -782,7 +850,7 @@ t_list *tokenizer(t_mini_data *data)
 			// no expansion in those unless they are part of a double quoted string
 			// expand later $() ${} and $VAR and '...'  and ` ... `  ?
 			
-			ft_lstadd_back(&token_list, create_token(S_QUOTED_STRING, tmp, &start));
+			ft_lstadd_back(&data->token_list, create_token(S_QUOTED_STRING, tmp, &start));
 			free(tmp);
 			i++;
 		}
@@ -800,7 +868,7 @@ t_list *tokenizer(t_mini_data *data)
 			tmp = ft_substr(input, start, i - start + 1);
 			// expand later $() ${} and $VAR and '...'  and ` ... `  ?
 			
-			ft_lstadd_back(&token_list, create_token(QUOTED_STRING, tmp, &start));
+			ft_lstadd_back(&data->token_list, create_token(QUOTED_STRING, tmp, &start));
 			free(tmp);
 			i++;
 		}
@@ -814,21 +882,21 @@ t_list *tokenizer(t_mini_data *data)
 				while (is_alpha(input[i]))
 					i++;
 				tmp = ft_substr(input, start, i - start);
-				ft_lstadd_back(&token_list, create_token(FLAGS, tmp, &start));
+				ft_lstadd_back(&data->token_list, create_token(FLAGS, tmp, &start));
 			}
 			free(tmp);
 			i++;
 		}
 		else if (input[i] == '&')
-			ft_lstadd_back(&token_list, create_token(AND_TOK, "&", &i));
+			ft_lstadd_back(&data->token_list, create_token(AND_TOK, "&", &i));
 		else if (input[i] == '^')
-			ft_lstadd_back(&token_list, create_token(CARET, "^", &i));
+			ft_lstadd_back(&data->token_list, create_token(CARET, "^", &i));
 		else if (input[i] == '%')
-			ft_lstadd_back(&token_list, create_token(PERCENT, "%", &i));
+			ft_lstadd_back(&data->token_list, create_token(PERCENT, "%", &i));
 		else if (input[i] == '~')
-			ft_lstadd_back(&token_list, create_token(TILDE, "~", &i));
+			ft_lstadd_back(&data->token_list, create_token(TILDE, "~", &i));
 		else if (input[i] == '$')
-			ft_lstadd_back(&token_list, create_token(DOLLAR, "$", &i));
+			ft_lstadd_back(&data->token_list, create_token(DOLLAR, "$", &i));
 		// Command substitution not implemented
    		// COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
 		else if (input[i] == '`')
@@ -842,7 +910,7 @@ t_list *tokenizer(t_mini_data *data)
 								data->exit_status = 1;;
 			}
 			tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&token_list, create_token(COM_EXPANSION, tmp, &start));
+			ft_lstadd_back(&data->token_list, create_token(COM_EXPANSION, tmp, &start));
 			free(tmp);
 			i++;
 		}
@@ -868,26 +936,26 @@ t_list *tokenizer(t_mini_data *data)
 			if (input[i] == '<' || input[i] == '>')
 			{
 				if (is_io_number(str))
-					ft_lstadd_back(&token_list, create_token(IO_NUMBER, str, &start));
+					ft_lstadd_back(&data->token_list, create_token(IO_NUMBER, str, &start));
 			}
 			else 
 			{
 				debug("identifier: -%s-", str);
 				//check for reserved words and builtin first which they will be added 
 				// automatically if the check is true
-				if (!is_reserved(data, &token_list,str,&start) && \
-				!is_builtin(data, &token_list, str, &start) &&\
-				!is_true_false(data, &token_list, str, &start))
+				if (!is_reserved(data, &data->token_list,str,&start) && \
+				!is_builtin(data, &data->token_list, str, &start) &&\
+				!is_true_false(data, &data->token_list, str, &start))
 				{
 					// check if it is a path name
 					if (ft_strchr(str, '/') || peek(str, " .", false) || peek(str, "./", false) || peek(str, "../", false) || peek(str, "~/", false) || peek(str, "~+", false))
-						ft_lstadd_back(&token_list, create_token(PATHNAME, str, &start));
+						ft_lstadd_back(&data->token_list, create_token(PATHNAME, str, &start));
 					// if not a path name maybe a number?
 					else if (str_is_number(str))
-						ft_lstadd_back(&token_list, create_token(NUMBER, str, &start));
+						ft_lstadd_back(&data->token_list, create_token(NUMBER, str, &start));
 					// if not a number maybe a variable name or anything else!
 					else
-						ft_lstadd_back(&token_list, create_token(WORD, str, &start));
+						ft_lstadd_back(&data->token_list, create_token(WORD, str, &start));
 				}
 			}
 			free(str);
@@ -904,10 +972,10 @@ t_list *tokenizer(t_mini_data *data)
 	}
 	if (data->exit_status != 0)
 	{
-		ft_lstclear(&token_list, free_token);
+		debug("error: exit status %d\n", data->exit_status);
+		ft_lstclear(&data->token_list, free_token);
 		return (NULL);
 	}
-	data->token_list = token_list;
 
-	return token_list;
+	return data->token_list;
 }
