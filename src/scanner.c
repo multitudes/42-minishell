@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/10 11:50:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/10 14:56:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,22 +118,21 @@ bool is_digit(char c) {
 }
 
 /*
-Returns 'true' if the character is char a letter or a digit or underscore.
-btw This 65-character set, [-._a-zA-Z0-9], 
-is referred to in SUSv3 as the portable filename character set.
+Returns 'true' if the character is char a letter
 */
 bool is_alpha(char c) 
 {
-	return ((c >= 'a' && c <= 'z') || \
-    (c >= 'A' && c <= 'Z') || c == '_');
+	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 }
 
 /*
 part of the check for identifiers
+btw This 65-character set, [-._a-zA-Z0-9], 
+is referred to in SUSv3 as the portable filename character set.
 */
 bool is_alnum(char c) 
 {
-	return is_alpha(c) || is_digit(c);
+	return (is_alpha(c) || is_digit(c) || c == '_' || c == '-' || c == '.');
 }
 
 /*
@@ -144,6 +143,19 @@ bool is_pathname(char c)
 	return is_alnum(c) || c == '.' || c == '-' || c == '/' || c == '~' ;
 }
 
+
+/*
+compare two chars case insensitive
+
+*/
+
+bool cmp_ic(char a, char b)
+{
+	if (is_alpha(a) && is_alpha(b))
+		return (ft_tolower(a) == ft_tolower(b));
+	else
+		return (a == b);
+}
 /*
 peek wil look ahead to see if my string is beginning with a word which 
 is an identifier
@@ -152,6 +164,7 @@ identifier is the string to check for
 need_delim is true if the identifier must be followed by a space to be valid
 ex '||' works without spaces at the end but 'echo' is valid with space only or with 
 one of the metacharacters : ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
+peek is case insensitive!
 */
 bool	peek(const char *input, const char *identifier, bool need_delim)
 {
@@ -160,11 +173,10 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
 
 	i = 0;
 	n = ft_strlen(identifier);
-	while (i < n && input[i] == identifier[i])
+	while (i < n && cmp_ic(input[i], identifier[i])) // add compare case insensitive
 		i++;
 	if (i == n && ((need_delim && is_delimiter(input[i])) || !need_delim)) 
 		return (true);
-	// debug("peeking %s i is %d n is %d", identifier, i, n);
 	else
 		return (false);
 }
@@ -175,43 +187,38 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
  so not for identifier.  they cannot be used for commands...!
  IF, THEN, ELSE, ELIF, FI, DO, DONE, WHILE, UNTIL, FOR, CASE, ESAC, SELECT, FUNCTION,
 */
-bool is_reserved(t_mini_data *data, t_list **token_list, char *identifier, int *start)
+bool is_reserved(t_mini_data *data, char *identifier, int *start)
 {
-	// I will implement data->error once I refactor the code
-	(void)data;
-	if (strncicmp(identifier, "if", 3) == 0)
-		ft_lstadd_back(token_list, create_token(IF, "if", start));
-	else if (strncicmp(identifier, "then", 5) == 0)
-		ft_lstadd_back(token_list, create_token(THEN, "then", start));
-	else if (strncicmp(identifier, "else", 5) == 0)
-		ft_lstadd_back(token_list, create_token(ELSE, "else", start));
-	else if (strncicmp(identifier, "elif", 5) == 0)
-		ft_lstadd_back(token_list, create_token(ELIF, "elif", start));
-	else if (strncicmp(identifier, "fi", 3) == 0)
-		ft_lstadd_back(token_list, create_token(FI, "fi", start));
-	else if (strncicmp(identifier, "do", 3) == 0)
-		ft_lstadd_back(token_list, create_token(DO, "do", start));
-	else if (strncicmp(identifier, "done", 5) == 0)
-		ft_lstadd_back(token_list, create_token(DONE, "done", start));
-	else if (strncicmp(identifier, "while", 6) == 0)
-		ft_lstadd_back(token_list, create_token(WHILE, "while", start));
-	else if (strncicmp(identifier, "until", 6) == 0)
-		ft_lstadd_back(token_list, create_token(UNTIL, "until", start));
-	else if (strncicmp(identifier, "for", 4) == 0)
-		ft_lstadd_back(token_list, create_token(FOR, "for", start));
-	else if (strncicmp(identifier, "case", 5) == 0)
-		ft_lstadd_back(token_list, create_token(CASE, "case", start));
-	else if (strncicmp(identifier, "esac", 5) == 0)
-		ft_lstadd_back(token_list, create_token(ESAC, "esac", start));
-	else if (strncicmp(identifier, "select", 7) == 0)
-		ft_lstadd_back(token_list, create_token(SELECT, "select", start));
-	else if (strncicmp(identifier, "function", 8) == 0)
-		ft_lstadd_back(token_list, create_token(FUNCTION, "function", start));
-	else if (strncicmp(identifier, "in", 3) == 0)
-		ft_lstadd_back(token_list, create_token(IN, "in", start));
+	if (peek(identifier, "if", true))
+		add_token(data, start, "echo", IF);
+	else if (peek(identifier, "then", true))
+		add_token(data, start, "then", THEN);
+	else if (peek(identifier, "else", true))
+		add_token(data, start, "else", ELSE);
+	else if (peek(identifier, "elif", true))
+		add_token(data, start, "elif", ELIF);
+	else if (peek(identifier, "fi", true))
+		add_token(data, start, "fi", FI);
+	else if (peek(identifier, "do", true))
+		add_token(data, start, "do", DO);
+	else if (peek(identifier, "done", true))
+		add_token(data, start, "done", DONE);
+	else if (peek(identifier, "while", true))
+		add_token(data, start, "while", WHILE);
+	else if (peek(identifier, "until", true))
+		add_token(data, start, "until", UNTIL);
+	else if (peek(identifier, "for", true))
+		add_token(data, start, "for", FOR);
+	else if (peek(identifier, "case", true))
+		add_token(data, start, "case", CASE);
+	else if (peek(identifier, "esac", true))
+		add_token(data, start, "esac", ESAC);
+	else if (peek(identifier, "select", true))
+		add_token(data, start, "select", SELECT);
+	else if (peek(identifier, "function", true))
+		add_token(data, start, "function", FUNCTION);
 	else 
 		return (false);
-	
 	return true;
 }
 
@@ -258,26 +265,24 @@ bool	not_implemented_builtin(const char *id)
 /*
 is_builtin checks if the identifier is a builtin command
 */
-bool is_builtin(t_mini_data *data, t_list **token_list, char *identifier,int *start)
+bool is_builtin(t_mini_data *data, char *identifier, int *start)
 {
-	// I will implement data->error once I refactor the code
-	(void)data;
-	if (strncicmp(identifier, "echo", 5) == 0)
-		ft_lstadd_back(token_list, create_token(BUILTIN, "echo", start));
-	else if (strncicmp(identifier, "cd", 3) == 0)
-		ft_lstadd_back(token_list, create_token(BUILTIN, "cd", start));
-	else if (strncicmp(identifier, "export", 7) == 0)
-		ft_lstadd_back(token_list, create_token(BUILTIN, "export", start));
-	else if (strncicmp(identifier, "unset", 6) == 0)
-		ft_lstadd_back(token_list, create_token(BUILTIN, "unset", start));
-	else if (strncicmp(identifier, "env", 4) == 0)
-		ft_lstadd_back(token_list, create_token(BUILTIN, "env", start));
-	else if (strncicmp(identifier, "exit", 3) == 0)
-		ft_lstadd_back(token_list, create_token(BUILTIN, "exit", start));
-	else if (strncicmp(identifier, "pwd", 3) == 0)
-		ft_lstadd_back(token_list, create_token(BUILTIN, "pwd", start));
+	if (peek(identifier, "echo", true))
+		add_token(data, start, "echo", BUILTIN);
+	else if (peek(identifier, "cd", true))
+		add_token(data, start, "cd", BUILTIN);
+	else if (peek(identifier, "export", true))
+		add_token(data, start, "export", BUILTIN);
+	else if (peek(identifier, "unset", true))
+		add_token(data, start, "unset", BUILTIN);
+	else if (peek(identifier, "env", true))
+		add_token(data, start, "env", BUILTIN);
+	else if (peek(identifier, "exit", true))
+		add_token(data, start, "exit", BUILTIN);
+	else if (peek(identifier, "pwd", true))
+		add_token(data, start, "pwd", BUILTIN);
 	else if (not_implemented_builtin(identifier))
-		ft_lstadd_back(token_list, create_token(BUILTIN, identifier, start));
+		add_token(data, start, identifier, BUILTIN);
 	else
 		return false;
 	return true;
@@ -287,14 +292,12 @@ bool is_builtin(t_mini_data *data, t_list **token_list, char *identifier,int *st
  * is_true_false checks if the identifier is a boolean value
  * like in bash true and false are not builtins but reserved words
  */
-bool	is_true_false(t_mini_data *data, t_list **token_list, char *str,int *start)
+bool	is_true_false(t_mini_data *data, char *str, int *start)
 {
-	(void)data;
-	debug("checking for true or false");
-	if (strncicmp(str, "true", 5) == 0)
-		ft_lstadd_back(token_list, create_token(TRUETOK, "true", start));
-	else if (strncicmp(str, "false", 6) == 0)
-		ft_lstadd_back(token_list, create_token(FALSETOK, "false", start));
+	if (peek(str, "true", true))
+		add_token(data, start, "true", TRUETOK);
+	else if (peek(str, "false", true))
+		add_token(data, start, "false", FALSETOK);
 	else
 		return false;
 	return true;
@@ -433,14 +436,10 @@ void	add_token(t_mini_data *data, int *i, char *lxm, enum e_tokentype type)
 	if (token)
 		ft_lstadd_back(&data->token_list, token);
 	else
-	{
-		debug("error: malloc token failed\n");
-		data->scanner_err_str = "error: malloc token failed";
-		data->exit_status = 1;
-	} 
+		scanner_error(data, "error: malloc token failed");
 }
 
-bool	is_a_redirection(t_mini_data *data, int *i)
+bool	is_a_control_operator(t_mini_data *data, int *i)
 {
 	int tmp;
 	tmp = *i;
@@ -478,6 +477,20 @@ bool	is_a_math_op(t_mini_data *data, int *i)
 		return (true);
 	return (false);
 }
+/*
+why returning true. I want to tell the scanner that the 
+token was successfully recognized so that it stops looking
+for other tokens and go back to the while loop with the data error 
+in the data struct so it will stop and free the data
+*/
+bool	scanner_error(t_mini_data *data, char *err_str)
+{
+	debug("error: %s\n", err_str);
+	data->scanner_err_str = err_str;
+	data->scanner_error = 1;
+	return (true);
+}
+
 
 /*
 	History expansion - (not implemented)
@@ -508,12 +521,7 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 			(*i)++;
 		char *tmp = ft_substr(data->input, start, *i - start);
 		if (!tmp)
-		{
-			debug("error: malloc tmp failed\n");
-			data->scanner_err_str = "error: malloc tmp failed";
-			data->scanner_error = 1;
-			return (false);
-		}
+			return (scanner_error(data, "error: malloc tmp failed"));
 		*i = start;
 		add_token(data, i, tmp, BANG_BANG);
 		free(tmp);
@@ -526,18 +534,12 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 			(*i)++;
 		char *tmp = ft_substr(data->input, start, *i - start);
 		if (!tmp)
-		{
-			debug("error: malloc tmp failed\n");
-			data->scanner_err_str = "error: malloc tmp failed";
-			data->scanner_error = 1;
-			return (false);
-		}	
+			return (scanner_error(data, "error: malloc tmp failed"));
 		*i = start;
 		add_token(data, i, tmp, BANG_DIGIT);
 		free(tmp);
 		return (true);
-	}
-	
+	}	
 	else if (peek(data->input + *i, "!-", false) && is_digit(*(data->input + *i + 2)))
 	{
 		int start = *i;
@@ -545,12 +547,7 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 			(*i)++;
 		char *tmp = ft_substr(data->input, start, *i - start + 2);
 		if (!tmp)
-		{
-			debug("error: malloc tmp failed\n");
-			data->scanner_err_str = "error: malloc tmp failed";
-			data->scanner_error = 1;
-			return (false);
-		}	
+			return (scanner_error(data, "error: malloc tmp failed"));
 		*i = start;
 		add_token(data, i, tmp, BANG_HYPHEN_DIGIT);
 		free(tmp);
@@ -563,33 +560,27 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 			(*i)++;
 		char *tmp = ft_substr(data->input, start, *i - start);
 		if (!tmp)
-		{
-			debug("error: malloc tmp failed\n");
-			data->scanner_err_str = "error: malloc tmp failed";
-			data->scanner_error = 1;
-			return (false);
-		}
+			return (scanner_error(data, "error: malloc tmp failed"));
 		*i = start;
 		add_token(data, i, tmp, BANG_ALPHA);
 		free(tmp);
 	}
 	if (peek(data->input + *i, "!?", false)) 
 	{
-		debug("found !?\n");
 		int start = *i;
 		while (!is_delimiter(*(data->input + *i)))
 			(*i)++;
 		char *tmp = ft_substr(data->input, start, *i - start);
 		if (!tmp)
-		{
-			debug("error: malloc tmp failed\n");
-			data->scanner_err_str = "error: malloc tmp failed";
-			data->scanner_error = 1;
-			return (false);
-		}
+			return (scanner_error(data, "error: malloc tmp failed"));
 		*i = start;
 		add_token(data, i, tmp, BANG_QUESTION_ALPHA);
 		free(tmp);
+		return (true);
+	}
+	else if (peek(data->input + *i, "!#", false))
+	{
+		add_token(data, i, "!#", BANG_HASH);
 		return (true);
 	}
 	return (false);
@@ -600,15 +591,12 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 */
 bool	extract_tokens(t_mini_data *data, int *i)
 {
-	int tmp;
-	tmp = *i;
-	if (is_a_redirection(data, i))
+	if (is_a_control_operator(data, i))
 		return (true);
 	else if (is_a_math_op(data, i))
 		return (true);
 	else if (is_a_hist_expansion(data, i))
 		return (true);
-
 	else if (peek(data->input + *i, ";;", false))
 		add_token(data, i, ";;", DSEMI);
 	else if (peek(data->input + *i, ";;&", false))
@@ -617,9 +605,13 @@ bool	extract_tokens(t_mini_data *data, int *i)
 		add_token(data, i, ";", SEMI);
 	else if (peek(data->input + *i, "!", true))
 		add_token(data, i, "!", BANG); 
-	if (tmp != *i)
-		return (true);
-	return (false);
+	else if (peek(data->input + *i, "=", false))
+		add_token(data, i, "=", EQUAL);
+
+	
+	else
+		return (false);
+	return (true);
 }
 
 
@@ -650,28 +642,7 @@ t_list *tokenizer(t_mini_data *data)
 			continue;
 		}
 
-		// wanna create an expression token
-		else if (input[i] == '(')
-		{
-			int start = i;
-			i++;
-			while (input[i] != ')')
-				i++;
-			if (input[i] == '\0')
-			{
-				debug("error: unclosed parentheses\n");
-				return (NULL);
-			}
-			tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&data->token_list, create_token(EXPRESSION, tmp, &start));
-			free(tmp);
-			i++;
-		}
 
-		
-
-		else if (input[i] == '=')
-			ft_lstadd_back(&data->token_list, create_token(EQUAL, "=", &i));
 /*
     DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
     DOLLAR_DOLLAR, // '$$' ‘$’ is used to get the process ID of the shell.
@@ -696,6 +667,7 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&data->token_list, create_token(DOLLAR_BANG, "$!", &i));
 		else if (input[i] == '$' && input[i + 1] == '-')
 			ft_lstadd_back(&data->token_list, create_token(DOLLAR_HYPHEN, "$-", &i));
+		
 		else if (input[i] == '$' && is_digit(input[i + 1]))
 		{
 			int start = i;
@@ -829,11 +801,29 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&data->token_list, create_token(PLUS, "+", &i));
 		else if (input[i] == '*')
 			ft_lstadd_back(&data->token_list, create_token(STAR, "*", &i));
-		// else if (input[i] == '?')
-		// 	ft_lstadd_back(&data->token_list, create_token(QUESTION, "?", &i));
 		// if there is a double quote I need to create a string token
 		else if (input[i] == '|' && (input[i + 1] != '|' || input[i+1] != '&'))
 			ft_lstadd_back(&data->token_list, create_token(PIPE, "|", &i));
+		
+		
+		// wanna create an expression token
+		else if (input[i] == '(')
+		{
+			int start = i;
+			i++;
+			while (input[i] != ')')
+				i++;
+			if (input[i] == '\0')
+			{
+				debug("error: unclosed parentheses\n");
+				return (NULL);
+			}
+			tmp = ft_substr(input, start, i - start + 1);
+			ft_lstadd_back(&data->token_list, create_token(EXPRESSION, tmp, &start));
+			free(tmp);
+			i++;
+		}
+
 		//S_QUOTED_STRING, single quoted string 'string'
 		else if (input[i] == '\'')
 		{
@@ -872,6 +862,23 @@ t_list *tokenizer(t_mini_data *data)
 			free(tmp);
 			i++;
 		}
+		// Command substitution not implemented
+   		// COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
+		else if (input[i] == '`')
+		{
+			int start = i++;
+			while (input[i] != '`' && input[i] != '\0')
+				i++;
+			if (input[i] == '\0')
+			{
+				debug("error: unclosed expansion\n");
+								data->exit_status = 1;;
+			}
+			tmp = ft_substr(input, start, i - start + 1);
+			ft_lstadd_back(&data->token_list, create_token(COM_EXPANSION, tmp, &start));
+			free(tmp);
+			i++;
+		}
 		else if (input[i] == '-' && is_alpha(input[i + 1]))
 		{
 			// create a lexeme for flag in this conf -[a-zA-Z]
@@ -897,23 +904,6 @@ t_list *tokenizer(t_mini_data *data)
 			ft_lstadd_back(&data->token_list, create_token(TILDE, "~", &i));
 		else if (input[i] == '$')
 			ft_lstadd_back(&data->token_list, create_token(DOLLAR, "$", &i));
-		// Command substitution not implemented
-   		// COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
-		else if (input[i] == '`')
-		{
-			int start = i++;
-			while (input[i] != '`' && input[i] != '\0')
-				i++;
-			if (input[i] == '\0')
-			{
-				debug("error: unclosed expansion\n");
-								data->exit_status = 1;;
-			}
-			tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&data->token_list, create_token(COM_EXPANSION, tmp, &start));
-			free(tmp);
-			i++;
-		}
 		// hash # case the rest of the string will be a comment but we dont create a token, we ignore
 		else if (input[i] == '#')
 		{
@@ -931,34 +921,34 @@ t_list *tokenizer(t_mini_data *data)
 			int start = i;
 			while (ft_isprint(input[i]) && !filename_delimiter(input[i]))
 				i++;	
-			char *str = ft_substr(input, start, i - start);
+			char *tmp = ft_substr(input, start, i - start);
 			// check for io number
 			if (input[i] == '<' || input[i] == '>')
 			{
-				if (is_io_number(str))
-					ft_lstadd_back(&data->token_list, create_token(IO_NUMBER, str, &start));
+				if (is_io_number(tmp))
+					ft_lstadd_back(&data->token_list, create_token(IO_NUMBER, tmp, &start));
 			}
 			else 
 			{
-				debug("identifier: -%s-", str);
+				debug("identifier: -%s-", tmp);
 				//check for reserved words and builtin first which they will be added 
 				// automatically if the check is true
-				if (!is_reserved(data, &data->token_list,str,&start) && \
-				!is_builtin(data, &data->token_list, str, &start) &&\
-				!is_true_false(data, &data->token_list, str, &start))
+				if (!is_reserved(data, tmp, &start) && \
+				!is_builtin(data, tmp, &start) &&\
+				!is_true_false(data, tmp, &start))
 				{
 					// check if it is a path name
-					if (ft_strchr(str, '/') || peek(str, " .", false) || peek(str, "./", false) || peek(str, "../", false) || peek(str, "~/", false) || peek(str, "~+", false))
-						ft_lstadd_back(&data->token_list, create_token(PATHNAME, str, &start));
+					if (ft_strchr(tmp, '/') || peek(tmp, ".", false) || peek(tmp, "./", false) || peek(tmp, "../", false) || peek(tmp, "~/", false) || peek(tmp, "~+", false))
+						ft_lstadd_back(&data->token_list, create_token(PATHNAME, tmp, &start));
 					// if not a path name maybe a number?
-					else if (str_is_number(str))
-						ft_lstadd_back(&data->token_list, create_token(NUMBER, str, &start));
+					else if (str_is_number(tmp))
+						ft_lstadd_back(&data->token_list, create_token(NUMBER, tmp, &start));
 					// if not a number maybe a variable name or anything else!
 					else
-						ft_lstadd_back(&data->token_list, create_token(WORD, str, &start));
+						ft_lstadd_back(&data->token_list, create_token(WORD, tmp, &start));
 				}
 			}
-			free(str);
+			free(tmp);
 		}
 		else if (is_space(input[i]))
 			i++;

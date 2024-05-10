@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/10 09:36:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/10 14:55:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,8 @@ typedef enum e_tokentype {
 	GREATER_AND_GREATER, // ">&>",
 	COMMA, DOT, MINUS, PLUS, SLASH, STAR, BANG_EQUAL, BANG,
 	// for the history expansion
-	BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA,
+	BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA, BANG_HASH,
+	
 	EQUAL_EQUAL,
 	GREATER_EQUAL, LESS_EQUAL, MINUS_MINUS, PLUS_PLUS,
 	MINUS_EQUAL, PLUS_EQUAL, SLASH_EQUAL, STAR_EQUAL,
@@ -181,8 +182,10 @@ bool	is_delimiter(const char ch);
 bool	is_digit(char c); 
 bool	is_alnum(char c);
 bool	is_pathname(char c); 
-bool	is_reserved(t_mini_data *data, t_list **token_list, char *identifier,int *start);
-bool 	is_builtin(t_mini_data *data, t_list **token_list, char *identifier,int *start);
+bool	is_reserved(t_mini_data *data, char *identifier,int *start);
+bool	is_true_false(t_mini_data *data, char *str, int *start);
+bool 	is_builtin(t_mini_data *data, char *identifier,int *start);
+void	add_token(t_mini_data *data, int *i, char *lxm, enum e_tokentype type);
 void	print_token_list(t_list *token_list);
 t_list	*create_token(t_tokentype type, const char *lexeme, int *i);
 bool	is_io_number(const char *identifier);
@@ -192,6 +195,8 @@ bool	filename_delimiter(const char ch);
 int		isprint_no_space(const char *identifier);
 bool	not_implemented_builtin(const char *identifier);
 void	free_token(void *content);
+bool 	cmp_ic(char a, char b);
+bool	scanner_error(t_mini_data *data, char *err_str);
 
 #ifdef __cplusplus
 }

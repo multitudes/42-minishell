@@ -1020,3 +1020,6 @@ http://www.cs.loyola.edu/~jglenn/702/S2005/Examples/dup2.html
 
 more pipes  
 https://people.cs.rutgers.edu/~pxk/416/notes/c-tutorials/pipe.html  
+
+trees:  
+https://youtu.be/SToUyjAsaFk?si=GOxMOm4uIVSPp4kO&t=1255
