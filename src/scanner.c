@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/10 16:34:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/10 17:27:32 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -451,6 +451,8 @@ bool	is_a_control_operator(t_mini_data *data, int *i)
 		add_token(data, i, "|&", PIPE_AND);
 	else if (peek(data->input + *i, ";&", false))
 		add_token(data, i, ";&", SEMI_AND);
+	else if (peek(data->input + *i, "|", false))
+		add_token(data, i, "|", PIPE);
 	if (tmp != *i)
 		return (true);
 	return (false);
@@ -621,8 +623,6 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 		int start = (*i)++;
 		while (peek(data->input + *i, "))", false) == false)
 			(*i)++;
-		// if I got to the end of the string but did not get '))'
-		// debug("last two chars are %c %c", *(data->input + *i), *(data->input + *i + 1));
 		if (*(data->input + *i + 1) == '\0')
 			return (scanner_error(data, "error: unclosed expansion"));
 		char *tmp = ft_substr(data->input, start, *i - start + 2);
@@ -631,7 +631,6 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 		*i = start;
 		add_token(data, i, tmp, EXPR_EXPANSION);
 		free(tmp);
-		// (*i) += 1;
 	}
 	// $1 to $9
 	else if (peek(data->input + *i, "$", false) && is_digit(*(data->input + *i + 1)))
@@ -645,7 +644,6 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 		*i = start;
 		add_token(data, i, tmp, DOLLAR_DIGIT);
 		free(tmp);
-		(*i)++;
 	}
 	// expansion ${parameter} or $parameter or $(command) or $((arythm expression))
 	else if (peek(data->input + *i, "${", false))
@@ -661,7 +659,6 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 		*i = start;
 		add_token(data, i, tmp, VAR_EXPANSION);
 		free(tmp);
-		// (*i)++;
 	}
 	// Parameter names in bash can only contain alphanumeric 
 	// characters or underscores, and must start with a letter or underscore.
@@ -677,7 +674,6 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 		*i = start;
 		add_token(data, i, tmp, VAR_EXPANSION);	
 		free(tmp);
-		// (*i)++;
 	}
 	// arythmetic expansion
 	else if (peek(data->input + *i, "$(", false))
@@ -693,13 +689,79 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 		*i = start;
 		add_token(data, i, tmp, COM_EXPANSION);
 		free(tmp);
-		// (*i)++;
 	}
 	else
 		return (false);
 	return (true);
 }
 
+/****************************************/
+/* redirections							*/
+/****************************************/
+bool	is_a_redirection(t_mini_data *data, int *i)
+{
+	if (peek(data->input + *i, ">|", false))
+		add_token(data, i, ">|", CLOBBER);
+	else if (peek(data->input + *i, ">>&", false))
+		add_token(data, i, ">>&", REDIRECT_BOTH_APP);
+	else if (peek(data->input + *i, "<<-", false))
+		add_token(data, i, "<<-", DLESSDASH);	
+	else if (peek(data->input + *i, "&>>", false))
+		add_token(data, i, "&>>", REDIRECT_OUT_APP);
+	else if (peek(data->input + *i, ">&>", false))
+		add_token(data, i, ">&>", GREATER_AND_GREATER);
+	else if (peek(data->input + *i, "&>", false))
+		add_token(data, i, "&>", REDIRECT_BOTH);
+	else if (peek(data->input + *i, "<&", false))
+		add_token(data, i, "<&", LESSAND);
+	else if (peek(data->input + *i, ">&", false))
+		add_token(data, i, ">&", GREATAND);
+	else if (peek(data->input + *i, "<>", false))
+		add_token(data, i, "<>", LESSGREAT);
+	else if (peek(data->input + *i, ">>", false))
+		add_token(data, i, ">>", DGREAT);
+	else if (peek(data->input + *i, "<<", false))
+	{
+		add_token(data, i, "<<", DLESS);
+		while (*(data->input + *i) && is_space(*(data->input + *i)))
+			(*i)++;
+		if (*(data->input + *i) == '\0' || is_delimiter(*(data->input + *i)))
+			return (scanner_error(data, "error: missing here-delim"));
+		
+		int start = *i;
+		while ((data->input + *i) && !is_delimiter(*(data->input + *i)))
+			(*i)++;
+		char *tmp = ft_substr(data->input, start, *i - start);
+		if (!tmp)
+			return (scanner_error(data, "error: malloc tmp failed"));
+		*i = start;
+		add_token(data, i, tmp, DLESS_DELIM);
+		free(tmp);
+	}
+	else if (peek(data->input + *i, ">=", false))
+		add_token(data, i, ">=", GREATER_EQUAL);
+	else if (peek(data->input + *i, "<=", false))
+		add_token(data, i, "<=", LESS_EQUAL);
+	else if (peek(data->input + *i, "!=", false))
+		add_token(data, i, "!=", BANG_EQUAL);
+	else if (peek(data->input + *i, ">", false))
+		add_token(data, i, ">", REDIRECT_OUT);
+	else if (peek(data->input + *i, "<", false))
+		add_token(data, i, "<", REDIRECT_IN);
+	else if (peek(data->input + *i, "==", false))
+		add_token(data, i, "==", EQUAL_EQUAL);
+	else if (peek(data->input + *i, ",", false))
+		add_token(data, i, ",", COMMA);
+	else if (peek(data->input + *i, "-", true))
+		add_token(data, i, "-", MINUS);
+	else if (peek(data->input + *i, "+", false))
+		add_token(data, i, "+", PLUS);
+	else if (peek(data->input + *i, "*", false))
+		add_token(data, i, "*", STAR);
+	else
+		return (false);
+	return (true);
+}
 /*
 
 */
@@ -724,6 +786,8 @@ bool	extract_tokens(t_mini_data *data, int *i)
 	else if (peek(data->input + *i, "=", false))
 		add_token(data, i, "=", EQUAL);
 	
+	else if (is_a_redirection(data, i))
+		return (true);
 	else
 		return (false);
 	return (true);
@@ -759,71 +823,6 @@ t_list *tokenizer(t_mini_data *data)
 
 
 
-		/****************************************/
-		/* redirections							*/
-		/****************************************/
-		else if (input[i] == '>' && input[i + 1] == '|')
-			ft_lstadd_back(&data->token_list, create_token(CLOBBER, ">|", &i));
-		else if (input[i] == '>' && input[i + 1] == '>' && input[i + 2] == '&')
-			ft_lstadd_back(&data->token_list, create_token(REDIRECT_BOTH_APP, ">>&", &i));
-		else if (input[i] == '<' && input[i + 1] == '<' && input[i + 2] == '-')
-			ft_lstadd_back(&data->token_list, create_token(DLESSDASH, "<<-", &i));
-		else if (input[i] == '&' && input[i + 1] == '>' && input[i + 2] == '>')
-			ft_lstadd_back(&data->token_list, create_token(REDIRECT_OUT_APP, "&>>", &i));
-		else if (input[i] == '>' && input[i + 1] == '&' && input[i + 2] == '>')
-			ft_lstadd_back(&data->token_list, create_token(GREATER_AND_GREATER , ">&>", &i));
-		else if (input[i] == '&' && input[i + 1] == '>')
-			ft_lstadd_back(&data->token_list, create_token(REDIRECT_BOTH, "&>", &i));
-		else if (input[i] == '<' && input[i + 1] == '&')
-			ft_lstadd_back(&data->token_list, create_token(LESSAND, "<&", &i));
-		else if (input[i] == '>' && input[i + 1] == '&')
-			ft_lstadd_back(&data->token_list, create_token(GREATAND, ">&", &i));
-		else if (input[i] == '<' && input[i + 1] == '>')
-			ft_lstadd_back(&data->token_list, create_token(LESSGREAT, "<>", &i));
-		else if (input[i] == '>' && input[i + 1] == '>')
-			ft_lstadd_back(&data->token_list, create_token(DGREAT, ">>", &i));
-		else if (input[i] == '<' && input[i + 1] && input[i + 1] == '<')
-		{
-			ft_lstadd_back(&data->token_list, create_token(DLESS, "<<", &i));
-			debug("DLESS tokens");
-			while (input[i] && is_space(input[i]))
-				i++;
-			if (input[i] == '\0' || is_delimiter(input[i]))
-			{
-				debug("error: unclosed DLESS\n");
-				data->exit_status = 1;;
-			}
-			int start = i;
-			while (input[i] && !is_delimiter(input[i]))
-				i++;
-			tmp = ft_substr(input, start, i - start);
-			ft_lstadd_back(&data->token_list, create_token(DLESS_DELIM, tmp, &start));
-			free(tmp);
-		}
-		else if (input[i] == '>' && input[i + 1] == '=')
-			ft_lstadd_back(&data->token_list, create_token(GREATER_EQUAL, ">=", &i));
-		else if (input[i] == '<' && input[i + 1] == '=')
-			ft_lstadd_back(&data->token_list, create_token(LESS_EQUAL, "<=", &i));
-		else if (input[i] == '!' && input[i + 1] == '=')
-			ft_lstadd_back(&data->token_list, create_token(BANG_EQUAL, "!=", &i));
-		else if (input[i] == '>')
-			ft_lstadd_back(&data->token_list, create_token(REDIRECT_OUT, ">", &i));
-		else if (input[i] == '<')
-			ft_lstadd_back(&data->token_list, create_token(REDIRECT_IN, "<", &i));
-		else if (input[i] == '=' && input[i + 1] == '=')
-			ft_lstadd_back(&data->token_list, create_token(EQUAL_EQUAL, "==", &i));
-		else if (input[i] == ',')
-			ft_lstadd_back(&data->token_list, create_token(COMMA, ",", &i));
-		else if (input[i] == '-' && input[i + 1] == ' ')
-			ft_lstadd_back(&data->token_list, create_token(MINUS, "-", &i));
-		else if (input[i] == '+')
-			ft_lstadd_back(&data->token_list, create_token(PLUS, "+", &i));
-		else if (input[i] == '*')
-			ft_lstadd_back(&data->token_list, create_token(STAR, "*", &i));
-		// if there is a double quote I need to create a string token
-		else if (input[i] == '|' && (input[i + 1] != '|' || input[i+1] != '&'))
-			ft_lstadd_back(&data->token_list, create_token(PIPE, "|", &i));
-		
 		
 		// wanna create an expression token
 		else if (input[i] == '(')
