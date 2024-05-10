@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 11:00:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/10 09:36:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,6 @@ struct s_token_list {
 };
 typedef struct s_token_list t_token_list;
 
-void	print_token_description(const t_list *token_list); 
 t_list	*create_token(t_tokentype type, const char *lexeme, int *start);
 t_list	*tokenizer(t_mini_data *data);
 bool	peek(const char *input, const char *identifier, bool end_space);
@@ -184,7 +183,6 @@ bool	is_alnum(char c);
 bool	is_pathname(char c); 
 bool	is_reserved(t_mini_data *data, t_list **token_list, char *identifier,int *start);
 bool 	is_builtin(t_mini_data *data, t_list **token_list, char *identifier,int *start);
-void	print_token_description(const t_list *current); 
 void	print_token_list(t_list *token_list);
 t_list	*create_token(t_tokentype type, const char *lexeme, int *i);
 bool	is_io_number(const char *identifier);

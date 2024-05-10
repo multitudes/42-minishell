@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 11:01:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/10 09:35:14 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -427,6 +427,33 @@ int	isprint_no_space(const char *str)
 	return (1);
 }
 
+void	add_token(t_mini_data *data, int *i, char *lxm, enum e_tokentype type)
+{
+	t_list *token = create_token(type, lxm, i);
+	if (token)
+		ft_lstadd_back(&data->token_list, token);
+	else
+	{
+		debug("error: malloc token failed\n");
+		data->scanner_err_str = "error: malloc token failed";
+		data->exit_status = 1;
+	} 
+}
+
+/*
+*/
+void	extract_tokens(t_mini_data *data, int *i)
+{
+	// extract tokens
+	// extract_tokens(data, &i)
+	// backslash '\\' as special char is not implemented
+	if (peek(data->input + *i, "||", false))
+		add_token(data, i, "||", OR_IF);
+	else if (data->input[*i] == '&' && data->input[*i + 1] == '&')
+		ft_lstadd_back(&data->token_list, create_token(AND_IF, "&&", i));
+}
+
+
 /*
 scanning function
 Returns a token list which is a linked list of t_list type
@@ -448,11 +475,15 @@ t_list *tokenizer(t_mini_data *data)
 	token_list = NULL;
 	while (i < (int)ft_strlen(input) && data->exit_status == 0)
 	{
+		// extract tokens
+		// extract_tokens(data, &i)
+
 		// backslash '\\' as special char is not implemented
-		if (peek(input + i, "||", false))
+		if (peek(data->input + i, "||", false))
 		{
-			debug("found || at %d", i);
-			token = create_token(OR_IF, "||", &i);
+			//debug("found || at %d", i);
+			enum e_tokentype type = OR_IF;
+			token = create_token(type, "||", &i);
 			if (token)
 				ft_lstadd_back(&token_list, token);
 			else

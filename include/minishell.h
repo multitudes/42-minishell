@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 15:52:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/10 09:12:56 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ struct s_mini_data
 	char		*DLESS_delimiter;
 	int			exit_status;
 	bool		scanner_error;
+	char		*scanner_err_str;
 	int 		scanner_tokens_nr;
 	bool		pipe_open;
 	int 		pipe_fd[2];
