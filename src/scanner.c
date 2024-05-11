@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/11 20:38:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/11 20:46:14 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -808,15 +808,13 @@ t_list *tokenizer(t_mini_data *data)
 	int i;
 	char *tmp;
 	int start;
-	const char *input;
 	
 	i = 0;
-	input = data->input;
 	data->token_list = NULL;
 	start = 0;
-	debug("scanning input: %s of num char %d", input, (int)ft_strlen(input));
+	debug("scanning input: %s of num char %d", data->input, (int)ft_strlen(data->input));
 	data->exit_status = 0;
-	while (i < (int)ft_strlen(input) && data->exit_status == 0)
+	while (i < (int)ft_strlen(data->input) && data->exit_status == 0)
 	{
 		// extract tokens
 		if (extract_tokens(data, &i))
@@ -826,45 +824,45 @@ t_list *tokenizer(t_mini_data *data)
 		}
 		
 		// wanna create an expression token
-		else if (input[i] == '(')
+		else if (data->input[i] == '(')
 		{
 			start = i++;
-			while (input[i] != ')')
+			while (data->input[i] != ')')
 				i++;
-			if (input[i] == '\0')
+			if (data->input[i] == '\0')
 			{
 				debug("error: unclosed parentheses\n");
 				return (NULL);
 			}
-			tmp = ft_substr(input, start, i - start + 1);
+			tmp = ft_substr(data->input, start, i - start + 1);
 			add_token(data, &start, tmp, EXPRESSION);
 			i = start;
 			free(tmp);
 		}
 
 		//S_QUOTED_STRING, single quoted string 'string'
-		else if (input[i] == '\'')
+		else if (data->input[i] == '\'')
 		{
 			start = i++;
-			while (input[i] && input[i] != '\'')
+			while (data->input[i] && data->input[i] != '\'')
 				i++;
-			if (!input[i])
+			if (!data->input[i])
 				scanner_error(data, "error: unclosed single quotes");
-			tmp = ft_substr(input, start, i - start + 1);
+			tmp = ft_substr(data->input, start, i - start + 1);
 			// no expansion in those unless they are part of a double quoted string
 			// expand later $() ${} and $VAR and '...'  and ` ... `  ?
 			add_token(data, &start, tmp, S_QUOTED_STRING);
 			i = start;
 			free(tmp);
 		}
-		else if (input[i] == '"')
+		else if (data->input[i] == '"')
 		{
 			start = i++;
-			while (input[i] != '"' && input[i] != '\0')
+			while (data->input[i] != '"' && data->input[i] != '\0')
 				i++;
-			if (input[i] == '\0')
+			if (data->input[i] == '\0')
 				scanner_error(data, "error: unclosed double quotes");
-			tmp = ft_substr(input, start, i - start + 1);
+			tmp = ft_substr(data->input, start, i - start + 1);
 			// expand later $() ${} and $VAR and '...'  and ` ... `  ?
 			add_token(data, &start, tmp, QUOTED_STRING);
 			i = start;
@@ -872,49 +870,50 @@ t_list *tokenizer(t_mini_data *data)
 		}
 		// Command substitution not implemented
    		// COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
-		else if (input[i] == '`')
+		else if (data->input[i] == '`')
 		{
 			start = i++;
-			while (input[i] && input[i] != '`') 
+			while (data->input[i] && data->input[i] != '`') 
 				i++;
-			if (!input[i])
+			if (!data->input[i])
 				scanner_error(data, "error: unclosed command substitution");
-			tmp = ft_substr(input, start, i - start + 1);
+			tmp = ft_substr(data->input, start, i - start + 1);
 			add_token(data, &start, tmp, COM_EXPANSION);
 			i = start;
 			free(tmp);
 		}
 		// create a lexeme for flag in this conf -[a-zA-Z]
-		else if (peek((input + i), "-", false) && is_alpha(input[i + 1]))
+		else if (peek((data->input + i), "-", false) && is_alpha(data->input[i + 1]))
 		{
 			start = i++;
-			while (is_alpha(input[i]))
+			while (is_alpha(data->input[i]))
 				i++;
-			tmp = ft_substr(input, start, i - start);
+			tmp = ft_substr(data->input, start, i - start);
 			add_token(data, &start, tmp, FLAGS);
 			free(tmp);
 		}
 
 		// hash # case the rest of the string will be a comment but we dont create a token, we ignore
-		else if (peek((input + i), "#", false))
+		else if (peek((data->input + i), "#", false))
 			break;
 		
 
 		/*********************************************/
 		/* try string/ pathname again!               */
 		/*********************************************/
-		else if (isprint(input[i]) && !filename_delimiter(input[i]))
+		else if (isprint(data->input[i]) && !filename_delimiter(data->input[i]))
 		{
 			// debug("- pathname - NUMBER or identifier? ");
 			start = i;
-			while (ft_isprint(input[i]) && !filename_delimiter(input[i]))
+			while (ft_isprint(data->input[i]) && !filename_delimiter(data->input[i]))
 				i++;	
-			char *tmp = ft_substr(input, start, i - start);
+			char *tmp = ft_substr(data->input, start, i - start);
 			// check for io number
-			if (input[i] == '<' || input[i] == '>')
+			if (data->input[i] == '<' || data->input[i] == '>')
 			{
 				if (is_io_number(tmp))
-					ft_lstadd_back(&data->token_list, create_token(IO_NUMBER, tmp, &start));
+					add_token(data, &start, tmp, IO_NUMBER);
+				// ft_lstadd_back(&data->token_list, create_token(IO_NUMBER, tmp, &start));
 			}
 			else 
 			{
@@ -927,18 +926,18 @@ t_list *tokenizer(t_mini_data *data)
 				{
 					// check if it is a path name
 					if (ft_strchr(tmp, '/') || peek(tmp, ".", false) || peek(tmp, "./", false) || peek(tmp, "../", false) || peek(tmp, "~/", false) || peek(tmp, "~+", false))
-						ft_lstadd_back(&data->token_list, create_token(PATHNAME, tmp, &start));
+						add_token(data, &start, tmp, PATHNAME);
 					// if not a path name maybe a number?
 					else if (str_is_number(tmp))
-						ft_lstadd_back(&data->token_list, create_token(NUMBER, tmp, &start));
-					// if not a number maybe a variable name or anything else!
+						add_token(data, &start, tmp, NUMBER);
+					//if not a number maybe a variable name or anything else!
 					else
-						ft_lstadd_back(&data->token_list, create_token(WORD, tmp, &start));
+						add_token(data, &start, tmp, WORD);
 				}
 			}
 			free(tmp);
 		}
-		else if (is_space(input[i]))
+		else if (is_space(data->input[i]))
 			i++;
 		// this is just in case! but especially for debug I want to know if I get 
 		// a character that I do not recognize so I can add it. maybe in production I should better ignore 
