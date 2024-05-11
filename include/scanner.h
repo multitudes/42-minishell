@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/11 16:52:07 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/11 20:25:25 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,14 +183,15 @@ t_list	*tokenizer(t_mini_data *data);
 bool	peek(const char *input, const char *identifier, bool end_space);
 bool	is_space(const char c);
 int		strncicmp(char const *a, char const *b, int n);
-bool	is_delimiter(const char ch);
+bool	is_delimiter(char ch);
+bool	is_not_delimiter(char ch);
 bool	is_digit(char c); 
 bool	is_alnum(char c);
 bool	is_pathname(char c); 
 bool	is_reserved(t_mini_data *data, char *identifier,int *start);
 bool	is_true_false(t_mini_data *data, char *str, int *start);
 bool 	is_builtin(t_mini_data *data, char *identifier,int *start);
-void	add_token(t_mini_data *data, int *i, char *lxm, enum e_tokentype type);
+bool	add_token(t_mini_data *data, int *i, char *lxm, enum e_tokentype type);
 void	print_token_list(t_list *token_list);
 t_list	*create_token(t_tokentype type, const char *lexeme, int *i);
 bool	is_io_number(const char *identifier);
