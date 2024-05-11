@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/10 15:54:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/11 16:52:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,9 +112,14 @@ typedef enum e_tokentype {
 	LESSGREAT, 		// '<>'
 	DLESSDASH,	 // '<<-' The here-document delimiter is treated as a literal string,
 	GREATER_AND_GREATER, // ">&>",
-	COMMA, DOT, MINUS, PLUS, SLASH, STAR, BANG_EQUAL, BANG,
+	COMMA, MINUS, PLUS, STAR, BANG_EQUAL, BANG,
 	// for the history expansion
-	BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA, BANG_HASH,
+	BANG_BANG, // !! repeat the last command history
+	BANG_DIGIT, // !n repeat the nth command history
+	BANG_HYPHEN_DIGIT, 
+	BANG_ALPHA, 
+	BANG_QUESTION_ALPHA, 
+	BANG_HASH,
 	
 	EQUAL_EQUAL,
 	GREATER_EQUAL, LESS_EQUAL, MINUS_MINUS, PLUS_PLUS,

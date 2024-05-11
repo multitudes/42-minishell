@@ -24,9 +24,11 @@ const char* process_token(t_list **current, int *i, const char* expected_lexeme,
 	
     debug("token number %d ", *i);
     debug("token type: %d ", token->type);
-    debug("token lexeme: %s ", token->lexeme);
-    my_assert(token->type == expected_tokentype, "token type is not WORD");
+	debug("type %d = expected_type: %d", token->type, expected_tokentype);
+    debug("token lexeme: -%s- ", token->lexeme);
+    my_assert(token->type == expected_tokentype, "token type is not the expected type...");
     my_assert(strcmp(token->lexeme, expected_lexeme) == 0, "token lexeme is not expected");
+
     *current = (*current)->next;
     (*i)++;
 	return NULL;
@@ -152,13 +154,15 @@ const char *test_scanner_identifiers5() {
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "echo", WORD);
+	result = process_token(&current, &i, "echo", BUILTIN);
 	result = process_token(&current, &i, "\\2", WORD);
 	result = process_token(&current, &i, ">", REDIRECT_OUT);
 	result = process_token(&current, &i, "a", WORD);
-	result = process_token(&current, &i, "echo", WORD);
-	result = process_token(&current, &i, "2\\>a", WORD);
-	result = process_token(&current, &i, "echo", WORD);
+	result = process_token(&current, &i, "echo", BUILTIN);
+	result = process_token(&current, &i, "2\\", WORD);
+	result = process_token(&current, &i, ">", REDIRECT_OUT);
+	result = process_token(&current, &i, "a", WORD);
+	result = process_token(&current, &i, "echo", BUILTIN);
 	result = process_token(&current, &i, "2", IO_NUMBER);
 	result = process_token(&current, &i, ">", REDIRECT_OUT);
 	result = process_token(&current, &i, "a", WORD);
@@ -240,9 +244,6 @@ const char *test_scanner_identifiers7()
 	return result;
 }
 
-/*
-This is the entry point for the tests
-*/
 const char *test_scanner_true_false() 
 {
 	std::string str = "true false";
@@ -262,9 +263,7 @@ const char *test_scanner_true_false()
 	return result;
 }
 
-/*
-This is the entry point for the tests
-*/
+
 const char *test_scanner_true_false2() 
 {
 	std::string str = "true;false";
@@ -285,6 +284,181 @@ const char *test_scanner_true_false2()
 	return result;
 }
 
+const char* test_all_tokens() {
+    std::string str = "hello world 42 builtin -f /path/to/file | |& && || ;";
+    const char* input = str.c_str();
+    init_data(&g_mini_data);
+    g_mini_data->input = input;
+    t_list *lexemes = tokenizer(g_mini_data);
+    t_list *current = lexemes;
+    const char *result;
+    int i = 0;
+
+    // Add calls to process_token for each token in the order they appear in the string
+    result = process_token(&current, &i, "hello", WORD);
+    result = process_token(&current, &i, "world", WORD);
+	result = process_token(&current, &i, "42", NUMBER);
+	result = process_token(&current, &i, "builtin", BUILTIN);
+	result = process_token(&current, &i, "-f", FLAGS);
+	result = process_token(&current, &i, "/path/to/file", PATHNAME);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "|&", PIPE_AND);
+	result = process_token(&current, &i, "&&", AND_IF);
+	result = process_token(&current, &i, "||", OR_IF);
+	result = process_token(&current, &i, ";", SEMI);
+	
+	// this is how I check for the end of the list  
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+    return result;
+}
+
+
+const char* test_all_tokens2() {
+    std::string str = "& ;& ;; ;;& ( command ) $(command) ${param} $param $((expr)) \"string\" 'string' true false > < >> << >| &> >& <& &>> >>& = <> <<- >&> , . - + / * ";
+    const char* input = str.c_str();
+    init_data(&g_mini_data);
+    g_mini_data->input = input;
+    t_list *lexemes = tokenizer(g_mini_data);
+    t_list *current = lexemes;
+    const char *result;
+    int i = 0;
+
+    // Add calls to process_token for each token in the order they appear in the string
+
+	result = process_token(&current, &i, "&", AND_TOK);
+	result = process_token(&current, &i, ";&", SEMI_AND);
+	result = process_token(&current, &i, ";;", DSEMI);
+	result = process_token(&current, &i, ";;&", DSEMI_AND);
+	result = process_token(&current, &i, "( command )", EXPRESSION);
+	result = process_token(&current, &i, "$(command)", COM_EXPANSION);
+	result = process_token(&current, &i, "${param}", VAR_EXPANSION);
+	result = process_token(&current, &i, "$param", VAR_EXPANSION);
+	result = process_token(&current, &i, "$((expr))", EXPR_EXPANSION);
+	result = process_token(&current, &i, "\"string\"", QUOTED_STRING);
+	result = process_token(&current, &i, "'string'", S_QUOTED_STRING);
+
+	result = process_token(&current, &i, "true", TRUETOK);
+	result = process_token(&current, &i, "false", FALSETOK);
+	result = process_token(&current, &i, ">", REDIRECT_OUT);
+	result = process_token(&current, &i, "<", REDIRECT_IN);
+	result = process_token(&current, &i, ">>", DGREAT);
+	result = process_token(&current, &i, "<<", DLESS);
+
+	result = process_token(&current, &i, ">|", CLOBBER);
+	result = process_token(&current, &i, "&>", REDIRECT_BOTH);
+	result = process_token(&current, &i, ">&", GREATAND);
+	result = process_token(&current, &i, "&>", REDIRECT_BOTH);
+	result = process_token(&current, &i, ">&", REDIRECT_BOTH);
+	result = process_token(&current, &i, "<&", LESSAND);
+	result = process_token(&current, &i, "&>>", REDIRECT_OUT_APP);
+	result = process_token(&current, &i, ">>&", REDIRECT_BOTH_APP);
+	result = process_token(&current, &i, "=", EQUAL);
+	result = process_token(&current, &i, "<>", LESSGREAT);
+	result = process_token(&current, &i, "<<-", DLESSDASH);
+	result = process_token(&current, &i, ">&>", GREATER_AND_GREATER);
+	result = process_token(&current, &i, ",", COMMA);
+	result = process_token(&current, &i, ".", BUILTIN);
+	result = process_token(&current, &i, "-", MINUS);
+	result = process_token(&current, &i, "+", PLUS);
+	result = process_token(&current, &i, "/", PATHNAME);
+	result = process_token(&current, &i, "*", STAR);
+	
+	
+	// this is how I check for the end of the list  
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+    return result;
+}
+
+
+const char* test_all_tokens3() {
+    std::string str = "!= ! !! 0-9 !a !?a !# == >= <= -- ++ -= += /= *= ";
+    const char* input = str.c_str();
+    init_data(&g_mini_data);
+    g_mini_data->input = input;
+    t_list *lexemes = tokenizer(g_mini_data);
+    t_list *current = lexemes;
+    const char *result;
+    int i = 0;
+
+    // Add calls to process_token for each token in the order they appear in the string
+
+	result = process_token(&current, &i, "!=", BANG_EQUAL);
+	result = process_token(&current, &i, "!", BANG);
+	result = process_token(&current, &i, "!!", BANG_BANG);
+	result = process_token(&current, &i, "0-9", WORD);
+	result = process_token(&current, &i, "!a", BANG_ALPHA);
+	result = process_token(&current, &i, "!?a", BANG_QUESTION_ALPHA);
+	result = process_token(&current, &i, "!#", BANG_HASH);
+	result = process_token(&current, &i, "==", EQUAL_EQUAL);
+	result = process_token(&current, &i, ">=", GREATER_EQUAL);
+	result = process_token(&current, &i, "<=", LESS_EQUAL);
+	result = process_token(&current, &i, "--", MINUS_MINUS);
+	result = process_token(&current, &i, "++", PLUS_PLUS);
+	result = process_token(&current, &i, "-=", MINUS_EQUAL);
+	result = process_token(&current, &i, "+=", PLUS_EQUAL);
+	result = process_token(&current, &i, "/=", SLASH_EQUAL);
+	result = process_token(&current, &i, "*=", STAR_EQUAL);
+	
+	// this is how I check for the end of the list  
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+    return result;
+}
+
+
+const char* test_all_tokens4() {
+    std::string str = "& if then else elif fi do done in while until for case esac select function $? $$ $* $@ $# $! $- $0 $ $a # comment ^ % ~ EOF command";
+    const char* input = str.c_str();
+    init_data(&g_mini_data);
+    g_mini_data->input = input;
+    t_list *lexemes = tokenizer(g_mini_data);
+    t_list *current = lexemes;
+    const char *result;
+    int i = 0;
+
+    // Add calls to process_token for each token in the order they appear in the string
+
+	result = process_token(&current, &i, "&", AND_TOK);
+	result = process_token(&current, &i, "if", IF);
+	result = process_token(&current, &i, "then", THEN);
+	result = process_token(&current, &i, "else", ELSE);
+	result = process_token(&current, &i, "elif", ELIF);
+	result = process_token(&current, &i, "fi", FI);
+	result = process_token(&current, &i, "do", DO);
+	result = process_token(&current, &i, "done", DONE);
+	result = process_token(&current, &i, "in", IN);	
+	result = process_token(&current, &i, "while", WHILE);
+	result = process_token(&current, &i, "until", UNTIL);
+	result = process_token(&current, &i, "for", FOR);
+	result = process_token(&current, &i, "case", CASE);
+	result = process_token(&current, &i, "esac", ESAC);
+	result = process_token(&current, &i, "select", SELECT);
+	result = process_token(&current, &i, "function", FUNCTION);
+	result = process_token(&current, &i, "$$", DOLLAR_DOLLAR);
+	result = process_token(&current, &i, "$*", DOLLAR_STAR);
+	result = process_token(&current, &i, "$@", DOLLAR_AT);
+	result = process_token(&current, &i, "$#", DOLLAR_HASH);
+	result = process_token(&current, &i, "$!", DOLLAR_BANG);
+	result = process_token(&current, &i, "$-", DOLLAR_HYPHEN);
+	result = process_token(&current, &i, "$0", DOLLAR_DIGIT);
+	result = process_token(&current, &i, "$", DOLLAR);
+	result = process_token(&current, &i, "$a", VAR_EXPANSION);
+	result = process_token(&current, &i, "#", HASH);
+	result = process_token(&current, &i, "comment", WORD);
+	result = process_token(&current, &i, "^", CARET);
+	result = process_token(&current, &i, "%", PERCENT);
+	result = process_token(&current, &i, "~", TILDE);
+	result = process_token(&current, &i, "EOF", EOF_TOK);
+	result = process_token(&current, &i, "command", WORD);
+	
+	// this is how I check for the end of the list  
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+    return result;
+}
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -296,12 +470,16 @@ const char *all_tests()
 	run_test(test_scanner_identifiers3);
 	run_test(test_scanner_identifiers4);
 
-	// run_test(test_scanner_identifiers5);
+	run_test(test_scanner_identifiers5);
 	run_test(test_scanner_identifiers6);
 	run_test(test_scanner_identifiers7);
 
 	run_test(test_scanner_true_false);
 	run_test(test_scanner_true_false2);
+	run_test(test_all_tokens);
+	run_test(test_all_tokens2);
+	run_test(test_all_tokens3);
+	run_test(test_all_tokens4);
 
 	return NULL;
 }

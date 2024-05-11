@@ -895,6 +895,33 @@ void preOrderTraversal(ASTNode* node) {
 You can perform in-order or post-order traversal by changing the order of the operations in this function. For in-order traversal, you would first traverse the left child, then visit the node, then traverse the right child. For post-order traversal, you would first traverse the left child, then the right child, then visit the node.  
 
 
+## LL parsing
+LL parsing is a type of parsing for context-free grammars. The name "LL" stands for "Left-to-right, Leftmost derivation", which describes the way the input is consumed and the parse tree is built.
+
+Here's a breakdown of what "Left-to-right, Leftmost derivation" means:
+
+"Left-to-right" means that the input is read from left to right.
+
+"Leftmost derivation" means that the parse tree is built by expanding the leftmost non-terminal first.
+
+LL parsers are often used for their simplicity and efficiency. They can be used to parse a wide range of programming languages, although they are not powerful enough to parse all of them.
+
+## rebase
+working in a team and using git sometimes it is better to use rebase instead of merge.
+
+Rebase is a Git command that allows you to integrate changes from one branch into another. It's often used to keep a feature branch up-to-date with the latest code from the main branch.
+
+Here's a step-by-step explanation of how rebase works:
+
+You have a feature branch that you've made some commits on.
+The main branch receives new commits while you're working on your feature branch.
+You want to include those new commits from the main branch into your feature branch.
+You can use git rebase main while on your feature branch to do this.
+What rebase does is it takes the changes made in the commits on your feature branch, and re-applies them on top of the main branch. This effectively moves or "rebases" your feature branch to the tip of the main branch.
+
+The result is a cleaner history than merging. Instead of a merge commit, your feature branch will have a linear history that makes it look like you started working on it later than you actually did.
+
+However, rebase can be more complex to use than merging, especially when conflicts occur. It's a powerful tool, but it should be used with understanding and care.
 
 ## Execute a shell command
 Use fork() to create a new process, and then use `execve()` in the child process to replace it with a shell that executes the command. Here's an example:
@@ -1023,3 +1050,64 @@ https://people.cs.rutgers.edu/~pxk/416/notes/c-tutorials/pipe.html
 
 trees:  
 https://youtu.be/SToUyjAsaFk?si=GOxMOm4uIVSPp4kO&t=1255
+
+
+# extras
+## the PWD builtin
+I just realized how difficult the pwd builtin is if you want to make it behave like bash (some evaluators insist on taking bash as a reference when implementing the builtins)
+On shell startup:
+If: PWD is unset, set it to getcwd()
+Else If: PWD is set, but the directory described by PWD does not exist, set it to getcwd()
+Else If: PWD is set, but the directory described by PWD does not have the same inode number as the directory described by getcwd(), then set it to getcwd()
+Else: don't change it
+Set a hidden variable to the value of PWD. It cannot be set or unset manually, only cd can change it
+When calling cd:
+Set PWD to the path requested (if chdir() was successful), instead of the value of getcwd()
+On success, set the hidden variable to PWD
+When calling pwd:
+Print the hidden variable, ignore the value of PWD or getcwd().
+This behavior mirror pretty much what bash's pwd builtin does, and it has the following implications:
+$ mkdir real real2 #create 2 directories (different inodes)
+$ ln -s real fake  #symlink1 (inode of first dir)
+$ ln -s real fake2  #symlink2 (inode of first dir)
+$ cd fake && pwd  #set PWD to argument of cd, then print PWD instead of getcwd()
+~/fake
+$ unset PWD && pwd  #if we didn't have the "hidden" variable, this wouldn't work
+~/fake
+$ bash -c pwd  #inherits PWD (~/fake exists and has the same inode number as getcwd())
+~/fake
+$ PWD=/nonexistent bash -c pwd  #PWD doesn't exist, set to getcwd()
+~/real
+$ PWD=~/real bash -c pwd  #PWD exists and has same inode number, keep it
+~/real
+$ PWD=~/fake2 bash -c pwd  #PWD exists and has same inode number, keep it
+~/fake2
+$ PWD=~/real2 bash -c pwd  #PWD exists but doesn't have the same inode number, set to getcwd()
+~/real
+$ PWD= bash -c pwd  #PWD is unset, set to getcwd()
+~/real
+All minishells I've seen always print ~/real (without the tilde of course) instead of the other cases. Would anyone consider this as mandatory in any way? Since we've had so many discussion about implement the builtins "fully", although neither subject nor evaluation sheet explicitly tell you to implement the specific behaviors in question (cd -, cd without args, export without args, exit argument handling, echo handling of -n, etc.)
+
+
+## some commands
+```
+bash-3.2$ export myvar=`ls -l`
+bash-3.2$ $myvar
+bash: total: command not found
+```
+why this? When you try to use $myvar as a command, Bash attempts to execute the first word of myvar's value as a command. In this case, the first word is likely "total" (the first word in the output of ls -l), which is not a valid command, hence the error message "total: command not found".
+
+
+
+bash-3.2$ export myvar=`ls -l`
+bash-3.2$ $(ls)
+bash: LICENSE: command not found
+
+So, if the first file or directory listed by ls -l is LICENSE, Bash will try to execute LICENSE as a command, which is not valid, hence the error message "LICENSE: command not found".
+
+If you want to store a command in a variable and then execute it, you should store the command as a string, not execute it and store the output. 
+
+```
+bash-3.2$ myvar="ls -l"
+bash-3.2$ eval $myvar
+```

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/10 17:27:32 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/11 18:56:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
 bool is_reserved(t_mini_data *data, char *identifier, int *start)
 {
 	if (peek(identifier, "if", true))
-		add_token(data, start, "echo", IF);
+		add_token(data, start, "if", IF);
 	else if (peek(identifier, "then", true))
 		add_token(data, start, "then", THEN);
 	else if (peek(identifier, "else", true))
@@ -217,6 +217,8 @@ bool is_reserved(t_mini_data *data, char *identifier, int *start)
 		add_token(data, start, "select", SELECT);
 	else if (peek(identifier, "function", true))
 		add_token(data, start, "function", FUNCTION);
+	else if (peek(identifier, "in", true))
+		add_token(data, start, "in", IN);
 	else 
 		return (false);
 	return true;
@@ -775,19 +777,28 @@ bool	extract_tokens(t_mini_data *data, int *i)
 		return (true);
 	else if (is_a_dollar_exp(data, i))
 		return (true);
-	else if (peek(data->input + *i, ";;", false))
-		add_token(data, i, ";;", DSEMI);
 	else if (peek(data->input + *i, ";;&", false))
 		add_token(data, i, ";;&", DSEMI_AND);
+	else if (peek(data->input + *i, ";;", false))
+		add_token(data, i, ";;", DSEMI);
 	else if (peek(data->input + *i, ";", false))
 		add_token(data, i, ";", SEMI);
 	else if (peek(data->input + *i, "!", true))
 		add_token(data, i, "!", BANG); 
-	else if (peek(data->input + *i, "=", false))
-		add_token(data, i, "=", EQUAL);
-	
 	else if (is_a_redirection(data, i))
 		return (true);
+	else if (peek(data->input + *i, "=", false))
+		add_token(data, i, "=", EQUAL);
+	else if (peek(data->input + *i, "&", false))
+		add_token(data, i, "&", AND_TOK);
+	else if (peek(data->input + *i, "^", false))
+		add_token(data, i, "^", CARET);
+	else if (peek(data->input + *i, "%", false))
+		add_token(data, i, "%", PERCENT);
+	else if (peek(data->input + *i, "~", false))
+		add_token(data, i, "~", TILDE);
+	else if (peek(data->input + *i, "$", false))
+		add_token(data, i, "$", DOLLAR);
 	else
 		return (false);
 	return (true);
@@ -912,16 +923,6 @@ t_list *tokenizer(t_mini_data *data)
 			free(tmp);
 			i++;
 		}
-		else if (input[i] == '&')
-			ft_lstadd_back(&data->token_list, create_token(AND_TOK, "&", &i));
-		else if (input[i] == '^')
-			ft_lstadd_back(&data->token_list, create_token(CARET, "^", &i));
-		else if (input[i] == '%')
-			ft_lstadd_back(&data->token_list, create_token(PERCENT, "%", &i));
-		else if (input[i] == '~')
-			ft_lstadd_back(&data->token_list, create_token(TILDE, "~", &i));
-		else if (input[i] == '$')
-			ft_lstadd_back(&data->token_list, create_token(DOLLAR, "$", &i));
 
 		// hash # case the rest of the string will be a comment but we dont create a token, we ignore
 		else if (input[i] == '#')
