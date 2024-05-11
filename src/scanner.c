@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/11 18:56:05 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/11 19:47:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -432,13 +432,18 @@ int	isprint_no_space(const char *str)
 	return (1);
 }
 
-void	add_token(t_mini_data *data, int *i, char *lxm, enum e_tokentype type)
+void	add_token(t_mini_data *data, int *i, char *tmp, enum e_tokentype type)
 {
-	t_list *token = create_token(type, lxm, i);
-	if (token)
-		ft_lstadd_back(&data->token_list, token);
-	else
-		scanner_error(data, "error: malloc token failed");
+	if (!tmp)
+		scanner_error(data, "error: malloc tmp failed");
+	else 
+	{
+		t_list *token = create_token(type, tmp, i);
+		if (token)
+			ft_lstadd_back(&data->token_list, token);
+		else
+			scanner_error(data, "error: malloc token failed");
+	}
 }
 
 bool	is_a_control_operator(t_mini_data *data, int *i)
@@ -495,6 +500,13 @@ bool	scanner_error(t_mini_data *data, char *err_str)
 	return (true);
 }
 
+/*
+
+*/
+void advance(int *i)
+{
+	(*i)++;
+}
 
 /*
 	History expansion - (not implemented)
@@ -519,61 +531,53 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "!!", false)) 
 	{
-		debug("found !!\n");
 		int start = *i;
 		while (!is_delimiter(*(data->input + *i)))
-			(*i)++;
+			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start);
-		if (!tmp)
-			return (scanner_error(data, "error: malloc tmp failed"));
-		*i = start;
-		add_token(data, i, tmp, BANG_BANG);
+		add_token(data, &start, tmp, BANG_BANG);
 		free(tmp);
+		*i = start;
 		return (true);
 	}
 	else if (peek(data->input + *i, "!", false) && is_digit(*(data->input + *i + 1)))
 	{
 		int start = (*i)++;
 		while (is_digit(*(data->input + *i)))
-			(*i)++;
+			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start);
-		if (!tmp)
-			return (scanner_error(data, "error: malloc tmp failed"));
-		*i = start;
-		add_token(data, i, tmp, BANG_DIGIT);
+		add_token(data, &start, tmp, BANG_DIGIT);
 		free(tmp);
+		*i = start;
 		return (true);
 	}	
 	else if (peek(data->input + *i, "!-", false) && is_digit(*(data->input + *i + 2)))
 	{
 		int start = *i;
 		while (is_digit(*(data->input + *i + 2)))
-			(*i)++;
+			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start + 2);
-		if (!tmp)
-			return (scanner_error(data, "error: malloc tmp failed"));
-		*i = start;
-		add_token(data, i, tmp, BANG_HYPHEN_DIGIT);
+		add_token(data, &start, tmp, BANG_HYPHEN_DIGIT);
 		free(tmp);
+		*i = start;
 		return (true);
 	}
 	else if (peek(data->input + *i, "!", false) && is_alnum(*(data->input + *i + 1)))
 	{
 		int start = (*i)++;
 		while (is_alpha(*(data->input + *i)))
-			(*i)++;
+			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start);
-		if (!tmp)
-			return (scanner_error(data, "error: malloc tmp failed"));
-		*i = start;
-		add_token(data, i, tmp, BANG_ALPHA);
+		add_token(data, &start, tmp, BANG_ALPHA);
+		*i =	start;
 		free(tmp);
+		return (true);
 	}
 	if (peek(data->input + *i, "!?", false)) 
 	{
 		int start = *i;
 		while (!is_delimiter(*(data->input + *i)))
-			(*i)++;
+			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start);
 		if (!tmp)
 			return (scanner_error(data, "error: malloc tmp failed"));
@@ -589,7 +593,6 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 	}
 	return (false);
 }
-
 
 /*
     DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
@@ -624,7 +627,7 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 		debug("found $((");
 		int start = (*i)++;
 		while (peek(data->input + *i, "))", false) == false)
-			(*i)++;
+			advance(i);
 		if (*(data->input + *i + 1) == '\0')
 			return (scanner_error(data, "error: unclosed expansion"));
 		char *tmp = ft_substr(data->input, start, *i - start + 2);
@@ -639,7 +642,7 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 	{
 		int start = *i;
 		while (is_digit(*(data->input + *i + 1)))
-			(*i)++;
+			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start + 1);
 		if (!tmp)
 			return (scanner_error(data, "error: malloc tmp failed"));
@@ -652,7 +655,7 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 	{
 		int start = (*i)++;
 		while (*(data->input + *i) != '}')
-			(*i)++;
+			advance(i);
 		if (*(data->input + *i) == '\0')
 			return (scanner_error(data, "error: unclosed expansion"));
 		char *tmp = ft_substr(data->input, start, *i - start + 1);
@@ -668,7 +671,7 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 	{
 		int start = (*i)++;
 		while (is_alnum(*(data->input + *i)))
-			(*i)++;
+			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start);
 		debug("VAR_EXPANSION found %s", tmp);
 		if (!tmp)
@@ -682,7 +685,7 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 	{
 		int start = (*i)++;
 		while (*(data->input + *i) != ')')
-			(*i)++;
+			advance(i);
 		if (*(data->input + *i) == '\0')
 			return (scanner_error(data, "error: unclosed expansion"));
 		char *tmp = ft_substr(data->input, start, *i - start + 1);
@@ -726,13 +729,13 @@ bool	is_a_redirection(t_mini_data *data, int *i)
 	{
 		add_token(data, i, "<<", DLESS);
 		while (*(data->input + *i) && is_space(*(data->input + *i)))
-			(*i)++;
+			advance(i);
 		if (*(data->input + *i) == '\0' || is_delimiter(*(data->input + *i)))
 			return (scanner_error(data, "error: missing here-delim"));
 		
 		int start = *i;
 		while ((data->input + *i) && !is_delimiter(*(data->input + *i)))
-			(*i)++;
+			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start);
 		if (!tmp)
 			return (scanner_error(data, "error: malloc tmp failed"));
@@ -848,9 +851,9 @@ t_list *tokenizer(t_mini_data *data)
 				return (NULL);
 			}
 			tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&data->token_list, create_token(EXPRESSION, tmp, &start));
+			add_token(data, &start, tmp, EXPRESSION);
+			i = start;
 			free(tmp);
-			i++;
 		}
 
 		//S_QUOTED_STRING, single quoted string 'string'
@@ -858,20 +861,16 @@ t_list *tokenizer(t_mini_data *data)
 		{
 			int start = i++;
 
-			while (input[i] != '\'' && input[i] != '\0')
+			while (input[i] && input[i] != '\'')
 				i++;
-			if (input[i] == '\0')
-			{
-				debug("error: unclosed single quotes\n");
-				data->exit_status = 1;;
-			}
+			if (!input[i])
+				scanner_error(data, "error: unclosed single quotes");
 			tmp = ft_substr(input, start, i - start + 1);
 			// no expansion in those unless they are part of a double quoted string
 			// expand later $() ${} and $VAR and '...'  and ` ... `  ?
-			
-			ft_lstadd_back(&data->token_list, create_token(S_QUOTED_STRING, tmp, &start));
+			add_token(data, &start, tmp, S_QUOTED_STRING);
+			i = start;
 			free(tmp);
-			i++;
 		}
 		else if (input[i] == '"')
 		{
@@ -880,58 +879,44 @@ t_list *tokenizer(t_mini_data *data)
 			while (input[i] != '"' && input[i] != '\0')
 				i++;
 			if (input[i] == '\0')
-			{
-				debug("error: unclosed quotes\n");
-				data->exit_status = 1;;
-			}
+				scanner_error(data, "error: unclosed double quotes");
 			tmp = ft_substr(input, start, i - start + 1);
 			// expand later $() ${} and $VAR and '...'  and ` ... `  ?
-			
-			ft_lstadd_back(&data->token_list, create_token(QUOTED_STRING, tmp, &start));
+			add_token(data, &start, tmp, QUOTED_STRING);
+			i = start;
 			free(tmp);
-			i++;
 		}
 		// Command substitution not implemented
    		// COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
 		else if (input[i] == '`')
 		{
 			int start = i++;
-			while (input[i] != '`' && input[i] != '\0')
+			while (input[i] && input[i] != '`') 
 				i++;
-			if (input[i] == '\0')
-			{
-				debug("error: unclosed expansion\n");
-				data->exit_status = 1;;
-			}
+			if (!input[i])
+				scanner_error(data, "error: unclosed command substitution");
 			tmp = ft_substr(input, start, i - start + 1);
-			ft_lstadd_back(&data->token_list, create_token(COM_EXPANSION, tmp, &start));
+			add_token(data, &start, tmp, COM_EXPANSION);
+			i = start;
 			free(tmp);
-			i++;
 		}
-		else if (input[i] == '-' && is_alpha(input[i + 1]))
+		// create a lexeme for flag in this conf -[a-zA-Z]
+		else if (peek((input + i), "-", false) && is_alpha(input[i + 1]))
 		{
-			// create a lexeme for flag in this conf -[a-zA-Z]
-			int start = i;
-			i++;
-			if (is_alpha(input[i]))
-			{
-				while (is_alpha(input[i]))
-					i++;
-				tmp = ft_substr(input, start, i - start);
-				ft_lstadd_back(&data->token_list, create_token(FLAGS, tmp, &start));
-			}
+			int start = i++;
+
+			while (is_alpha(input[i]))
+				i++;
+			tmp = ft_substr(input, start, i - start);
+			add_token(data, &start, tmp, FLAGS);
 			free(tmp);
-			i++;
 		}
 
 		// hash # case the rest of the string will be a comment but we dont create a token, we ignore
-		else if (input[i] == '#')
-		{
-			// add the rest of the string as a comment
-			while (input[i] != '\0')
-				i++;
-			break ;
-		}
+		else if (peek((input + i), "#", false))
+			break;
+		
+
 		/*********************************************/
 		/* try string/ pathname again!               */
 		/*********************************************/
@@ -972,7 +957,9 @@ t_list *tokenizer(t_mini_data *data)
 		}
 		else if (is_space(input[i]))
 			i++;
-		// this is just in case!
+		// this is just in case! but especially for debug I want to know if I get 
+		// a character that I do not recognize so I can add it. maybe in production I should better ignore 
+		// at least for the eval!
 		else
 		{
 			i++;
