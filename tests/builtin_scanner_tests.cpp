@@ -300,6 +300,103 @@ const char* test_scanner_builtins_dot() {
 	return result;
 }
 
+/*
+make a test for all those
+	if (!(strncicmp(id, "alias", 6)) || strncicmp(id, "bg", 3) == 0 || \
+	strncicmp(id, "bind", 5) == 0 || strncicmp(id, "break", 6) == 0 || \
+	strncicmp(id, "builtin", 8) == 0 || strncicmp(id, "caller", 6) == 0 || \
+	strncicmp(id, "command", 7) == 0 || strncicmp(id, "compgen", 7) == 0 || \
+	strncicmp(id, ".", 2) == 0 || strncicmp(id, "complete", 9) == 0 || \
+	strncicmp(id, "continue", 8) == 0 || strncicmp(id, "declare", 7) == 0 || \
+	strncicmp(id, "dirs", 4) == 0 || strncicmp(id, "disown", 6) == 0 || \
+	strncicmp(id, "enable", 6) == 0 || strncicmp(id, "eval", 4) == 0 || \
+	strncicmp(id, "exec", 4) == 0 || strncicmp(id, "fc", 2) == 0 || \
+	strncicmp(id, "fg", 2) == 0 || strncicmp(id, "getopts", 7) == 0 || \
+	strncicmp(id, "hash", 4) == 0 || strncicmp(id, "help", 4) == 0 || \
+	strncicmp(id, "history", 7) == 0 || strncicmp(id, "jobs", 4) == 0 || \
+	strncicmp(id, "kill", 4) == 0 || strncicmp(id, "let", 3) == 0 || \
+	strncicmp(id, "local", 5) == 0 || strncicmp(id, "logout", 6) == 0 || \
+	strncicmp(id, "mapfile", 7) == 0 || strncicmp(id, "popd", 4) == 0 || \
+	strncicmp(id, "printf", 6) == 0 || strncicmp(id, "pushd", 5) == 0 || \
+	strncicmp(id, "read", 4) == 0 || strncicmp(id, "readonly", 8) == 0 || \
+	strncicmp(id, "return", 6) == 0 || strncicmp(id, "set", 3) == 0 || \
+	strncicmp(id, "shift", 5) == 0 || strncicmp(id, "shopt", 5) == 0 || \
+	strncicmp(id, "source", 6) == 0 || strncicmp(id, "suspend", 7) == 0 || \
+	strncicmp(id, "test", 4) == 0 || strncicmp(id, "times", 5) == 0 || \
+	strncicmp(id, "trap", 4) == 0 || strncicmp(id, "type", 4) == 0 || \
+	strncicmp(id, "typeset", 7) == 0 || strncicmp(id, "ulimit", 6) == 0 || \
+	strncicmp(id, "umask", 5) == 0 || strncicmp(id, "unalias", 7) == 0 || \
+	strncicmp(id, "wait", 4) == 0 || strncicmp(id, "readarray", 9) == 0 || \
+	strncicmp(id, ":", 2) == 0 || strncicmp(id, ".", 2) == 0)
+	as BUILTINS
+*/
+const char* test_scanner_builtins_all_not_impl() {
+	std::string str = "alias bg bind break builtin caller command compgen . complete continue declare dirs disown enable eval exec fc fg getopts hash help history jobs kill let local logout mapfile popd printf pushd read readonly return set shift shopt source suspend test times trap type typeset ulimit umask unalias wait readarray : .";
+	const char* input = str.c_str();
+	init_data(&g_mini_data);
+	g_mini_data->input = input;
+	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *current = lexemes;
+	const char *result;
+	int i = 0;
+
+	result = process_token(&current, &i, "alias", BUILTIN);
+	result = process_token(&current, &i, "bg", BUILTIN);
+	result = process_token(&current, &i, "bind", BUILTIN);
+	result = process_token(&current, &i, "break", BUILTIN);
+	result = process_token(&current, &i, "builtin", BUILTIN);
+	result = process_token(&current, &i, "caller", BUILTIN);
+	result = process_token(&current, &i, "command", BUILTIN);
+	result = process_token(&current, &i, "compgen", BUILTIN);
+	result = process_token(&current, &i, ".", BUILTIN);
+	result = process_token(&current, &i, "complete", BUILTIN);
+	result = process_token(&current, &i, "continue", BUILTIN);
+	result = process_token(&current, &i, "declare", BUILTIN);
+	result = process_token(&current, &i, "dirs", BUILTIN);
+	result = process_token(&current, &i, "disown", BUILTIN);
+	result = process_token(&current, &i, "enable", BUILTIN);
+	result = process_token(&current, &i, "eval", BUILTIN);
+	result = process_token(&current, &i, "exec", BUILTIN);
+	result = process_token(&current, &i, "fc", BUILTIN);
+	result = process_token(&current, &i, "fg", BUILTIN);
+	result = process_token(&current, &i, "getopts", BUILTIN);
+	result = process_token(&current, &i, "hash", BUILTIN);
+	result = process_token(&current, &i, "help", BUILTIN);
+	result = process_token(&current, &i, "history", BUILTIN);
+	result = process_token(&current, &i, "jobs", BUILTIN);
+	result = process_token(&current, &i, "kill", BUILTIN);
+	result = process_token(&current, &i, "let", BUILTIN);
+	result = process_token(&current, &i, "local", BUILTIN);
+	result = process_token(&current, &i, "logout", BUILTIN);
+	result = process_token(&current, &i, "mapfile", BUILTIN);
+	result = process_token(&current, &i, "popd", BUILTIN);
+	result = process_token(&current, &i, "printf", BUILTIN);
+	result = process_token(&current, &i, "pushd", BUILTIN);
+	result = process_token(&current, &i, "read", BUILTIN);
+	result = process_token(&current, &i, "readonly", BUILTIN);
+	result = process_token(&current, &i, "return", BUILTIN);
+	result = process_token(&current, &i, "set", BUILTIN);
+	result = process_token(&current, &i, "shift", BUILTIN);
+	result = process_token(&current, &i, "shopt", BUILTIN);	
+	result = process_token(&current, &i, "source", BUILTIN);
+	result = process_token(&current, &i, "suspend", BUILTIN);
+	result = process_token(&current, &i, "test", BUILTIN);
+	result = process_token(&current, &i, "times", BUILTIN);
+	result = process_token(&current, &i, "trap", BUILTIN);
+	result = process_token(&current, &i, "type", BUILTIN);
+	result = process_token(&current, &i, "typeset", BUILTIN);
+	result = process_token(&current, &i, "ulimit", BUILTIN);
+	result = process_token(&current, &i, "umask", BUILTIN);
+	result = process_token(&current, &i, "unalias", BUILTIN);
+	result = process_token(&current, &i, "wait", BUILTIN);
+	result = process_token(&current, &i, "readarray", BUILTIN);
+	result = process_token(&current, &i, ":", BUILTIN);
+	result = process_token(&current, &i, ".", BUILTIN);
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+	
+	return result;
+}
 
 
 const char *all_tests()
@@ -319,6 +416,8 @@ const char *all_tests()
 	run_test(test_scanner_builtins_exit);
 	run_test(test_scanner_builtins_pwd);
 	run_test(test_scanner_builtins_dot);
+	run_test(test_scanner_builtins_all_not_impl);
+	
 	return NULL;
 }
 

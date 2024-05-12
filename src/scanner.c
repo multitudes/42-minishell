@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 13:16:56 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 13:33:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -394,26 +394,25 @@ bool	is_io_number(const char *str)
 including numbers preceded by a - or + 
 and with and without a dot
 */
-bool	str_is_number(const char *identifier)
+bool	str_is_number(const char *str)
 {
-    int dot_seen = 0;
-
-    if ((*identifier == '-' || *identifier == '+') && is_digit(*(identifier + 1)))
-        identifier++;
-
-    while (*identifier)
+    int dot_seen;
+	
+	dot_seen = 0;
+    if ((*str == '-' || *str == '+') && is_digit(*(str + 1)))
+        str++;
+    while (*str)
     {
-        if (*identifier == '.')
+        if (*str == '.')
         {
-            if (dot_seen) // if we've already seen a dot, it's not a valid number
+            if (dot_seen) 
                 return (false);
             dot_seen = 1;
         }
-        else if (!is_digit(*identifier))
+        else if (!is_digit(*str))
             return (false);
-        identifier++;
+        str++;
     }
-
     return (true);
 }
 
@@ -514,13 +513,20 @@ bool	scanner_error(t_mini_data *data, char *err_str)
 }
 
 /*
-
+just for style, it removes ugly pointer arythmetics 
+from my code
 */
 void advance(int *i)
 {
 	(*i)++;
 }
 
+/*
+condition is a pointer to a function that will be used to check the
+character in the wjile loop. I might need is_digit for numbers or
+is_alnum for identifiers etc
+Thgis works for easy tokens.
+*/
 bool process_token(t_mini_data *data, int *i, bool (*condition)(char), int token_type)
 {
     int start = *i;
@@ -533,44 +539,57 @@ bool process_token(t_mini_data *data, int *i, bool (*condition)(char), int token
     return (true);
 }
 
+/*
+condition is a pointer to a function that will be used to check the
+character in the wjile loop. I might need is_digit for numbers or
+is_alnum for identifiers etc
+Thgis works for easy tokens.
+*/
+bool process_token_off_one(t_mini_data *data, int *i, bool (*condition)(char), int token_type)
+{
+    int start = (*i)++;
+    while (condition(data->input[*i]))
+        advance(i);
+    char *tmp = ft_substr(data->input, start, *i - start);
+    add_token(data, &start, tmp, token_type);
+    free(tmp);
+    *i = start;
+    return (true);
+}
+
+/*
+passing the negated condition !is_delimiter as a func pointer 
+is not possible unless I create a new function  
+*/
 bool is_not_delimiter(char c) {
     return !is_delimiter(c);
 }
 
 /*
-	History expansion - (not implemented)
-	!!: Re-run the previous command. 
-	This is useful if you forgot to use sudo for a command that 
-	requires it. You can simply type sudo !! to re-run the previous command with sudo.
+History expansion - (not implemented)!
+!!: Re-run the previous command. 
+This is useful if you forgot to use sudo for a command that 
+requires it. You can simply type sudo !! to re-run the previous command with sudo.
 
-	!n: Re-run the nth command in your history. 
-	For example, !100 would re-run the 100th command.
+!n: Re-run the nth command in your history. 
+For example, !100 would re-run the 100th command.
 
-	!-n: Re-run the command n lines back. 
-	For example, !-2 would re-run the second most recent command.
+!-n: Re-run the command n lines back. 
+For example, !-2 would re-run the second most recent command.
 
-	!string: Re-run the most recent command that 
-	starts with string. For example, !ls would re-run the most recent command that starts with ls.
+!string: Re-run the most recent command that 
+starts with string. For example, !ls would re-run the most recent command that starts with ls.
 
-	!?string?: Re-run the most recent command 
-	that contains string anywhere. For example, !?txt? would re-run the most recent command that includes txt.
-	BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA
-	*/
+!?string?: Re-run the most recent command 
+that contains string anywhere. For example, !?txt? would re-run the most recent command that includes txt.
+BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA
+*/
 bool is_a_hist_expansion(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "!!", false)) 
 		return (process_token(data, i, is_not_delimiter, BANG_BANG));
 	else if (peek(data->input + *i, "!", false) && is_digit(*(data->input + *i + 1)))
-	{
-		int start = (*i)++;
-		while (is_digit(data->input[*i]))
-			advance(i);
-		char *tmp = ft_substr(data->input, start, *i - start);
-		add_token(data, &start, tmp, BANG_DIGIT);
-		free(tmp);
-		*i = start;
-		return (true);
-	}	
+		return (process_token_off_one(data, i, is_digit, BANG_DIGIT));	
 	else if (peek(data->input + *i, "!-", false) && is_digit(*(data->input + *i + 2)))
 	{
 		int start = *i;
@@ -583,17 +602,8 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 		return (true);
 	}
 	else if (peek(data->input + *i, "!", false) && is_alpha(*(data->input + *i + 1)))
-	{
-		int start = (*i)++;
-		while (is_alpha(data->input[*i]))
-			advance(i);
-		char *tmp = ft_substr(data->input, start, *i - start);
-		add_token(data, &start, tmp, BANG_ALPHA);
-		*i = start;
-		free(tmp);
-		return (true);
-	}
-	if (peek(data->input + *i, "!?", false)) 
+		return (process_token_off_one(data, i, is_alpha, BANG_ALPHA));	
+	else if (peek(data->input + *i, "!?", false)) 
 		return (process_token(data, i, is_not_delimiter, BANG_QUESTION_ALPHA));
 	else if (peek(data->input + *i, "!#", false))
 		return (add_token(data, i, "!#", BANG_HASH));
@@ -646,16 +656,7 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 	}
 	// $1 to $9
 	else if (peek(data->input + *i, "$", false) && is_digit(*(data->input + *i + 1)))
-	{
-		int start = (*i)++;
-		while (is_digit(data->input[*i]))
-			advance(i);
-		char *tmp = ft_substr(data->input, start, *i - start);
-		*i = start;
-		add_token(data, i, tmp, DOLLAR_DIGIT);
-		free(tmp);
-		return (true);
-	}
+		return (process_token_off_one(data, i, is_digit, DOLLAR_DIGIT));
 	// expansion ${parameter} or $parameter or $(command) or $((arythm expression))
 	else if (peek(data->input + *i, "${", false))
 	{
@@ -673,16 +674,7 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 	// Parameter names in bash can only contain alphanumeric 
 	// characters or underscores, and must start with a letter or underscore.
 	else if (peek(data->input + *i, "$", false) && is_alnum(*(data->input + *i + 1)))
-	{
-		int start = (*i)++;
-		while (is_alnum(data->input[*i]))
-			advance(i);
-		char *tmp = ft_substr(data->input, start, *i - start);
-		*i = start;
-		add_token(data, i, tmp, VAR_EXPANSION);	
-		free(tmp);
-		return (true);
-	}
+		return (process_token_off_one(data, i, is_alnum, VAR_EXPANSION));
 	// arythmetic expansion
 	else if (peek(data->input + *i, "$(", false))
 	{
@@ -768,6 +760,11 @@ bool	is_a_redirection(t_mini_data *data, int *i)
 	else
 		return (false);
 }
+/*
+I define a block as the text between two delimiters like {}
+or "" '' or `` or () etc
+anything until I get the closing delimiter I specify in delim...
+*/
 bool	add_tokenblock(t_mini_data *data, int *i, char delim, enum e_tokentype token_type)
 {
 	int start;
@@ -779,14 +776,15 @@ bool	add_tokenblock(t_mini_data *data, int *i, char delim, enum e_tokentype toke
 	if (data->input[*i] == '\0')
 		return (scanner_error(data, "error: unclosed expression"));
 	tmp = ft_substr(data->input, start, *i - start + 1);
-
 	add_token(data, &start, tmp, token_type);
 	*i = start;
 	free(tmp);
 	return (true);
 }
 
+/*
 
+*/
 bool is_a_block(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "(", false)) 
