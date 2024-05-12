@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/11 20:25:25 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 12:37:54 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,7 @@ bool	filename_delimiter(const char ch);
 int		isprint_no_space(const char *identifier);
 bool	not_implemented_builtin(const char *identifier);
 void	free_token(void *content);
-bool 	cmp_ic(char a, char b);
+bool 	cmp_char_case_insensitive(char a, char b);
 bool	scanner_error(t_mini_data *data, char *err_str);
 
 #ifdef __cplusplus

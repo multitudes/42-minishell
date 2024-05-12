@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 11:51:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 12:38:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ bool is_space(const char c)
 }
 
 /*
-string compare case insensitive
+string n compare but case insensitive
 */
 int strncicmp(char const *a, char const *b, int n)
 {
@@ -136,7 +136,7 @@ bool is_alnum(char c)
 }
 
 /*
-either is alnum including the _ or is a . / ~
+either is alnum including the _ or is a . / ~ -
 */
 bool is_pathname(char c) 
 {
@@ -145,11 +145,10 @@ bool is_pathname(char c)
 
 
 /*
-compare two chars case insensitive
-
+compare two chars case insensitive - used in peek!
 */
 
-bool cmp_ic(char a, char b)
+bool cmp_char_case_insensitive(char a, char b)
 {
 	if (is_alpha(a) && is_alpha(b))
 		return (ft_tolower(a) == ft_tolower(b));
@@ -157,11 +156,10 @@ bool cmp_ic(char a, char b)
 		return (a == b);
 }
 /*
-peek wil look ahead to see if my string is beginning with a word which 
-is an identifier
-input is the string to check
-identifier is the string to check for
-need_delim is true if the identifier must be followed by a space to be valid
+peek wil look ahead to see if my string is beginning with sequence of chars
+- input is the string to check
+- identifier is the string to check for
+- need_delim is true if the identifier must be followed by a space to be valid
 ex '||' works without spaces at the end but 'echo' is valid with space only or with 
 one of the metacharacters : ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
 peek is case insensitive!
@@ -173,7 +171,7 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
 
 	i = 0;
 	n = ft_strlen(identifier);
-	while (i < n && cmp_ic(input[i], identifier[i])) // add compare case insensitive
+	while (i < n && cmp_char_case_insensitive(input[i], identifier[i])) // add compare case insensitive
 		i++;
 	if (i == n && ((need_delim && is_delimiter(input[i])) || !need_delim)) 
 		return (true);
@@ -367,8 +365,9 @@ void	free_token(void *content)
 	free(token->lexeme);
 	free(token);
 }
+
 /*
-io numbers are the one preceding a < or >
+io numbers are the one preceding a < or > in a redirection
 cannot start with a 0
 */
 bool	is_io_number(const char *str)
@@ -409,7 +408,8 @@ bool	str_is_number(const char *identifier)
     return (true);
 }
 
-
+/*
+*/
 bool	str_is_alphanum(const char *str)
 {
 	while (*str)
@@ -432,6 +432,14 @@ int	isprint_no_space(const char *str)
 	return (1);
 }
 
+/*
+this function checks if the tmp string is NULL and also if 
+the malloc in create token fails and updates the error flag in the 
+data struct so the loop will stop and free the data
+it still returns true because when a token subfunction returns true
+it means the token has been recognized and the scanner can move on
+otherwise it would keep on looking for the token
+*/
 bool	add_token(t_mini_data *data, int *i, char *tmp, enum e_tokentype type)
 {
 	if (!tmp)
@@ -449,8 +457,6 @@ bool	add_token(t_mini_data *data, int *i, char *tmp, enum e_tokentype type)
 
 bool	is_a_control_operator(t_mini_data *data, int *i)
 {
-	int tmp;
-	tmp = *i;
 	if (peek(data->input + *i, "||", false))
 		add_token(data, i, "||", OR_IF);
 	else if (peek(data->input + *i, "&&", false))
@@ -461,16 +467,13 @@ bool	is_a_control_operator(t_mini_data *data, int *i)
 		add_token(data, i, ";&", SEMI_AND);
 	else if (peek(data->input + *i, "|", false))
 		add_token(data, i, "|", PIPE);
-	if (tmp != *i)
-		return (true);
-	return (false);
+	else
+		return (false);
+	return (true);
 }
 
 bool	is_a_math_op(t_mini_data *data, int *i)
 {
-	int tmp;
-	tmp = *i;
-
 	if (peek(data->input + *i, "--", false))
 		add_token(data, i, "--", MINUS_MINUS);
 	else if (peek(data->input + *i, "++", false))
@@ -483,9 +486,9 @@ bool	is_a_math_op(t_mini_data *data, int *i)
 		add_token(data, i, "/=", SLASH_EQUAL);
 	else if (peek(data->input + *i, "*=", false))
 		add_token(data, i, "*=", STAR_EQUAL);
-	if (tmp != *i)
-		return (true);
-	return (false);
+	else
+		return (false);	
+	return (true);
 }
 /*
 why returning true. I want to tell the scanner that the 
@@ -775,7 +778,7 @@ bool	add_tokenblock(t_mini_data *data, int *i, char delim, enum e_tokentype toke
 }
 
 
-bool process_blocks(t_mini_data *data, int *i)
+bool is_a_block(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "(", false)) 
 		return (add_tokenblock(data, i, ')', EXPRESSION));	
@@ -787,6 +790,28 @@ bool process_blocks(t_mini_data *data, int *i)
 		return (add_tokenblock(data, i, '`', COM_EXPANSION));
     return (false);
 }
+
+// create a lexeme for flag in this conf -[a-zA-Z]
+// else if (peek((data->input + i), "-", false) && is_alpha(data->input[i + 1]))
+bool is_a_flag(t_mini_data *data, int *i)
+{
+	if (peek(data->input + *i, "-", false) && is_alpha(data->input[*i + 1]))
+	{
+		int start;
+		char *tmp;
+		
+		start = (*i)++;
+		while (data->input[*i] && is_alpha(data->input[*i]))
+			advance(i);
+		tmp = ft_substr(data->input, start, *i - start);
+		add_token(data, &start, tmp, FLAGS);
+		*i = start;
+		free(tmp);
+		return (true);
+	}
+    return (false);
+}
+
 bool is_simple_operator(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "=", false))
@@ -819,59 +844,22 @@ bool	is_some_semicolons(t_mini_data *data, int *i)
 		return (false);
 }
 
-/*
-
-*/
-bool	got_tokens(t_mini_data *data, int *i)
+// pathname - NUMBER or identifier?
+bool	is_a_string_thing(t_mini_data *data, int *i)
 {
-	if (is_a_control_operator(data, i))
-		return (true);
-	else if (is_a_math_op(data, i))
-		return (true);
-	else if (is_a_hist_expansion(data, i))
-		return (true);
-	else if (is_a_dollar_exp(data, i))
-		return (true);
-	else if (is_some_semicolons(data, i))
-		return (true);
-	else if (is_a_redirection(data, i))
-		return (true);
-	if (is_simple_operator(data, i))
-		return (true);
-	else if (process_blocks(data, i))
-		return (true);
-
-	// create a lexeme for flag in this conf -[a-zA-Z]
-	// else if (peek((data->input + i), "-", false) && is_alpha(data->input[i + 1]))
-	else if (peek(data->input + *i, "-", false) && is_alpha(data->input[*i + 1]))
+	if (isprint(data->input[*i]) && !filename_delimiter(data->input[*i]))
 	{
-		int start;
-		char *tmp;
-		
-		start = (*i)++;
-		while (data->input[*i] && is_alpha(data->input[*i]))
-			advance(i);
-		tmp = ft_substr(data->input, start, *i - start);
-		add_token(data, &start, tmp, FLAGS);
-		free(tmp);
-		return (true);
-	}
-	else if (isprint(data->input[*i]) && !filename_delimiter(data->input[*i]))
-	{
-		// debug("- pathname - NUMBER or identifier? ");
 		int start;
 		char *tmp;
 
 		start = *i;
 		while (ft_isprint(data->input[*i]) && !filename_delimiter(data->input[*i]))
-			(*i)++;	
+			advance(i);	
 		tmp = ft_substr(data->input, start, *i - start);
-		// check for io number
 		if (data->input[*i] == '<' || data->input[*i] == '>')
 		{
 			if (is_io_number(tmp))
 				add_token(data, &start, tmp, IO_NUMBER);
-			return (true);
 		}
 		else 
 		{
@@ -894,9 +882,22 @@ bool	got_tokens(t_mini_data *data, int *i)
 			}
 		}
 		free(tmp);
-		*i = start;
+		// *i = start;
 		return (true);
 	}
+	return (false);
+}
+/*
+
+*/
+bool	got_tokens(t_mini_data *data, int *i)
+{
+	if (is_a_control_operator(data, i) || is_a_math_op(data, i) || \
+	is_a_hist_expansion(data, i) || is_a_dollar_exp(data, i) || \
+	is_some_semicolons(data, i) || is_a_redirection(data, i) || \
+	is_a_redirection(data, i) || is_simple_operator(data, i) ||\
+	is_a_block(data, i) || is_a_flag(data, i) || is_a_string_thing(data, i))
+		return (true);
 	else
 		return (false);
 }
