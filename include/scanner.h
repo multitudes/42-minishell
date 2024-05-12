@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:28:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:36:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,13 @@ int		isprint_no_space(const char *identifier);
 bool	not_implemented_builtin(const char *identifier);
 void	free_token(void *content);
 bool	scanner_error(t_mini_data *data, char *err_str);
+bool	got_tokens(t_mini_data *data, int *i);
+bool	is_a_dollar_exp(t_mini_data *data, int *i);
+bool	is_complex_dollar_exp(t_mini_data *data, int *i);
+bool	is_simple_dollar_exp(t_mini_data *data, int *i);
+bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type);
+bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int type);
+bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type);
 
 #ifdef __cplusplus
 }
