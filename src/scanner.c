@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/11 20:46:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 11:11:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -759,7 +759,7 @@ bool	is_a_redirection(t_mini_data *data, int *i)
 /*
 
 */
-bool	extract_tokens(t_mini_data *data, int *i)
+bool	got_tokens(t_mini_data *data, int *i)
 {
 	if (is_a_control_operator(data, i))
 		return (true);
@@ -791,6 +791,137 @@ bool	extract_tokens(t_mini_data *data, int *i)
 		return (add_token(data, i, "~", TILDE));
 	else if (peek(data->input + *i, "$", false))
 		return (add_token(data, i, "$", DOLLAR));
+	else if (peek(data->input + *i, "(", false))
+	{
+		int start;
+		char *tmp;
+
+		start = (*i)++;
+		while (*(data->input + *i) && *(data->input + *i) != ')')
+			advance(i);
+		if (*(data->input + *i) == '\0')
+			return (scanner_error(data, "error: unclosed expression"));
+		tmp = ft_substr(data->input, start, *i - start + 1);
+
+		add_token(data, &start, tmp, EXPRESSION);
+		*i = start;
+		free(tmp);
+		return (true);
+	}
+
+	//S_QUOTED_STRING, single quoted string 'string'
+		// no expansion in those unless they are part of a double quoted string
+		// expand later $() ${} and $VAR and '...'  and ` ... `  ?	
+	else if (peek(data->input + *i, "\'", false))
+	{
+		int start = (*i)++;
+		while (data->input[*i] && data->input[*i] != '\'')
+			advance(i);
+		if (!data->input[*i])
+			return (scanner_error(data, "error: unclosed single quotes"));
+		char *tmp = ft_substr(data->input, start, *i - start + 1);
+		add_token(data, &start, tmp, S_QUOTED_STRING);
+		*i = start;
+		free(tmp);
+		return (true);
+	}
+
+	// else if (data->input[i] == '"')
+	else if (peek(data->input + *i, "\"", false))
+	{
+		int start;
+		char *tmp;
+		start = (*i)++;
+		while (data->input[*i] && data->input[*i] != '"')
+			advance(i);
+		if (!data->input[*i])	
+			return (scanner_error(data, "error: unclosed double quotes"));
+		tmp = ft_substr(data->input, start, *i - start + 1);
+		add_token(data, &start, tmp, QUOTED_STRING);
+		*i = start;
+		free(tmp);
+		return (true);
+	}
+	// Command substitution not implemented
+	// COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
+	// else if (data->input[i] == '`')
+	else if (peek(data->input + *i, "`", false))
+	{
+		int start;
+		char *tmp;
+		start = (*i)++;
+		while (data->input[*i] && data->input[*i] != '`')
+			advance(i);
+		if (!data->input[*i])
+			return (scanner_error(data, "error: unclosed command substitution"));
+		tmp = ft_substr(data->input, start, *i - start + 1);
+		add_token(data, &start, tmp, COM_EXPANSION);
+		*i = start;
+		free(tmp);
+		return (true);
+	}
+
+	// create a lexeme for flag in this conf -[a-zA-Z]
+	// else if (peek((data->input + i), "-", false) && is_alpha(data->input[i + 1]))
+	else if (peek(data->input + *i, "-", false) && is_alpha(data->input[*i + 1]))
+	{
+		int start;
+		char *tmp;
+		
+		start = (*i)++;
+		while (data->input[*i] && is_alpha(data->input[*i]))
+			advance(i);
+		tmp = ft_substr(data->input, start, *i - start);
+		add_token(data, &start, tmp, FLAGS);
+		free(tmp);
+		return (true);
+	}
+	
+
+	/*********************************************/
+	/* try string/ pathname again!               */
+	/*********************************************/
+	else if (isprint(data->input[*i]) && !filename_delimiter(data->input[*i]))
+	{
+		// debug("- pathname - NUMBER or identifier? ");
+		int start;
+		char *tmp;
+
+		start = *i;
+		while (ft_isprint(data->input[*i]) && !filename_delimiter(data->input[*i]))
+			(*i)++;	
+		tmp = ft_substr(data->input, start, *i - start);
+		// check for io number
+		if (data->input[*i] == '<' || data->input[*i] == '>')
+		{
+			if (is_io_number(tmp))
+				add_token(data, &start, tmp, IO_NUMBER);
+			return (true);
+		}
+		else 
+		{
+			debug("identifier: -%s-", tmp);
+			//check for reserved words and builtin first which they will be added 
+			// automatically if the check is true
+			if (!is_reserved(data, tmp, &start) && \
+			!is_builtin(data, tmp, &start) &&\
+			!is_true_false(data, tmp, &start))
+			{
+				// check if it is a path name
+				if (ft_strchr(tmp, '/') || peek(tmp, ".", false) || peek(tmp, "./", false) || peek(tmp, "../", false) || peek(tmp, "~/", false) || peek(tmp, "~+", false))
+					add_token(data, &start, tmp, PATHNAME);
+				// if not a path name maybe a number?
+				else if (str_is_number(tmp))
+					add_token(data, &start, tmp, NUMBER);
+				//if not a number maybe a variable name or anything else!
+				else
+					add_token(data, &start, tmp, WORD);
+			}
+		}
+		free(tmp);
+		*i = start;
+		return (true);
+	}
 	else
 		return (false);
 }
@@ -806,137 +937,24 @@ or redirections like
 t_list *tokenizer(t_mini_data *data)
 {
 	int i;
-	char *tmp;
-	int start;
 	
 	i = 0;
 	data->token_list = NULL;
-	start = 0;
 	debug("scanning input: %s of num char %d", data->input, (int)ft_strlen(data->input));
 	data->exit_status = 0;
 	while (i < (int)ft_strlen(data->input) && data->exit_status == 0)
 	{
+		// hash # case the rest of the string will be a comment but we dont create a token, we ignore
+		// else if (peek((data->input + i), "#", false))
+		if (peek(data->input + i, "#", false))
+			break;
 		// extract tokens
-		if (extract_tokens(data, &i))
+		else if (got_tokens(data, &i))
 		{
 			debug("extracted token\n");
 			continue;
 		}
-		
-		// wanna create an expression token
-		else if (data->input[i] == '(')
-		{
-			start = i++;
-			while (data->input[i] != ')')
-				i++;
-			if (data->input[i] == '\0')
-			{
-				debug("error: unclosed parentheses\n");
-				return (NULL);
-			}
-			tmp = ft_substr(data->input, start, i - start + 1);
-			add_token(data, &start, tmp, EXPRESSION);
-			i = start;
-			free(tmp);
-		}
 
-		//S_QUOTED_STRING, single quoted string 'string'
-		else if (data->input[i] == '\'')
-		{
-			start = i++;
-			while (data->input[i] && data->input[i] != '\'')
-				i++;
-			if (!data->input[i])
-				scanner_error(data, "error: unclosed single quotes");
-			tmp = ft_substr(data->input, start, i - start + 1);
-			// no expansion in those unless they are part of a double quoted string
-			// expand later $() ${} and $VAR and '...'  and ` ... `  ?
-			add_token(data, &start, tmp, S_QUOTED_STRING);
-			i = start;
-			free(tmp);
-		}
-		else if (data->input[i] == '"')
-		{
-			start = i++;
-			while (data->input[i] != '"' && data->input[i] != '\0')
-				i++;
-			if (data->input[i] == '\0')
-				scanner_error(data, "error: unclosed double quotes");
-			tmp = ft_substr(data->input, start, i - start + 1);
-			// expand later $() ${} and $VAR and '...'  and ` ... `  ?
-			add_token(data, &start, tmp, QUOTED_STRING);
-			i = start;
-			free(tmp);
-		}
-		// Command substitution not implemented
-   		// COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
-		else if (data->input[i] == '`')
-		{
-			start = i++;
-			while (data->input[i] && data->input[i] != '`') 
-				i++;
-			if (!data->input[i])
-				scanner_error(data, "error: unclosed command substitution");
-			tmp = ft_substr(data->input, start, i - start + 1);
-			add_token(data, &start, tmp, COM_EXPANSION);
-			i = start;
-			free(tmp);
-		}
-		// create a lexeme for flag in this conf -[a-zA-Z]
-		else if (peek((data->input + i), "-", false) && is_alpha(data->input[i + 1]))
-		{
-			start = i++;
-			while (is_alpha(data->input[i]))
-				i++;
-			tmp = ft_substr(data->input, start, i - start);
-			add_token(data, &start, tmp, FLAGS);
-			free(tmp);
-		}
-
-		// hash # case the rest of the string will be a comment but we dont create a token, we ignore
-		else if (peek((data->input + i), "#", false))
-			break;
-		
-
-		/*********************************************/
-		/* try string/ pathname again!               */
-		/*********************************************/
-		else if (isprint(data->input[i]) && !filename_delimiter(data->input[i]))
-		{
-			// debug("- pathname - NUMBER or identifier? ");
-			start = i;
-			while (ft_isprint(data->input[i]) && !filename_delimiter(data->input[i]))
-				i++;	
-			char *tmp = ft_substr(data->input, start, i - start);
-			// check for io number
-			if (data->input[i] == '<' || data->input[i] == '>')
-			{
-				if (is_io_number(tmp))
-					add_token(data, &start, tmp, IO_NUMBER);
-				// ft_lstadd_back(&data->token_list, create_token(IO_NUMBER, tmp, &start));
-			}
-			else 
-			{
-				debug("identifier: -%s-", tmp);
-				//check for reserved words and builtin first which they will be added 
-				// automatically if the check is true
-				if (!is_reserved(data, tmp, &start) && \
-				!is_builtin(data, tmp, &start) &&\
-				!is_true_false(data, tmp, &start))
-				{
-					// check if it is a path name
-					if (ft_strchr(tmp, '/') || peek(tmp, ".", false) || peek(tmp, "./", false) || peek(tmp, "../", false) || peek(tmp, "~/", false) || peek(tmp, "~+", false))
-						add_token(data, &start, tmp, PATHNAME);
-					// if not a path name maybe a number?
-					else if (str_is_number(tmp))
-						add_token(data, &start, tmp, NUMBER);
-					//if not a number maybe a variable name or anything else!
-					else
-						add_token(data, &start, tmp, WORD);
-				}
-			}
-			free(tmp);
-		}
 		else if (is_space(data->input[i]))
 			i++;
 		// this is just in case! but especially for debug I want to know if I get 
@@ -946,6 +964,7 @@ t_list *tokenizer(t_mini_data *data)
 		{
 			i++;
 			data->exit_status = 1;
+			data->scanner_err_str = "error: token not recognized character";
 			debug("error: token not recognized character\n");
 		}
 	}
@@ -955,6 +974,6 @@ t_list *tokenizer(t_mini_data *data)
 		ft_lstclear(&data->token_list, free_token);
 		return (NULL);
 	}
-
+	// do a last parentheses check!
 	return data->token_list;
 }
