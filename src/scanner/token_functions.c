@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:38:54 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:50:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,5 +85,26 @@ bool	add_token(t_mini_data *data, int *i, const char *tmp, int type)
 		else
 			scanner_error(data, "error: malloc token failed");
 	}
+	return (true);
+}
+
+/*
+condition is a pointer to a function that will be used to check the
+character in the wjile loop. I might need is_digit for numbers or
+is_alnum for identifiers etc
+Thgis works for easy tokens.
+*/
+bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), int type)
+{
+	int		start;
+	char	*tmp;
+
+	start = *i;
+	while (cnd(data->input[*i]))
+		advance(i);
+	tmp = ft_substr(data->input, start, *i - start);
+	add_token(data, &start, tmp, type);
+	free(tmp);
+	*i = start;
 	return (true);
 }

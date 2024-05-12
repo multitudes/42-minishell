@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:46:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:57:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,6 +218,21 @@ bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type);
 bool	is_a_math_op(t_mini_data *data, int *i);
 bool	is_a_control_operator(t_mini_data *data, int *i);
 bool	is_simple_operator(t_mini_data *data, int *i);
+bool	is_a_redirection(t_mini_data *data, int *i);
+bool	is_a_aggregate_redirection(t_mini_data *data, int *i);
+bool	is_a_simple_redirection(t_mini_data *data, int *i);
+bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), int type);
+bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type);
+bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int type);
+bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type);
+bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type);
+bool	is_a_block(t_mini_data *data, int *i);
+bool	is_a_hist_expansion(t_mini_data *data, int *i);
+bool	is_a_dollar_exp(t_mini_data *data, int *i);
+bool	is_a_flag(t_mini_data *data, int *i);
+bool	is_a_string_thing(t_mini_data *data, int *i);
+bool	is_a_redirection(t_mini_data *data, int *i);
+
 
 #ifdef __cplusplus
 }
