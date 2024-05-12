@@ -436,6 +436,7 @@ const char* test_all_tokens4() {
 	result = process_token(&current, &i, "esac", ESAC);
 	result = process_token(&current, &i, "select", SELECT);
 	result = process_token(&current, &i, "function", FUNCTION);
+	result = process_token(&current, &i, "$?", DOLLAR_QUESTION);
 	result = process_token(&current, &i, "$$", DOLLAR_DOLLAR);
 	result = process_token(&current, &i, "$*", DOLLAR_STAR);
 	result = process_token(&current, &i, "$@", DOLLAR_AT);
@@ -445,14 +446,9 @@ const char* test_all_tokens4() {
 	result = process_token(&current, &i, "$0", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "$", DOLLAR);
 	result = process_token(&current, &i, "$a", VAR_EXPANSION);
-	result = process_token(&current, &i, "#", HASH);
-	result = process_token(&current, &i, "comment", WORD);
-	result = process_token(&current, &i, "^", CARET);
-	result = process_token(&current, &i, "%", PERCENT);
-	result = process_token(&current, &i, "~", TILDE);
-	result = process_token(&current, &i, "EOF", EOF_TOK);
-	result = process_token(&current, &i, "command", WORD);
-	
+
+	// comments are ignored!!!
+
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
@@ -469,7 +465,6 @@ const char *all_tests()
 	run_test(test_scanner_identifiers2);
 	run_test(test_scanner_identifiers3);
 	run_test(test_scanner_identifiers4);
-
 	run_test(test_scanner_identifiers5);
 	run_test(test_scanner_identifiers6);
 	run_test(test_scanner_identifiers7);
