@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 17:06:00 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 17:18:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -411,10 +411,10 @@ bool	str_is_number(const char *str)
             dot_seen = 1;
         }
         else if (!is_digit(*str))
-            return (false);
-        str++;
-    }
-    return (true);
+			return (false);
+		str++;
+	}
+	return (true);
 }
 
 /*
@@ -451,11 +451,13 @@ otherwise it would keep on looking for the token
 */
 bool	add_token(t_mini_data *data, int *i, char *tmp, enum e_tokentype type)
 {
+	t_list	*token;
+
 	if (!tmp)
 		scanner_error(data, "error: malloc tmp failed");
-	else 
+	else
 	{
-		t_list *token = create_token(type, tmp, i);
+		token = create_token(type, tmp, i);
 		if (token)
 			ft_lstadd_back(&data->token_list, token);
 		else
@@ -496,9 +498,10 @@ bool	is_a_math_op(t_mini_data *data, int *i)
 	else if (peek(data->input + *i, "*=", false))
 		add_token(data, i, "*=", STAR_EQUAL);
 	else
-		return (false);	
+		return (false);
 	return (true);
 }
+
 /*
 why returning true. I want to tell the scanner that the 
 token was successfully recognized so that it stops looking
@@ -517,7 +520,7 @@ bool	scanner_error(t_mini_data *data, char *err_str)
 just for style, it removes ugly pointer arythmetics 
 from my code
 */
-void advance(int *i)
+void	advance(int *i)
 {
 	(*i)++;
 }
@@ -528,16 +531,19 @@ character in the wjile loop. I might need is_digit for numbers or
 is_alnum for identifiers etc
 Thgis works for easy tokens.
 */
-bool process_token(t_mini_data *data, int *i, bool (*condition)(char), int token_type)
+bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 {
-    int start = *i;
-    while (condition(data->input[*i]))
-        advance(i);
-    char *tmp = ft_substr(data->input, start, *i - start);
-    add_token(data, &start, tmp, token_type);
-    free(tmp);
-    *i = start;
-    return (true);
+	int		start;
+	char	*tmp;
+
+	start = *i;
+	while (cnd(data->input[*i]))
+		advance(i);
+	tmp = ft_substr(data->input, start, *i - start);
+	add_token(data, &start, tmp, type);
+	free(tmp);
+	*i = start;
+	return (true);
 }
 
 /*
@@ -546,16 +552,19 @@ character in the wjile loop. I might need is_digit for numbers or
 is_alnum for identifiers etc
 Thgis works for easy tokens.
 */
-bool process_token_off_one(t_mini_data *data, int *i, bool (*condition)(char), int token_type)
+bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 {
-    int start = (*i)++;
-    while (condition(data->input[*i]))
-        advance(i);
-    char *tmp = ft_substr(data->input, start, *i - start);
-    add_token(data, &start, tmp, token_type);
-    free(tmp);
-    *i = start;
-    return (true);
+	int		start;
+	char	*tmp;
+
+	start = (*i)++;
+	while (cnd(data->input[*i]))
+		advance(i);
+	tmp = ft_substr(data->input, start, *i - start);
+	add_token(data, &start, tmp, type);
+	free(tmp);
+	*i = start;
+	return (true);
 }
 
 /*
@@ -564,32 +573,36 @@ character in the while loop. I might need is_digit for numbers or
 is_alnum for identifiers etc
 This is offset of 2 lets say I look for !- followed by a number of digits
 */
-bool process_token_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type)
+bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 {
-    int	start;
+	int		start;
+	char	*tmp;
 
 	start = (*i);
-    while (cnd(data->input[*i] + 2))
-        advance(i);
-    char *tmp = ft_substr(data->input, start, *i - start + 3);
-    add_token(data, &start, tmp, type);
-    free(tmp);
-    *i = start;
-    return (true);
+	while (cnd(data->input[*i] + 2))
+		advance(i);
+	tmp = ft_substr(data->input, start, *i - start + 3);
+	add_token(data, &start, tmp, type);
+	free(tmp);
+	*i = start;
+	return (true);
 }
+
 /*
 passing the negated condition !is_delimiter as a func pointer 
 is not possible unless I create a new function  
 */
-bool is_not_delimiter(char c) {
-    return !is_delimiter(c);
+bool	is_not_delimiter(char c)
+{
+	return (!is_delimiter(c));
 }
 
 /*
 History expansion - (not implemented)!
 !!: Re-run the previous command. 
 This is useful if you forgot to use sudo for a command that 
-requires it. You can simply type sudo !! to re-run the previous command with sudo.
+requires it. You can simply type sudo !! to re-run the previous 
+command with sudo.
 
 !n: Re-run the nth command in your history. 
 For example, !100 would re-run the 100th command.
@@ -598,23 +611,27 @@ For example, !100 would re-run the 100th command.
 For example, !-2 would re-run the second most recent command.
 
 !string: Re-run the most recent command that 
-starts with string. For example, !ls would re-run the most recent command that starts with ls.
+starts with string. For example, !ls would re-run the most recent command 
+that starts with ls.
 
 !?string?: Re-run the most recent command 
-that contains string anywhere. For example, !?txt? would re-run the most recent command that includes txt.
+that contains string anywhere. For example, !?txt? would re-run the most 
+recent command that includes txt.
 BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA
 */
-bool is_a_hist_expansion(t_mini_data *data, int *i)
+bool	is_a_hist_expansion(t_mini_data *data, int *i)
 {
-	if (peek(data->input + *i, "!!", false)) 
+	if (peek(data->input + *i, "!!", false))
 		return (process_token(data, i, is_not_delimiter, BANG_BANG));
-	else if (peek(data->input + *i, "!", false) && is_digit(*(data->input + *i + 1)))
-		return (process_token_off_one(data, i, is_digit, BANG_DIGIT));	
-	else if (peek(data->input + *i, "!-", false) && is_digit(*(data->input + *i + 2)))
-		return (process_token_off_2(data, i, is_digit, BANG_HYPHEN_DIGIT));
+	else if (peek(data->input + *i, "!", false) && is_digit(*(data->input \
+	+ *i + 1)))
+		return (proc_token_off_1(data, i, is_digit, BANG_DIGIT));
+	else if (peek(data->input + *i, "!-", false) && is_digit(*(data->input \
+	+ *i + 2)))
+		return (proc_tok_off_2(data, i, is_digit, BANG_HYPHEN_DIGIT));
 	else if (peek(data->input + *i, "!", false) && is_alpha(*(data->input \
 	+ *i + 1)))
-		return (process_token_off_one(data, i, is_alpha, BANG_ALPHA));
+		return (proc_token_off_1(data, i, is_alpha, BANG_ALPHA));
 	else if (peek(data->input + *i, "!?", false))
 		return (process_token(data, i, is_not_delimiter, BANG_QUESTION_ALPHA));
 	else if (peek(data->input + *i, "!#", false))
@@ -710,13 +727,13 @@ bool	is_complex_dollar_exp(t_mini_data *data, int *i)
 		return (add_block_dbl_paren(data, i, "))", EXPR_EXPANSION));
 	else if (peek(data->input + *i, "$", false) && \
 	is_digit(*(data->input + *i + 1)))
-		return (process_token_off_one(data, i, is_digit, \
+		return (proc_token_off_1(data, i, is_digit, \
 		DOLLAR_DIGIT));
 	else if (peek(data->input + *i, "${", false))
 		return (add_tokenblock(data, i, '}', VAR_EXPANSION));
 	else if (peek(data->input + *i, "$", false) && is_alnum(*(data->input \
 	+ *i + 1)))
-		return (process_token_off_one(data, i, is_alnum, VAR_EXPANSION));
+		return (proc_token_off_1(data, i, is_alnum, VAR_EXPANSION));
 	else if (peek(data->input + *i, "$(", false))
 		return (add_tokenblock(data, i, ')', COM_EXPANSION));
 	else
