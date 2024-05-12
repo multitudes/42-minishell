@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 11:11:31 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 11:15:32 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -512,7 +512,7 @@ void advance(int *i)
 bool process_token(t_mini_data *data, int *i, bool (*condition)(char), int token_type)
 {
     int start = *i;
-    while (condition(*(data->input + *i)))
+    while (condition(data->input[*i]))
         advance(i);
     char *tmp = ft_substr(data->input, start, *i - start);
     add_token(data, &start, tmp, token_type);
@@ -551,7 +551,7 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 	else if (peek(data->input + *i, "!", false) && is_digit(*(data->input + *i + 1)))
 	{
 		int start = (*i)++;
-		while (is_digit(*(data->input + *i)))
+		while (is_digit(data->input[*i]))
 			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start);
 		add_token(data, &start, tmp, BANG_DIGIT);
@@ -573,7 +573,7 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 	else if (peek(data->input + *i, "!", false) && is_alpha(*(data->input + *i + 1)))
 	{
 		int start = (*i)++;
-		while (is_alpha(*(data->input + *i)))
+		while (is_alpha(data->input[*i]))
 			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start);
 		add_token(data, &start, tmp, BANG_ALPHA);
@@ -636,7 +636,7 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 	else if (peek(data->input + *i, "$", false) && is_digit(*(data->input + *i + 1)))
 	{
 		int start = (*i)++;
-		while (is_digit(*(data->input + *i)))
+		while (is_digit(data->input[*i]))
 			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start);
 		*i = start;
@@ -648,9 +648,9 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 	else if (peek(data->input + *i, "${", false))
 	{
 		int start = (*i)++;
-		while (*(data->input + *i) != '}')
+		while (data->input[*i] != '}')
 			advance(i);
-		if (*(data->input + *i) == '\0')
+		if (data->input[*i] == '\0')
 			return (scanner_error(data, "error: unclosed expansion"));
 		char *tmp = ft_substr(data->input, start, *i - start + 1);
 		*i = start;
@@ -663,7 +663,7 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 	else if (peek(data->input + *i, "$", false) && is_alnum(*(data->input + *i + 1)))
 	{
 		int start = (*i)++;
-		while (is_alnum(*(data->input + *i)))
+		while (is_alnum(data->input[*i]))
 			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start);
 		*i = start;
@@ -675,9 +675,9 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 	else if (peek(data->input + *i, "$(", false))
 	{
 		int start = (*i)++;
-		while (*(data->input + *i) != ')')
+		while (data->input[*i] != ')')
 			advance(i);
-		if (*(data->input + *i) == '\0')
+		if (data->input[*i] == '\0')
 			return (scanner_error(data, "error: unclosed expansion"));
 		char *tmp = ft_substr(data->input, start, *i - start + 1);
 		*i = start;
@@ -717,13 +717,13 @@ bool	is_a_redirection(t_mini_data *data, int *i)
 	else if (peek(data->input + *i, "<<", false))
 	{
 		add_token(data, i, "<<", DLESS);
-		while (*(data->input + *i) && is_space(*(data->input + *i)))
+		while (data->input[*i] && is_space(data->input[*i]))
 			advance(i);
-		if (*(data->input + *i) == '\0' || is_delimiter(*(data->input + *i)))
+		if (data->input[*i] == '\0' || is_delimiter(data->input[*i]))
 			return (scanner_error(data, "error: missing here-delim"));
 		
 		int start = *i;
-		while ((data->input + *i) && !is_delimiter(*(data->input + *i)))
+		while ((data->input + *i) && !is_delimiter(data->input[*i]))
 			advance(i);
 		char *tmp = ft_substr(data->input, start, *i - start);
 		if (!tmp)
@@ -797,9 +797,9 @@ bool	got_tokens(t_mini_data *data, int *i)
 		char *tmp;
 
 		start = (*i)++;
-		while (*(data->input + *i) && *(data->input + *i) != ')')
+		while (data->input[*i] && data->input[*i] != ')')
 			advance(i);
-		if (*(data->input + *i) == '\0')
+		if (data->input[*i] == '\0')
 			return (scanner_error(data, "error: unclosed expression"));
 		tmp = ft_substr(data->input, start, *i - start + 1);
 
