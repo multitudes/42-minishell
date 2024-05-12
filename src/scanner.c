@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 17:18:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 17:26:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,7 @@ bool is_reserved1(t_mini_data *data, char *identifier, int *start)
 	return true;
 }
 
-bool is_reserved2(t_mini_data *data, char *identifier, int *start)
+bool	is_reserved2(t_mini_data *data, char *identifier, int *start)
 {
 	if (peek(identifier, "if", true))
 		add_token(data, start, "if", IF);
@@ -226,9 +226,9 @@ bool is_reserved2(t_mini_data *data, char *identifier, int *start)
 		add_token(data, start, "do", DO);
 	else if (peek(identifier, "done", true))
 		add_token(data, start, "done", DONE);
-	else 
+	else
 		return (false);
-	return true;
+	return (true);
 }
 
 bool	is_reserved(t_mini_data *data, char *identifier, int *start)
@@ -240,6 +240,7 @@ bool	is_reserved(t_mini_data *data, char *identifier, int *start)
 	else
 		return (false);
 }
+
 /*
 bash builtins which we do not implement are in this list (taken from the 
 bash manual but enhanced by copilot)
@@ -253,18 +254,18 @@ bool	not_implemented_builtin(const char *id)
 {
 	if (!strncicmp(id, "bg", 3) || !strncicmp(id, "fc", 2) || !strncicmp(id, \
 	":", 2) || !strncicmp(id, "bind", 5) || !strncicmp(id, "break", 6) || \
-	!strncicmp(id, "builtin", 8) || !strncicmp(id, "caller", 6) || !strncicmp\
-	(id, "command", 7) || !strncicmp(id, "compgen", 7) || !strncicmp(id, ".", \
-	2) || !strncicmp(id, "complete", 9) || !strncicmp(id, "continue", 8) || \
-	!strncicmp(id, "declare", 7) || !strncicmp(id, "dirs", 4) || !strncicmp(\
-	id, "disown", 6) || !strncicmp(id, "enable", 6) || !strncicmp(id, "eval", \
-	4) || !strncicmp(id, "exec", 4) || !strncicmp(id, "alias", 6) || \
-	!strncicmp(id, "fg", 2) || !strncicmp(id, "getopts", 7) || !strncicmp(id, \
-	"hash", 4) || !strncicmp(id, "help", 4) || !strncicmp(id, "history", 7) \
-	|| !strncicmp(id, "jobs", 4) || !strncicmp(id, "kill", 4) || !strncicmp(\
-	id, "let", 3) || !strncicmp(id, "local", 5) || !strncicmp(id, "logout", \
-	6) || !strncicmp(id, "mapfile", 7) || !strncicmp(id, "popd", 4) || \
-	!strncicmp(id, "printf", 6) || !strncicmp(id, "pushd", 5) || \
+	!strncicmp(id, "builtin", 8) || !strncicmp(id, "caller", 6) || \
+	!strncicmp(id, "command", 7) || !strncicmp(id, "compgen", 7) || \
+	!strncicmp(id, ".", 2) || !strncicmp(id, "complete", 9) || !strncicmp(id, \
+	"continue", 8) || !strncicmp(id, "declare", 7) || !strncicmp(id, "dirs", \
+	4) || !strncicmp(id, "disown", 6) || !strncicmp(id, "enable", 6) || \
+	!strncicmp(id, "eval", 4) || !strncicmp(id, "exec", 4) || !strncicmp(id, \
+	"alias", 6) || !strncicmp(id, "fg", 2) || !strncicmp(id, "getopts", 7) || \
+	!strncicmp(id, "hash", 4) || !strncicmp(id, "help", 4) || !strncicmp(id, \
+	"history", 7) || !strncicmp(id, "jobs", 4) || !strncicmp(id, "kill", 4) || \
+	!strncicmp(id, "let", 3) || !strncicmp(id, "local", 5) || !strncicmp(id, \
+	"logout", 6) || !strncicmp(id, "mapfile", 7) || !strncicmp(id, "popd", 4) \
+	|| !strncicmp(id, "printf", 6) || !strncicmp(id, "pushd", 5) || \
 	!strncicmp(id, "read", 4) || !strncicmp(id, "readonly", 8) || \
 	!strncicmp(id, "return", 6) || !strncicmp(id, "set", 3) || \
 	!strncicmp(id, "shift", 5) || !strncicmp(id, "shopt", 5) || \
@@ -277,10 +278,11 @@ bool	not_implemented_builtin(const char *id)
 		return (true);
 	return (false);
 }
+
 /*
 is_builtin checks if the identifier is a builtin command
 */
-bool is_builtin(t_mini_data *data, char *identifier, int *start)
+bool	is_builtin(t_mini_data *data, char *identifier, int *start)
 {
 	if (peek(identifier, "echo", true))
 		add_token(data, start, "echo", BUILTIN);
@@ -299,8 +301,8 @@ bool is_builtin(t_mini_data *data, char *identifier, int *start)
 	else if (not_implemented_builtin(identifier))
 		add_token(data, start, identifier, BUILTIN);
 	else
-		return false;
-	return true;
+		return (false);
+	return (true);
 }
 
 /*
@@ -314,21 +316,20 @@ bool	is_true_false(t_mini_data *data, char *str, int *start)
 	else if (peek(str, "false", true))
 		add_token(data, start, "false", FALSETOK);
 	else
-		return false;
-	return true;
+		return (false);
+	return (true);
 }
 
-
-void print_token_list(t_list *token_list)
+void	print_token_list(t_list *token_list)
 {
-	t_list *current;
-	t_token *token;
-	
+	t_list	*current;
+	t_token	*token;
+
 	current = token_list;
 	while (current != NULL)
 	{
 		token = (t_token *)(current)->content;
-		debug("token type :%u, lexeme: %s position %d", token->type, token->lexeme, token->start);
+		printf("token: %s", token->lexeme);
 		current = current->next;
 	}
 	return ;
@@ -338,10 +339,10 @@ void print_token_list(t_list *token_list)
 creates a simple t_list node - the token is in the content of the node
 in form of a string that will need to be freed
 */
-t_list *create_token(t_tokentype type, const char *lexeme, int *i)
+t_list	*create_token(t_tokentype type, const char *lexeme, int *i)
 {
-	t_token *token;
-	t_list *new_node;
+	t_token	*token;
+	t_list	*new_node;
 
 	token = malloc(sizeof(t_token));
 	if (token == NULL)
@@ -369,8 +370,8 @@ and because the content is a token which
 */
 void	free_token(void *content)
 {
-	t_token *token;
-	
+	t_token	*token;
+
 	token = (t_token *)content;
 	free(token->lexeme);
 	free(token);
@@ -397,20 +398,20 @@ and with and without a dot
 */
 bool	str_is_number(const char *str)
 {
-    int dot_seen;
-	
+	int	dot_seen;
+
 	dot_seen = 0;
-    if ((*str == '-' || *str == '+') && is_digit(*(str + 1)))
-        str++;
-    while (*str)
-    {
-        if (*str == '.')
-        {
-            if (dot_seen) 
-                return (false);
-            dot_seen = 1;
-        }
-        else if (!is_digit(*str))
+	if ((*str == '-' || *str == '+') && is_digit(*(str + 1)))
+		str++;
+	while (*str)
+	{
+		if (*str == '.')
+		{
+			if (dot_seen)
+				return (false);
+			dot_seen = 1;
+		}
+		else if (!is_digit(*str))
 			return (false);
 		str++;
 	}
