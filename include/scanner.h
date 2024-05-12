@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:02:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:22:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,7 @@ t_list	*tokenizer(t_mini_data *data);
 bool	peek(const char *input, const char *identifier, bool end_space);
 bool	is_space(const char c);
 int		strncicmp(char const *a, char const *b, int n);
+bool 	cmp_char_case_insensitive(const char a, const char b);
 bool	is_delimiter(const char ch);
 bool	is_not_delimiter(const char ch);
 bool	is_digit(const char c); 
@@ -190,6 +191,7 @@ bool	is_alnum(const char c);
 bool	is_alpha(const char c);
 bool	is_pathname(const char c);
 bool	is_in_pathname(const char c);
+bool	is_delimiting_char(const char c);
 bool	is_a_pathname_or_num(t_mini_data *data, const char *tmp, int *start);
 bool	is_reserved(t_mini_data *data, char *identifier,int *start);
 bool	is_true_false(t_mini_data *data, char *str, int *start);
@@ -204,7 +206,6 @@ bool	filename_delimiter(const char ch);
 int		isprint_no_space(const char *identifier);
 bool	not_implemented_builtin(const char *identifier);
 void	free_token(void *content);
-bool 	cmp_char_case_insensitive(char a, char b);
 bool	scanner_error(t_mini_data *data, char *err_str);
 
 #ifdef __cplusplus

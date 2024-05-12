@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:48:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 18:50:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:19:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,15 @@ bool	is_delimiter(const char ch)
 }
 
 /*
+passing the negated condition !is_delimiter as a func pointer 
+is not possible unless I create a new function  
+*/
+bool	is_not_delimiter(char c)
+{
+	return (!is_delimiter(c));
+}
+
+/*
  ... touch w$orld is creating w because dereferencing 
 the $ and the rest is nulll...
 otherwise 
@@ -111,12 +120,4 @@ bool	filename_delimiter(const char ch)
 	ch == '"' || ch == '\'' || ch == '!' || ch == '\0')
 		return (true);
 	return (false);
-}
-
-/*
-Returns 'true' if the character is a digit
-*/
-bool	is_digit(const char c)
-{
-	return (c >= '0' && c <= '9');
 }

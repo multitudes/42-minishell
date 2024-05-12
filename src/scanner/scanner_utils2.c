@@ -6,11 +6,19 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:52:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 18:53:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:19:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*
+Returns 'true' if the character is a digit
+*/
+bool	is_digit(const char c)
+{
+	return (c >= '0' && c <= '9');
+}
 
 /*
 Returns 'true' if the character is char a letter

@@ -6,36 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:03:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:24:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
-peek wil look ahead to see if my string is beginning with sequence of chars
-- input is the string to check
-- identifier is the string to check for
-- need_delim is true if the identifier must be followed by a space to be valid
-ex '||' works without spaces at the end but 'echo' is valid with space only 
-or with 
-one of the metacharacters : ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
-peek is case insensitive!
-*/
-bool	peek(const char *input, const char *identifier, bool need_delim)
-{
-	int	i;
-	int	n;
-
-	i = 0;
-	n = ft_strlen(identifier);
-	while (i < n && cmp_char_case_insensitive(input[i], identifier[i]))
-		i++;
-	if (i == n && ((need_delim && is_delimiter(input[i])) || !need_delim))
-		return (true);
-	else
-		return (false);
-}
 
 /*
  mh.. just checked again in the bash and maybe the function below is not 
@@ -163,113 +138,7 @@ bool	is_builtin(t_mini_data *data, char *identifier, int *start)
 	return (true);
 }
 
-/*
-creates a simple t_list node - the token is in the content of the node
-in form of a string that will need to be freed
-*/
-t_list	*create_token(t_tokentype type, const char *lexeme, int *i)
-{
-	t_token	*token;
-	t_list	*new_node;
 
-	token = malloc(sizeof(t_token));
-	if (token == NULL)
-		return (NULL);
-	token->type = type;
-	token->lexeme = ft_strdup(lexeme);
-	token->start = *i;
-	*i = *i + ft_strlen(lexeme);
-	debug("token created %p -%s-", token, token->lexeme);
-	new_node = ft_lstnew(token);
-	if (new_node == NULL)
-	{
-		free_token(token);
-		return (NULL);
-	}
-	return (new_node);
-}
-
-/*
-I have a linked lists of nodes. each node's content is a token
-I need to pass this function to my ft_lstclear to clear the list contents
-and because the content is a token which 
--has a lexeme which needs to be free
--and then the token itself needs to be freed
-*/
-void	free_token(void *content)
-{
-	t_token	*token;
-
-	token = (t_token *)content;
-	free(token->lexeme);
-	free(token);
-}
-
-/*
-io numbers are the one preceding a < or > in a redirection
-cannot start with a 0
-*/
-bool	is_io_number(const char *str)
-{
-	if (*str == '0' && is_digit(*(str + 1)))
-		return (false);
-	while (is_digit(*str))
-		str++;
-	if (*str == '\0')
-		return (true);
-	return (false);
-}
-
-/*
-including numbers preceded by a - or + 
-and with and without a dot
-*/
-bool	str_is_number(const char *str)
-{
-	int	dot_seen;
-
-	dot_seen = 0;
-	if ((*str == '-' || *str == '+') && is_digit(*(str + 1)))
-		str++;
-	while (*str)
-	{
-		if (*str == '.')
-		{
-			if (dot_seen)
-				return (false);
-			dot_seen = 1;
-		}
-		else if (!is_digit(*str))
-			return (false);
-		str++;
-	}
-	return (true);
-}
-
-/*
-this function checks if the tmp string is NULL and also if 
-the malloc in create token fails and updates the error flag in the 
-data struct so the loop will stop and free the data
-it still returns true because when a token subfunction returns true
-it means the token has been recognized and the scanner can move on
-otherwise it would keep on looking for the token
-*/
-bool	add_token(t_mini_data *data, int *i, const char *tmp, int type)
-{
-	t_list	*token;
-
-	if (!tmp)
-		scanner_error(data, "error: malloc tmp failed");
-	else
-	{
-		token = create_token(type, tmp, i);
-		if (token)
-			ft_lstadd_back(&data->token_list, token);
-		else
-			scanner_error(data, "error: malloc token failed");
-	}
-	return (true);
-}
 
 bool	is_a_control_operator(t_mini_data *data, int *i)
 {
@@ -307,19 +176,6 @@ bool	is_a_math_op(t_mini_data *data, int *i)
 	return (true);
 }
 
-/*
-why returning true. I want to tell the scanner that the 
-token was successfully recognized so that it stops looking
-for other tokens and go back to the while loop with the data error 
-in the data struct so it will stop and free the data
-*/
-bool	scanner_error(t_mini_data *data, char *err_str)
-{
-	debug("error: %s\n", err_str);
-	data->scanner_err_str = err_str;
-	data->scanner_error = 1;
-	return (true);
-}
 
 /*
 just for style, it removes ugly pointer arythmetics 
@@ -391,15 +247,6 @@ bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 	free(tmp);
 	*i = start;
 	return (true);
-}
-
-/*
-passing the negated condition !is_delimiter as a func pointer 
-is not possible unless I create a new function  
-*/
-bool	is_not_delimiter(char c)
-{
-	return (!is_delimiter(c));
 }
 
 /*
@@ -626,9 +473,6 @@ bool	is_a_aggregate_redirection(t_mini_data *data, int *i)
 		return (false);
 }
 
-/****************************************/
-/* redirections							*/
-/****************************************/
 bool	is_a_redirection(t_mini_data *data, int *i)
 {
 	if (is_a_simple_redirection(data, i))
@@ -709,18 +553,13 @@ bool	is_some_semicolons(t_mini_data *data, int *i)
 		return (false);
 }
 
-bool	is_delimited_string(char c)
-{
-	return (ft_isprint(c) && !filename_delimiter(c));
-}
-
 bool	is_a_string_thing(t_mini_data *data, int *i)
 {
 	int		start;
 	char	*tmp;
 
 	start = *i;
-	while (is_delimited_string(data->input[*i]))
+	while (is_delimiting_char(data->input[*i]))
 		advance(i);
 	if (*i == start)
 		return (false);
