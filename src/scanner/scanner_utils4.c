@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:03:58 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:22:25 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:38:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,3 @@ bool	str_is_number(const char *str)
 	}
 	return (true);
 }
-

@@ -6,175 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:32:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:44:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
- mh.. just checked again in the bash and maybe the function below is not 
- necessary? TODO
- bash lets me create a var while and print it with $while... 	
- so not for identifier.  they cannot be used for commands...!
- IF, THEN, ELSE, ELIF, FI, DO, DONE, WHILE, UNTIL, FOR, CASE, ESAC, SELECT,
-  FUNCTION,
-*/
-bool	is_reserved1(t_mini_data *data, char *identifier, int *start)
-{
-	if (peek(identifier, "while", true))
-		add_token(data, start, "while", WHILE);
-	else if (peek(identifier, "until", true))
-		add_token(data, start, "until", UNTIL);
-	else if (peek(identifier, "for", true))
-		add_token(data, start, "for", FOR);
-	else if (peek(identifier, "case", true))
-		add_token(data, start, "case", CASE);
-	else if (peek(identifier, "esac", true))
-		add_token(data, start, "esac", ESAC);
-	else if (peek(identifier, "select", true))
-		add_token(data, start, "select", SELECT);
-	else if (peek(identifier, "function", true))
-		add_token(data, start, "function", FUNCTION);
-	else if (peek(identifier, "in", true))
-		add_token(data, start, "in", IN);
-	else
-		return (false);
-	return (true);
-}
-
-bool	is_reserved2(t_mini_data *data, char *identifier, int *start)
-{
-	if (peek(identifier, "if", true))
-		add_token(data, start, "if", IF);
-	else if (peek(identifier, "then", true))
-		add_token(data, start, "then", THEN);
-	else if (peek(identifier, "else", true))
-		add_token(data, start, "else", ELSE);
-	else if (peek(identifier, "elif", true))
-		add_token(data, start, "elif", ELIF);
-	else if (peek(identifier, "fi", true))
-		add_token(data, start, "fi", FI);
-	else if (peek(identifier, "do", true))
-		add_token(data, start, "do", DO);
-	else if (peek(identifier, "done", true))
-		add_token(data, start, "done", DONE);
-	else
-		return (false);
-	return (true);
-}
-
-bool	is_reserved(t_mini_data *data, char *identifier, int *start)
-{
-	if (is_reserved1(data, identifier, start))
-		return (true);
-	else if (is_reserved2(data, identifier, start))
-		return (true);
-	else
-		return (false);
-}
-
-/*
-bash builtins which we do not implement are in this list (taken from the 
-bash manual but enhanced by copilot)
-"alias bg bind break builtin caller command compgen 
-. : complete continue declare dirs disown enable eval exec fc fg getopts hash 
-help history jobs kill let local logout mapfile popd printf pushd read 
-readonly return set shift shopt source suspend test times trap type 
-typeset ulimit umask unalias wait readarray"
-*/
-bool	not_implemented_builtin(const char *id)
-{
-	if (!strncicmp(id, "bg", 3) || !strncicmp(id, "fc", 2) || !strncicmp(id, \
-	":", 2) || !strncicmp(id, "bind", 5) || !strncicmp(id, "break", 6) || \
-	!strncicmp(id, "builtin", 8) || !strncicmp(id, "caller", 6) || \
-	!strncicmp(id, "command", 7) || !strncicmp(id, "compgen", 7) || \
-	!strncicmp(id, ".", 2) || !strncicmp(id, "complete", 9) || !strncicmp(id, \
-	"continue", 8) || !strncicmp(id, "declare", 7) || !strncicmp(id, "dirs", \
-	4) || !strncicmp(id, "disown", 6) || !strncicmp(id, "enable", 6) || \
-	!strncicmp(id, "eval", 4) || !strncicmp(id, "exec", 4) || !strncicmp(id, \
-	"alias", 6) || !strncicmp(id, "fg", 2) || !strncicmp(id, "getopts", 7) || \
-	!strncicmp(id, "hash", 4) || !strncicmp(id, "help", 4) || !strncicmp(id, \
-	"history", 7) || !strncicmp(id, "jobs", 4) || !strncicmp(id, "kill", 4) || \
-	!strncicmp(id, "let", 3) || !strncicmp(id, "local", 5) || !strncicmp(id, \
-	"logout", 6) || !strncicmp(id, "mapfile", 7) || !strncicmp(id, "popd", 4) \
-	|| !strncicmp(id, "printf", 6) || !strncicmp(id, "pushd", 5) || \
-	!strncicmp(id, "read", 4) || !strncicmp(id, "readonly", 8) || \
-	!strncicmp(id, "return", 6) || !strncicmp(id, "set", 3) || \
-	!strncicmp(id, "shift", 5) || !strncicmp(id, "shopt", 5) || \
-	!strncicmp(id, "source", 6) || !strncicmp(id, "suspend", 7) || \
-	!strncicmp(id, "test", 4) || !strncicmp(id, "times", 5) || \
-	!strncicmp(id, "trap", 4) || !strncicmp(id, "type", 4) || \
-	!strncicmp(id, "typeset", 7) || !strncicmp(id, "ulimit", 6) || \
-	!strncicmp(id, "umask", 5) || !strncicmp(id, "unalias", 7) || \
-	!strncicmp(id, "wait", 4) || !strncicmp(id, "readarray", 9))
-		return (true);
-	return (false);
-}
-
-/*
-is_builtin checks if the identifier is a builtin command
-*/
-bool	is_builtin(t_mini_data *data, char *identifier, int *start)
-{
-	if (peek(identifier, "echo", true))
-		add_token(data, start, "echo", BUILTIN);
-	else if (peek(identifier, "cd", true))
-		add_token(data, start, "cd", BUILTIN);
-	else if (peek(identifier, "export", true))
-		add_token(data, start, "export", BUILTIN);
-	else if (peek(identifier, "unset", true))
-		add_token(data, start, "unset", BUILTIN);
-	else if (peek(identifier, "env", true))
-		add_token(data, start, "env", BUILTIN);
-	else if (peek(identifier, "exit", true))
-		add_token(data, start, "exit", BUILTIN);
-	else if (peek(identifier, "pwd", true))
-		add_token(data, start, "pwd", BUILTIN);
-	else if (not_implemented_builtin(identifier))
-		add_token(data, start, identifier, BUILTIN);
-	else
-		return (false);
-	return (true);
-}
-
-
-
-bool	is_a_control_operator(t_mini_data *data, int *i)
-{
-	if (peek(data->input + *i, "||", false))
-		add_token(data, i, "||", OR_IF);
-	else if (peek(data->input + *i, "&&", false))
-		add_token(data, i, "&&", AND_IF);
-	else if (peek(data->input + *i, "|&", false))
-		add_token(data, i, "|&", PIPE_AND);
-	else if (peek(data->input + *i, ";&", false))
-		add_token(data, i, ";&", SEMI_AND);
-	else if (peek(data->input + *i, "|", false))
-		add_token(data, i, "|", PIPE);
-	else
-		return (false);
-	return (true);
-}
-
-bool	is_a_math_op(t_mini_data *data, int *i)
-{
-	if (peek(data->input + *i, "--", false))
-		add_token(data, i, "--", MINUS_MINUS);
-	else if (peek(data->input + *i, "++", false))
-		add_token(data, i, "++", PLUS_PLUS);
-	else if (peek(data->input + *i, "-=", false))
-		add_token(data, i, "-=", MINUS_EQUAL);
-	else if (peek(data->input + *i, "+=", false))
-		add_token(data, i, "+=", PLUS_EQUAL);
-	else if (peek(data->input + *i, "/=", false))
-		add_token(data, i, "/=", SLASH_EQUAL);
-	else if (peek(data->input + *i, "*=", false))
-		add_token(data, i, "*=", STAR_EQUAL);
-	else
-		return (false);
-	return (true);
-}
 
 /*
 condition is a pointer to a function that will be used to check the
@@ -197,6 +33,47 @@ bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 	return (true);
 }
 
+/*
+I define a block as the text between two delimiters like {}
+or "" '' or `` or () etc
+anything until I get the closing delimiter I specify in delim...
+*/
+bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type)
+{
+	int		start;
+	char	*tmp;
+
+	start = (*i)++;
+	while (data->input[*i] && data->input[*i] != delim)
+		advance(i);
+	if (data->input[*i] == '\0')
+		return (scanner_error(data, "error: unclosed expression"));
+	tmp = ft_substr(data->input, start, *i - start + 1);
+	add_token(data, &start, tmp, t_type);
+	*i = start;
+	free(tmp);
+	return (true);
+}
+
+/*
+arithmetic expansion is $(()) and I need to find the closing ))
+*/
+bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type)
+{
+	int		start;
+	char	*tmp;
+
+	start = (*i)++;
+	while (peek(data->input + *i, delim, false) == false)
+		advance(i);
+	if (*(data->input + *i + 1) == '\0')
+		return (scanner_error(data, "error: unclosed expansion"));
+	tmp = ft_substr(data->input, start, *i - start + 2);
+	*i = start;
+	add_token(data, i, tmp, t_type);
+	free(tmp);
+	return (true);
+}
 /*
 condition is a pointer to a function that will be used to check the
 character in the wjile loop. I might need is_digit for numbers or
@@ -281,47 +158,6 @@ bool	is_a_hist_expansion(t_mini_data *data, int *i)
 	return (false);
 }
 
-/*
-I define a block as the text between two delimiters like {}
-or "" '' or `` or () etc
-anything until I get the closing delimiter I specify in delim...
-*/
-bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type)
-{
-	int		start;
-	char	*tmp;
-
-	start = (*i)++;
-	while (data->input[*i] && data->input[*i] != delim)
-		advance(i);
-	if (data->input[*i] == '\0')
-		return (scanner_error(data, "error: unclosed expression"));
-	tmp = ft_substr(data->input, start, *i - start + 1);
-	add_token(data, &start, tmp, t_type);
-	*i = start;
-	free(tmp);
-	return (true);
-}
-
-/*
-arithmetic expansion is $(()) and I need to find the closing ))
-*/
-bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type)
-{
-	int		start;
-	char	*tmp;
-
-	start = (*i)++;
-	while (peek(data->input + *i, delim, false) == false)
-		advance(i);
-	if (*(data->input + *i + 1) == '\0')
-		return (scanner_error(data, "error: unclosed expansion"));
-	tmp = ft_substr(data->input, start, *i - start + 2);
-	*i = start;
-	add_token(data, i, tmp, t_type);
-	free(tmp);
-	return (true);
-}
 
 bool	add_here_and_delim(t_mini_data *data, int *i)
 {
@@ -446,23 +282,6 @@ bool	is_a_flag(t_mini_data *data, int *i)
 	return (false);
 }
 
-bool	is_simple_operator(t_mini_data *data, int *i)
-{
-	if (peek(data->input + *i, "=", false))
-		return (add_token(data, i, "=", EQUAL));
-	else if (peek(data->input + *i, "&", false))
-		return (add_token(data, i, "&", AND_TOK));
-	else if (peek(data->input + *i, "^", false))
-		return (add_token(data, i, "^", CARET));
-	else if (peek(data->input + *i, "%", false))
-		return (add_token(data, i, "%", PERCENT));
-	else if (peek(data->input + *i, "~", false))
-		return (add_token(data, i, "~", TILDE));
-	else if (peek(data->input + *i, "$", false))
-		return (add_token(data, i, "$", DOLLAR));
-	else
-		return (false);
-}
 
 bool	is_some_semicolons(t_mini_data *data, int *i)
 {

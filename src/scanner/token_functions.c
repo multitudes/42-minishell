@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:29:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:38:54 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,3 @@ bool	add_token(t_mini_data *data, int *i, const char *tmp, int type)
 	}
 	return (true);
 }
-

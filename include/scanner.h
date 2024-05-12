@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:36:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:46:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,6 +215,9 @@ bool	is_simple_dollar_exp(t_mini_data *data, int *i);
 bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type);
 bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int type);
 bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type);
+bool	is_a_math_op(t_mini_data *data, int *i);
+bool	is_a_control_operator(t_mini_data *data, int *i);
+bool	is_simple_operator(t_mini_data *data, int *i);
 
 #ifdef __cplusplus
 }
