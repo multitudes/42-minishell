@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 12:38:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 13:16:56 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,7 @@ bool cmp_char_case_insensitive(char a, char b)
 	else
 		return (a == b);
 }
+
 /*
 peek wil look ahead to see if my string is beginning with sequence of chars
 - input is the string to check
@@ -171,9 +172,9 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
 
 	i = 0;
 	n = ft_strlen(identifier);
-	while (i < n && cmp_char_case_insensitive(input[i], identifier[i])) // add compare case insensitive
+	while (i < n && cmp_char_case_insensitive(input[i], identifier[i]))
 		i++;
-	if (i == n && ((need_delim && is_delimiter(input[i])) || !need_delim)) 
+	if (i == n && ((need_delim && is_delimiter(input[i])) || !need_delim))
 		return (true);
 	else
 		return (false);
@@ -185,23 +186,9 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
  so not for identifier.  they cannot be used for commands...!
  IF, THEN, ELSE, ELIF, FI, DO, DONE, WHILE, UNTIL, FOR, CASE, ESAC, SELECT, FUNCTION,
 */
-bool is_reserved(t_mini_data *data, char *identifier, int *start)
+bool is_reserved1(t_mini_data *data, char *identifier, int *start)
 {
-	if (peek(identifier, "if", true))
-		add_token(data, start, "if", IF);
-	else if (peek(identifier, "then", true))
-		add_token(data, start, "then", THEN);
-	else if (peek(identifier, "else", true))
-		add_token(data, start, "else", ELSE);
-	else if (peek(identifier, "elif", true))
-		add_token(data, start, "elif", ELIF);
-	else if (peek(identifier, "fi", true))
-		add_token(data, start, "fi", FI);
-	else if (peek(identifier, "do", true))
-		add_token(data, start, "do", DO);
-	else if (peek(identifier, "done", true))
-		add_token(data, start, "done", DONE);
-	else if (peek(identifier, "while", true))
+	if (peek(identifier, "while", true))
 		add_token(data, start, "while", WHILE);
 	else if (peek(identifier, "until", true))
 		add_token(data, start, "until", UNTIL);
@@ -222,6 +209,36 @@ bool is_reserved(t_mini_data *data, char *identifier, int *start)
 	return true;
 }
 
+bool is_reserved2(t_mini_data *data, char *identifier, int *start)
+{
+	if (peek(identifier, "if", true))
+		add_token(data, start, "if", IF);
+	else if (peek(identifier, "then", true))
+		add_token(data, start, "then", THEN);
+	else if (peek(identifier, "else", true))
+		add_token(data, start, "else", ELSE);
+	else if (peek(identifier, "elif", true))
+		add_token(data, start, "elif", ELIF);
+	else if (peek(identifier, "fi", true))
+		add_token(data, start, "fi", FI);
+	else if (peek(identifier, "do", true))
+		add_token(data, start, "do", DO);
+	else if (peek(identifier, "done", true))
+		add_token(data, start, "done", DONE);
+	else 
+		return (false);
+	return true;
+}
+
+bool	is_reserved(t_mini_data *data, char *identifier, int *start)
+{
+	if (is_reserved1(data, identifier, start))
+		return (true);
+	else if (is_reserved2(data, identifier, start))
+		return (true);
+	else
+		return (false);
+}
 /*
 bash builtins which we do not implement are in this list (taken from the 
 bash manual but enhanced by copilot)
@@ -233,32 +250,29 @@ typeset ulimit umask unalias wait readarray"
 */
 bool	not_implemented_builtin(const char *id)
 {
-	if ((strncicmp(id, "alias", 6) == 0) || strncicmp(id, "bg", 3) == 0 || \
-	strncicmp(id, "bind", 5) == 0 || strncicmp(id, "break", 6) == 0 || \
-	strncicmp(id, "builtin", 8) == 0 || strncicmp(id, "caller", 6) == 0 || \
-	strncicmp(id, "command", 7) == 0 || strncicmp(id, "compgen", 7) == 0 || \
-	strncicmp(id, ".", 2) == 0 || strncicmp(id, "complete", 9) == 0 || \
-	strncicmp(id, "continue", 8) == 0 || strncicmp(id, "declare", 7) == 0 || \
-	strncicmp(id, "dirs", 4) == 0 || strncicmp(id, "disown", 6) == 0 || \
-	strncicmp(id, "enable", 6) == 0 || strncicmp(id, "eval", 4) == 0 || \
-	strncicmp(id, "exec", 4) == 0 || strncicmp(id, "fc", 2) == 0 || \
-	strncicmp(id, "fg", 2) == 0 || strncicmp(id, "getopts", 7) == 0 || \
-	strncicmp(id, "hash", 4) == 0 || strncicmp(id, "help", 4) == 0 || \
-	strncicmp(id, "history", 7) == 0 || strncicmp(id, "jobs", 4) == 0 || \
-	strncicmp(id, "kill", 4) == 0 || strncicmp(id, "let", 3) == 0 || \
-	strncicmp(id, "local", 5) == 0 || strncicmp(id, "logout", 6) == 0 || \
-	strncicmp(id, "mapfile", 7) == 0 || strncicmp(id, "popd", 4) == 0 || \
-	strncicmp(id, "printf", 6) == 0 || strncicmp(id, "pushd", 5) == 0 || \
-	strncicmp(id, "read", 4) == 0 || strncicmp(id, "readonly", 8) == 0 || \
-	strncicmp(id, "return", 6) == 0 || strncicmp(id, "set", 3) == 0 || \
-	strncicmp(id, "shift", 5) == 0 || strncicmp(id, "shopt", 5) == 0 || \
-	strncicmp(id, "source", 6) == 0 || strncicmp(id, "suspend", 7) == 0 || \
-	strncicmp(id, "test", 4) == 0 || strncicmp(id, "times", 5) == 0 || \
-	strncicmp(id, "trap", 4) == 0 || strncicmp(id, "type", 4) == 0 || \
-	strncicmp(id, "typeset", 7) == 0 || strncicmp(id, "ulimit", 6) == 0 || \
-	strncicmp(id, "umask", 5) == 0 || strncicmp(id, "unalias", 7) == 0 || \
-	strncicmp(id, "wait", 4) == 0 || strncicmp(id, "readarray", 9) == 0 || \
-	strncicmp(id, ":", 2) == 0 || strncicmp(id, ".", 2) == 0)
+	if (!strncicmp(id, "bg", 3) || !strncicmp(id, "fc", 2) || !strncicmp(id, \
+	":", 2) || !strncicmp(id, "bind", 5) || !strncicmp(id, "break", 6) || \
+	!strncicmp(id, "builtin", 8) || !strncicmp(id, "caller", 6) || !strncicmp\
+	(id, "command", 7) || !strncicmp(id, "compgen", 7) || !strncicmp(id, ".", \
+	2) || !strncicmp(id, "complete", 9) || !strncicmp(id, "continue", 8) || \
+	!strncicmp(id, "declare", 7) || !strncicmp(id, "dirs", 4) || !strncicmp(\
+	id, "disown", 6) || !strncicmp(id, "enable", 6) || !strncicmp(id, "eval", \
+	4) || !strncicmp(id, "exec", 4) || !strncicmp(id, "alias", 6) || \
+	!strncicmp(id, "fg", 2) || !strncicmp(id, "getopts", 7) || !strncicmp(id, \
+	"hash", 4) || !strncicmp(id, "help", 4) || !strncicmp(id, "history", 7) \
+	|| !strncicmp(id, "jobs", 4) || !strncicmp(id, "kill", 4) || !strncicmp(\
+	id, "let", 3) || !strncicmp(id, "local", 5) || !strncicmp(id, "logout", \
+	6) || !strncicmp(id, "mapfile", 7) || !strncicmp(id, "popd", 4) || \
+	!strncicmp(id, "printf", 6) || !strncicmp(id, "pushd", 5) || \
+	!strncicmp(id, "read", 4) || !strncicmp(id, "readonly", 8) || \
+	!strncicmp(id, "return", 6) || !strncicmp(id, "set", 3) || \
+	!strncicmp(id, "shift", 5) || !strncicmp(id, "shopt", 5) || \
+	!strncicmp(id, "source", 6) || !strncicmp(id, "suspend", 7) || \
+	!strncicmp(id, "test", 4) || !strncicmp(id, "times", 5) || \
+	!strncicmp(id, "trap", 4) || !strncicmp(id, "type", 4) || \
+	!strncicmp(id, "typeset", 7) || !strncicmp(id, "ulimit", 6) || \
+	!strncicmp(id, "umask", 5) || !strncicmp(id, "unalias", 7) || \
+	!strncicmp(id, "wait", 4) || !strncicmp(id, "readarray", 9))
 		return (true);
 	return (false);
 }
@@ -330,10 +344,7 @@ t_list *create_token(t_tokentype type, const char *lexeme, int *i)
 
 	token = malloc(sizeof(t_token));
 	if (token == NULL)
-	{
-		perror("malloc token");
 		return (NULL);
-	}
 	token->type = type;
 	token->lexeme = ft_strdup(lexeme);
 	token->start = *i;
@@ -342,9 +353,7 @@ t_list *create_token(t_tokentype type, const char *lexeme, int *i)
 	new_node = ft_lstnew(token);
 	if (new_node == NULL)
 	{
-		perror("malloc new_node");
-		free(token->lexeme);
-		free(token);
+		free_token(token);
 		return (NULL);
 	}
 	return (new_node);
