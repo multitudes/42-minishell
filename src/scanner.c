@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 13:33:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 15:50:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,13 @@
 
 /*
  ``\t''``\n''``\v''``\f''``\r''`` -> is space 
- overkill I think. From the bash manual they talk only tab and space and newline which
- in my case it is impossible because caught by the readline func
+ overkill I think. From the bash manual they talk only tab and space and 
+ newline which in my case it is impossible because caught by the readline func
 */
 bool is_space(const char c)
 {
-	if (c == 0)
-		return (false);
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r');
+	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' \
+	|| c == '\r');
 }
 
 /*
@@ -136,11 +135,13 @@ bool is_alnum(char c)
 }
 
 /*
-either is alnum including the _ or is a . / ~ -
+either is alnum including the _ and - or is a / 
+I already accept the . and .. and ./ and ~/ and ~+  
+as a beginning of a pathname
 */
-bool is_pathname(char c) 
+bool is_in_pathname(char c) 
 {
-	return is_alnum(c) || c == '.' || c == '-' || c == '/' || c == '~' ;
+	return is_alnum(c) || c != '.';
 }
 
 
@@ -611,17 +612,65 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 }
 
 /*
-    DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
-    DOLLAR_DOLLAR, // '$$' ‘$’ is used to get the process ID of the shell.
-    DOLLAR_STAR, // '$*' ‘*’ is used to get all the positional parameters.
-    DOLLAR_AT, // '$@'  ‘@’ is used to get all the positional parameters, except for the zeroth positional parameter.
-    DOLLAR_HASH, // '$#'  ‘#’ is used to get the number of positional parameters.
-    DOLLAR_BANG, // '$!'  ‘!’ is used to get the process ID of the last background command.
-	DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.	 
-	DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
+I define a block as the text between two delimiters like {}
+or "" '' or `` or () etc
+anything until I get the closing delimiter I specify in delim...
 */
-bool is_a_dollar_exp(t_mini_data *data, int *i)
-{	
+bool	add_tokenblock(t_mini_data *data, int *i, char delim, enum e_tokentype token_type)
+{
+	int start;
+	char *tmp;
+
+	start = (*i)++;
+	while (data->input[*i] && data->input[*i] != delim)
+		advance(i);
+	if (data->input[*i] == '\0')
+		return (scanner_error(data, "error: unclosed expression"));
+	tmp = ft_substr(data->input, start, *i - start + 1);
+	add_token(data, &start, tmp, token_type);
+	*i = start;
+	free(tmp);
+	return (true);
+}
+/*
+arithmetic expansion is $(()) and I need to find the closing ))
+*/
+bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, enum e_tokentype token_type)
+{
+	int start = (*i)++;
+	while (peek(data->input + *i, delim, false) == false)
+		advance(i);
+	if (*(data->input + *i + 1) == '\0')
+		return (scanner_error(data, "error: unclosed expansion"));
+	char *tmp = ft_substr(data->input, start, *i - start + 2);
+	*i = start;
+	add_token(data, i, tmp, token_type);
+	free(tmp);
+	return (true);
+}
+
+bool	add_here_and_delim(t_mini_data *data, int *i)
+{
+	int start;
+	char *tmp;
+
+	add_token(data, i, "<<", DLESS);
+	while (data->input[*i] && is_space(data->input[*i]))
+		advance(i);
+	if (data->input[*i] == '\0' || is_delimiter(data->input[*i]))
+		return (scanner_error(data, "error: missing here-delim"));
+	start = *i;
+	while ((data->input + *i) && !is_delimiter(data->input[*i]))
+		advance(i);
+	tmp = ft_substr(data->input, start, *i - start);
+	*i = start;
+	add_token(data, i, tmp, DLESS_DELIM);
+	free(tmp);
+	return (true);
+}
+
+bool	is_simple_dollar_exp(t_mini_data *data, int *i)
+{
 	if (peek(data->input + *i, "$?", false))
 		return (add_token(data, i, "$?", DOLLAR_QUESTION));
 	else if (peek(data->input + *i, "$$", false))
@@ -636,67 +685,48 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 		return (add_token(data, i, "$!", DOLLAR_BANG));
 	else if (peek(data->input + *i, "$-", false))
 		return (add_token(data, i, "$-", DOLLAR_HYPHEN));
-
-	// command expansion $(command) or `command`
-	else if (peek(data->input + *i, "$((", false))
-	{
-		debug("found $((");
-		int start = (*i)++;
-		while (peek(data->input + *i, "))", false) == false)
-			advance(i);
-		if (*(data->input + *i + 1) == '\0')
-			return (scanner_error(data, "error: unclosed expansion"));
-		char *tmp = ft_substr(data->input, start, *i - start + 2);
-		if (!tmp)
-			return (scanner_error(data, "error: malloc tmp failed"));
-		*i = start;
-		add_token(data, i, tmp, EXPR_EXPANSION);
-		free(tmp);
-		return (true);
-	}
-	// $1 to $9
-	else if (peek(data->input + *i, "$", false) && is_digit(*(data->input + *i + 1)))
-		return (process_token_off_one(data, i, is_digit, DOLLAR_DIGIT));
-	// expansion ${parameter} or $parameter or $(command) or $((arythm expression))
-	else if (peek(data->input + *i, "${", false))
-	{
-		int start = (*i)++;
-		while (data->input[*i] != '}')
-			advance(i);
-		if (data->input[*i] == '\0')
-			return (scanner_error(data, "error: unclosed expansion"));
-		char *tmp = ft_substr(data->input, start, *i - start + 1);
-		*i = start;
-		add_token(data, i, tmp, VAR_EXPANSION);
-		free(tmp);
-		return (true);
-	}
-	// Parameter names in bash can only contain alphanumeric 
-	// characters or underscores, and must start with a letter or underscore.
-	else if (peek(data->input + *i, "$", false) && is_alnum(*(data->input + *i + 1)))
-		return (process_token_off_one(data, i, is_alnum, VAR_EXPANSION));
-	// arythmetic expansion
-	else if (peek(data->input + *i, "$(", false))
-	{
-		int start = (*i)++;
-		while (data->input[*i] != ')')
-			advance(i);
-		if (data->input[*i] == '\0')
-			return (scanner_error(data, "error: unclosed expansion"));
-		char *tmp = ft_substr(data->input, start, *i - start + 1);
-		*i = start;
-		add_token(data, i, tmp, COM_EXPANSION);
-		free(tmp);
-		return (true);
-	}
 	else
 		return (false);
 }
 
-/****************************************/
-/* redirections							*/
-/****************************************/
-bool	is_a_redirection(t_mini_data *data, int *i)
+bool	is_complex_dollar_exp(t_mini_data *data, int *i)
+{
+	if (peek(data->input + *i, "$((", false))
+		return (add_block_dbl_paren(data, i, "))", EXPR_EXPANSION));
+	else if (peek(data->input + *i, "$", false) && is_digit(*(data->input + *i + 1)))
+		return (process_token_off_one(data, i, is_digit, DOLLAR_DIGIT));
+	else if (peek(data->input + *i, "${", false))
+		return (add_tokenblock(data, i, '}', VAR_EXPANSION));
+	else if (peek(data->input + *i, "$", false) && is_alnum(*(data->input + *i + 1)))
+		return (process_token_off_one(data, i, is_alnum, VAR_EXPANSION));
+	else if (peek(data->input + *i, "$(", false))
+		return (add_tokenblock(data, i, ')', COM_EXPANSION));
+	else
+		return (false);
+}
+/*
+    DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
+    DOLLAR_DOLLAR, // '$$' ‘$’ is used to get the process ID of the shell.
+    DOLLAR_STAR, // '$*' ‘*’ is used to get all the positional parameters.
+    DOLLAR_AT, // '$@'  ‘@’ is used to get all the positional parameters, except for the zeroth positional parameter.
+    DOLLAR_HASH, // '$#'  ‘#’ is used to get the number of positional parameters.
+    DOLLAR_BANG, // '$!'  ‘!’ is used to get the process ID of the last background command.
+	DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.	 
+	DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
+	Parameter names in bash can only contain alphanumeric 
+	characters or underscores, and must start with a letter or underscore.
+*/
+bool is_a_dollar_exp(t_mini_data *data, int *i)
+{	
+	if (is_simple_dollar_exp(data, i))
+		return (true);
+	else if (is_complex_dollar_exp(data, i))
+		return (true);
+	else
+		return (false);
+}
+
+bool	is_a_simple_redirection(t_mini_data *data, int* i)
 {
 	if (peek(data->input + *i, ">|", false))
 		return (add_token(data, i, ">|", CLOBBER));
@@ -718,25 +748,15 @@ bool	is_a_redirection(t_mini_data *data, int *i)
 		return (add_token(data, i, "<>", LESSGREAT));
 	else if (peek(data->input + *i, ">>", false))
 		return (add_token(data, i, ">>", DGREAT));
-	else if (peek(data->input + *i, "<<", false))
-	{
-		add_token(data, i, "<<", DLESS);
-		while (data->input[*i] && is_space(data->input[*i]))
-			advance(i);
-		if (data->input[*i] == '\0' || is_delimiter(data->input[*i]))
-			return (scanner_error(data, "error: missing here-delim"));
-		
-		int start = *i;
-		while ((data->input + *i) && !is_delimiter(data->input[*i]))
-			advance(i);
-		char *tmp = ft_substr(data->input, start, *i - start);
-		if (!tmp)
-			return (scanner_error(data, "error: malloc tmp failed"));
-		*i = start;
-		add_token(data, i, tmp, DLESS_DELIM);
-		free(tmp);
-		return (true);
-	}
+	else 
+		return (false);
+	return (true);
+}
+
+bool	is_a_aggregate_redirection(t_mini_data *data, int *i)
+{
+	if (peek(data->input + *i, "<<", false))
+		return (add_here_and_delim(data, i));
 	else if (peek(data->input + *i, ">=", false))
 		return (add_token(data, i, ">=", GREATER_EQUAL));
 	else if (peek(data->input + *i, "<=", false))
@@ -760,26 +780,39 @@ bool	is_a_redirection(t_mini_data *data, int *i)
 	else
 		return (false);
 }
-/*
-I define a block as the text between two delimiters like {}
-or "" '' or `` or () etc
-anything until I get the closing delimiter I specify in delim...
-*/
-bool	add_tokenblock(t_mini_data *data, int *i, char delim, enum e_tokentype token_type)
-{
-	int start;
-	char *tmp;
 
-	start = (*i)++;
-	while (data->input[*i] && data->input[*i] != delim)
-		advance(i);
-	if (data->input[*i] == '\0')
-		return (scanner_error(data, "error: unclosed expression"));
-	tmp = ft_substr(data->input, start, *i - start + 1);
-	add_token(data, &start, tmp, token_type);
-	*i = start;
-	free(tmp);
-	return (true);
+/****************************************/
+/* redirections							*/
+/****************************************/
+bool	is_a_redirection(t_mini_data *data, int *i)
+{
+	if (is_a_simple_redirection(data, i))
+		return (true);
+	else if (is_a_aggregate_redirection(data, i))
+		return (true);
+	else
+		return (false);
+}
+
+
+
+/*
+if contains a slash or starts with a dot or starts with a ./ ../ ~/ ~+
+*/
+bool str_is_pathname(const char *str)
+{
+	if (ft_strchr(str, '/') || peek(str, ".", false) || peek(str, "./", false) \
+	|| peek(str, "../", false) || peek(str, "~/", false) || peek(str, "~+", false))
+	{
+		while (*str)
+		{
+			if (!is_in_pathname(*str))
+				return (false);
+			str++;
+		}
+		return (true);
+	}
+	return (false);
 }
 
 /*
@@ -859,7 +892,7 @@ bool	is_a_string_thing(t_mini_data *data, int *i)
 		int start;
 		char *tmp;
 
-		start = *i;
+		start = (*i)++;
 		while (ft_isprint(data->input[*i]) && !filename_delimiter(data->input[*i]))
 			advance(i);	
 		tmp = ft_substr(data->input, start, *i - start);
@@ -868,28 +901,23 @@ bool	is_a_string_thing(t_mini_data *data, int *i)
 			if (is_io_number(tmp))
 				add_token(data, &start, tmp, IO_NUMBER);
 		}
-		else 
+		else if (is_reserved(data, tmp, &start) || is_builtin(data, tmp, &start) || \
+		is_true_false(data, tmp, &start))
+			;
+		else	
 		{
-			debug("identifier: -%s-", tmp);
-			//check for reserved words and builtin first which they will be added 
-			// automatically if the check is true
-			if (!is_reserved(data, tmp, &start) && \
-			!is_builtin(data, tmp, &start) &&\
-			!is_true_false(data, tmp, &start))
-			{
-				// check if it is a path name
-				if (ft_strchr(tmp, '/') || peek(tmp, ".", false) || peek(tmp, "./", false) || peek(tmp, "../", false) || peek(tmp, "~/", false) || peek(tmp, "~+", false))
-					add_token(data, &start, tmp, PATHNAME);
-				// if not a path name maybe a number?
-				else if (str_is_number(tmp))
-					add_token(data, &start, tmp, NUMBER);
-				//if not a number maybe a variable name or anything else!
-				else
-					add_token(data, &start, tmp, WORD);
-			}
+			// check if it is a path name
+			if (str_is_pathname(tmp))
+				add_token(data, &start, tmp, PATHNAME);
+			// if not a path name maybe a number?
+			else if (str_is_number(tmp))
+				add_token(data, &start, tmp, NUMBER);
+			//if not a number maybe a variable name or anything else!
+			else
+				add_token(data, &start, tmp, WORD);
 		}
+		
 		free(tmp);
-		// *i = start;
 		return (true);
 	}
 	return (false);
