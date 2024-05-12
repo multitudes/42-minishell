@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 17:26:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 17:34:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
  overkill I think. From the bash manual they talk only tab and space and 
  newline which in my case it is impossible because caught by the readline func
 */
-bool is_space(const char c)
+bool	is_space(const char c)
 {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' \
 	|| c == '\r');
@@ -26,20 +26,23 @@ bool is_space(const char c)
 /*
 string n compare but case insensitive
 */
-int strncicmp(char const *a, char const *b, int n)
+int	strncicmp(char const *a, char const *b, int n)
 {
+	int	d;
+
 	if (n == 0)
-		return 0;
+		return (0);
 	if (a == NULL || b == NULL || n < 0)
-		return -1;
+		return (-1);
 	while (*a && *b && n--)
 	{
-		int d = ft_tolower(*a) - ft_tolower(*b);
+		d = ft_tolower(*a) - ft_tolower(*b);
 		if (d != 0)
-			return d;
-		a++, b++;
+			return (d);
+		a++;
+		b++;
 	}
-	return *a - *b;
+	return (*a - *b);
 }
 
 /* Returns 'true' if the character is a delimiter. Because an identifier
@@ -53,13 +56,13 @@ or one of the following characters:
 I use this function to understand where to break the string
 into tokens
 */
-bool is_delimiter(char ch)
+bool	is_delimiter(char ch)
 {
-    if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '|' || \
+	if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '|' || \
 	ch == '&' || ch == ';' || ch == '(' || ch == ')' || \
 	ch == '>' || ch == '<' || ch == '\0')
 		return (true);
-    return (false);
+	return (false);
 }
 
 /*
@@ -83,7 +86,8 @@ because touch doesn't produce any output) is being passed as input to orld.
 However, orld is not a valid command, 
 so bash gives an error message: bash: orld: command not found.
 The [1]+ Done touch w-+*}\,[]=w{ message is from bash's job 
-control system. It's telling you that the touch w-+*}\,[]=w{ command has finished running.
+control system. It's telling you that the touch w-+*}\,[]=w{ 
+	command has finished running.
 
 
 touch w-+*},[]=w{\o!rld bash: !rld: event not found
@@ -98,28 +102,28 @@ ok these char cannot be in a file name..
 officially it is recommended to use only the 65 characters [-._a-zA-Z0-9]
 for files and directories ...
 */
-bool filename_delimiter(const char ch)
+bool	filename_delimiter(const char ch)
 {
-    if (is_space(ch) || ch == ';' || ch == '>' || 
-        ch == '<' || ch == '(' || ch == ')' || 
-        ch == '|' || ch == '&' || ch == '$' || ch == '`' ||
-        ch == '"' || ch == '\''  || ch == '!' ||
-        ch == '\0')
+	if (is_space(ch) || ch == ';' || ch == '>' || \
+	ch == '<' || ch == '(' || ch == ')' || \
+	ch == '|' || ch == '&' || ch == '$' || ch == '`' || \
+	ch == '"' || ch == '\'' || ch == '!' || ch == '\0')
 		return (true);
-    return (false);
+	return (false);
 }
 
 /*
 Returns 'true' if the character is a digit
 */
-bool is_digit(char c) {
-      return c >= '0' && c <= '9';
+bool	is_digit(char c)
+{
+	return (c >= '0' && c <= '9');
 }
 
 /*
 Returns 'true' if the character is char a letter
 */
-bool is_alpha(char c) 
+bool	is_alpha(char c)
 {
 	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 }
@@ -129,7 +133,7 @@ part of the check for identifiers
 btw This 65-character set, [-._a-zA-Z0-9], 
 is referred to in SUSv3 as the portable filename character set.
 */
-bool is_alnum(char c) 
+bool	is_alnum(char c)
 {
 	return (is_alpha(c) || is_digit(c) || c == '_' || c == '-' || c == '.');
 }
@@ -139,17 +143,16 @@ either is alnum including the _ and - or is a /
 I already accept the . and .. and ./ and ~/ and ~+  
 as a beginning of a pathname
 */
-bool is_in_pathname(char c) 
+bool	is_in_pathname(char c)
 {
-	return is_alnum(c) || c != '.';
+	return (is_alnum(c) || c != '.');
 }
-
 
 /*
 compare two chars case insensitive - used in peek!
 */
 
-bool cmp_char_case_insensitive(char a, char b)
+bool	cmp_char_case_insensitive(char a, char b)
 {
 	if (is_alpha(a) && is_alpha(b))
 		return (ft_tolower(a) == ft_tolower(b));
@@ -162,14 +165,15 @@ peek wil look ahead to see if my string is beginning with sequence of chars
 - input is the string to check
 - identifier is the string to check for
 - need_delim is true if the identifier must be followed by a space to be valid
-ex '||' works without spaces at the end but 'echo' is valid with space only or with 
+ex '||' works without spaces at the end but 'echo' is valid with space only 
+or with 
 one of the metacharacters : ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
 peek is case insensitive!
 */
 bool	peek(const char *input, const char *identifier, bool need_delim)
 {
-	int i;
-	int n;
+	int	i;
+	int	n;
 
 	i = 0;
 	n = ft_strlen(identifier);
@@ -182,12 +186,14 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
 }
 
 /*
- mh.. just checked again in the bash and maybe the function below is not necessary? TODO
+ mh.. just checked again in the bash and maybe the function below is not 
+ necessary? TODO
  bash lets me create a var while and print it with $while... 	
  so not for identifier.  they cannot be used for commands...!
- IF, THEN, ELSE, ELIF, FI, DO, DONE, WHILE, UNTIL, FOR, CASE, ESAC, SELECT, FUNCTION,
+ IF, THEN, ELSE, ELIF, FI, DO, DONE, WHILE, UNTIL, FOR, CASE, ESAC, SELECT,
+  FUNCTION,
 */
-bool is_reserved1(t_mini_data *data, char *identifier, int *start)
+bool	is_reserved1(t_mini_data *data, char *identifier, int *start)
 {
 	if (peek(identifier, "while", true))
 		add_token(data, start, "while", WHILE);
@@ -205,9 +211,9 @@ bool is_reserved1(t_mini_data *data, char *identifier, int *start)
 		add_token(data, start, "function", FUNCTION);
 	else if (peek(identifier, "in", true))
 		add_token(data, start, "in", IN);
-	else 
+	else
 		return (false);
-	return true;
+	return (true);
 }
 
 bool	is_reserved2(t_mini_data *data, char *identifier, int *start)
