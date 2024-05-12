@@ -188,7 +188,7 @@ const char* test_scanner_redirections4() {
 	// i want to check the output of the call to the function in scanner.c file
 	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
-	std::string str = "cat2>cat2>&cat&>cat>&cat&>>cat2>>cat<>cat>|cat";
+	std::string str = "cat 2>cat 2>&cat&>cat>&cat&>>cat 2>>cat<>cat>|cat";
 	const char* input = str.c_str();
 	init_data(&g_mini_data);
 	g_mini_data->input = input;
