@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 11:15:32 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 11:51:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -756,6 +756,69 @@ bool	is_a_redirection(t_mini_data *data, int *i)
 	else
 		return (false);
 }
+bool	add_tokenblock(t_mini_data *data, int *i, char delim, enum e_tokentype token_type)
+{
+	int start;
+	char *tmp;
+
+	start = (*i)++;
+	while (data->input[*i] && data->input[*i] != delim)
+		advance(i);
+	if (data->input[*i] == '\0')
+		return (scanner_error(data, "error: unclosed expression"));
+	tmp = ft_substr(data->input, start, *i - start + 1);
+
+	add_token(data, &start, tmp, token_type);
+	*i = start;
+	free(tmp);
+	return (true);
+}
+
+
+bool process_blocks(t_mini_data *data, int *i)
+{
+	if (peek(data->input + *i, "(", false)) 
+		return (add_tokenblock(data, i, ')', EXPRESSION));	
+	else if (peek(data->input + *i, "\'", false))
+		return (add_tokenblock(data, i, '\'', S_QUOTED_STRING));
+	else if (peek(data->input + *i, "\"", false))
+		return (add_tokenblock(data, i, '\"', QUOTED_STRING));
+	else if (peek(data->input + *i, "`", false))
+		return (add_tokenblock(data, i, '`', COM_EXPANSION));
+    return (false);
+}
+bool is_simple_operator(t_mini_data *data, int *i)
+{
+	if (peek(data->input + *i, "=", false))
+		return (add_token(data, i, "=", EQUAL));
+	else if (peek(data->input + *i, "&", false))
+		return (add_token(data, i, "&", AND_TOK));
+	else if (peek(data->input + *i, "^", false))
+		return (add_token(data, i, "^", CARET));
+	else if (peek(data->input + *i, "%", false))
+		return (add_token(data, i, "%", PERCENT));
+	else if (peek(data->input + *i, "~", false))
+		return (add_token(data, i, "~", TILDE));
+	else if (peek(data->input + *i, "$", false))
+		return (add_token(data, i, "$", DOLLAR));
+	else
+		return (false);
+}
+
+bool	is_some_semicolons(t_mini_data *data, int *i)
+{
+	if (peek(data->input + *i, ";;&", false))
+		return (add_token(data, i, ";;&", DSEMI_AND));
+	else if (peek(data->input + *i, ";;", false))
+		return (add_token(data, i, ";;", DSEMI));
+	else if (peek(data->input + *i, ";", false))
+		return (add_token(data, i, ";", SEMI));
+	else if (peek(data->input + *i, "!", true))
+		return (add_token(data, i, "!", BANG));
+	else
+		return (false);
+}
+
 /*
 
 */
@@ -769,97 +832,14 @@ bool	got_tokens(t_mini_data *data, int *i)
 		return (true);
 	else if (is_a_dollar_exp(data, i))
 		return (true);
-	else if (peek(data->input + *i, ";;&", false))
-		return (add_token(data, i, ";;&", DSEMI_AND));
-	else if (peek(data->input + *i, ";;", false))
-		return (add_token(data, i, ";;", DSEMI));
-	else if (peek(data->input + *i, ";", false))
-		return (add_token(data, i, ";", SEMI));
-	else if (peek(data->input + *i, "!", true))
-		return (add_token(data, i, "!", BANG));
+	else if (is_some_semicolons(data, i))
+		return (true);
 	else if (is_a_redirection(data, i))
 		return (true);
-	else if (peek(data->input + *i, "=", false))
-		return (add_token(data, i, "=", EQUAL));
-	else if (peek(data->input + *i, "&", false))
-		return (add_token(data, i, "&", AND_TOK));
-	else if (peek(data->input + *i, "^", false))
-		return (add_token(data, i, "^", CARET));
-	else if (peek(data->input + *i, "%", false))
-		return (add_token(data, i, "%", PERCENT));
-	else if (peek(data->input + *i, "~", false))
-		return (add_token(data, i, "~", TILDE));
-	else if (peek(data->input + *i, "$", false))
-		return (add_token(data, i, "$", DOLLAR));
-	else if (peek(data->input + *i, "(", false))
-	{
-		int start;
-		char *tmp;
-
-		start = (*i)++;
-		while (data->input[*i] && data->input[*i] != ')')
-			advance(i);
-		if (data->input[*i] == '\0')
-			return (scanner_error(data, "error: unclosed expression"));
-		tmp = ft_substr(data->input, start, *i - start + 1);
-
-		add_token(data, &start, tmp, EXPRESSION);
-		*i = start;
-		free(tmp);
+	if (is_simple_operator(data, i))
 		return (true);
-	}
-
-	//S_QUOTED_STRING, single quoted string 'string'
-		// no expansion in those unless they are part of a double quoted string
-		// expand later $() ${} and $VAR and '...'  and ` ... `  ?	
-	else if (peek(data->input + *i, "\'", false))
-	{
-		int start = (*i)++;
-		while (data->input[*i] && data->input[*i] != '\'')
-			advance(i);
-		if (!data->input[*i])
-			return (scanner_error(data, "error: unclosed single quotes"));
-		char *tmp = ft_substr(data->input, start, *i - start + 1);
-		add_token(data, &start, tmp, S_QUOTED_STRING);
-		*i = start;
-		free(tmp);
+	else if (process_blocks(data, i))
 		return (true);
-	}
-
-	// else if (data->input[i] == '"')
-	else if (peek(data->input + *i, "\"", false))
-	{
-		int start;
-		char *tmp;
-		start = (*i)++;
-		while (data->input[*i] && data->input[*i] != '"')
-			advance(i);
-		if (!data->input[*i])	
-			return (scanner_error(data, "error: unclosed double quotes"));
-		tmp = ft_substr(data->input, start, *i - start + 1);
-		add_token(data, &start, tmp, QUOTED_STRING);
-		*i = start;
-		free(tmp);
-		return (true);
-	}
-	// Command substitution not implemented
-	// COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
-	// else if (data->input[i] == '`')
-	else if (peek(data->input + *i, "`", false))
-	{
-		int start;
-		char *tmp;
-		start = (*i)++;
-		while (data->input[*i] && data->input[*i] != '`')
-			advance(i);
-		if (!data->input[*i])
-			return (scanner_error(data, "error: unclosed command substitution"));
-		tmp = ft_substr(data->input, start, *i - start + 1);
-		add_token(data, &start, tmp, COM_EXPANSION);
-		*i = start;
-		free(tmp);
-		return (true);
-	}
 
 	// create a lexeme for flag in this conf -[a-zA-Z]
 	// else if (peek((data->input + i), "-", false) && is_alpha(data->input[i + 1]))
@@ -876,11 +856,6 @@ bool	got_tokens(t_mini_data *data, int *i)
 		free(tmp);
 		return (true);
 	}
-	
-
-	/*********************************************/
-	/* try string/ pathname again!               */
-	/*********************************************/
 	else if (isprint(data->input[*i]) && !filename_delimiter(data->input[*i]))
 	{
 		// debug("- pathname - NUMBER or identifier? ");
