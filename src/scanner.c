@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 17:00:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 17:06:00 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -560,9 +560,9 @@ bool process_token_off_one(t_mini_data *data, int *i, bool (*condition)(char), i
 
 /*
 condition is a pointer to a function that will be used to check the
-character in the wjile loop. I might need is_digit for numbers or
+character in the while loop. I might need is_digit for numbers or
 is_alnum for identifiers etc
-Thgis works for easy tokens.
+This is offset of 2 lets say I look for !- followed by a number of digits
 */
 bool process_token_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 {
@@ -571,7 +571,7 @@ bool process_token_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 	start = (*i);
     while (cnd(data->input[*i] + 2))
         advance(i);
-    char *tmp = ft_substr(data->input, start, *i - start + 2);
+    char *tmp = ft_substr(data->input, start, *i - start + 3);
     add_token(data, &start, tmp, type);
     free(tmp);
     *i = start;
@@ -611,19 +611,7 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 	else if (peek(data->input + *i, "!", false) && is_digit(*(data->input + *i + 1)))
 		return (process_token_off_one(data, i, is_digit, BANG_DIGIT));	
 	else if (peek(data->input + *i, "!-", false) && is_digit(*(data->input + *i + 2)))
-	{
-		int		start;
-		char	*tmp;
-
-		start = *i;
-		while (is_digit(*(data->input + *i + 2)))
-			advance(i);
-		tmp = ft_substr(data->input, start, *i - start + 2);
-		add_token(data, &start, tmp, BANG_HYPHEN_DIGIT);
-		free(tmp);
-		*i = start;
-		return (true);
-	}
+		return (process_token_off_2(data, i, is_digit, BANG_HYPHEN_DIGIT));
 	else if (peek(data->input + *i, "!", false) && is_alpha(*(data->input \
 	+ *i + 1)))
 		return (process_token_off_one(data, i, is_alpha, BANG_ALPHA));
