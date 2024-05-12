@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:24:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:27:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,16 +174,6 @@ bool	is_a_math_op(t_mini_data *data, int *i)
 	else
 		return (false);
 	return (true);
-}
-
-
-/*
-just for style, it removes ugly pointer arythmetics 
-from my code
-*/
-void	advance(int *i)
-{
-	(*i)++;
 }
 
 /*

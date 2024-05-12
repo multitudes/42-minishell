@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:22:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:28:14 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,7 @@ typedef struct s_token_list t_token_list;
 t_list	*create_token(t_tokentype type, const char *lexeme, int *start);
 t_list	*tokenizer(t_mini_data *data);
 bool	peek(const char *input, const char *identifier, bool end_space);
+void	advance(int *i);
 bool	is_space(const char c);
 int		strncicmp(char const *a, char const *b, int n);
 bool 	cmp_char_case_insensitive(const char a, const char b);

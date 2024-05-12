@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:57:41 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:00:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:27:54 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,12 @@ int	isprint_no_space(const char *str)
 		str++;
 	}
 	return (1);
+}
+/*
+just for style, it removes ugly pointer arythmetics 
+from my code
+*/
+void	advance(int *i)
+{
+	(*i)++;
 }
