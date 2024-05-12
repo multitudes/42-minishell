@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 15:50:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 16:39:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -632,6 +632,7 @@ bool	add_tokenblock(t_mini_data *data, int *i, char delim, enum e_tokentype toke
 	free(tmp);
 	return (true);
 }
+
 /*
 arithmetic expansion is $(()) and I need to find the closing ))
 */
@@ -704,6 +705,7 @@ bool	is_complex_dollar_exp(t_mini_data *data, int *i)
 	else
 		return (false);
 }
+
 /*
     DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
     DOLLAR_DOLLAR, // '$$' ‘$’ is used to get the process ID of the shell.
@@ -794,8 +796,6 @@ bool	is_a_redirection(t_mini_data *data, int *i)
 		return (false);
 }
 
-
-
 /*
 if contains a slash or starts with a dot or starts with a ./ ../ ~/ ~+
 */
@@ -815,8 +815,18 @@ bool str_is_pathname(const char *str)
 	return (false);
 }
 
-/*
+bool	is_a_pathname_or_num(t_mini_data *data, char *tmp, int *start)
+{
+	if (str_is_pathname(tmp))
+		add_token(data, start, tmp, PATHNAME);
+	else if (str_is_number(tmp))
+		add_token(data, start, tmp, NUMBER);
+	else
+		return false;
+	return true;
+}
 
+/*
 */
 bool is_a_block(t_mini_data *data, int *i)
 {
@@ -831,8 +841,10 @@ bool is_a_block(t_mini_data *data, int *i)
     return (false);
 }
 
-// create a lexeme for flag in this conf -[a-zA-Z]
-// else if (peek((data->input + i), "-", false) && is_alpha(data->input[i + 1]))
+/*
+create a lexeme for flag in this conf -[a-zA-Z]
+else if (peek((data->input + i), "-", false) && is_alpha(data->input[i + 1]))
+*/
 bool is_a_flag(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "-", false) && is_alpha(data->input[*i + 1]))
@@ -884,44 +896,31 @@ bool	is_some_semicolons(t_mini_data *data, int *i)
 		return (false);
 }
 
-// pathname - NUMBER or identifier?
+bool	is_delimited_string(char c) 
+{
+	return (ft_isprint(c) && !filename_delimiter(c));
+}
+
 bool	is_a_string_thing(t_mini_data *data, int *i)
 {
-	if (isprint(data->input[*i]) && !filename_delimiter(data->input[*i]))
-	{
 		int start;
 		char *tmp;
 
-		start = (*i)++;
-		while (ft_isprint(data->input[*i]) && !filename_delimiter(data->input[*i]))
-			advance(i);	
+		start = *i;
+		while (is_delimited_string(data->input[*i]))
+			advance(i);
+		if (*i == start)
+			return (false);
 		tmp = ft_substr(data->input, start, *i - start);
-		if (data->input[*i] == '<' || data->input[*i] == '>')
-		{
-			if (is_io_number(tmp))
-				add_token(data, &start, tmp, IO_NUMBER);
-		}
-		else if (is_reserved(data, tmp, &start) || is_builtin(data, tmp, &start) || \
-		is_true_false(data, tmp, &start))
-			;
-		else	
-		{
-			// check if it is a path name
-			if (str_is_pathname(tmp))
-				add_token(data, &start, tmp, PATHNAME);
-			// if not a path name maybe a number?
-			else if (str_is_number(tmp))
-				add_token(data, &start, tmp, NUMBER);
-			//if not a number maybe a variable name or anything else!
-			else
-				add_token(data, &start, tmp, WORD);
-		}
-		
+		if ((data->input[*i] == '<' || data->input[*i] == '>') && is_io_number(tmp))
+			add_token(data, &start, tmp, IO_NUMBER);
+		else if (!is_reserved(data, tmp, &start) && !is_builtin(data, tmp, &start) && \
+		!is_true_false(data, tmp, &start) && !is_a_pathname_or_num(data, tmp, &start))
+			add_token(data, &start, tmp, WORD);
 		free(tmp);
 		return (true);
-	}
-	return (false);
 }
+
 /*
 
 */
@@ -937,7 +936,6 @@ bool	got_tokens(t_mini_data *data, int *i)
 		return (false);
 }
 
-
 /*
 scanning function
 Returns a token list which is a linked list of t_list type
@@ -950,41 +948,21 @@ t_list *tokenizer(t_mini_data *data)
 	int i;
 	
 	i = 0;
-	data->token_list = NULL;
-	debug("scanning input: %s of num char %d", data->input, (int)ft_strlen(data->input));
 	data->exit_status = 0;
+	data->token_list = NULL;
 	while (i < (int)ft_strlen(data->input) && data->exit_status == 0)
 	{
-		// hash # case the rest of the string will be a comment but we dont create a token, we ignore
-		// else if (peek((data->input + i), "#", false))
 		if (peek(data->input + i, "#", false))
 			break;
-		// extract tokens
 		else if (got_tokens(data, &i))
-		{
-			debug("extracted token\n");
 			continue;
-		}
-
-		else if (is_space(data->input[i]))
-			i++;
-		// this is just in case! but especially for debug I want to know if I get 
-		// a character that I do not recognize so I can add it. maybe in production I should better ignore 
-		// at least for the eval!
+		else if (!is_space(data->input[i]))
+			scanner_error(data, "error: unrecognized token");
 		else
-		{
 			i++;
-			data->exit_status = 1;
-			data->scanner_err_str = "error: token not recognized character";
-			debug("error: token not recognized character\n");
-		}
 	}
-	if (data->exit_status != 0)
-	{
-		debug("error: exit status %d\n", data->exit_status);
-		ft_lstclear(&data->token_list, free_token);
-		return (NULL);
-	}
-	// do a last parentheses check!
-	return data->token_list;
+	if (data->exit_status == 0)
+		return (data->token_list);
+	ft_lstclear(&data->token_list, free_token);
+	return (NULL);
 }
