@@ -6,159 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 18:56:56 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:03:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
- ``\t''``\n''``\v''``\f''``\r''`` -> is space 
- overkill I think. From the bash manual they talk only tab and space and 
- newline which in my case it is impossible because caught by the readline func
-*/
-bool	is_space(const char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' \
-	|| c == '\r');
-}
-
-/*
-string n compare but case insensitive
-*/
-int	strncicmp(char const *a, char const *b, int n)
-{
-	int	d;
-
-	if (n == 0)
-		return (0);
-	if (a == NULL || b == NULL || n < 0)
-		return (-1);
-	while (*a && *b && n--)
-	{
-		d = ft_tolower(*a) - ft_tolower(*b);
-		if (d != 0)
-			return (d);
-		a++;
-		b++;
-	}
-	return (*a - *b);
-}
-
-/* Returns 'true' if the character is a delimiter. Because an identifier
-can be unofficially almost anything, the delimiter is a character that
-should not be part of an identifier. Recommended char for identifiers
-are underscore and alphanumeric characters.
-but from the bash manual:
-A metacharacter is a space, tab, newline, 
-or one of the following characters: 
-‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
-I use this function to understand where to break the string
-into tokens
-*/
-bool	is_delimiter(char ch)
-{
-	if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '|' || \
-	ch == '&' || ch == ';' || ch == '(' || ch == ')' || \
-	ch == '>' || ch == '<' || ch == '\0')
-		return (true);
-	return (false);
-}
-
-/*
- ... touch w$orld is creating w because dereferencing 
-the $ and the rest is nulll...
-otherwise 
-touch w-+*}\,[]=w{$HOME
-becomes touch: w-+*},[]=w{/Users/laurentb: Not a directory
-touch w-+*}\,[]=w{&orld
-bash: orld: command not found
-touch w-+*}\,[]=w{|orld
-bash: orld: command not found
-[1]+  Done                    touch w-+*}\,[]=w{
-The command touch w-+*}\,[]=w{|orld is being interpreted by the 
-shell (bash in this case) before it's passed to the touch command.
-In this case, touch w-+*}\,[]=w{ is being 
-run as one command, and orld is being interpreted as a 
-separate command.
-The output of touch w-+*}\,[]=w{ (which is nothing, 
-because touch doesn't produce any output) is being passed as input to orld.
-However, orld is not a valid command, 
-so bash gives an error message: bash: orld: command not found.
-The [1]+ Done touch w-+*}\,[]=w{ message is from bash's job 
-control system. It's telling you that the touch w-+*}\,[]=w{ 
-	command has finished running.
-
-
-touch w-+*},[]=w{\o!rld bash: !rld: event not found
-
-The ! character has a special meaning in many Unix and Linux shells, 
-including bash. It is used for history expansion, 
-allowing you to re-run previous commands.
-In your command touch w-+*}\,[]=w{\o!rld, the ! character 
-is causing bash to attempt to perform history expansion
-
-ok these char cannot be in a file name.. 
-officially it is recommended to use only the 65 characters [-._a-zA-Z0-9]
-for files and directories ...
-*/
-bool	filename_delimiter(const char ch)
-{
-	if (is_space(ch) || ch == ';' || ch == '>' || \
-	ch == '<' || ch == '(' || ch == ')' || \
-	ch == '|' || ch == '&' || ch == '$' || ch == '`' || \
-	ch == '"' || ch == '\'' || ch == '!' || ch == '\0')
-		return (true);
-	return (false);
-}
-
-/*
-Returns 'true' if the character is a digit
-*/
-bool	is_digit(char c)
-{
-	return (c >= '0' && c <= '9');
-}
-
-/*
-Returns 'true' if the character is char a letter
-*/
-bool	is_alpha(char c)
-{
-	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
-}
-
-/*
-part of the check for identifiers
-btw This 65-character set, [-._a-zA-Z0-9], 
-is referred to in SUSv3 as the portable filename character set.
-*/
-bool	is_alnum(char c)
-{
-	return (is_alpha(c) || is_digit(c) || c == '_' || c == '-' || c == '.');
-}
-
-/*
-either is alnum including the _ and - or is a / 
-I already accept the . and .. and ./ and ~/ and ~+  
-as a beginning of a pathname
-*/
-bool	is_in_pathname(const char c)
-{
-	return (is_alnum(c) || c != '.');
-}
-
-/*
-compare two chars case insensitive - used in peek!
-*/
-
-bool	cmp_char_case_insensitive(char a, char b)
-{
-	if (is_alpha(a) && is_alpha(b))
-		return (ft_tolower(a) == ft_tolower(b));
-	else
-		return (a == b);
-}
 
 /*
 peek wil look ahead to see if my string is beginning with sequence of chars
@@ -312,36 +164,6 @@ bool	is_builtin(t_mini_data *data, char *identifier, int *start)
 }
 
 /*
- * is_true_false checks if the identifier is a boolean value
- * like in bash true and false are not builtins but reserved words
- */
-bool	is_true_false(t_mini_data *data, char *str, int *start)
-{
-	if (peek(str, "true", true))
-		add_token(data, start, "true", TRUETOK);
-	else if (peek(str, "false", true))
-		add_token(data, start, "false", FALSETOK);
-	else
-		return (false);
-	return (true);
-}
-
-void	print_token_list(t_list *token_list)
-{
-	t_list	*current;
-	t_token	*token;
-
-	current = token_list;
-	while (current != NULL)
-	{
-		token = (t_token *)(current)->content;
-		printf("token: %s", token->lexeme);
-		current = current->next;
-	}
-	return ;
-}
-
-/*
 creates a simple t_list node - the token is in the content of the node
 in form of a string that will need to be freed
 */
@@ -425,30 +247,6 @@ bool	str_is_number(const char *str)
 }
 
 /*
-*/
-bool	str_is_alphanum(const char *str)
-{
-	while (*str)
-		if (!is_alnum(*(str++)))
-			return (false);
-	return (true);
-}
-
-/*
-printable chars include a space. This is for the identifiers
-*/
-int	isprint_no_space(const char *str)
-{
-	while (*(str))
-	{
-		if (is_space(*str) || !isprint(*str))
-			return (0);
-		str++;
-	}
-	return (1);
-}
-
-/*
 this function checks if the tmp string is NULL and also if 
 the malloc in create token fails and updates the error flag in the 
 data struct so the loop will stop and free the data
@@ -456,7 +254,7 @@ it still returns true because when a token subfunction returns true
 it means the token has been recognized and the scanner can move on
 otherwise it would keep on looking for the token
 */
-bool	add_token(t_mini_data *data, int *i, char *tmp, enum e_tokentype type)
+bool	add_token(t_mini_data *data, int *i, const char *tmp, int type)
 {
 	t_list	*token;
 
@@ -839,37 +637,6 @@ bool	is_a_redirection(t_mini_data *data, int *i)
 		return (true);
 	else
 		return (false);
-}
-
-/*
-if contains a slash or starts with a dot or starts with a ./ ../ ~/ ~+
-*/
-bool	str_is_pathname(const char *str)
-{
-	if (ft_strchr(str, '/') || peek(str, ".", false) || peek(str, "./", \
-	false) || peek(str, "../", false) || peek(str, "~/", false) || \
-	peek(str, "~+", false))
-	{
-		while (*str)
-		{
-			if (!is_in_pathname(*str))
-				return (false);
-			str++;
-		}
-		return (true);
-	}
-	return (false);
-}
-
-bool	is_a_pathname_or_num(t_mini_data *data, char *tmp, int *start)
-{
-	if (str_is_pathname(tmp))
-		add_token(data, start, tmp, PATHNAME);
-	else if (str_is_number(tmp))
-		add_token(data, start, tmp, NUMBER);
-	else
-		return (false);
-	return (true);
 }
 
 /*

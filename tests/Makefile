@@ -8,7 +8,7 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 CXX = c++
 
 # the file to tests (SUT = System Under Test)
-SUT_SRCS = $(addprefix ../src/, loop.c history.c scanner.c environment.c \
+SUT_SRCS = $(addprefix ../src/, loop.c history.c scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c scanner/scanner_utils4.c environment.c \
 handle_path.c parser.c analyser.c executer.c error.c darray.c)
 SUT_HDRS = $(addprefix ../include/, minishell.h scanner.h environment.h handle_path.h parser.h analyser.h executer.h error.h darray.h) 
 # will be compiled into object files
