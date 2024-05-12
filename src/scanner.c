@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 16:39:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 17:00:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -559,6 +559,25 @@ bool process_token_off_one(t_mini_data *data, int *i, bool (*condition)(char), i
 }
 
 /*
+condition is a pointer to a function that will be used to check the
+character in the wjile loop. I might need is_digit for numbers or
+is_alnum for identifiers etc
+Thgis works for easy tokens.
+*/
+bool process_token_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type)
+{
+    int	start;
+
+	start = (*i);
+    while (cnd(data->input[*i] + 2))
+        advance(i);
+    char *tmp = ft_substr(data->input, start, *i - start + 2);
+    add_token(data, &start, tmp, type);
+    free(tmp);
+    *i = start;
+    return (true);
+}
+/*
 passing the negated condition !is_delimiter as a func pointer 
 is not possible unless I create a new function  
 */
@@ -593,18 +612,22 @@ bool is_a_hist_expansion(t_mini_data *data, int *i)
 		return (process_token_off_one(data, i, is_digit, BANG_DIGIT));	
 	else if (peek(data->input + *i, "!-", false) && is_digit(*(data->input + *i + 2)))
 	{
-		int start = *i;
+		int		start;
+		char	*tmp;
+
+		start = *i;
 		while (is_digit(*(data->input + *i + 2)))
 			advance(i);
-		char *tmp = ft_substr(data->input, start, *i - start + 2);
+		tmp = ft_substr(data->input, start, *i - start + 2);
 		add_token(data, &start, tmp, BANG_HYPHEN_DIGIT);
 		free(tmp);
 		*i = start;
 		return (true);
 	}
-	else if (peek(data->input + *i, "!", false) && is_alpha(*(data->input + *i + 1)))
-		return (process_token_off_one(data, i, is_alpha, BANG_ALPHA));	
-	else if (peek(data->input + *i, "!?", false)) 
+	else if (peek(data->input + *i, "!", false) && is_alpha(*(data->input \
+	+ *i + 1)))
+		return (process_token_off_one(data, i, is_alpha, BANG_ALPHA));
+	else if (peek(data->input + *i, "!?", false))
 		return (process_token(data, i, is_not_delimiter, BANG_QUESTION_ALPHA));
 	else if (peek(data->input + *i, "!#", false))
 		return (add_token(data, i, "!#", BANG_HASH));
@@ -616,10 +639,10 @@ I define a block as the text between two delimiters like {}
 or "" '' or `` or () etc
 anything until I get the closing delimiter I specify in delim...
 */
-bool	add_tokenblock(t_mini_data *data, int *i, char delim, enum e_tokentype token_type)
+bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type)
 {
-	int start;
-	char *tmp;
+	int		start;
+	char	*tmp;
 
 	start = (*i)++;
 	while (data->input[*i] && data->input[*i] != delim)
@@ -627,7 +650,7 @@ bool	add_tokenblock(t_mini_data *data, int *i, char delim, enum e_tokentype toke
 	if (data->input[*i] == '\0')
 		return (scanner_error(data, "error: unclosed expression"));
 	tmp = ft_substr(data->input, start, *i - start + 1);
-	add_token(data, &start, tmp, token_type);
+	add_token(data, &start, tmp, t_type);
 	*i = start;
 	free(tmp);
 	return (true);
@@ -636,24 +659,27 @@ bool	add_tokenblock(t_mini_data *data, int *i, char delim, enum e_tokentype toke
 /*
 arithmetic expansion is $(()) and I need to find the closing ))
 */
-bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, enum e_tokentype token_type)
+bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type)
 {
-	int start = (*i)++;
+	int		start;
+	char	*tmp;
+
+	start = (*i)++;
 	while (peek(data->input + *i, delim, false) == false)
 		advance(i);
 	if (*(data->input + *i + 1) == '\0')
 		return (scanner_error(data, "error: unclosed expansion"));
-	char *tmp = ft_substr(data->input, start, *i - start + 2);
+	tmp = ft_substr(data->input, start, *i - start + 2);
 	*i = start;
-	add_token(data, i, tmp, token_type);
+	add_token(data, i, tmp, t_type);
 	free(tmp);
 	return (true);
 }
 
 bool	add_here_and_delim(t_mini_data *data, int *i)
 {
-	int start;
-	char *tmp;
+	int		start;
+	char	*tmp;
 
 	add_token(data, i, "<<", DLESS);
 	while (data->input[*i] && is_space(data->input[*i]))
@@ -694,11 +720,14 @@ bool	is_complex_dollar_exp(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "$((", false))
 		return (add_block_dbl_paren(data, i, "))", EXPR_EXPANSION));
-	else if (peek(data->input + *i, "$", false) && is_digit(*(data->input + *i + 1)))
-		return (process_token_off_one(data, i, is_digit, DOLLAR_DIGIT));
+	else if (peek(data->input + *i, "$", false) && \
+	is_digit(*(data->input + *i + 1)))
+		return (process_token_off_one(data, i, is_digit, \
+		DOLLAR_DIGIT));
 	else if (peek(data->input + *i, "${", false))
 		return (add_tokenblock(data, i, '}', VAR_EXPANSION));
-	else if (peek(data->input + *i, "$", false) && is_alnum(*(data->input + *i + 1)))
+	else if (peek(data->input + *i, "$", false) && is_alnum(*(data->input \
+	+ *i + 1)))
 		return (process_token_off_one(data, i, is_alnum, VAR_EXPANSION));
 	else if (peek(data->input + *i, "$(", false))
 		return (add_tokenblock(data, i, ')', COM_EXPANSION));
@@ -707,19 +736,23 @@ bool	is_complex_dollar_exp(t_mini_data *data, int *i)
 }
 
 /*
-    DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
+    DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the 
+	exit status of the last command.
     DOLLAR_DOLLAR, // '$$' ‘$’ is used to get the process ID of the shell.
     DOLLAR_STAR, // '$*' ‘*’ is used to get all the positional parameters.
-    DOLLAR_AT, // '$@'  ‘@’ is used to get all the positional parameters, except for the zeroth positional parameter.
-    DOLLAR_HASH, // '$#'  ‘#’ is used to get the number of positional parameters.
-    DOLLAR_BANG, // '$!'  ‘!’ is used to get the process ID of the last background command.
+    DOLLAR_AT, // '$@'  ‘@’ is used to get all the positional parameters, 
+	except for the zeroth positional parameter.
+    DOLLAR_HASH, // '$#'  ‘#’ is used to get the number of positional 
+	parameters.
+    DOLLAR_BANG, // '$!'  ‘!’ is used to get the process ID of the last 
+	background command.
 	DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.	 
 	DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
 	Parameter names in bash can only contain alphanumeric 
 	characters or underscores, and must start with a letter or underscore.
 */
-bool is_a_dollar_exp(t_mini_data *data, int *i)
-{	
+bool	is_a_dollar_exp(t_mini_data *data, int *i)
+{
 	if (is_simple_dollar_exp(data, i))
 		return (true);
 	else if (is_complex_dollar_exp(data, i))
@@ -728,14 +761,14 @@ bool is_a_dollar_exp(t_mini_data *data, int *i)
 		return (false);
 }
 
-bool	is_a_simple_redirection(t_mini_data *data, int* i)
+bool	is_a_simple_redirection(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, ">|", false))
 		return (add_token(data, i, ">|", CLOBBER));
 	else if (peek(data->input + *i, ">>&", false))
 		return (add_token(data, i, ">>&", REDIRECT_BOTH_APP));
 	else if (peek(data->input + *i, "<<-", false))
-		return (add_token(data, i, "<<-", DLESSDASH));	
+		return (add_token(data, i, "<<-", DLESSDASH));
 	else if (peek(data->input + *i, "&>>", false))
 		return (add_token(data, i, "&>>", REDIRECT_OUT_APP));
 	else if (peek(data->input + *i, ">&>", false))
@@ -750,7 +783,7 @@ bool	is_a_simple_redirection(t_mini_data *data, int* i)
 		return (add_token(data, i, "<>", LESSGREAT));
 	else if (peek(data->input + *i, ">>", false))
 		return (add_token(data, i, ">>", DGREAT));
-	else 
+	else
 		return (false);
 	return (true);
 }
@@ -799,10 +832,11 @@ bool	is_a_redirection(t_mini_data *data, int *i)
 /*
 if contains a slash or starts with a dot or starts with a ./ ../ ~/ ~+
 */
-bool str_is_pathname(const char *str)
+bool	str_is_pathname(const char *str)
 {
-	if (ft_strchr(str, '/') || peek(str, ".", false) || peek(str, "./", false) \
-	|| peek(str, "../", false) || peek(str, "~/", false) || peek(str, "~+", false))
+	if (ft_strchr(str, '/') || peek(str, ".", false) || peek(str, "./", \
+	false) || peek(str, "../", false) || peek(str, "~/", false) || \
+	peek(str, "~+", false))
 	{
 		while (*str)
 		{
@@ -822,36 +856,36 @@ bool	is_a_pathname_or_num(t_mini_data *data, char *tmp, int *start)
 	else if (str_is_number(tmp))
 		add_token(data, start, tmp, NUMBER);
 	else
-		return false;
-	return true;
+		return (false);
+	return (true);
 }
 
 /*
 */
-bool is_a_block(t_mini_data *data, int *i)
+bool	is_a_block(t_mini_data *data, int *i)
 {
-	if (peek(data->input + *i, "(", false)) 
-		return (add_tokenblock(data, i, ')', EXPRESSION));	
+	if (peek(data->input + *i, "(", false))
+		return (add_tokenblock(data, i, ')', EXPRESSION));
 	else if (peek(data->input + *i, "\'", false))
 		return (add_tokenblock(data, i, '\'', S_QUOTED_STRING));
 	else if (peek(data->input + *i, "\"", false))
 		return (add_tokenblock(data, i, '\"', QUOTED_STRING));
 	else if (peek(data->input + *i, "`", false))
 		return (add_tokenblock(data, i, '`', COM_EXPANSION));
-    return (false);
+	return (false);
 }
 
 /*
 create a lexeme for flag in this conf -[a-zA-Z]
 else if (peek((data->input + i), "-", false) && is_alpha(data->input[i + 1]))
 */
-bool is_a_flag(t_mini_data *data, int *i)
+bool	is_a_flag(t_mini_data *data, int *i)
 {
+	int		start;
+	char	*tmp;
+
 	if (peek(data->input + *i, "-", false) && is_alpha(data->input[*i + 1]))
 	{
-		int start;
-		char *tmp;
-		
 		start = (*i)++;
 		while (data->input[*i] && is_alpha(data->input[*i]))
 			advance(i);
@@ -861,10 +895,10 @@ bool is_a_flag(t_mini_data *data, int *i)
 		free(tmp);
 		return (true);
 	}
-    return (false);
+	return (false);
 }
 
-bool is_simple_operator(t_mini_data *data, int *i)
+bool	is_simple_operator(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "=", false))
 		return (add_token(data, i, "=", EQUAL));
@@ -896,29 +930,31 @@ bool	is_some_semicolons(t_mini_data *data, int *i)
 		return (false);
 }
 
-bool	is_delimited_string(char c) 
+bool	is_delimited_string(char c)
 {
 	return (ft_isprint(c) && !filename_delimiter(c));
 }
 
 bool	is_a_string_thing(t_mini_data *data, int *i)
 {
-		int start;
-		char *tmp;
+	int		start;
+	char	*tmp;
 
-		start = *i;
-		while (is_delimited_string(data->input[*i]))
-			advance(i);
-		if (*i == start)
-			return (false);
-		tmp = ft_substr(data->input, start, *i - start);
-		if ((data->input[*i] == '<' || data->input[*i] == '>') && is_io_number(tmp))
-			add_token(data, &start, tmp, IO_NUMBER);
-		else if (!is_reserved(data, tmp, &start) && !is_builtin(data, tmp, &start) && \
-		!is_true_false(data, tmp, &start) && !is_a_pathname_or_num(data, tmp, &start))
-			add_token(data, &start, tmp, WORD);
-		free(tmp);
-		return (true);
+	start = *i;
+	while (is_delimited_string(data->input[*i]))
+		advance(i);
+	if (*i == start)
+		return (false);
+	tmp = ft_substr(data->input, start, *i - start);
+	if ((data->input[*i] == '<' || data->input[*i] == '>') \
+	&& is_io_number(tmp))
+		add_token(data, &start, tmp, IO_NUMBER);
+	else if (!is_reserved(data, tmp, &start) && !is_builtin(data, \
+	tmp, &start) && !is_true_false(data, tmp, &start) && \
+	!is_a_pathname_or_num(data, tmp, &start))
+		add_token(data, &start, tmp, WORD);
+	free(tmp);
+	return (true);
 }
 
 /*
@@ -929,7 +965,7 @@ bool	got_tokens(t_mini_data *data, int *i)
 	if (is_a_control_operator(data, i) || is_a_math_op(data, i) || \
 	is_a_hist_expansion(data, i) || is_a_dollar_exp(data, i) || \
 	is_some_semicolons(data, i) || is_a_redirection(data, i) || \
-	is_a_redirection(data, i) || is_simple_operator(data, i) ||\
+	is_a_redirection(data, i) || is_simple_operator(data, i) || \
 	is_a_block(data, i) || is_a_flag(data, i) || is_a_string_thing(data, i))
 		return (true);
 	else
@@ -943,19 +979,19 @@ note: we dont need to action some of them but fir completeness I added
 as much as I could. for instance we do not action the last & on a command
 or redirections like 
 */
-t_list *tokenizer(t_mini_data *data)
+t_list	*tokenizer(t_mini_data *data)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
 	data->exit_status = 0;
 	data->token_list = NULL;
 	while (i < (int)ft_strlen(data->input) && data->exit_status == 0)
 	{
 		if (peek(data->input + i, "#", false))
-			break;
+			break ;
 		else if (got_tokens(data, &i))
-			continue;
+			continue ;
 		else if (!is_space(data->input[i]))
 			scanner_error(data, "error: unrecognized token");
 		else
