@@ -6,12 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:47:55 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:48:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:59:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 bool	add_here_and_delim(t_mini_data *data, int *i)
 {

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:54:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 20:00:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type)
 	free(tmp);
 	return (true);
 }
+
 /*
 condition is a pointer to a function that will be used to check the
 character in the wjile loop. I might need is_digit for numbers or

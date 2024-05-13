@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:43:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:45:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/12 19:59:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ bool	is_simple_operator(t_mini_data *data, int *i)
 	else
 		return (false);
 }
+
 bool	is_a_control_operator(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "||", false))
