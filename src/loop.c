@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/08 09:44:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/13 16:07:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,20 +194,9 @@ int	init_data(t_mini_data **data)
 }
 
 /*
-*/
-int loop(int argc, char **argv)
-{
-	(void)argc;
-	(void)argv;
-	// main data structure for the shell
-	t_mini_data *data;
-
-	data = NULL;
-	// init data structure with environ and path
-	if (!init_data(&data))
-		return (1);
-
-	// check if interactive or not. test...
+	// check if interactive or not example
+	// the isatty() function returns 1 if the file descriptor is an open file,
+	// 0 if it is not, and -1 if an error occurs.
 	if (isatty(STDIN_FILENO))
 		debug("interactive mode \n");
 	else if (isatty(STDIN_FILENO) == 0)
@@ -215,14 +204,21 @@ int loop(int argc, char **argv)
 	else if (isatty(STDIN_FILENO) == -1)
 		perror("isatty\n");
 
-	/*
 	TODO:
 	init and implement signals. ctrl-c, ctrl-d, ctrl-z, ctrl-\
 	create error handling - check if input is valid - Incorrect command -
 		incorrect number of arguments - permission denied - system call error
-	*/
-	
-	// load the history from the file
+*/
+int loop(int argc, char **argv)
+{
+	(void)argc;
+	(void)argv;
+	t_mini_data *data;
+
+	data = NULL;
+	// init data structure with environ and path
+	if (!init_data(&data))
+		return (1);
 	load_history();
 	data->input = readline("minishell $ ");
 	while (data->input != NULL)
@@ -234,26 +230,23 @@ int loop(int argc, char **argv)
 			// check best error handling
 			if (!handle_history(data))
 				debug("failed to handle history\n");
-			// debug("You entered: %s\n", input);
-			t_list *tokens = tokenizer(data);
-			if (tokens != NULL)
+			if (tokenizer(data) != NULL)
 			{
-				t_ast_node *asttree = create_ast(data, tokens);
-				if (asttree == NULL)
+				/*
+				since the create_ast is recursive I pass the token list
+				separately to avoid rewriting the copy in my data 
+				*/
+				data->ast = create_ast(data, data->token_list);
+				if (data->ast)
 				{
-					// TODO define error handling
-					debug("failed to create_ast - parse error");
-				}
-				else
-				{
-					print_ast(asttree);
-					data->ast = asttree;
+					print_ast(data->ast);
 					analyse_expand(data->ast, data);
 					execute_ast(data->ast, data);
 				}
+				else
+					debug("syntax error");
 			}
 		}
-		// read the next input (prompt
 		data->input = readline("minishell $ ");
 	}
 	/*
@@ -264,9 +257,6 @@ int loop(int argc, char **argv)
 	When that happens readLine() returns null ,
 	so we check for that to exit the loop.
 	*/
-	// check if interactive or not example
-	// the isatty() function returns 1 if the file descriptor is an open file,
-	// 0 if it is not, and -1 if an error occurs.
 
 	debug("freeing ===================");
 	free_data(data);
