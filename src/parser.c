@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 10:40:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 12:46:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,36 +15,17 @@
 /*
 
 grammar:
-
-// should i add this cases to the statement? | "<" | ">" | "2>" | "&>" | "<<"
-// since they can come up like ls -la Makefile | grep fi > hey
-// but it seems that when using input redirection it does not go to the first 
-// pipe but to the one on its left: ex
-//cat  | grep fi < file 
-// will output the result of grep taking input from file ... so the bood is wrong (
-	// the one in the link Chapter5-WritingYourOwnShell.pdf !)
-// cat  | grep fie > hey  < file
-// and same here cat will not get file as input... but grep does 
-// here cat does
- // cat  > hey  < file
-
-once the scanner get the list of lexemes i get a command table
-ls -la a*
-grep $pa
-in:dflt out:file1 rr:dflt
-
-this table will use wildcard expansion and variable substitution
-
 to get the final table
-list      -> pipeline ((";" | "&" | "&&" | "||") pipeline)* [";"] ["&"] ["\n"];
+list      -> pipeline ((";" | "&" | "&&" | "||") pipeline)* [";"] | ["&"] ["\n"]
+			| "(" list ")";
 pipeline ->  expression  (("|" | "|&" | ";" | "&&" | "||" )expression)* ;
-
+			| "(" list ")";
 expression ->  	  command 
 				| builtin 
 				| DLESS 
 				| redirection
 				| [time [-p]] [!] expression
-				| "(" statement ")";
+				| "(" list ")";
 
 command -> name (args)* ;
 builtin -> name (args)* ; 
@@ -69,26 +50,33 @@ The redirection operators you've listed are the most commonly used in bash and s
 <: Redirects standard input from a file.
 >: Redirects standard output to a file, overwriting the file if it exists.
 >>: Redirects standard output to a file, appending to the file if it exists.
->>&: Redirects both standard output and standard error to a file, appending to the file if it exists.
+>>&: Redirects both standard output and standard error to a file, appending 
+to the file if it exists.
 2>: Redirects standard error to a file, overwriting the file if it exists.
-&>: Redirects both standard output and standard error to a file, overwriting the file if it exists.
+&>: Redirects both standard output and standard error to a file, overwriting
+ the file if it exists.
 There are a few more redirection operators that you might encounter:
 
 2>>: Redirects standard error to a file, appending to the file if it exists.
 <>: Opens a file for both reading and writing.
->|: Redirects standard output to a file, overwriting the file even if the noclobber option has been set in the shell.
-&>>: Redirects both standard output and standard error to a file, appending to the file if it exists.
+>|: Redirects standard output to a file, overwriting the file even if 
+the noclobber option has been set in the shell.
+&>>: Redirects both standard output and standard error to a file, 
+appending to the file if it exists.
 
 
 =======================================
 to recap :
-statement -> expression (("|" | "|&" | ";")expression* + "&"? ; : 
-A statement is an expression followed by zero or more expressions 
+a list is a pipeline followed by zero or more pipelines separated by a 
+semicolon,
+ ampersand, double ampersand, or double pipe, or a list in parentheses.
+pipeline -> expression (("|" | "|&" | ";")expression* + "&"? ; : 
+A pipeline is an expression followed by zero or more expressions 
 separated by a pipe (|), pipe and (|&), or semicolon (;). 
 The statement can optionally end with an ampersand (&), 
 which would run the command in the background.
 
-expression -> command | builtin | DLESS | redirection | "(" statement ")"; : 
+expression -> command | builtin | DLESS | redirection | "(" statement ")";  
 An expression can be a command, a builtin command, a DLESS, a redirection, 
 or a statement enclosed in parentheses.
 
