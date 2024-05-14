@@ -6,13 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/06 11:37:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 10:39:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "environment.h"
-
 
 /*
 util function to update the environ variable
@@ -51,7 +50,7 @@ struct s_mini_data
 in the environ char ** we have this format: _=/bin/ls
 need to test this func!
 */
-bool update_env(t_mini_data *data, const char *key, const char *value)
+bool update_env(t_data *data, const char *key, const char *value)
 {
 	char		*env_str;
 	char		*position;
@@ -100,7 +99,7 @@ str = (char **)malloc(sizeof(char *) * 3);
 str[0] = "hello";
 str[1] = "world";
 */
-void print_env(t_mini_data *data)
+void print_env(t_data *data)
 {
 	t_darray	*env_arr;
 	int			i;
@@ -119,7 +118,7 @@ in c and c++ :getenv("_"); will return the value of the last command
 for us this function will return the value of the env variable 
 given the key..
 */
-char *mini_get_env(t_mini_data *data, const char *key)
+char *mini_get_env(t_data *data, const char *key)
 {
 	char		*env_str;
 	char		*position;

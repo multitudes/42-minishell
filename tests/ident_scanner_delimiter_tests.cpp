@@ -8,7 +8,6 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 
-t_mini_data *g_mini_data;
 
 /*
 file delimiters (for what is not accepted in file names)
@@ -50,9 +49,7 @@ const char* test_scanner_ident_space() {
 	
 	std::string str = "my_co2mmand ";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -69,9 +66,7 @@ const char* test_scanner_ident_allrandom() {
 	
 	std::string str = "w-+*}[]=w{~or^%ld";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -88,9 +83,7 @@ const char* test_scanner_ident_comment() {
 	
 	std::string str = "cd #hello world";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -111,9 +104,7 @@ const char* test_scanner_ident_comment2() {
 	
 	std::string str = "/#hello";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -135,9 +126,7 @@ const char* test_scanner_ident_comment3() {
 	
 	std::string str = "#hello world";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -162,9 +151,7 @@ const char* test_scanner_ident_number() {
 	// I will create a string and check the output of the function
 	std::string str = "42 -42 42.42 -42.42 42. -42. 42.42.42 42.42.";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -190,9 +177,7 @@ const char* test_scanner_ident_pathname() {
 	// I will create a string and check the output of the function
 	std::string str = "./mydir/myfile.txt /mydir/myfile.txt ./ ../ / mydir/myfile.txt";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;

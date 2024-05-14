@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 14:09:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 10:28:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ we will check if the input is a command to delete the history!
 This would be
 history -c or history --clear
 */
-bool	handle_history(t_mini_data *data)
+bool	handle_history(t_data *data)
 {
 	// if (data->input == NULL || ft_strlen(data->input) <= 0 || (ft_strlen(data->input) == 1 \
 	// && (data->input[0] < 32 || data->input[0] > 126)))

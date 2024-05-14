@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:13:56 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 10:25:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ keep track of how many tokens were created
 pipe_open : am I in a piped process? the last process in a pipe will set it to zero
 pipe_fd : file descriptors for the pipe
 */
-struct s_mini_data 
+struct s_data 
 {
 	const char	*input;
 	t_list		*token_list;
@@ -100,11 +100,11 @@ struct s_mini_data
 	bool		pipe_open;
 	int 		pipe_fd[2];
 };
-typedef struct s_mini_data t_mini_data;
+typedef struct s_data t_data;
 
 int		loop(int argc, char **argv);
-int		init_data(t_mini_data **data);
-void	free_data(t_mini_data *data);
+int		init_data(t_data **data);
+void	free_data(t_data *data);
 
 #ifdef __cplusplus
 }

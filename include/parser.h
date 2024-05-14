@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/13 15:56:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 10:32:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ typedef struct			s_ast_node {
 	t_list				*token_list;
 }						t_ast_node;
 
-t_ast_node	*create_ast(t_mini_data *data, t_list *token_list);
+t_ast_node	*create_ast(t_data *data, t_list *token_list);
 void		free_ast(t_ast_node *ast);
 t_ast_node*	new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_list *expr_token_list);
 void 		print_ast(t_ast_node *ast);

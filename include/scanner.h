@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:57:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 10:26:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,14 @@ typedef enum e_tokentype {
 	
 }		t_tokentype;
 
-
+struct s_mini_data 
+{
+	const char	*input;
+	t_list		*token_list;
+	bool		scanner_error;
+	char		*scanner_err_str;
+};
+typedef struct s_mini_data t_mini_data;
 
 struct s_token {
 	t_tokentype	type;
@@ -178,8 +185,10 @@ struct s_token_list {
 };
 typedef struct s_token_list t_token_list;
 
+int		init_scanner_data(t_mini_data **data, const char *input);
+void	free_scanner_data(t_mini_data *data);
 t_list	*create_token(t_tokentype type, const char *lexeme, int *start);
-t_list	*tokenizer(t_mini_data *data);
+t_list	*tokenizer(const char *input);
 bool	peek(const char *input, const char *identifier, bool end_space);
 void	advance(int *i);
 bool	is_space(const char c);

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 17:06:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 10:30:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ I replicate here the code for the print_ast function which is in parser.c
 and walks the tree. The idea is to expand each node...
 and then pass it to the executor
 */
-void analyse_expand(t_ast_node *ast, t_mini_data *data)
+void analyse_expand(t_ast_node *ast, t_data *data)
 {
 	if (ast == NULL)
 		return ;

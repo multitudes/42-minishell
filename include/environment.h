@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:37:49 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 16:04:42 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 10:34:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ extern "C" {
 /*
 forward declaration
 */
-typedef struct s_mini_data t_mini_data;
+typedef struct s_data t_data;
 
 
 /*
@@ -32,9 +32,9 @@ enviromnemt list:
 	and I save it in my data struct
 */
 
-bool	update_env(t_mini_data *data, const char *key, const char *value);
-void	print_env(t_mini_data *data);
-char	*mini_get_env(t_mini_data *data, const char *key);
+bool	update_env(t_data *data, const char *key, const char *value);
+void	print_env(t_data *data);
+char	*mini_get_env(t_data *data, const char *key);
 char	*ft_strjoin3(const char *key, const char *mid, const char *value);
 
 #ifdef __cplusplus

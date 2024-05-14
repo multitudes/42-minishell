@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 11:51:41 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 14:08:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 10:32:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include "minishell.h"
 
-bool	handle_history(t_mini_data *data);
+bool	handle_history(t_data *data);
 int		add_to_hist_file(const char *input);
 int		clear_hist_file(void);
 void	print_history(void);

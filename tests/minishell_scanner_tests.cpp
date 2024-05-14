@@ -8,7 +8,6 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 
-t_mini_data *g_mini_data;
 /*
 I am still looking for a way to make this function common to all tests files
 but it is complicated by the fact that it is a mix of C and C++ code
@@ -50,9 +49,7 @@ const char* test_scanner_identifiers() {
 
 	std::string str = "hello world";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -70,9 +67,7 @@ const char* test_scanner_identifiers2() {
 
 	std::string str = "echo he_-3llo world";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -90,9 +85,7 @@ const char* test_scanner_identifiers2() {
 const char* test_scanner_identifiers3() {
 	std::string str = "||\"\"";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -108,9 +101,7 @@ const char* test_scanner_identifiers3() {
 const char* test_scanner_identifiers4() {
 	std::string str = "this is a \"quoted\'string\'maybe\"?";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -147,9 +138,7 @@ arguments provided to the command to be executed (if any).
 const char *test_scanner_identifiers5() {
 	std::string str = "echo \\2>a echo 2\\>a echo 2>a";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -179,9 +168,7 @@ const char *test_scanner_identifiers6()
 {
 	std::string str = "false && echo foo || echo bar ; false&&echo foo||echo bar";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -215,9 +202,7 @@ const char *test_scanner_identifiers7()
 {
 	std::string str = "true || echo foo && echo bar ; true||echo foo&&echo bar";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -248,9 +233,7 @@ const char *test_scanner_true_false()
 {
 	std::string str = "true false";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -268,9 +251,7 @@ const char *test_scanner_true_false2()
 {
 	std::string str = "true;false";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -287,9 +268,7 @@ const char *test_scanner_true_false2()
 const char* test_all_tokens() {
     std::string str = "hello world 42 builtin -f /path/to/file | |& && || ;";
     const char* input = str.c_str();
-    init_data(&g_mini_data);
-    g_mini_data->input = input;
-    t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
     t_list *current = lexemes;
     const char *result;
     int i = 0;
@@ -315,11 +294,9 @@ const char* test_all_tokens() {
 
 
 const char* test_all_tokens2() {
-    std::string str = "& ;& ;; ;;& ( command ) $(command) ${param} $param $((expr)) \"string\" 'string' true false > < >> << >| &> >& <& &>> >>& = <> <<- >&> , . - + / * ";
+    std::string str = "& ;& ;; ;;& ( command ) $(command) ${param} $param $((expr)) \"string\" 'string' true false > < >> << delimiter >| &> >& <& &>> >>& = <> <<- >&> , . - + / * ";
     const char* input = str.c_str();
-    init_data(&g_mini_data);
-    g_mini_data->input = input;
-    t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
     t_list *current = lexemes;
     const char *result;
     int i = 0;
@@ -344,6 +321,7 @@ const char* test_all_tokens2() {
 	result = process_token(&current, &i, "<", REDIRECT_IN);
 	result = process_token(&current, &i, ">>", DGREAT);
 	result = process_token(&current, &i, "<<", DLESS);
+	result = process_token(&current, &i, "delimiter", DLESS_DELIM);
 
 	result = process_token(&current, &i, ">|", CLOBBER);
 	result = process_token(&current, &i, "&>", REDIRECT_BOTH);
@@ -375,9 +353,7 @@ const char* test_all_tokens2() {
 const char* test_all_tokens3() {
     std::string str = "!= ! !! 0-9 !a !?a !# == >= <= -- ++ -= += /= *= ";
     const char* input = str.c_str();
-    init_data(&g_mini_data);
-    g_mini_data->input = input;
-    t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
     t_list *current = lexemes;
     const char *result;
     int i = 0;
@@ -411,9 +387,7 @@ const char* test_all_tokens3() {
 const char* test_all_tokens4() {
     std::string str = "& if then else elif fi do done in while until for case esac select function $? $$ $* $@ $# $! $- $0 $ $a # comment ^ % ~ EOF command";
     const char* input = str.c_str();
-    init_data(&g_mini_data);
-    g_mini_data->input = input;
-    t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
     t_list *current = lexemes;
     const char *result;
     int i = 0;

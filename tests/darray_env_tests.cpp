@@ -136,7 +136,7 @@ extern char **environ;// = {"RACK_DIR=/Users/laurentb/Documents/SynthLab/Rack-SD
 
 const char *test_env()
 {
-	t_mini_data *data;
+	t_data *data;
 	t_darray *env = NULL;
 	data = NULL;
 
@@ -171,7 +171,7 @@ mini_get_env function to get the value of the env variable
 const char *test_env_update()
 {
 
-	t_mini_data *data;
+	t_data *data;
 	data = NULL;
 
 	// init data structure with environ and path

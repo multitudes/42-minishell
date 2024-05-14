@@ -9,7 +9,7 @@
 #include "../include/scanner.h"
 #include "../include/parser.h"
 
-t_mini_data *g_mini_data;
+t_data *g_data;
 
 /*
 testing for     
@@ -101,9 +101,9 @@ const char* test_parser_tree_simple_command() {
 	// I will create a string and check the output of the function
 	std::string str = "/bin/ls -la";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	init_data(&g_data);
+	g_data->input = input;
+	t_list *lexemes = tokenizer(g_data->input);
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;
@@ -113,7 +113,7 @@ const char* test_parser_tree_simple_command() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	t_ast_node *ast = create_ast(g_mini_data, lexemes);
+	t_ast_node *ast = create_ast(g_data, lexemes);
 	t_token *token = (t_token *)ast->token_list->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
@@ -137,9 +137,9 @@ const char* test_parser_tree_simple_command2() {
 	// I will create a string and check the output of the function
 	std::string str = "echo \"hello world\"";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	init_data(&g_data);
+	g_data->input = input;
+	t_list *lexemes = tokenizer(g_data->input);
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;
@@ -149,7 +149,7 @@ const char* test_parser_tree_simple_command2() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	t_ast_node *ast = create_ast(g_mini_data, lexemes);
+	t_ast_node *ast = create_ast(g_data, lexemes);
 	t_token *token = (t_token *)ast->token_list->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);

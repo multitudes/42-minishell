@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/13 16:07:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 10:31:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ util function
 it makes sense to collect what we malloc in our data struct
 because it is easier to free at the end or when we need to exit
 */
-void	free_data(t_mini_data *data)
+void	free_data(t_data *data)
 {
 	if (data == NULL)
 		return ;
@@ -135,7 +135,7 @@ char *add_newline(char *input)
 /*
 initialiser for data
 */
-int	init_data(t_mini_data **data)
+int	init_data(t_data **data)
 {
 	size_t i;
 	char *env;
@@ -178,7 +178,7 @@ int	init_data(t_mini_data **data)
 	}
 	darray_push(env_array, NULL);
 	debug("env_array->end: %d\n", env_array->end);
-	*data = malloc(sizeof(t_mini_data));
+	*data = malloc(sizeof(t_data));
 	if (*data == NULL)
 	{
 		perror("malloc init_data");
@@ -213,7 +213,7 @@ int loop(int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
-	t_mini_data *data;
+	t_data *data;
 
 	data = NULL;
 	// init data structure with environ and path
@@ -230,13 +230,14 @@ int loop(int argc, char **argv)
 			// check best error handling
 			if (!handle_history(data))
 				debug("failed to handle history\n");
-			if (tokenizer(data) != NULL)
+			t_list *token_list = tokenizer(data->input);
+			if (token_list != NULL)
 			{
 				/*
 				since the create_ast is recursive I pass the token list
 				separately to avoid rewriting the copy in my data 
 				*/
-				data->ast = create_ast(data, data->token_list);
+				data->ast = create_ast(data, token_list);
 				if (data->ast)
 				{
 					print_ast(data->ast);

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/09 17:13:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 10:41:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ extern char **environ;
 /*
 NOT yet implemented - TODO
 */
-void	execute_builtin(t_list *tokenlist, t_mini_data *data)
+void	execute_builtin(t_list *tokenlist, t_data *data)
 {
 	t_token *token;
 	char *lexeme;
@@ -89,7 +89,7 @@ check if the base path is in the PATH variable
 if it is return true
 else return false
 */
-char	*create_path(char *base, t_mini_data *data)
+char	*create_path(char *base, t_data *data)
 {
 	char **envpaths = ft_split(mini_get_env(data, "PATH"), ':');
 
@@ -113,7 +113,7 @@ char	*create_path(char *base, t_mini_data *data)
 }
 
 
-int	execute_command(t_list *tokenlist, t_mini_data *data)
+int	execute_command(t_list *tokenlist, t_data *data)
 {
 	t_token *token;
 	(void)data;
@@ -178,7 +178,7 @@ then execute the left node. In the parent process,
 you need to wait for the child to finish, then redirect the stdin 
 to the read end of the pipe, and execute the right node.
 */
-int	execute_ast(t_ast_node *ast, t_mini_data *data)
+int	execute_ast(t_ast_node *ast, t_data *data)
 {
 	t_list *tokenlist;
 	t_token *token;

@@ -8,7 +8,6 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 
-t_mini_data *g_mini_data;
 /*
 I am still looking for a way to make this function common to all tests files
 but it is complicated by the fact that it is a mix of C and C++ code
@@ -49,9 +48,7 @@ const char* test_lists_identifiers() {
 
 	std::string str = "false && echo foo || echo bar";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
@@ -77,9 +74,7 @@ const char* test_lists_identifiers2() {
 
 	std::string str = "true || echo foo && echo bar";
 	const char* input = str.c_str();
-	init_data(&g_mini_data);
-	g_mini_data->input = input;
-	t_list *lexemes = tokenizer(g_mini_data);
+	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/13 15:56:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 10:40:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ introducing a new node type for the tree, t_ast_node.
 The tree will be composed of nodes, each node will have a type,
 a left and a right node, and a list of tokens as a t_list.
 */
-t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
+t_ast_node *create_ast(t_data *data, t_list *input_tokens)
 {
 	t_list *expr_token_list;
 	t_ast_node *node;
@@ -307,7 +307,7 @@ t_ast_node *create_ast(t_mini_data *data, t_list *input_tokens)
 			token->type = COMMAND;
 			// create a new token list
 			data->input = lexem;
-			t_list *new_token_list = tokenizer(data);
+			t_list *new_token_list = tokenizer(data->input);
 			if (new_token_list == NULL)
 				return (NULL);
 			// free the old token list
