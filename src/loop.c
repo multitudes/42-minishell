@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 10:31:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/14 20:45:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,6 +194,43 @@ int	init_data(t_data **data)
 }
 
 /*
+Not a handler - it will exit if there is an error
+*/
+int	_exit_err(char *msg)
+{
+	write(1, msg, ft_strlen(msg));
+	return (1);
+}
+
+
+/*
+for signals
+
+The readline library maintains an internal buffer of the current line being edited. This buffer is separate from what's displayed on the terminal. When a signal like SIGINT is received, you might want to clear this buffer so that the user starts with a fresh line after the signal is handled.
+
+Here's what each function does:
+
+rl_on_new_line(): This function tells readline that the cursor is on a new line, so it should not try to clear the current line when redisplaying the prompt.
+
+rl_replace_line("", 0): This function replaces the contents of readline's internal buffer with an empty string. The 0 argument means that the cursor should be placed at the start of the line.
+
+rl_redisplay(): This function updates the display to match the current contents of the line buffer. Since you've just cleared the line buffer, this will effectively clear the line on the terminal.
+*/
+static void	exit_handler(int sig)
+{
+    if (sig == SIGINT)
+    {
+        write(1, "\n", 1);
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
+    }
+	return ;
+}
+
+
+
+/*
 	// check if interactive or not example
 	// the isatty() function returns 1 if the file descriptor is an open file,
 	// 0 if it is not, and -1 if an error occurs.
@@ -220,13 +257,34 @@ int loop(int argc, char **argv)
 	if (!init_data(&data))
 		return (1);
 	load_history();
-	data->input = readline("minishell $ ");
+
+	
+	rl_catch_signals = 0;
+
+	// signal handling
+	// ◦ ctrl-C displays a new prompt on a new line. 
+	// ◦ ctrl-D exits the shell.
+	// ◦ ctrl-\ does nothing.	
+
+	// The sig argument identifies the signal whose disposition 
+	// we want to retrieve or change. 
+	//This argument can be any signal except SIGKILL or SIGSTOP.
+	if ((signal(SIGINT, exit_handler) == SIG_ERR) ||
+		(signal(SIGQUIT, exit_handler) == SIG_ERR))
+		return (_exit_err("SIG_ERR signal failed\n"));
+
+	
+	// signal(SIGINT, SIG_IGN);
+	
+	data->input = "";
 	while (data->input != NULL)
 	{
-		sanitize_input(data->input);
+		data->input = readline("minishell $ ");
+
 		
-		if (ft_strncmp(data->input, "", 1) != 0)
+		if (data->input && ft_strncmp(data->input, "", 1))
 		{
+			sanitize_input(data->input);
 			// check best error handling
 			if (!handle_history(data))
 				debug("failed to handle history\n");
@@ -248,7 +306,6 @@ int loop(int argc, char **argv)
 					debug("syntax error");
 			}
 		}
-		data->input = readline("minishell $ ");
 	}
 	/*
 	The readLine() function, reads a line of input from
