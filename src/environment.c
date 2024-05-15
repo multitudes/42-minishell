@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 10:39:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/15 17:07:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ bool update_env(t_data *data, const char *key, const char *value)
 			// 	//in the environ char ** we have this format: _=/bin/ls
 			// debug("found key: %s\n", key);
 			new_env_str = ft_strjoin3(key, "=", value);
-			debug("new_env_str: %s\n", new_env_str);
+			// debug("new_env_str: %s\n", new_env_str);
 			if (!new_env_str)
 				return (false);
 			darray_set(data->env_arr, i, new_env_str);
