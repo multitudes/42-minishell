@@ -1051,6 +1051,8 @@ https://people.cs.rutgers.edu/~pxk/416/notes/c-tutorials/pipe.html
 trees:  
 https://youtu.be/SToUyjAsaFk?si=GOxMOm4uIVSPp4kO&t=1255
 
+readline  
+https://web.mit.edu/gnu/doc/html/rlman_2.html
 
 # extras
 ## the PWD builtin

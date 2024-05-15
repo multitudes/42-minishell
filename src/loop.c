@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/15 18:20:31 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/15 19:20:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,8 +229,8 @@ static void	exit_handler(int sig)
     {
         write(1, "\n", 1);
         rl_on_new_line();
-        rl_redisplay();
         rl_replace_line("", 0);
+        rl_redisplay();
     }
 	return ;
 }
@@ -332,9 +332,12 @@ int loop(int argc, char **argv)
 
 //	debug("freeing ===================");
 	free_data(data);
+	// printf("rl_end %d\n", rl_end);
+	// readline cleanup
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
 	write(1, "exit\n", 6);
+	printf("\a");
 	return (0);
 }

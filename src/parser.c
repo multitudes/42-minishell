@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 12:46:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/15 19:18:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,92 @@ int 	count_list(t_list *input_tokens)
 	return (count);
 }
 
+// get the last 
 
+t_ast_node	*parse_terminal(t_list **input_tokens)
+{
+	t_ast_node *a;
+	t_list *tmp;
+
+	a = NULL;
+	tmp = NULL;
+	if (*input_tokens == NULL || input_tokens == NULL)
+		return (NULL);
+	tmp = *input_tokens;
+	debug("parse_terminal");
+	t_token *token = (t_token *)(*input_tokens)->content;
+	while (*input_tokens && token->type != PIPE && token->type != PIPE_AND)
+	{
+		if (token->type == EXPRESSION)
+		{
+			debug("EXPRESSION");
+			// remove parenthesis from content
+			char *lexem = ft_substr(token->lexeme, 1, ft_strlen(token->lexeme) - 2);
+			debug("lexem %s", lexem);
+			// create a new token list
+			t_list *new_token_list = tokenizer(lexem);
+			if (new_token_list)
+			{
+				(*input_tokens)->next = new_token_list;
+				new_token_list->prev = *input_tokens;
+				t_list *tmp = ft_lstlast(new_token_list);
+				tmp->next = (*input_tokens)->next;
+				(*input_tokens)->next->prev = tmp;
+			}				
+		}
+		debug("token type: %d, %s", token->type, token->lexeme);
+		*input_tokens = (*input_tokens)->next;
+	}
+	if ((*input_tokens) && (*input_tokens)->prev && (*input_tokens)->next)
+	{
+		(*input_tokens)->prev->next = (*input_tokens)->next;
+		(*input_tokens)->next->prev = (*input_tokens)->prev;
+		debug("prev and next");
+	}
+	else if ((*input_tokens) && (*input_tokens)->prev)
+	{
+		(*input_tokens)->prev->next = NULL;
+	}
+	else if ((*input_tokens) && (*input_tokens)->next)
+	{
+		(*input_tokens)->next->prev = NULL;
+	}
+	// create a new node
+	a = new_node(NODE_TERMINAL, NULL, NULL, tmp);
+
+
+	return (a);
+}
+
+
+t_ast_node	*parse_pipeline(t_list **input_tokens)
+{
+	t_ast_node *a;
+
+	a = NULL;
+	if (input_tokens == NULL)
+		return (NULL);
+	a = parse_terminal(input_tokens);
+
+
+
+	return (a);
+}
+
+/**/
+t_ast_node	*parse_list(t_list **input_tokens)
+{
+	t_ast_node *a;
+
+	a = NULL;
+	if (input_tokens == NULL)
+		return (NULL);
+	a = parse_pipeline(input_tokens);
+
+
+
+	return (a);
+}
 
 
 /*
@@ -187,6 +272,22 @@ t_ast_node *create_ast(t_data *data, t_list *input_tokens)
 	{
 		token = (t_token *)tmp->content;
 		debug("token type: %d, %s", token->type, token->lexeme);
+
+		// refactoring to a new parser!! 
+		// should return the ast... not yet implemented
+		t_ast_node *a = parse_list(&input_tokens);
+		if (a)
+			debug("new type: %d", a->type);
+
+
+
+
+
+
+
+
+
+
 
 		// first we  check for && and ||
 		if (token->type == AND_IF || token->type == OR_IF)

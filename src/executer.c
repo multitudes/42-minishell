@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 10:41:05 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/15 18:47:59 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char	*create_path(char *base, t_data *data)
 	int i = 0;
 	while (envpaths[i])
 	{
-		debug("path: %s", envpaths[i]);
+		// debug("path: %s", envpaths[i]);
 		char *checkpath = ft_strjoin3(envpaths[i], "/", base);
 		if (access(checkpath, X_OK) == 0)
 		{
@@ -104,7 +104,7 @@ char	*create_path(char *base, t_data *data)
 			return (checkpath);
 		}
 		else
-			debug("command not found");
+			// debug("command not found");
 		free(checkpath);
 		i++;
 	}
