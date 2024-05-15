@@ -1,3 +1,6 @@
+NAME = minishell
+
+# flags
 CFLAGS = -Wall -Werror -Wextra
 CFLAGS += -g
 
@@ -9,38 +12,46 @@ CFLAGS += -g
 # CFLAGS += -DNDEBUG
 
 CC = cc
-INCLUDES = -I./lib/libft -I./include
 
-SRCS = $(addprefix src/, main.c loop.c history.c scanner/scanner.c \
+INCLUDES 	= -I./lib/libft -I./include
+
+# directories
+OBJ_DIR		= obj/
+SRC_DIR		= src/
+LIBFTDIR 	= lib/libft
+
+SRCS 		:= $(addprefix $(SRC_DIR), main.c loop.c history.c scanner/scanner.c \
 scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
 scanner/token_operators.c scanner/history_tokens.c scanner/token_blocks.c \
 scanner/redirection_tokens.c environment.c handle_path.c parser.c analyser.c \
 executer.c error.c darray.c)
-OBJS = $(SRCS:.c=.o)
-HDRS = $(addprefix include/, minishell.h scanner.h environment.h handle_path.h \
+OBJS = $(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
+HDRS 		= $(addprefix include/, minishell.h scanner.h environment.h handle_path.h \
 parser.h analyser.h executer.h error.h darray.h) 
-NAME = minishell
 
-LIBFTDIR = lib/libft
-LIBFT = $(LIBFTDIR)/libft.a
+LIBFT 		= $(LIBFTDIR)/libft.a
 
-LDLIBS = -lm -lreadline -lcurses
+LDLIBS 		= -lm -lreadline -lcurses
 
-UNAME = $(shell uname -s)
+UNAME 		= $(shell uname -s)
 ifeq ($(UNAME), Linux)
-	LDLIBS += -lbsd
+	LDLIBS 		+= -lbsd
 else ifeq ($(UNAME), Darwin)
-	INCLUDES += -I$(shell brew --prefix readline)/include
-	LDLIBS += -L$(shell brew --prefix readline)/lib
+	INCLUDES 	+= -I$(shell brew --prefix readline)/include
+	LDLIBS 		+= -L$(shell brew --prefix readline)/lib
 endif
 
 # target
 all: $(LIBFT) $(NAME) tests
 
-%.o: %.c
+# Static pattern rule for compilation - with includes for the libft that will \
+allow the <libft.h> notation 
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
 
 $(LIBFT):
 	@if [ ! -d $(LIBFTDIR) ]; then \
@@ -48,19 +59,16 @@ $(LIBFT):
 	fi
 	$(MAKE) -C $(LIBFTDIR) all
 
-# Static pattern rule for compilation - with includes for the libft that will \
-allow the <libft.h> notation 
-$(OBJS) : %.o: %.c
-	 $(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ 
-
 # Target $(NAME) depends on object files $(OBJS) and libft library.
 $(NAME): LDLIBS += $(LIBFT)
 $(NAME): $(OBJS) $(HDRS)
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBS) $(LDLIBS) -o $(NAME)
 
 clean:
-	rm -f $(OBJS)
-# $(MAKE) -C $(LIBFTDIR) clean
+	rm -rf $(OBJ_DIR)
+	rm -f src/scanner/*.o
+	rm -f src/*.o
+	$(MAKE) -C $(LIBFTDIR) clean
 	
 fclean: clean
 	rm -f $(NAME)

@@ -7,8 +7,11 @@ CFLAGS += -DNDEBUG
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 CXX = c++
 
+OBJ_DIR		= ../obj/
+SRC_DIR		= ../src/
+
 # the file to tests (SUT = System Under Test)
-SUT_SRCS = $(addprefix ../src/, loop.c history.c scanner/scanner.c \
+SUT_SRCS = $(addprefix $(SRC_DIR), loop.c history.c scanner/scanner.c \
 scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
@@ -19,8 +22,7 @@ SUT_HDRS = $(addprefix ../include/, minishell.h scanner.h environment.h \
 handle_path.h parser.h analyser.h executer.h error.h darray.h) 
 
 # will be compiled into object files
-SUT_OBJS = $(SUT_SRCS:.c=.o)
-
+SUT_OBJS = $(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SUT_SRCS))
 LDLIBS =	-lm -lreadline -lcurses
 LDLIBS += -L../lib/libft -lft
 INCLUDES = -I../lib/libft -I../include

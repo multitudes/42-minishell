@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/15 11:03:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/15 13:46:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,8 +229,8 @@ static void	exit_handler(int sig)
     {
         write(1, "\n", 1);
         rl_on_new_line();
-        rl_replace_line("", 0);
         rl_redisplay();
+        rl_replace_line("", 0);
     }
 	return ;
 }
@@ -266,7 +266,7 @@ int loop(int argc, char **argv)
 	load_history();
 
 	
-	rl_catch_signals = 0;
+	// rl_catch_signals = 0;
 
 	// signal handling
 	// ◦ ctrl-C displays a new prompt on a new line. 
