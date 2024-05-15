@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 20:45:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/15 11:03:22 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,16 +205,23 @@ int	_exit_err(char *msg)
 
 /*
 for signals
-
-The readline library maintains an internal buffer of the current line being edited. This buffer is separate from what's displayed on the terminal. When a signal like SIGINT is received, you might want to clear this buffer so that the user starts with a fresh line after the signal is handled.
-
+The readline library maintains an internal buffer of the current 
+line being edited. 
+This buffer is separate from what's displayed on the terminal.
+When a signal like SIGINT is received, you might want to clear this 
+buffer so that the user starts with a fresh line after the signal 
+is handled.
 Here's what each function does:
-
-rl_on_new_line(): This function tells readline that the cursor is on a new line, so it should not try to clear the current line when redisplaying the prompt.
-
-rl_replace_line("", 0): This function replaces the contents of readline's internal buffer with an empty string. The 0 argument means that the cursor should be placed at the start of the line.
-
-rl_redisplay(): This function updates the display to match the current contents of the line buffer. Since you've just cleared the line buffer, this will effectively clear the line on the terminal.
+rl_on_new_line(): This function tells readline that the cursor is 
+on a new line, so it should not try to clear the current line 
+when redisplaying the prompt.
+rl_replace_line("", 0): This function replaces the contents of 
+readline's internal buffer with an empty string. The 0 argument 
+means that the cursor should be placed at the start of the line.
+rl_redisplay(): This function updates the display to match 
+the current contents of the line buffer. Since you've just 
+cleared the line buffer, this will effectively clear the line on 
+the terminal.
 */
 static void	exit_handler(int sig)
 {
