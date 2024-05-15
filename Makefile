@@ -1,8 +1,8 @@
-NAME = minishell
+NAME			=	minishell
 
 # flags
-CFLAGS = -Wall -Werror -Wextra
-CFLAGS += -g
+CFLAGS 			= 	-Wall -Werror -Wextra
+CFLAGS		  	+=	-g
 
 # NDEBUG is a macro that disables the debug prints - uncomment to disable them
 # comment out to enable them need to recompile with make re
@@ -11,31 +11,33 @@ CFLAGS += -g
 # all debug messages together
 # CFLAGS += -DNDEBUG
 
-CC = cc
+CC 				=	cc
 
-INCLUDES 	= -I./lib/libft -I./include
+INCLUDES 		= 	-I./lib/libft -I./include
 
 # directories
-OBJ_DIR		= obj/
-SRC_DIR		= src/
-LIBFTDIR 	= lib/libft
+OBJ_DIR			= 	obj/
+SRC_DIR			= 	src/
+LIBFTDIR 		= 	lib/libft
 
-SRCS 		:= $(addprefix $(SRC_DIR), main.c loop.c history.c scanner/scanner.c \
+# the files to compile
+SRCS 			= 	$(addprefix $(SRC_DIR), main.c loop.c history.c scanner/scanner.c \
 scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
 scanner/token_operators.c scanner/history_tokens.c scanner/token_blocks.c \
 scanner/redirection_tokens.c environment.c handle_path.c parser.c analyser.c \
 executer.c error.c darray.c)
-OBJS = $(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
-HDRS 		= $(addprefix include/, minishell.h scanner.h environment.h handle_path.h \
+OBJS 			=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
+HDRS 			=	$(addprefix include/, minishell.h scanner.h environment.h handle_path.h \
 parser.h analyser.h executer.h error.h darray.h) 
 
-LIBFT 		= $(LIBFTDIR)/libft.a
+# linker flags and libraries
+LIBFT 			=	$(LIBFTDIR)/libft.a
+LDLIBS 			=	-lm -lreadline -lcurses
 
-LDLIBS 		= -lm -lreadline -lcurses
-
-UNAME 		= $(shell uname -s)
+# OS specific flags
+UNAME 			= 	$(shell uname -s)
 ifeq ($(UNAME), Linux)
 	LDLIBS 		+= -lbsd
 else ifeq ($(UNAME), Darwin)
@@ -46,13 +48,13 @@ endif
 # target
 all: $(LIBFT) $(NAME) tests
 
-# Static pattern rule for compilation - with includes for the libft that will \
-allow the <libft.h> notation 
+# Static pattern rule for compilation - adding the .o files in the obj folder 
+# with includes for the libft that will allow the <libft.h> notation 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-
+# Target $(LIBFT) depends on the libft library.
 $(LIBFT):
 	@if [ ! -d $(LIBFTDIR) ]; then \
 	git clone https://github.com/multitudes/42-libft.git $(LIBFTDIR); \
@@ -66,9 +68,7 @@ $(NAME): $(OBJS) $(HDRS)
 
 clean:
 	rm -rf $(OBJ_DIR)
-	rm -f src/scanner/*.o
-	rm -f src/*.o
-	$(MAKE) -C $(LIBFTDIR) clean
+	#$(MAKE) -C $(LIBFTDIR) clean
 	
 fclean: clean
 	rm -f $(NAME)

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/15 13:46:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/15 18:20:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,20 +265,28 @@ int loop(int argc, char **argv)
 		return (1);
 	load_history();
 
-	
-	// rl_catch_signals = 0;
+	// on mac I with ctrl - c i get a new line on bash
+	rl_catch_signals = 0;
 
 	// signal handling
-	// ◦ ctrl-C displays a new prompt on a new line. 
+	// ◦ ctrl-C SIGINT displays a new prompt on a new line. 
 	// ◦ ctrl-D exits the shell.
-	// ◦ ctrl-\ does nothing.	
-
+	// ◦ ctrl-\ SIGQUIT does nothing.	
+	
+	if (isatty(STDIN_FILENO))
+	{
+		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
+		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
+		return (_exit_err("SIG_ERR signal failed\n"));
+		debug("interactive mode \n");
+	}
+	else if (isatty(STDIN_FILENO) == 0)
+		debug("non interactive mode \n");
+	else if (isatty(STDIN_FILENO) == -1)
+		perror("isatty\n");
 	// The sig argument identifies the signal whose disposition 
 	// we want to retrieve or change. 
 	//This argument can be any signal except SIGKILL or SIGSTOP.
-	if ((signal(SIGINT, exit_handler) == SIG_ERR) ||
-		(signal(SIGQUIT, exit_handler) == SIG_ERR))
-		return (_exit_err("SIG_ERR signal failed\n"));
 
 	
 	// signal(SIGINT, SIG_IGN);
@@ -287,7 +295,6 @@ int loop(int argc, char **argv)
 	while (data->input != NULL)
 	{
 		data->input = readline("minishell $ ");
-
 		
 		if (data->input && ft_strncmp(data->input, "", 1))
 		{
@@ -323,7 +330,11 @@ int loop(int argc, char **argv)
 	so we check for that to exit the loop.
 	*/
 
-	debug("freeing ===================");
+//	debug("freeing ===================");
 	free_data(data);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+	write(1, "exit\n", 6);
 	return (0);
 }
