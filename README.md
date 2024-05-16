@@ -1000,60 +1000,6 @@ Here's an example of how to use the . command:
 ```
 This will execute the myscript.sh script in the current shell. If myscript.sh sets any environment variables, those variables will be available in the current shell after the script is executed.
 
-
-## links
-The Bash reference manual:  
-https://www.gnu.org/software/bash/manual/bash.html  
-the canonical reference for all things compiler:  
-Compilers: Principles, Techniques, and Tools (universally known as “the Dragon Book”) .  
-Another compiler book. There is a nice explanation of creating a AST or syntax tree  
-https://craftinginterpreters.com  
-
-Also the web version is freely available:  
-https://craftinginterpreters.com/parsing-expressions.html  
-
-This is an important concept about grammar:  
-https://en.wikipedia.org/wiki/Backus–Naur_form  
-
-This is from a programming book - Implement your own shell - GustavoRodriguez-RiveraandJustinEnnen  
-https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf  
-some blog posts:  
-
-Tutorial - Write a Shell in C - Stephen Brennan  
-https://brennan.io/2015/01/16/write-a-shell-in-c/  
-
-this is the posix shell grammar  
-https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html  
-
-A very simple approach to start:  
-https://medium.com/@winfrednginakilonzo/guide-to-code-a-simple-shell-in-c-bd4a3a4c41cd   
-
-https://www.peroxide.dk/download/tutorials/pxdscript/chapter1.html  
-
-test your shell:  
-https://github.com/LucasKuhn/minishell_tester?tab=readme-ov-file  
-
-the linux man page about pipes:  
-https://man7.org/linux/man-pages/man2/pipe.2.html  
-
-shell posix standard grammar  
-https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#export  
-
-token recognition  
-https://pubs.opengroup.org/onlinepubs/009604499/utilities/xcu_chap02.html#tag_02_03
-
-redirections and pipes 
-http://www.cs.loyola.edu/~jglenn/702/S2005/Examples/dup2.html
-
-more pipes  
-https://people.cs.rutgers.edu/~pxk/416/notes/c-tutorials/pipe.html  
-
-trees:  
-https://youtu.be/SToUyjAsaFk?si=GOxMOm4uIVSPp4kO&t=1255
-
-readline  
-https://web.mit.edu/gnu/doc/html/rlman_2.html
-
 # extras
 ## the PWD builtin
 I just realized how difficult the pwd builtin is if you want to make it behave like bash (some evaluators insist on taking bash as a reference when implementing the builtins)
@@ -1113,3 +1059,56 @@ If you want to store a command in a variable and then execute it, you should sto
 bash-3.2$ myvar="ls -l"
 bash-3.2$ eval $myvar
 ```
+
+## links
+The Bash reference manual:  
+https://www.gnu.org/software/bash/manual/bash.html  
+the canonical reference for all things compiler:  
+Compilers: Principles, Techniques, and Tools (universally known as “the Dragon Book”) .  
+Another compiler book. There is a nice explanation of creating a AST or syntax tree  
+https://craftinginterpreters.com  
+
+Also the web version is freely available:  
+https://craftinginterpreters.com/parsing-expressions.html  
+
+This is an important concept about grammar:  
+https://en.wikipedia.org/wiki/Backus–Naur_form  
+
+This is from a programming book - Implement your own shell - GustavoRodriguez-RiveraandJustinEnnen  
+https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf  
+some blog posts:  
+
+Tutorial - Write a Shell in C - Stephen Brennan  
+https://brennan.io/2015/01/16/write-a-shell-in-c/  
+
+this is the posix shell grammar  
+https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html  
+
+A very simple approach to start:  
+https://medium.com/@winfrednginakilonzo/guide-to-code-a-simple-shell-in-c-bd4a3a4c41cd   
+
+https://www.peroxide.dk/download/tutorials/pxdscript/chapter1.html  
+
+test your shell:  
+https://github.com/LucasKuhn/minishell_tester?tab=readme-ov-file  
+
+the linux man page about pipes:  
+https://man7.org/linux/man-pages/man2/pipe.2.html  
+
+shell posix standard grammar  
+https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#export  
+
+token recognition  
+https://pubs.opengroup.org/onlinepubs/009604499/utilities/xcu_chap02.html#tag_02_03
+
+redirections and pipes 
+http://www.cs.loyola.edu/~jglenn/702/S2005/Examples/dup2.html
+
+more pipes  
+https://people.cs.rutgers.edu/~pxk/416/notes/c-tutorials/pipe.html  
+
+trees:  
+https://youtu.be/SToUyjAsaFk?si=GOxMOm4uIVSPp4kO&t=1255
+
+readline  
+https://web.mit.edu/gnu/doc/html/rlman_2.html
