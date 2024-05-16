@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/16 13:06:44 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/16 15:46:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,63 @@ int 	count_list(t_list *input_tokens)
 	}
 	return (count);
 }
-// get the last 
+// I get a t_list node in inputwith my token as expression type
+// andwant to substitute it with the content of the expression
+t_list	*extract_expression(t_list **input_tokens)
+{
+
+	t_token *token = (t_token *)(*input_tokens)->content;
+	if (token->type == EXPRESSION)
+	{
+		debug("EXPRESSION");
+		
+
+		// will remove the current node but first saving it to a tmp to free it later
+		t_list *tmp = *input_tokens;
+		// remove parenthesis from content
+		char *lexem = ft_substr(token->lexeme, 1, ft_strlen(token->lexeme) - 2);
+		debug("lexem %s", lexem);
+
+		// create a new token list
+		t_list *new_token_list = tokenizer(lexem);
+		// debug("new_token_list %s", ((t_token *)(new_token_list->content))->lexeme);
+
+		if (new_token_list)
+		{
+			t_list *last = ft_lstlast(new_token_list);
+			// check the previous it was not the first node in the list
+			if ((*input_tokens)->prev)
+			{
+				debug("not first node in the list");
+				(*input_tokens)->prev->next = new_token_list;
+				new_token_list->prev = (*input_tokens)->prev;
+			}
+			// it was the first node in the list
+			else
+			{
+				debug("it was the first node in the list ");
+				*input_tokens = new_token_list;
+			}
+			// check the next connection - not the last node in the list
+			if ((*input_tokens)->next)
+			{
+				(*input_tokens)->next->prev = last;
+				last->next = (*input_tokens)->next;
+			}
+			// last node in the list
+			else
+			{
+				debug("last node in the list");
+			}
+		}
+		// free the old token list
+		free(token->lexeme);
+		ft_lstdelone(tmp, free);
+		free(lexem);
+	}
+	return (*input_tokens);
+}
+
 t_ast_node *parse_terminal(t_list **input_tokens)
 {
 	t_ast_node *a;
@@ -174,20 +230,96 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	token = (t_token *)(*input_tokens)->content;
 	
 	// debug the prev and next pointer of current token
-	if ((t_token *)(*input_tokens)->prev)
-		debug("\nprev %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
-	if ((t_token *)(*input_tokens)->next)
-		debug("next %s", ((t_token *)(*input_tokens)->next->content)->lexeme);
+	// if ((t_token *)(*input_tokens)->prev)
+	// 	debug("\nprev %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
+	// if ((t_token *)(*input_tokens)->next)
+	// 	debug("next %s", ((t_token *)(*input_tokens)->next->content)->lexeme);
 
 	while (*input_tokens && token->type != PIPE && token->type != PIPE_AND && token->type != AND_IF && token->type != OR_IF)
 	{
 		token = (t_token *)(*input_tokens)->content;
 		debug("parse_terminal token type: %d, %s", token->type, token->lexeme);
 		// debug the prev and next pointer of current token
-		if ((t_token *)(*input_tokens)->prev)
-			debug("\nprev %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
-		if ((t_token *)(*input_tokens)->next)
-			debug("next %s", ((t_token *)(*input_tokens)->next->content)->lexeme);
+		// if ((t_token *)(*input_tokens)->prev)
+		// 	debug("\nprev %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
+		// if ((t_token *)(*input_tokens)->next)
+		// 	debug("next %s", ((t_token *)(*input_tokens)->next->content)->lexeme);
+
+		// write a function to handle the type expression
+		*input_tokens = extract_expression(input_tokens);
+
+		token = (t_token *)(*input_tokens)->content;
+		debug("token type: %d, %s", token->type, token->lexeme);
+		if (token->type == PIPE || token->type == PIPE_AND || token->type == AND_IF || token->type == OR_IF)
+			break;
+		*input_tokens = (*input_tokens)->next;
+	}
+
+	debug("new node - head content: %s", ((t_token *)(head->content))->lexeme);
+	if (*input_tokens)
+	{
+		debug("new node - current content: %s", ((t_token *)((*input_tokens)->content))->lexeme);
+		debug("new node - current type: %d", ((t_token *)((*input_tokens)->content))->type);
+	}
+	// if I have a pipe or pipe_and I need to break the list before my node and
+	// pass head to create a node with the previous list until the previous token
+	if (*input_tokens)
+	{
+		if ((*input_tokens)->prev)
+		{	
+			(*input_tokens)->prev->next = NULL;
+			(*input_tokens)->prev = NULL;
+		}
+	}
+	a = new_node(NODE_TERMINAL, NULL, NULL, head);
+	if (a)
+		debug("new type in parse_terminal: %d", a->type);
+	// state of my *input_tokens after parsing the terminal
+	if (*input_tokens)
+		debug("new token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
+	else
+		debug("new token is NULL");
+	return (a);
+}
+
+
+t_ast_node	*parse_pipeline(t_list **input_tokens)
+{
+	t_ast_node *a;
+	t_list *head;
+	t_token *token;
+
+	a = NULL;
+	head = *input_tokens;
+	if (*input_tokens == NULL || input_tokens == NULL)
+		return (NULL);
+	debug("parse_pipeline");
+	token = (t_token *)(*input_tokens)->content;
+
+	a = parse_terminal(input_tokens);
+	if (a && *input_tokens)
+		debug("new type in parse_pipeline: %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
+	
+	// debug("in parse pipeline - new token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
+	
+
+	// // debug the prev and next pointer of current token
+	// if ((t_token *)(*input_tokens)->prev)
+	// 	debug("\nprev %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
+	// if ((t_token *)(*input_tokens)->next)
+	// 	debug("next %s", ((t_token *)(*input_tokens)->next->content)->lexeme);
+
+
+	
+	while (*input_tokens)
+	{
+		token = (t_token *)(*input_tokens)->content;
+		debug("parse_terminal token type: %d, %s", token->type, token->lexeme);
+		// debug the prev and next pointer of current token
+		// if ((t_token *)(*input_tokens)->prev)
+		// 	debug("\nprev %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
+		// if ((t_token *)(*input_tokens)->next)
+		// 	debug("next %s", ((t_token *)(*input_tokens)->next->content)->lexeme);
 
 		// if I have an expression I need to expand it
 		if (token->type == EXPRESSION)
@@ -241,20 +373,26 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 		}
 
 		debug("token type: %d, %s", token->type, token->lexeme);
-		if (token->type == PIPE || token->type == PIPE_AND || token->type == AND_IF || token->type == OR_IF)
+		if (token->type == AND_IF || token->type == OR_IF)
 			break;
 		*input_tokens = (*input_tokens)->next;
 	}
+	
 	debug("new node - head content: %s", ((t_token *)(head->content))->lexeme);
 	if (*input_tokens)
-	{debug("new node - current content: %s", ((t_token *)((*input_tokens)->content))->lexeme);
-	debug("new node - current type: %d", ((t_token *)((*input_tokens)->content))->type);}
+	{
+		debug("new node - current content: %s", ((t_token *)((*input_tokens)->content))->lexeme);
+		debug("new node - current type: %d", ((t_token *)((*input_tokens)->content))->type);
+	}
 	// if I have a pipe or pipe_and I need to break the list before my node and
 	// pass head to create a node with the previous list until the previous token
 	if (*input_tokens)
 	{
-		(*input_tokens)->prev->next = NULL;
-		(*input_tokens)->prev = NULL;
+		if ((*input_tokens)->prev)
+		{	
+			(*input_tokens)->prev->next = NULL;
+			(*input_tokens)->prev = NULL;
+		}
 	}
 	a = new_node(NODE_TERMINAL, NULL, NULL, head);
 	if (a)
@@ -265,21 +403,6 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	else
 		debug("new token is NULL");
 	return (a);
-}
-
-
-t_ast_node	*parse_pipeline(t_list **input_tokens)
-{
-	t_ast_node *a;
-
-	a = NULL;
-	if (input_tokens == NULL)
-		return (NULL);
-	a = parse_terminal(input_tokens);
-	if (a)
-		debug("new type in parse_pipeline: %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
-
-
 	return (a);
 }
 
