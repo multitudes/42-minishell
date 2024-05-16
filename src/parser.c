@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/16 09:12:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/16 11:06:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,12 +175,12 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 	t_token *token = (t_token *)(*input_tokens)->content;
 	while (*input_tokens && token->type != PIPE && token->type != PIPE_AND)
 	{
+		// if I have an expression I need to expand it
 		if (token->type == EXPRESSION)
 		{
 			debug("EXPRESSION");
 			// will remove the current node but first saving it to a tmp
 			t_list *tmp = *input_tokens;
-
 			// remove parenthesis from content
 			char *lexem = ft_substr(token->lexeme, 1, ft_strlen(token->lexeme) - 2);
 			debug("lexem %s", lexem);
@@ -225,29 +225,21 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 			free(lexem);
 			token = (t_token *)(*input_tokens)->content; // Update token pointer
 		}
+
 		debug("token type: %d, %s", token->type, token->lexeme);
 		*input_tokens = (*input_tokens)->next;
+		if (*input_tokens)
+			token = (t_token *)(*input_tokens)->content;
 	}
-	// if ((*input_tokens) && (*input_tokens)->prev && (*input_tokens)->next)
-	// {
-	// 	(*input_tokens)->prev->next = (*input_tokens)->next;
-	// 	(*input_tokens)->next->prev = (*input_tokens)->prev;
-	// 	debug("prev and next");
-	// }
-	// else if ((*input_tokens) && (*input_tokens)->prev)
-	// {
-	// 	(*input_tokens)->prev->next = NULL;
-	// }
-	// else if ((*input_tokens) && (*input_tokens)->next)
-	// {
-	// 	(*input_tokens)->next->prev = NULL;
-	// }
-	// create a new node
 	debug("new node - head content: %s", ((t_token *)(head->content))->lexeme);
 	a = new_node(NODE_TERMINAL, NULL, NULL, head );
 	if (a)
 		debug("new type in parse_terminal: %d", a->type);
-
+	// state of my *input_tokens after parsing the terminal
+	if (*input_tokens)
+		debug("new token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
+	else
+		debug("new token is NULL");
 	return (a);
 }
 
@@ -271,15 +263,33 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 t_ast_node	*parse_list(t_list **input_tokens)
 {
 	t_ast_node *a;
+	t_ast_node *b;
 
 	a = NULL;
-	if (input_tokens == NULL)
+	b = NULL;
+	if (input_tokens == NULL || *input_tokens == NULL)
 		return (NULL);
 	a = parse_pipeline(input_tokens);
 	if (a)
 		debug("new type in parse_list: %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
-
-
+	else 
+		return (NULL);
+	if (*input_tokens)
+		debug("*input tokens content lexem %s", ((t_token *)(*input_tokens)->content)->lexeme);
+	while (*input_tokens)
+	{
+		// check for && and ||
+		if (((t_token *)(*input_tokens))->type == AND_IF || ((t_token *)(*input_tokens))->type == OR_IF)
+		{
+			debug("check for && and ||");
+			
+			t_token *token = (t_token *)(*input_tokens)->content;
+			*input_tokens = (*input_tokens)->next; //consume the && or || token
+			b = parse_pipeline(input_tokens);
+			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
+		}	
+		// *input_tokens = (*input_tokens)->next;
+	}
 	return (a);
 }
 
@@ -306,17 +316,17 @@ t_ast_node *create_ast(t_data *data, t_list *input_tokens)
 	
 	while (tmp)
 	{
+		
 		token = (t_token *)tmp->content;
 		debug("token type: %d, %s", token->type, token->lexeme);
-
 		// refactoring to a new parser!! 
 		// should return the ast... not yet implemented
-		t_ast_node *a = parse_list(&input_tokens);
+		t_ast_node *a = parse_list(&tmp);
 		if (a)
 			debug("new type in : %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
 
-
-
+		if (tmp == NULL)
+			return (a);
 
 
 
