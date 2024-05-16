@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/16 15:58:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/16 16:29:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,10 +275,10 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	if (a)
 		debug("new type in parse_terminal: %d", a->type);
 	// state of my *input_tokens after parsing the terminal
-	if (*input_tokens)
-		debug("new token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
-	else
-		debug("new token is NULL");
+	// if (*input_tokens)
+	// 	debug("new token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
+	// else
+	// 	debug("new token is NULL");
 	return (a);
 }
 
@@ -311,6 +311,7 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 		*input_tokens = (*input_tokens)->next; //consume the pipe or pipe_and token
 		t_ast_node *b = parse_terminal(input_tokens);
 		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
+
 	}
 	
 	return (a);
@@ -330,23 +331,14 @@ t_ast_node	*parse_list(t_list **input_tokens)
 	a = parse_pipeline(input_tokens);
 	if (a)
 		debug("new type in parse_list: %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
-	else 
-		return (NULL);
 	if (*input_tokens)
 		debug("*input tokens content lexem %s", ((t_token *)(*input_tokens)->content)->lexeme);
-	while (*input_tokens)
+	while (*input_tokens && (((t_token *)(*input_tokens))->type == AND_IF || ((t_token *)(*input_tokens))->type == OR_IF))
 	{
-		// check for && and ||
-		if (((t_token *)(*input_tokens))->type == AND_IF || ((t_token *)(*input_tokens))->type == OR_IF)
-		{
-			debug("check for && and ||");
-			
 			t_token *token = (t_token *)(*input_tokens)->content;
 			*input_tokens = (*input_tokens)->next; //consume the && or || token
 			b = parse_pipeline(input_tokens);
 			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
-		}	
-		// *input_tokens = (*input_tokens)->next;
 	}
 	return (a);
 }
