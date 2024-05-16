@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 10:32:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/16 09:21:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,39 +22,6 @@ extern "C" {
 
 /*
 I am creating a ast tree for my context free grammar with these structs...
-typedef enum	e_nodetype 
-{
-	NODE_LIST,
-	NODE_PIPELINE, 
-	NODE_REDIRECT, 
-	NODE_BUILTIN,
-	NODE_COMMAND, 
-	NODE_DLESS,
-	NODE_TERMINAL,
-	NODE_NULL
-} 				t_nodetype;
-
-if it is a terminal node I will have the args
-otherwise until it hasnt been expanded I will have the token list
-after expansion finally the args will be filled
-and it will be ready for the executer
-
-typedef struct s_ast_node {
-    t_nodetype type;
-    struct s_ast_node* left;
-    struct s_ast_node* right;
-	// for now not used
-    // char** args;
-	t_list *token_list;
-} t_ast_node;
-
-my grammar will take a linked list of tokens of type 
-
-typedef struct s_list
-{
-	void			*content;
-	struct s_list	*next;
-}	t_list;
 */
 
 typedef enum	e_nodetype 
@@ -72,14 +39,8 @@ typedef enum	e_nodetype
 } 				t_nodetype;
 
 /*
-if it is a terminal node I will have the args
-otherwise until it hasnt been expanded I will have the token list
-after expansion finally the args will be filled
-and it will be ready for the executer
-type is a ENUM of type t_nodetype
-parent is a pointer to the parent node
-left and right are pointers to the left and right nodes
-token_list is a linked list of tokens
+do I need the parent node? we will see when executing!
+TODO - check later
 */
 typedef struct			s_ast_node {
     t_nodetype 			type;

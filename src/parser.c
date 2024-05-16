@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/15 19:18:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/16 09:12:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,9 @@ which is a top-down parser
 So the root is the first pipe or pipe_and operator..
 
 */
-t_ast_node* new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_list *expr_token_list)
+t_ast_node* new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_list *token_list)
 {
-	if (expr_token_list == NULL)
+	if (token_list == NULL)
 		return (NULL);
 	t_ast_node *node = malloc(sizeof(t_ast_node));
 	if (node == NULL)
@@ -102,7 +102,7 @@ t_ast_node* new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_lis
 	node->parent = NULL;
 	node->left = left;
 	node->right = right;
-	node->token_list = expr_token_list;
+	node->token_list = token_list;
 	if (left != NULL && right != NULL)
 	{
 		left->parent = node;
@@ -165,13 +165,12 @@ int 	count_list(t_list *input_tokens)
 t_ast_node	*parse_terminal(t_list **input_tokens)
 {
 	t_ast_node *a;
-	t_list *tmp;
+	t_list *head;
 
 	a = NULL;
-	tmp = NULL;
+	head = *input_tokens;
 	if (*input_tokens == NULL || input_tokens == NULL)
 		return (NULL);
-	tmp = *input_tokens;
 	debug("parse_terminal");
 	t_token *token = (t_token *)(*input_tokens)->content;
 	while (*input_tokens && token->type != PIPE && token->type != PIPE_AND)
@@ -179,40 +178,75 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 		if (token->type == EXPRESSION)
 		{
 			debug("EXPRESSION");
+			// will remove the current node but first saving it to a tmp
+			t_list *tmp = *input_tokens;
+
 			// remove parenthesis from content
 			char *lexem = ft_substr(token->lexeme, 1, ft_strlen(token->lexeme) - 2);
 			debug("lexem %s", lexem);
+			
 			// create a new token list
 			t_list *new_token_list = tokenizer(lexem);
+			debug("new_token_list %s", ((t_token *)(new_token_list->content))->lexeme);
+
 			if (new_token_list)
 			{
-				(*input_tokens)->next = new_token_list;
-				new_token_list->prev = *input_tokens;
-				t_list *tmp = ft_lstlast(new_token_list);
-				tmp->next = (*input_tokens)->next;
-				(*input_tokens)->next->prev = tmp;
-			}				
+				// insert the new token list in the current list
+				if ((*input_tokens)->prev)
+				{
+					debug("Not here");
+					(*input_tokens)->prev->next = new_token_list;
+					new_token_list->prev = (*input_tokens)->prev;
+				}
+				else
+				{
+					debug("the current node was the first node");
+					new_token_list->prev = NULL;
+					head = new_token_list;
+				}
+				t_list *last = ft_lstlast(new_token_list);
+				if ((*input_tokens)->next)
+				{
+					debug("Not here");
+					last->next = (*input_tokens)->next;
+					(*input_tokens)->next->prev = last;
+				}
+				else
+				{
+					debug("here");
+					last->next = NULL;
+				}
+			}
+
+			*input_tokens = new_token_list;
+			// free the old token list
+			free(token->lexeme);
+			ft_lstdelone(tmp, free);
+			free(lexem);
+			token = (t_token *)(*input_tokens)->content; // Update token pointer
 		}
 		debug("token type: %d, %s", token->type, token->lexeme);
 		*input_tokens = (*input_tokens)->next;
 	}
-	if ((*input_tokens) && (*input_tokens)->prev && (*input_tokens)->next)
-	{
-		(*input_tokens)->prev->next = (*input_tokens)->next;
-		(*input_tokens)->next->prev = (*input_tokens)->prev;
-		debug("prev and next");
-	}
-	else if ((*input_tokens) && (*input_tokens)->prev)
-	{
-		(*input_tokens)->prev->next = NULL;
-	}
-	else if ((*input_tokens) && (*input_tokens)->next)
-	{
-		(*input_tokens)->next->prev = NULL;
-	}
+	// if ((*input_tokens) && (*input_tokens)->prev && (*input_tokens)->next)
+	// {
+	// 	(*input_tokens)->prev->next = (*input_tokens)->next;
+	// 	(*input_tokens)->next->prev = (*input_tokens)->prev;
+	// 	debug("prev and next");
+	// }
+	// else if ((*input_tokens) && (*input_tokens)->prev)
+	// {
+	// 	(*input_tokens)->prev->next = NULL;
+	// }
+	// else if ((*input_tokens) && (*input_tokens)->next)
+	// {
+	// 	(*input_tokens)->next->prev = NULL;
+	// }
 	// create a new node
-	a = new_node(NODE_TERMINAL, NULL, NULL, tmp);
-
+	debug("new node - head content: %s", ((t_token *)(head->content))->lexeme);
+	a = new_node(NODE_TERMINAL, NULL, NULL, head );
+	if (a)
+		debug("new type in parse_terminal: %d", a->type);
 
 	return (a);
 }
@@ -226,7 +260,8 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 	if (input_tokens == NULL)
 		return (NULL);
 	a = parse_terminal(input_tokens);
-
+	if (a)
+		debug("new type in parse_pipeline: %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
 
 
 	return (a);
@@ -241,7 +276,8 @@ t_ast_node	*parse_list(t_list **input_tokens)
 	if (input_tokens == NULL)
 		return (NULL);
 	a = parse_pipeline(input_tokens);
-
+	if (a)
+		debug("new type in parse_list: %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
 
 
 	return (a);
@@ -277,7 +313,7 @@ t_ast_node *create_ast(t_data *data, t_list *input_tokens)
 		// should return the ast... not yet implemented
 		t_ast_node *a = parse_list(&input_tokens);
 		if (a)
-			debug("new type: %d", a->type);
+			debug("new type in : %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
 
 
 
