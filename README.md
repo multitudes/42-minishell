@@ -2,6 +2,9 @@
 
 >  treat your codebase like a good camper does their campsite: always try to leave it a little better than you found it.  - Bob Nystrom
 
+ooo
+
+
 This team project is about creating a simple shell.  
 
 We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  Below are some exerpts from the bash manual.
