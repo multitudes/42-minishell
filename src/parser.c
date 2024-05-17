@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/17 09:56:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/17 10:07:41 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,6 +257,7 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	}
 
 	debug("new node - head content: %s", ((t_token *)(head->content))->lexeme);
+	
 	if (*input_tokens)
 	{
 		debug("new node - current content: %s", ((t_token *)((*input_tokens)->content))->lexeme);
@@ -299,13 +300,13 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 	{	
 		debug("got asttype in parse_pipeline: %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
 		debug("in parse pipeline - existing token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
+		token = (t_token *)(*input_tokens)->content;
 	}
 	// // debug the prev and next pointer of current token
 	// if ((t_token *)(*input_tokens)->prev)
 	// 	debug("\nprev %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
 	// if ((t_token *)(*input_tokens)->next)
 	// 	debug("next %s", ((t_token *)(*input_tokens)->next->content)->lexeme);
-	token = (t_token *)(*input_tokens)->content;
 
 	while (*input_tokens && (token->type == PIPE || token->type == PIPE_AND))
 	{
