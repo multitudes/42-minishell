@@ -298,6 +298,7 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	a = new_node(NODE_TERMINAL, NULL, NULL, head);
 	if (a)
 		debug("new ast node type in parse_terminal: %d", a->type);
+
 	return (a);
 }
 
@@ -338,6 +339,7 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 		}
 		t_ast_node *b = parse_list(input_tokens);
 		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
+
 	}
 	return (a);
 }
@@ -355,12 +357,6 @@ t_ast_node	*parse_list(t_list **input_tokens)
 	if (input_tokens == NULL || *input_tokens == NULL)
 		return (NULL);
 	a = parse_pipeline(input_tokens);
-	// if (a)
-	// 	debug("asttype in parse_list: %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
-	// else 
-	// 	return (NULL);
-	// if (*input_tokens)
-	// 	debug("*input tokens content lexem %s", ((t_token *)(*input_tokens)->content)->lexeme);
 	while (*input_tokens)
 	{
 		// check for && and ||
@@ -379,6 +375,7 @@ t_ast_node	*parse_list(t_list **input_tokens)
 			}
 			b = parse_pipeline(input_tokens);
 			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
+
 		}
 		debug("new ast node type in parse_list: %d", a->type);	
 		if (*input_tokens)
