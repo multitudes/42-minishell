@@ -113,7 +113,7 @@ const char* test_parser_tree_simple_command() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	t_ast_node *ast = create_ast(g_data, lexemes);
+	t_ast_node *ast = create_ast(lexemes);
 	t_token *token = (t_token *)ast->token_list->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
@@ -149,7 +149,7 @@ const char* test_parser_tree_simple_command2() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	t_ast_node *ast = create_ast(g_data, lexemes);
+	t_ast_node *ast = create_ast(lexemes);
 	t_token *token = (t_token *)ast->token_list->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
