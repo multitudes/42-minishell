@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/17 16:03:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/17 16:16:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ void print_token(void *token)
 
 // I get a t_list node in inputwith my token as expression type
 // andwant to substitute it with the content of the expression
-t_list	*extract_expression(t_list **input_tokens)
+bool	extract_expression(t_list **input_tokens)
 {
 	t_token *token; 
 	t_list *next_old_list;
@@ -179,8 +179,10 @@ t_list	*extract_expression(t_list **input_tokens)
 		next_old_list = (*input_tokens)->next;
 		token = (t_token *)(*input_tokens)->content;
 		debug("EXPRESSION");
+
 		// will remove the current node but first saving it to a tmp to free it later
 		t_list *tmp = *input_tokens;
+
 		// remove parenthesis from content
 		char *lexem = ft_substr(token->lexeme, 1, ft_strlen(token->lexeme) - 2);
 		debug("lexem %s", lexem);
@@ -213,8 +215,9 @@ t_list	*extract_expression(t_list **input_tokens)
 		ft_lstdelone(tmp, free);
 		tmp = NULL;
 		// ft_lstiter(*input_tokens, print_token);
-	}
-	return (*input_tokens);
+		return (true);
+	}	
+	return (false);
 }
 
 /*
@@ -249,11 +252,11 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 		// 	debug("next %s", ((t_token *)(*input_tokens)->next->content)->lexeme);
 
 		// write a function to handle the type expression
-		*input_tokens = extract_expression(input_tokens);
-		if (head == NULL)
+		if (extract_expression(input_tokens))
+		{
 			head = *input_tokens;
-		
-			
+
+		}		
 	// print every token in the list
 		t_list *tmp = *input_tokens;
 		while (tmp)
@@ -333,7 +336,7 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 			free_ast(a);
 			return (NULL);
 		}
-		t_ast_node *b = parse_terminal(input_tokens);
+		t_ast_node *b = parse_list(input_tokens);
 		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
 	}
 	return (a);

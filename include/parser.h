@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/17 11:00:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/17 16:17:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,9 @@ t_ast_node	*create_ast(t_list *token_list);
 void		free_ast(t_ast_node *ast);
 t_ast_node*	new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_list *expr_token_list);
 void 		print_ast(t_ast_node *ast);
+t_ast_node	*parse_list(t_list **input_tokens);
+t_ast_node	*parse_pipeline(t_list **input_tokens);
+
 
 #ifdef __cplusplus
 }
