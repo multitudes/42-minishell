@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/17 13:39:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/17 15:13:02 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,19 +159,33 @@ int 	count_list(t_list *input_tokens)
 	}
 	return (count);
 }
+
+void print_token(void *token)
+{
+    t_token *t;
+    t = (t_token *)((t_list *)token)->content;
+    debug("token type: %d, %s", t->type, t->lexeme);
+}
+
 // I get a t_list node in inputwith my token as expression type
 // andwant to substitute it with the content of the expression
 t_list	*extract_expression(t_list **input_tokens)
 {
-
-	t_token *token = (t_token *)(*input_tokens)->content;
+	t_token *token; 
+	t_list *prev_old_list;
+	t_list *next_old_list;
+	
+	token = (t_token *)(*input_tokens)->content;
 	if (token->type == EXPRESSION)
 	{
 		debug("EXPRESSION");
-		
-
+		if (*input_tokens)
+		{
+			prev_old_list = (*input_tokens)->prev;
+			next_old_list = (*input_tokens)->next;
+		}
 		// will remove the current node but first saving it to a tmp to free it later
-		t_list *tmp = *input_tokens;
+		// t_list *tmp = *input_tokens;
 		// remove parenthesis from content
 		char *lexem = ft_substr(token->lexeme, 1, ft_strlen(token->lexeme) - 2);
 		debug("lexem %s", lexem);
@@ -182,13 +196,25 @@ t_list	*extract_expression(t_list **input_tokens)
 
 		if (new_token_list)
 		{
-			t_list *last = ft_lstlast(new_token_list);
+			t_list *last_new = ft_lstlast(new_token_list);
 			// check the previous it was not the first node in the list
-			if ((*input_tokens)->prev)
+			// check the next connection - not the last node in the list
+			if (next_old_list)
+			{
+				debug("not last node in the list");
+				next_old_list->prev = last_new;
+				last_new->next = next_old_list;
+			}
+			// last node in the list
+			else
+			{
+				debug("last node in the list");
+			}
+			if (prev_old_list)
 			{
 				debug("not first node in the list");
-				(*input_tokens)->prev->next = new_token_list;
-				new_token_list->prev = (*input_tokens)->prev;
+				prev_old_list->next = new_token_list;
+				new_token_list->prev = prev_old_list;
 			}
 			// it was the first node in the list
 			else
@@ -196,26 +222,19 @@ t_list	*extract_expression(t_list **input_tokens)
 				debug("it was the first node in the list ");
 				*input_tokens = new_token_list;
 			}
-			// check the next connection - not the last node in the list
-			if ((*input_tokens)->next)
-			{
-				(*input_tokens)->next->prev = last;
-				last->next = (*input_tokens)->next;
-			}
-			// last node in the list
-			else
-			{
-				debug("last node in the list");
-			}
 		}
 		// free the old token list
-		free(token->lexeme);
-		ft_lstdelone(tmp, free);
-		free(lexem);
+		// free(token->lexeme);
+		// free(lexem);
+		// ft_lstdelone(tmp, free);
+		// ft_lstiter(*input_tokens, print_token);
 	}
 	return (*input_tokens);
 }
 
+/*
+follows the grammar
+*/
 t_ast_node *parse_terminal(t_list **input_tokens)
 {
 	t_ast_node *a;
@@ -247,9 +266,18 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 		// write a function to handle the type expression
 		*input_tokens = extract_expression(input_tokens);
 
+	// print every token in the list
+		t_list *tmp = *input_tokens;
+		while (tmp)
+		{
+			token = (t_token *)tmp->content;
+			debug("token type: %d, %s", token->type, token->lexeme);
+			tmp = tmp->next;
+		}
+
 		token = (t_token *)(*input_tokens)->content;
 		debug("token type: %d, %s", token->type, token->lexeme);
-		if (token->type == PIPE || token->type == PIPE_AND || token->type == AND_IF || token->type == OR_IF)
+		if (token->type == PIPE || token->type == PIPE_AND || token->type == AND_IF || token->type == OR_IF || token->type == SEMI || token->type == AND_TOK)
 			break;
 		*input_tokens = (*input_tokens)->next;
 		if (*input_tokens)
@@ -336,12 +364,12 @@ t_ast_node	*parse_list(t_list **input_tokens)
 	if (input_tokens == NULL || *input_tokens == NULL)
 		return (NULL);
 	a = parse_pipeline(input_tokens);
-	if (a)
-		debug("asttype in parse_list: %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
-	else 
-		return (NULL);
-	if (*input_tokens)
-		debug("*input tokens content lexem %s", ((t_token *)(*input_tokens)->content)->lexeme);
+	// if (a)
+	// 	debug("asttype in parse_list: %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
+	// else 
+	// 	return (NULL);
+	// if (*input_tokens)
+	// 	debug("*input tokens content lexem %s", ((t_token *)(*input_tokens)->content)->lexeme);
 	while (*input_tokens)
 	{
 		// check for && and ||
@@ -457,14 +485,14 @@ void print_ast(t_ast_node *a)
 	// expand any lexemes that need to be expanded
 
 	// go to the next nodes and repeat
-	debug("---------left -----------");
+	// debug("---------left -----------");
 	if (a->left)
 		print_ast(a->left);
-	else
-		debug("left is NULL");
-	debug("---------right -----------");
+	// else
+	// 	debug("left is NULL");
+	//debug("---------right -----------");
 	if (a->right)
 		print_ast(a->right);
-	else
-		debug("right is NULL");
+	// else
+	// 	debug("right is NULL");
 }
