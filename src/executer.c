@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/17 10:17:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/17 10:18:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,10 @@ int	execute_command(t_list *tokenlist, t_data *data)
     perror("execve");
     return 127;
 }
+
 /*
+also needs to be refactored
+
 traverse the ast and execute the commands node by node left to right
 pipes
 To handle the piping in your code, you need to create a pipe using the 
