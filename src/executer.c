@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/15 18:47:59 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/17 10:17:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void	execute_builtin(t_list *tokenlist, t_data *data)
 	}
 	
 }
+
 /*
 free a **char array
 */
@@ -84,7 +85,8 @@ int	free_array(char **envpaths)
 }
 
 /*
-split the PATH variable into base paths
+look for an executable path and returns it if found
+it filrs split the PATH env variable into paths
 check if the base path is in the PATH variable
 if it is return true
 else return false
@@ -112,7 +114,9 @@ char	*create_path(char *base, t_data *data)
 	return (NULL);
 }
 
-
+/*
+needs to be completely refactored
+*/
 int	execute_command(t_list *tokenlist, t_data *data)
 {
 	t_token *token;
