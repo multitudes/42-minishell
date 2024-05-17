@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/17 15:13:02 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/17 16:03:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,20 +172,15 @@ void print_token(void *token)
 t_list	*extract_expression(t_list **input_tokens)
 {
 	t_token *token; 
-	t_list *prev_old_list;
 	t_list *next_old_list;
-	
-	token = (t_token *)(*input_tokens)->content;
-	if (token->type == EXPRESSION)
+
+	if (*input_tokens && ((t_token *)(*input_tokens)->content)->type == EXPRESSION)
 	{
+		next_old_list = (*input_tokens)->next;
+		token = (t_token *)(*input_tokens)->content;
 		debug("EXPRESSION");
-		if (*input_tokens)
-		{
-			prev_old_list = (*input_tokens)->prev;
-			next_old_list = (*input_tokens)->next;
-		}
 		// will remove the current node but first saving it to a tmp to free it later
-		// t_list *tmp = *input_tokens;
+		t_list *tmp = *input_tokens;
 		// remove parenthesis from content
 		char *lexem = ft_substr(token->lexeme, 1, ft_strlen(token->lexeme) - 2);
 		debug("lexem %s", lexem);
@@ -206,27 +201,17 @@ t_list	*extract_expression(t_list **input_tokens)
 				last_new->next = next_old_list;
 			}
 			// last node in the list
-			else
+			else if (next_old_list == NULL)
 			{
 				debug("last node in the list");
 			}
-			if (prev_old_list)
-			{
-				debug("not first node in the list");
-				prev_old_list->next = new_token_list;
-				new_token_list->prev = prev_old_list;
-			}
-			// it was the first node in the list
-			else
-			{
-				debug("it was the first node in the list ");
-				*input_tokens = new_token_list;
-			}
+			*input_tokens = new_token_list;
 		}
 		// free the old token list
-		// free(token->lexeme);
 		// free(lexem);
-		// ft_lstdelone(tmp, free);
+		free(token->lexeme);
+		ft_lstdelone(tmp, free);
+		tmp = NULL;
 		// ft_lstiter(*input_tokens, print_token);
 	}
 	return (*input_tokens);
@@ -265,7 +250,10 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 
 		// write a function to handle the type expression
 		*input_tokens = extract_expression(input_tokens);
-
+		if (head == NULL)
+			head = *input_tokens;
+		
+			
 	// print every token in the list
 		t_list *tmp = *input_tokens;
 		while (tmp)
@@ -283,7 +271,7 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 		if (*input_tokens)
 			token = (t_token *)(*input_tokens)->content;
 	}
-
+	debug("here? \n");
 	debug("new node - head content: %s", ((t_token *)(head->content))->lexeme);
 	
 	// if *input_tokens is not null I have a delimiter like a pipe or pipe_and
