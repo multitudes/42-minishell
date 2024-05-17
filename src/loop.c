@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/15 19:20:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/17 13:45:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,15 +309,15 @@ int loop(int argc, char **argv)
 				since the create_ast is recursive I pass the token list
 				separately to avoid rewriting the copy in my data 
 				*/
-				data->ast = create_ast(data, token_list);
+				data->ast = create_ast(token_list);
 				if (data->ast)
 				{
-					print_ast(data->ast);
+					// print_ast(data->ast);
 					analyse_expand(data->ast, data);
 					execute_ast(data->ast, data);
 				}
 				else
-					debug("syntax error");
+					debug("syntax parse error");
 			}
 		}
 	}

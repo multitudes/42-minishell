@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/17 10:07:41 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/17 13:39:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,13 +258,16 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 
 	debug("new node - head content: %s", ((t_token *)(head->content))->lexeme);
 	
+	// if *input_tokens is not null I have a delimiter like a pipe or pipe_and
+	// debug the prev and next pointer of current token
 	if (*input_tokens)
 	{
-		debug("new node - current content: %s", ((t_token *)((*input_tokens)->content))->lexeme);
-		debug("new node - current type: %d", ((t_token *)((*input_tokens)->content))->type);
+		debug("current token content: %s", ((t_token *)((*input_tokens)->content))->lexeme);
+		debug("current token type: %d", ((t_token *)((*input_tokens)->content))->type);
 	}
 	// if I have a pipe or pipe_and I need to break the list before my node and
 	// pass head to create a node with the previous list until the previous token
+	// ex || is not in the terminal node
 	if (*input_tokens)
 	{
 		if ((*input_tokens)->prev)
@@ -276,14 +279,8 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	a = new_node(NODE_TERMINAL, NULL, NULL, head);
 	if (a)
 		debug("new ast node type in parse_terminal: %d", a->type);
-	// state of my *input_tokens after parsing the terminal
-	// if (*input_tokens)
-	// 	debug("new token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
-	// else
-	// 	debug("new token is NULL");
 	return (a);
 }
-
 
 t_ast_node	*parse_pipeline(t_list **input_tokens)
 {
@@ -291,6 +288,7 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 	t_token *token;
 
 	a = NULL;
+	token = NULL;
 	if (*input_tokens == NULL || input_tokens == NULL)
 		return (NULL);
 	debug("parse_pipeline");
@@ -308,26 +306,33 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 	// if ((t_token *)(*input_tokens)->next)
 	// 	debug("next %s", ((t_token *)(*input_tokens)->next->content)->lexeme);
 
-	while (*input_tokens && (token->type == PIPE || token->type == PIPE_AND))
+	while (*input_tokens && (((t_token *)(*input_tokens)->content)->type == PIPE || ((t_token *)(*input_tokens)->content)->type == PIPE_AND))
 	{
 		debug("PIPE");
 		*input_tokens = (*input_tokens)->next; //consume the pipe or pipe_and token
+		if (!*input_tokens)		
+		{
+			// write(2, "syntax error near unexpected token `newline'\n", 44);
+			debug("syntax error near unexpected token `newline'");
+			free_ast(a);
+			return (NULL);
+		}
 		t_ast_node *b = parse_terminal(input_tokens);
 		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
 	}
-	
 	return (a);
 }
 	
-
 /**/
 t_ast_node	*parse_list(t_list **input_tokens)
 {
+	t_token *token;
 	t_ast_node *a;
 	t_ast_node *b;
 
 	a = NULL;
 	b = NULL;
+	token = NULL;
 	if (input_tokens == NULL || *input_tokens == NULL)
 		return (NULL);
 	a = parse_pipeline(input_tokens);
@@ -340,17 +345,25 @@ t_ast_node	*parse_list(t_list **input_tokens)
 	while (*input_tokens)
 	{
 		// check for && and ||
+		token = (t_token *)(*input_tokens)->content;
 		debug("in parse list - new token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
-		if (((t_token *)(*input_tokens))->type == AND_IF || ((t_token *)(*input_tokens))->type == OR_IF)
+		if (token->type == AND_IF || token->type == OR_IF)
 		{
 			debug("check for && and ||");
-			
-			t_token *token = (t_token *)(*input_tokens)->content;
 			*input_tokens = (*input_tokens)->next; //consume the && or || token
+			if (!input_tokens || !*input_tokens)
+			{
+				// write(2, "syntax error near unexpected token `newline'\n", 44);
+				debug("syntax error near unexpected token `newline'");
+				free_ast(a);
+				return (NULL);
+			}
 			b = parse_pipeline(input_tokens);
 			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
-		}	
-		 *input_tokens = (*input_tokens)->next;
+		}
+		debug("new ast node type in parse_list: %d", a->type);	
+		if (*input_tokens)
+			*input_tokens = (*input_tokens)->next;
 	}
 	return (a);
 }
@@ -360,183 +373,38 @@ introducing a new node type for the tree, t_ast_node.
 The tree will be composed of nodes, each node will have a type,
 a left and a right node, and a list of tokens as a t_list.
 */
-t_ast_node *create_ast(t_data *data, t_list *input_tokens)
+t_ast_node *create_ast(t_list *input_tokens)
 {
-	t_list *expr_token_list;
-	t_ast_node *node;
-	t_ast_node *left;
-	t_ast_node *right;
+	t_ast_node *a;
 	t_list *tmp;
 	t_token *token;
 	
+	a = NULL;
 	tmp = input_tokens;
 	token = NULL;
-	expr_token_list = NULL;
 	if (input_tokens == NULL)
 		return (NULL);		
-	
 	while (tmp)
 	{
 		token = (t_token *)tmp->content;
 		debug("token type: %d, %s", token->type, token->lexeme);
 		// refactoring to a new parser!! 
 		// should return the ast... not yet implemented
-		t_ast_node *a = parse_list(&tmp);
-
+		a = parse_list(&tmp);
 		debug("\nprint ast - a\n");
 		print_ast(a);
 		if (a)
-			debug("new type in : %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
+			debug("my ast root type in : %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
 		else
 			debug("a is NULL");
-		
-		if (tmp == NULL)
-			return (a);
-
-
-
-
-
-
-
-		// first we  check for && and ||
-		if (token->type == AND_IF || token->type == OR_IF)
-		{
-			debug("AND OR");
-			left = create_ast(data, expr_token_list);
-			if (left == NULL)
-				return (NULL);
-			right = create_ast(data, tmp->next);
-			if (right == NULL)
-				return (NULL);
-			node = new_node(NODE_LIST, left, right, ft_lstnew(token));
-			// free the token list?
-			// ft_lstclear(&expr_token_list, free);
-			return (node);
-		}
-		// as long as I dont find a && or || I will add the token to the list
-		ft_lstadd_back(&expr_token_list, ft_lstnew(token));
-		tmp = tmp->next;
 	}
-
-	// here I need to traverse my list again to check for pipes
-	input_tokens = expr_token_list;
-	expr_token_list = NULL;
-	tmp = input_tokens;
-	// che ck for the pipes
-	while (tmp)
-	{
-		token = (t_token *)tmp->content;
-		if (token->type == PIPE || token->type == PIPE_AND)
-		{
-			debug("PIPE");
-			if (is_redirection(expr_token_list))
-				left = create_ast(data, expr_token_list);
-			else 
-				left = new_node(NODE_TERMINAL, NULL, NULL, expr_token_list);
-			if (left == NULL)
-			{
-				debug("left is NULL");	
-				return (NULL);
-			}
-			right = create_ast(data, tmp->next);
-			if (right == NULL)
-				return (NULL);
-			node = new_node(NODE_PIPELINE, left, right, ft_lstnew(token));
-			// free the token list ? not here because the pointer is used in the tree!
-			// ft_lstclear(&expr_token_list, free);
-			return (node);
-		}
-		// as long as I dont find a | or |& I will add the token to the list
-		ft_lstadd_back(&expr_token_list, ft_lstnew(token));
-		tmp = tmp->next;
-	}
-	
-	// I am here. my token list has no pipe
-	// chedck for the redirections if I do not have any pipe
-	// here I need to traverse my list again to check for redirections
-	input_tokens = expr_token_list;
-	expr_token_list = NULL;
-	tmp = input_tokens;
-	while (tmp)
-	{
-		token = (t_token *)tmp->content;
-		debug("check redir token type: %d, %s", token->type, token->lexeme);
-
-		if (token->type == REDIRECT_OUT || token->type == REDIRECT_BOTH || 
-		token->type == GREATAND)
-		{
-			debug("REDIRECT_OUT");
-			left = new_node(NODE_TERMINAL, NULL, NULL, expr_token_list);
-			if (left == NULL)
-			{
-				debug("left is NULL");	
-				return (NULL);
-			}
-			right = create_ast(data, tmp->next);
-			if (right == NULL)
-			{
-				debug("right is NULL");
-				return (NULL);
-			}
-			node = new_node(NODE_REDIRECT, left, right, ft_lstnew(token));
-			// free the token list?
-			// ft_lstclear(&expr_token_list, free);
-			return (node);
-		}
-		// as long as I dont find a << or >>  or < or > I will add the token to the list
-		ft_lstadd_back(&expr_token_list, ft_lstnew(token));
-		tmp = tmp->next;
-	}
-	// I am here. my token list has no pipe and no redirection and no DLESSs
-	// if I get here it is my terminal the leaf...?
-	// no I need to check if it is a expression and if so redo the scanning...
-	input_tokens = expr_token_list;
-	expr_token_list = NULL;
-	tmp = input_tokens;
-	while (tmp)
-	{
-		token = (t_token *)tmp->content;
-		if (token->type == EXPRESSION)
-		{
-			debug("EXPRESSION");
-			// remove parenthesis from content
-			char *lexem = ft_substr(token->lexeme, 1, ft_strlen(token->lexeme) - 2);
-			debug("lexem %s", lexem);
-			token->type = COMMAND;
-			// create a new token list
-			data->input = lexem;
-			t_list *new_token_list = tokenizer(data->input);
-			if (new_token_list == NULL)
-				return (NULL);
-			// free the old token list
-			// ft_lstclear(&expr_token_list, free);	
-			return (create_ast(data, new_token_list));					
-		}
-		// as long as I dont find an expression I will add the token to the list
-		ft_lstadd_back(&expr_token_list, ft_lstnew(token));
-		tmp = tmp->next;	
-	}
-	// check if I have a true or false
-	token = (t_token *)expr_token_list->content;
-	if (count_list(expr_token_list) == 1 && strncicmp(token->lexeme, "true", 4) == 0)
-		node = new_node(NODE_TRUE, NULL, NULL, ft_lstnew(token));
-	else if (count_list(expr_token_list) == 1 && strncicmp(token->lexeme, "false", 5) == 0)
-		node = new_node(NODE_FALSE, NULL, NULL, ft_lstnew(token));
-	else
-	{
-		// if I get here I am a terminal node (command or builtin)
-		debug("TERMINAL");
-		node = new_node(NODE_TERMINAL, NULL, NULL, expr_token_list);
-	}
-
-	return (node);
+	return (a);
 }
 
 
 void		free_ast(t_ast_node *ast)
 {
-	if (ast==NULL)
+	if (ast == NULL)
 		return ;
 	free_ast(ast->left);
 	free_ast(ast->right);
@@ -563,21 +431,17 @@ struct s_token {
 };
 typedef struct s_token t_token;
 */
-void print_ast(t_ast_node *ast)
+void print_ast(t_ast_node *a)
 {
-	if (ast == NULL)
+	t_list *tokenlist;
+	t_token *token;
+
+	if (a == NULL)
 	{
 		debug("ast is NULL");
 		return ;
 	}
-	// debug("\nparser");
-	// debug("ast node type: %d ", ast->type);
-
-    // print node
-	t_list *tokenlist;
-	t_token *token;
-
-	tokenlist = ast->token_list;
+	tokenlist = a->token_list;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return ;
 	// traverse the token list
@@ -594,13 +458,13 @@ void print_ast(t_ast_node *ast)
 
 	// go to the next nodes and repeat
 	debug("---------left -----------");
-	if (ast->left)
-		print_ast(ast->left);
+	if (a->left)
+		print_ast(a->left);
 	else
 		debug("left is NULL");
 	debug("---------right -----------");
-	if (ast->right)
-		print_ast(ast->right);
+	if (a->right)
+		print_ast(a->right);
 	else
 		debug("right is NULL");
 }
