@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 10:25:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 12:30:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@
 # include <stdlib.h>
 # include <assert.h>
 # include <limits.h>
-# include "handle_path.h"
 # include "parser.h"
 # include "history.h"
 # include "analyser.h"
@@ -68,6 +67,7 @@ including the macro below which is not allowed by norminette.
 
 // for the history - can override with 
 // -DMINIHISTFILE='"new relative path"' -DHISTSIZE=1000
+// look at cat $HOME/.minishell_history
 #define MINIHISTFILEPATH "/.minishell_history"
 #define MINIHISTFILESIZE  1000
 
@@ -92,7 +92,6 @@ struct s_data
 	t_list		*token_list;
 	t_darray	*env_arr;
 	t_ast_node	*ast;
-	char		*DLESS_delimiter;
 	int			exit_status;
 	bool		scanner_error;
 	char		*scanner_err_str;
@@ -102,7 +101,7 @@ struct s_data
 };
 typedef struct s_data t_data;
 
-int		loop(int argc, char **argv);
+int		loop();
 int		init_data(t_data **data);
 void	free_data(t_data *data);
 

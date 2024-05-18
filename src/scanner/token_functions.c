@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:59:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 10:06:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ t_list	*create_token(t_tokentype type, const char *lexeme, int *i)
 		return (NULL);
 	token->type = type;
 	token->lexeme = ft_strdup(lexeme);
-	token->start = *i;
 	*i = *i + ft_strlen(lexeme);
 	debug("token created %p -%s-", token, token->lexeme);
 	new_node = ft_lstnew(token);

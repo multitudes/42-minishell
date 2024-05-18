@@ -12,15 +12,15 @@ OBJ_DIR		= 	../obj/
 SRC_DIR		= 	../src/
 
 # the file to tests (SUT = System Under Test)
-SUT_SRCS 	= 	$(addprefix $(SRC_DIR), loop.c history.c scanner/scanner.c \
-scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
+SUT_SRCS 	= 	$(addprefix $(SRC_DIR), loop.c history/history.c history/history2.c \
+scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
 scanner/token_operators.c scanner/token_blocks.c scanner/history_tokens.c \
-scanner/redirection_tokens.c environment.c handle_path.c parser.c analyser.c \
+scanner/redirection_tokens.c environment.c parser.c analyser.c	utils.c	\
 executer.c error.c darray.c)
 SUT_HDRS 	= 	$(addprefix ../include/, minishell.h scanner.h environment.h \
-handle_path.h parser.h analyser.h executer.h error.h darray.h) 
+parser.h analyser.h executer.h error.h darray.h) 
 
 # will be compiled into object files
 SUT_OBJS 	= 	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SUT_SRCS))

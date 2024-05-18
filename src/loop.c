@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/17 13:45:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 12:58:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ void	free_data(t_data *data)
 {
 	if (data == NULL)
 		return ;
-	// free the environ
-	free((void*)data->input);
+	// free the environ array
 	darray_clear_destroy(data->env_arr);
 	free(data->ast);
 	free(data);
@@ -145,7 +144,7 @@ int	init_data(t_data **data)
 	if (environ == NULL)
 	{
 		perror("environ is NULL");
-		return (0);
+		// return (0);
 	}
 	i = 0;
 	
@@ -157,10 +156,9 @@ int	init_data(t_data **data)
 		perror("malloc env_array");
 		return (0);
 	}
-	i = 0;
-	while (environ[i])
-	{ 
 
+	while (environ && environ[i])
+	{ 
 		env = ft_strdup(environ[i]);
 		if (env == NULL)
 		{
@@ -177,31 +175,21 @@ int	init_data(t_data **data)
 		i++;
 	}
 	darray_push(env_array, NULL);
-	debug("env_array->end: %d\n", env_array->end);
+	debug("added %d env vars to my minishell data\n", env_array->end);
 	*data = malloc(sizeof(t_data));
 	if (*data == NULL)
 	{
 		perror("malloc init_data");
+		darray_clear_destroy(env_array);
 		return (0);
 	}
 	(*data)->env_arr = env_array;
 	(*data)->ast = NULL;
-	(*data)->DLESS_delimiter = NULL;
 	(*data)->exit_status = 0;
-	(*data)->input = NULL;
+	(*data)->input = "";
 	(*data)->token_list = NULL;
 	return (1);
 }
-
-/*
-Not a handler - it will exit if there is an error
-*/
-int	_exit_err(char *msg)
-{
-	write(1, msg, ft_strlen(msg));
-	return (1);
-}
-
 
 /*
 for signals
@@ -235,28 +223,11 @@ static void	exit_handler(int sig)
 	return ;
 }
 
-
-
 /*
-	// check if interactive or not example
-	// the isatty() function returns 1 if the file descriptor is an open file,
-	// 0 if it is not, and -1 if an error occurs.
-	if (isatty(STDIN_FILENO))
-		debug("interactive mode \n");
-	else if (isatty(STDIN_FILENO) == 0)
-		debug("non interactive mode \n");
-	else if (isatty(STDIN_FILENO) == -1)
-		perror("isatty\n");
 
-	TODO:
-	init and implement signals. ctrl-c, ctrl-d, ctrl-z, ctrl-\
-	create error handling - check if input is valid - Incorrect command -
-		incorrect number of arguments - permission denied - system call error
 */
-int loop(int argc, char **argv)
+int loop()
 {
-	(void)argc;
-	(void)argv;
 	t_data *data;
 
 	data = NULL;
@@ -267,31 +238,22 @@ int loop(int argc, char **argv)
 
 	// on mac I with ctrl - c i get a new line on bash
 	rl_catch_signals = 0;
-
 	// signal handling
 	// ◦ ctrl-C SIGINT displays a new prompt on a new line. 
 	// ◦ ctrl-D exits the shell.
 	// ◦ ctrl-\ SIGQUIT does nothing.	
-	
 	if (isatty(STDIN_FILENO))
 	{
 		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-		return (_exit_err("SIG_ERR signal failed\n"));
+			return (_exit_err("SIG_ERR signal failed\n"));
 		debug("interactive mode \n");
 	}
 	else if (isatty(STDIN_FILENO) == 0)
 		debug("non interactive mode \n");
 	else if (isatty(STDIN_FILENO) == -1)
 		perror("isatty\n");
-	// The sig argument identifies the signal whose disposition 
-	// we want to retrieve or change. 
-	//This argument can be any signal except SIGKILL or SIGSTOP.
-
-	
-	// signal(SIGINT, SIG_IGN);
-	
-	data->input = "";
+			
 	while (data->input != NULL)
 	{
 		data->input = readline("minishell $ ");
@@ -299,17 +261,15 @@ int loop(int argc, char **argv)
 		if (data->input && ft_strncmp(data->input, "", 1))
 		{
 			sanitize_input(data->input);
-			// check best error handling
-			if (!handle_history(data))
-				debug("failed to handle history\n");
-			t_list *token_list = tokenizer(data->input);
-			if (token_list != NULL)
+			handle_history(data);
+			data->token_list = tokenizer(data->input);
+			if (data->token_list != NULL)
 			{
 				/*
 				since the create_ast is recursive I pass the token list
 				separately to avoid rewriting the copy in my data 
 				*/
-				data->ast = create_ast(token_list);
+				data->ast = create_ast(data->token_list);
 				if (data->ast)
 				{
 					// print_ast(data->ast);
@@ -338,6 +298,5 @@ int loop(int argc, char **argv)
 	rl_replace_line("", 0);
 	rl_redisplay();
 	write(1, "exit\n", 6);
-	printf("\a");
 	return (0);
 }

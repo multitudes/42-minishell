@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_path.h                                      :+:      :+:    :+:   */
+/*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/13 17:48:29 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/04/22 12:15:12 by lbrusa           ###   ########.fr       */
+/*   Created: 2024/05/18 15:38:35 by lbrusa            #+#    #+#             */
+/*   Updated: 2024/05/18 15:39:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HANDLE_PATH_H
-# define HANDLE_PATH_H
+#ifndef UTILS_H
+# define UTILS_H
 
 # include "minishell.h"
-// forward declaration
-typedef struct s_mini_data t_mini_data;
 
-t_list	*get_path_linked_list(char *path);
-void	print_path_list(t_list *path_list);
-bool	add_path(t_mini_data *data);
+int ft_isascii(const int c);
 
-#endif
+
+#endif  // UTILS_H_

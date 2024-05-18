@@ -21,15 +21,15 @@ SRC_DIR			= 	src/
 LIBFTDIR 		= 	lib/libft
 
 # the files to compile
-SRCS 			= 	$(addprefix $(SRC_DIR), main.c loop.c history.c scanner/scanner.c \
-scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
+SRCS 			= 	$(addprefix $(SRC_DIR), main.c loop.c history/history.c history/history2.c \
+scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
 scanner/token_operators.c scanner/history_tokens.c scanner/token_blocks.c \
-scanner/redirection_tokens.c environment.c handle_path.c parser.c analyser.c \
+scanner/redirection_tokens.c environment.c parser.c analyser.c utils.c\
 executer.c error.c darray.c)
 OBJS 			=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
-HDRS 			=	$(addprefix include/, minishell.h scanner.h environment.h handle_path.h \
+HDRS 			=	$(addprefix include/, minishell.h scanner.h environment.h \
 parser.h analyser.h executer.h error.h darray.h) 
 
 # linker flags and libraries

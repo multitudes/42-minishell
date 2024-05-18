@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:23:18 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/04/19 11:42:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 12:08:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "minishell.h"
 
-int	err_stop(char *msg);
+int	_exit_err(char *msg);
 
 #endif  // ERROR_H_
 

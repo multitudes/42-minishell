@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/17 16:17:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/17 16:58:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,16 @@ I am creating a ast tree for my context free grammar with these structs...
 
 typedef enum	e_nodetype 
 {
+	NODE_NULL,
 	NODE_LIST,
+	NODE_PIPELINE, 
+	NODE_COMMAND, 
+	NODE_TERMINAL,
 	NODE_TRUE,
 	NODE_FALSE,
-	NODE_PIPELINE, 
-	NODE_REDIRECT, 
 	NODE_BUILTIN,
-	NODE_COMMAND, 
-	NODE_DLESS,
-	NODE_TERMINAL,
-	NODE_NULL
+	// NODE_REDIRECT, 
+	// NODE_DLESS,
 } 				t_nodetype;
 
 /*
@@ -51,12 +51,14 @@ typedef struct			s_ast_node {
 }						t_ast_node;
 
 t_ast_node	*create_ast(t_list *token_list);
-void		free_ast(t_ast_node *ast);
 t_ast_node*	new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_list *expr_token_list);
-void 		print_ast(t_ast_node *ast);
 t_ast_node	*parse_list(t_list **input_tokens);
 t_ast_node	*parse_pipeline(t_list **input_tokens);
-
+t_ast_node	*parse_terminal(t_list **input_tokens);
+bool		extract_expression(t_list **input_tokens);
+void 		print_ast(t_ast_node *ast);
+void 		print_token(void *token);
+void		free_ast(t_ast_node *ast);
 
 #ifdef __cplusplus
 }
