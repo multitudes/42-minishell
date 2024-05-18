@@ -206,26 +206,21 @@ Where DLESS is the heredoc operator, and the other operators are the redirection
 Our job is to scan through the list of characters and group them together into the smallest sequences that still represent something. Each of these blobs of characters is called a lexeme.
 example of lexeme
 ```
-  enum TokenType {
-    // Single-character tokens.
-    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
-    COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
-    // One or two character tokens.
-    BANG, BANG_EQUAL,
-    EQUAL, EQUAL_EQUAL,
-    GREATER, GREATER_EQUAL,
-    LESS, LESS_EQUAL,
-// Literals.
-    WORD, STRING, NUMBER,
-// Keywords.
-    AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
-    PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
-EOF
-}
-```
-To add:
+typedef enum e_tokentype {
+	WORD,  // Any sequence of letters, digits, and underscores
+	NUMBER, // like 42 42.42 -2 etc 
+	BUILTIN,
+	FLAGS,
+	PATHNAME, 
+	PIPE, // | - | and |& have higher precedence than &&, ||, ;, and &. 
 
-metacharacter
+	AND_IF, 	// &&
+	OR_IF, // || 
+	...
+} t_tokentype;
+```
+## Tokens
+### Metacharacters
 A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
 
 A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
@@ -237,10 +232,10 @@ A sequence of characters treated as a unit by the shell. Words may not include u
 
 The core of the scanner is a loop. Starting at the first character of the source code, it figures out what lexeme it belongs to, and consumes it and any following characters that are part of that lexeme. When it reaches the end of that lexeme, it emits a token.
 
-## parsing
+## Parsing
 In order to evaluate an arithmetic node, you need to know the numeric values of its subtrees, so you have to evaluate those first. That means working your way from the leaves up to the root—a post-order traversal:If I gave you an arithmetic expression, you could draw one of these trees pretty easily.
 
-## context-free grammar (CFG). 
+## Context-free grammar (CFG). 
 A formal grammar takes a set of atomic pieces it calls its “alphabet”. Then it defines a (usually infinite) set of “strings” that are “in” the grammar. Each string is a sequence of “letters” in the alphabet.
 
 A grammar naturally describes the hierarchical structure of most programming language constructs. For example, an if-else statement in Java can have  
@@ -256,8 +251,8 @@ A nonterminal is a named reference to another rule in the grammar. It means “p
 
 To make this concrete, we need a way to write down these production rules. People have been trying to crystallize grammar all the way back to Pāṇini’s Ashtadhyayi, which codified Sanskrit grammar a mere couple thousand years ago. Not much progress happened until John Backus and company needed a notation for specifying ALGOL 58 and came up with Backus-Naur form.
 
-## functions authorised
-### readline
+## Functions authorised
+### The readline function
 The readline() function is not a standard C library function, but rather a function provided by the GNU Readline library.  
 
 Here's a basic example:
@@ -284,7 +279,7 @@ int main() {
 need linking with `-lreadline` when compiling.
 Using add_history() function, we add the input to the history list maintained by Readline. This allows users to recall and edit previously entered command lines using the up and down arrow keys. It seems that we are not allowed to use the history_list() function or the history_get() function therefore we will have to implement our own history list.
 
-## on the mac m1 
+## On the mac m1 
 I could get the readline and add_history functions to work on my mac m1. 
 But to get the rl_clear_history to work I had to switch libraries. Apparently the readline on the mac is not complete. So using brew I installed the GNU readline and linked it to my project in the makefile using the path found with `brew --prefix readline` which in my system expands to `/opt/homebrew/opt/readline/`.
 So my include path and LIBS path look like this:
@@ -297,7 +292,7 @@ LDLIBS += -L$(shell brew --prefix readline)/lib
 The rl_clear_history function is part of the GNU Readline library, and it is used to clear the history list maintained by Readline. The history list typically stores previously entered command lines, allowing users to recall and edit them.
 
 
-## structure 
+## Structure 
 - Phases of the interpreter—scanning, parsing, and
 evaluating code.
 
@@ -327,15 +322,15 @@ To check whether the shell is running in interactive mode or non-interactive mod
 ## Create an infinite loop for the prompt
 we can display a prompt to the user. This input can be a single command or multiple commands separated by a semicolon. To read input from the user, we can use the getline function which reads a line of input from the user. 
 
-## Parse User Input
+## Parsing User Input
 
 we will need to read the input from and split it into tokens. These tokens can then be analyzed to determine the command the user wants to execute and any arguments or options they have provided. 
 
-## Execute Commands
+## Executing Commands
 
 This involves creating a child process to run the command and using system calls to execute it. To execute the command, we can use the 'execve()' function which executes a command by searching for the executable file in the system’s path environment variable. You will also need to handle any errors that may occur during command execution.  
 
-## Handle the PATH
+## Handling the PATH
 
 A path is a list of directories that the shell uses to search for executable files. When a user enters a command in the shell, the shell searches for the corresponding executable file in each directory listed in the path until it finds the executable.
 
@@ -387,13 +382,10 @@ To implement pipes, we can use the pipe() function to create a pipe and the fork
    - Example: `ls | grep "pattern"`
    - This command lists the files in the current directory and pipes the output to `grep` to filter lines containing the specified pattern.
 
-this might not needed in our minishell but leaving it here for completeness:
-6. **`2>` and `2>>` (Standard Error Redirection):**
-   - Redirects the standard error output of a command to a file (similar to `>` and `>>` for standard output).
-   - Example: `command 2> error.log`
-   - This command runs `command` and redirects any error messages to a file named `error.
+this will not needed in our minishell but leaving it here for completeness:  
 
-## Support Background Jobs
+## Background Jobs 
+(not to be implemented in this project)
 
 Background jobs allow a command to be executed in the background, allowing the user to continue working in the shell while the command runs. 
 example:
@@ -404,16 +396,17 @@ $
 ```
 After entering the command follwed by `&` the shell will display the process id of the background job and the job number.
 
-## ERROR HANDLING
+## Error Handling
 
-One important aspect of error handling in a shell is checking the return value of system calls and library functions. These calls may fail for various reasons, such as invalid input, insufficient memory, or resource constraints. For example, if the fork() system call fails, it may indicate that the system is out of process resources.
+We check the return/exit value of system calls and library functions and store it in a global variable. After the last command is executetd we check the value of the global variable and update the environment variable `$?` with the value.
 
-Another aspect of error handling is handling signals. Signals are used by the operating system to notify a process of various events, such as a segmentation fault or a user interrupt. 
+The shell should provide meaningful error messages to the user when a command fails. 
 
-Finally, a shell should provide meaningful error messages to the user when a command fails. For example, if the user enters an invalid command, the shell should display an error message indicating that the command is not recognized. Similarly, if a command fails due to a system error, the shell should display an appropriate error message to the user.
-
-Examples of the types of errors that a simple shell may encounter and how they can be handled
+Examples of the types of errors that a simple shell may encounter and how they can be handled:
 ex incorrect command,  incorrect number of arguments, permission denied, system call error, signal handling, memory allocation error, etc.
+
+## Signale
+Signals are used by the operating system to notify a process of various events, such as a segmentation fault or a user interrupt. 
 
 ## Memory Leaks
 
@@ -427,7 +420,7 @@ with flags and options as appropriate.
 
 I have a suite of tests developed for this purpose. Unit tests can be used to test functions and components of the shell, while integration tests can be used to test the shell as a whole.
 
-## bonus
+## The Bonus Part
 > Your program has to implement:  
 	• && and || with parenthesis for priorities.
 	• Wildcards * should work for the current working directory.
@@ -506,15 +499,9 @@ Wildcards, such as `*`, are used for pattern matching in file names. Here are so
    ```
    - This command searches for the specified pattern in all files with a `.md` extension.
 
-6. **Archive all `.txt` files into a tarball:**
-   ```bash
-   tar -cvf archive.tar *.txt
-   ```
-   - This command creates a tarball (`archive.tar`) containing all files with a `.txt` extension in the current directory.
-
 These examples demonstrate how wildcards can be used in combination with various commands for file manipulation and processing in the current working directory.
 
-## delimiters 
+## Delimiters 
 In bash, a delimiter is a character or a set of characters that separates different parts of the command line. The delimiters you've listed are a good start, but bash has a few more. Here's an expanded list:
 
 Space (' ')
@@ -635,67 +622,6 @@ esac
 ```
 
 
-```
-typedef enum e_tokentype {
-    // Control operators
-    PIPE, // '|'
-    PIPE_AND, // '|&'
-    OR_OR, // '||'
-    AND_IF, // '&&'
-    AND, // '&'
-    SEMICOLON, // ';'
-    // Grouping commands
-    LEFT_PAREN, // '('
-    RIGHT_PAREN, // ')'
-    // Case statement separators
-    SEMICOLON_SEMICOLON, // ';;'
-    SEMICOLON_AND, // ';&'
-    SEMICOLON_SEMICOLON_AND, // ';;&'
-    // Single-character tokens
-    LEFT_CURLY, // '{'
-    RIGHT_CURLY, // '}'
-    COMMA, // ','
-    DOT, // '.'
-    MINUS, // '-'
-    PLUS, // '+'
-    SLASH, // '/'
-    STAR, // '*'
-    QUESTION, // '?'
-    COLON, // ':'
-    // One or two character tokens
-    BANG, // '!'
-    BANG_EQUAL, // '!='
-    EQUAL, // '='
-    EQUAL_EQUAL, // '=='
-    GREATER, // '>'
-    GREATER_EQUAL, // '>='
-    LESS, // '<'
-    LESS_EQUAL, // '<='
-    // Redirection operators
-    REDIRECT_OUT, // '>'
-    REDIRECT_IN, // '<'
-    DGREAT_OUT, // '>>'
-    DLESS, // '<<'
-    REDIRECT_OUT_AND_ERR, // '&>'
-    REDIRECT_ERR, // '2>'
-    // Command substitution
-    COMMAND_SUBSTITUTION, // '$(command)' or '`command`'
-    // Literals
-    WORD, // Any sequence of letters, digits, and underscores
-    STRING_TOK, // Any sequence of characters surrounded by quotes
-    NUMBER_TOK, // Any sequence of digits
-    // Keywords
-    IF, THEN, ELSE, ELIF, FI, DO, DONE, WHILE, UNTIL, FOR, CASE, ESAC, SELECT, FUNCTION,
-    // Special variables
-    DOLLAR_QUESTION, // '$?'
-    DOLLAR_DOLLAR, // '$$'
-    DOLLAR_STAR, // '$*'
-    DOLLAR_AT, // '$@'
-    DOLLAR_HASH, // '$#'
-    DOLLAR_BANG, // '$!'
-} t_tokentype;
-```
-
 ## control operators
 A control operator in bash is one of those ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’
 
@@ -742,13 +668,12 @@ while (input != NULL)
 
 free(input);
 ```
-## ISR? 
+## ISR - interrupt service routine
 The __interrupt and __irq keywords are used in some programming languages and environments to declare interrupt service routines (ISRs). An ISR is a special kind of function that is executed in response to an interrupt signal.
 An interrupt is a signal to the processor emitted by hardware or software indicating an event that needs immediate attention. The processor responds by suspending its current activities, saving its state, and executing a function called an interrupt handler (or an interrupt service routine, ISR) to deal with the event. This activity is called "servicing the interrupt."
 The __interrupt or __irq keyword is used to tell the compiler that the declared function is an ISR. This can affect the generated code for the function, as ISRs often need to save and restore more processor state than regular functions, and may need special instructions for returning from the function.
-The exact details of how the __interrupt or __irq keyword works, and how ISRs are written and work, can depend on the specific programming language, compiler, and hardware you're using.
 
-## input special characters
+## Input Special Characters
 In a bash shell, you can input a character in hexadecimal using the format $'\xHH', where HH is the hexadecimal value. For example, $'\x04' represents the character with the ASCII value 4.
 echo -e "The control character for end of transmission is $'\x04'"
 In this command, echo -e enables interpretation of backslash escapes, and $'\x04' is replaced by the character with the ASCII value 4.
@@ -759,7 +684,7 @@ If you want to input a character in hexadecimal in your program, you can simply 
 char c = '\x04';
 char *s = "\x04";
 
-## expansion in bash
+## Expansion in bash
 In bash, expansion refers to the process of replacing a special character or sequence of characters with a value. There are several types of expansion in bash, including:
 
 - $identifier or ${identifier} is used for variable expansion. The identifier is the name of the variable. Bash replaces $identifier or ${identifier} with the value of the variable.
@@ -781,7 +706,7 @@ ex:
 echo "The result of 2 + 2 is $((2 + 2))"
 ```
 
-## expanding with quotes
+## Expanding with quotes
 
 ```
 (base)  % cat $"HOME"
@@ -797,7 +722,7 @@ Three cases:
 - `$HOME` : This is the correct way to expand the HOME environment variable. It expands to the path of your home directory.
 - `$'HOME'` : This is used for string literals in Bash, where escape sequences (like `\n` for newline) are interpreted. Since `HOME` doesn't contain any escape sequences, `$'HOME'` is equivalent to `'HOME'`. So cat `$'HOME'` also tries to display the contents of a file named HOME in the current directory.
 
-## set env variables
+## Set env variables
 If you want to set an environment variable for the new program, you need to use the third argument to `execve()`, which is an array of strings representing the new environment. Each string in this array should be in the format name=value.
 
 ```
@@ -850,9 +775,9 @@ The single quotes (') are treated as literal characters within the double quotes
 
 So, if var="world", your command will output Hello' world'.
 
-## redirections
+## Redirections
 Bash does handle redirections without a command. It's just that there's no command to execute, so nothing will be written to/read from the redirections.
-Regarding the problematic case, DLESSs should (preferably) be handled during or right after parsing.
+Regarding this problematic case, DLESSs should (preferably) be handled during or right after parsing.
 Look at these cases in bash:
 
 ### case 1 (no syntax error):
@@ -938,6 +863,7 @@ delimiter is the string that marks the beginning and end of the DLESS.
 NEWLINE separates the delimiter from the content of the DLESS and the content from the ending delimiter.
 content is the text of the DLESS.
 The expression before "<<" in the DLESS rule ensures that a DLESS is associated with a command, which is necessary because a DLESS is a form of input redirection.
+
 ## Traversing an Abstract Syntax Tree (AST) 
 typically involves using a depth-first search. There are three types of depth-first traversals: pre-order, in-order, and post-order.  
  
@@ -976,8 +902,8 @@ Here's a breakdown of what "Left-to-right, Leftmost derivation" means:
 
 LL parsers are often used for their simplicity and efficiency. They can be used to parse a wide range of programming languages, although they are not powerful enough to parse all of them.
 
-## rebase
-working in a team and using git sometimes it is better to use rebase instead of merge.
+## Git rebase
+Working in a team and using git sometimes it is better to use rebase instead of merge.
 
 Rebase is a Git command that allows you to integrate changes from one branch into another. It's often used to keep a feature branch up-to-date with the latest code from the main branch.
 
@@ -1071,20 +997,22 @@ Here's an example of how to use the . command:
 This will execute the myscript.sh script in the current shell. If myscript.sh sets any environment variables, those variables will be available in the current shell after the script is executed.
 
 # extras
-## the PWD builtin
-I just realized how difficult the pwd builtin is if you want to make it behave like bash (some evaluators insist on taking bash as a reference when implementing the builtins)
-On shell startup:
-If: PWD is unset, set it to getcwd()
-Else If: PWD is set, but the directory described by PWD does not exist, set it to getcwd()
-Else If: PWD is set, but the directory described by PWD does not have the same inode number as the directory described by getcwd(), then set it to getcwd()
+## The PWD builtin
+[from a student at 42...]
+I just realized how difficult the pwd builtin is if you want to make it behave like bash (some evaluators insist on taking bash as a reference when implementing the builtins). 
+On shell startup:  
+If: PWD is unset, set it to getcwd()  
+Else If: PWD is set, but the directory described by PWD does not exist, set it to getcwd()  
+Else If: PWD is set, but the directory described by PWD does not have the same inode number as the directory described by getcwd(), then set it to getcwd()  
 Else: don't change it
-Set a hidden variable to the value of PWD. It cannot be set or unset manually, only cd can change it
-When calling cd:
+Set a hidden variable to the value of PWD. It cannot be set or unset manually, only cd can change it  
+When calling cd:  
 Set PWD to the path requested (if chdir() was successful), instead of the value of getcwd()
 On success, set the hidden variable to PWD
-When calling pwd:
-Print the hidden variable, ignore the value of PWD or getcwd().
-This behavior mirror pretty much what bash's pwd builtin does, and it has the following implications:
+When calling pwd:  
+Print the hidden variable, ignore the value of PWD or getcwd().  
+This behavior mirror pretty much what bash's pwd builtin does, and it has the following implications:  
+```
 $ mkdir real real2 #create 2 directories (different inodes)
 $ ln -s real fake  #symlink1 (inode of first dir)
 $ ln -s real fake2  #symlink2 (inode of first dir)
@@ -1104,10 +1032,11 @@ $ PWD=~/real2 bash -c pwd  #PWD exists but doesn't have the same inode number, s
 ~/real
 $ PWD= bash -c pwd  #PWD is unset, set to getcwd()
 ~/real
-All minishells I've seen always print ~/real (without the tilde of course) instead of the other cases. Would anyone consider this as mandatory in any way? Since we've had so many discussion about implement the builtins "fully", although neither subject nor evaluation sheet explicitly tell you to implement the specific behaviors in question (cd -, cd without args, export without args, exit argument handling, echo handling of -n, etc.)
+```
+All minishells I've seen always print `~/real` (without the tilde of course) instead of the other cases. Would anyone consider this as mandatory in any way? Since we've had so many discussion about implement the builtins "fully", although neither subject nor evaluation sheet explicitly tell you to implement the specific behaviors in question (cd -, cd without args, export without args, exit argument handling, echo handling of -n, etc.)
 
 
-## some commands
+## Some commands cases
 ```
 bash-3.2$ export myvar=`ls -l`
 bash-3.2$ $myvar
@@ -1116,10 +1045,11 @@ bash: total: command not found
 why this? When you try to use $myvar as a command, Bash attempts to execute the first word of myvar's value as a command. In this case, the first word is likely "total" (the first word in the output of ls -l), which is not a valid command, hence the error message "total: command not found".
 
 
-
+```
 bash-3.2$ export myvar=`ls -l`
 bash-3.2$ $(ls)
 bash: LICENSE: command not found
+```
 
 So, if the first file or directory listed by ls -l is LICENSE, Bash will try to execute LICENSE as a command, which is not valid, hence the error message "LICENSE: command not found".
 
