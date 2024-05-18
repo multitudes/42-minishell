@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/15 17:07:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 10:40:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,14 @@
 #include "environment.h"
 
 /*
-util function to update the environ variable
 This function will join three strings together
-I could do this as often used (see man page for strlcpy and strlcat)
+This pattern is often used 
+(see man page for strlcpy and strlcat)
+
 size_t n = ft_strlcpy(result, s1, total_length)
 if (n > total_length)
 	return (NULL); 
+
 but since in this function I know the total length of the string
 because I allocate it such checks are not needed
 */
@@ -39,17 +41,6 @@ char* ft_strjoin3(const char* s1, const char* s2, const char* s3) {
     return result;
 }
 
-/*
-struct s_mini_data 
-{
-	t_darray	*env_arr;
-	t_list		*path_list;
-	t_ast_node	*ast;
-	char		*DLESS_delimiter;
-};
-in the environ char ** we have this format: _=/bin/ls
-need to test this func!
-*/
 bool update_env(t_data *data, const char *key, const char *value)
 {
 	char		*env_str;
@@ -93,11 +84,7 @@ bool update_env(t_data *data, const char *key, const char *value)
 	return (true);
 }
 /*
-how to declare a char** str?
-char **str;
-str = (char **)malloc(sizeof(char *) * 3);
-str[0] = "hello";
-str[1] = "world";
+this function will print the environment variables
 */
 void print_env(t_data *data)
 {

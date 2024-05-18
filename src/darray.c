@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:15:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/05 11:44:56 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 10:38:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 /*
 The darray is a dynamic array that can store any type of data
+element size isto make it more generic but it is not used maybe?
+could be refactored later, but usually because of memory alignment
+we need to know the size of the elements we store to calculate the
+memory needed for the array...
 */
 t_darray *darray_create(size_t element_size, size_t initial_max)
 {
@@ -54,6 +58,7 @@ void darray_clear(t_darray * array)
 		}
 	}
 }
+
 /*
 In C, if you call realloc with a null pointer as the first argument, 
 it behaves exactly like malloc. It simply allocates a new block of 

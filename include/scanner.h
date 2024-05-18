@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 10:26:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 10:08:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,6 @@ typedef enum e_tokentype {
 	AMPERSAND,
 
     // reserved Keywords
-	
     IF, THEN, ELSE, ELIF, FI, DO, DONE, IN,
 	WHILE, UNTIL, FOR, CASE, 
 	ESAC, SELECT, FUNCTION,
@@ -150,7 +149,6 @@ typedef enum e_tokentype {
  
 
 	DIGIT, CHAR,
-	// end of file
 	HASH, COMMENT,
 	CARET, PERCENT, TILDE,
 	EOF_TOK, 
@@ -172,18 +170,8 @@ typedef struct s_mini_data t_mini_data;
 struct s_token {
 	t_tokentype	type;
 	char		*lexeme;
-	int 		start;
 };
 typedef struct s_token t_token;
-
-/*
-is this used?
-can we go without?
-*/
-struct s_token_list {
-	t_list *head;
-};
-typedef struct s_token_list t_token_list;
 
 int		init_scanner_data(t_mini_data **data, const char *input);
 void	free_scanner_data(t_mini_data *data);
@@ -241,7 +229,6 @@ bool	is_a_dollar_exp(t_mini_data *data, int *i);
 bool	is_a_flag(t_mini_data *data, int *i);
 bool	is_a_string_thing(t_mini_data *data, int *i);
 bool	is_a_redirection(t_mini_data *data, int *i);
-
 
 #ifdef __cplusplus
 }

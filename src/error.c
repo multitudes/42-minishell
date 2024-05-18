@@ -6,17 +6,8 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/04/20 22:01:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 10:36:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "error.h"
-
-/*
-I print the err message and return 0, false
-*/
-int	err_stop(char *msg)
-{
-	printf("%s",msg);
-	return (0);
-}

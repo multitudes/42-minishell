@@ -113,23 +113,47 @@ I think this is a good starting point for our grammar. We can start by defining 
 
 also there is the question of priority. I would call them commands and not expression like a compiler would.
 
-&& and || have the same precedence and are left-associative. They allow you to execute a command based on the success (&&) or failure (||) of the previous command.
-
-; and & have the same precedence, which is lower than && and ||. They allow you to separate commands (;) or run a command in the background (&).
-
-| and |& have higher precedence than &&, ||, ;, and &. They allow you to create pipelines, where the output of one command is used as the input of the next command (|), or where both the output and error output of one command are used as the input of the next command (|&).
-
-( and ) can be used to group commands, which can override the default precedence rules.
-
-;;, ;&, and ;;& are used in the context of a case statement to separate different cases.
-
-
+&& and || have the same precedence and are left-associative. They allow you to execute a command based on the success (&&) or failure (||) of the previous command.  
+; and & have the same precedence, which is lower than && and ||. They allow you to separate commands (;) or run a command in the background (&).  
+| and |& have higher precedence than &&, ||, ;, and &. They allow you to create pipelines, where the output of one command is used as the input of the next command (|), or where both the output and error output of one command are used as the input of the next command (|&).  
+( and ) can be used to group commands, which can override the default precedence rules.  
+;;, ;&, and ;;& are used in the context of a case statement to separate different cases.  
+[[ and ]] are used for conditional expressions.  
+{ and } are used to group commands in a block.
 The syntax of a programming language is defined by a grammar. The syntax of a programming language is a precise description of all its grammatically correct programs. Noam Chomsky defined four categories of grammars: regular, context-free, context- sensitive, and unrestricted.
 
 How do we write down a grammar that contains an infinite number of valid strings? We obviously can’t list them all out. Instead, we create a finite set of rules.  
-
+This is from the book Crafting Interpreters by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:
 <img src="assets/expression_grammar.png" alt="Expression Grammar" width="400">
 
+so also reading the shell grammar page (link below) I got a better understanding of how to write the grammar for our shell andcame up with the following grammar:
+```
+grammar:
+to get the final table
+list    	  	-> pipeline (";" | "&" | "&&" | "||") pipeline)* [";"] | ["&"] ["\n"]
+					| "(" list ")";
+pipeline	 	->  command  (("|" | "|&" | ";" | "&&" | "||" )command)* ;
+					| "(" list ")";
+command		 	->  simple_command 
+					| builtin 
+					| DLESS 
+					| redirection
+					| [time [-p]] [!] expression
+					| "(" list ")";
+
+simple_command 	-> name (args)* ;
+builtin 		-> name (args)* ; 
+redirection 	-> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
+DLESS 			-> expression "<<" delimiter newline content delimiter;
+
+delimiter 		-> STRING;
+content 		-> MULTIPLE_LINE_TEXT;
+flags 			-> FLAGS;
+name 			-> WORD | COM_EXPANSION | VAR_EXPANSION;
+args 			-> FLAGS | WORD | STRING | QUOTED_STRING | SIMPLE_QUOTED_STRING | VAR_EXPANSION | EXPR_EXPANSION;
+
+```
+Where DLESS is the heredoc operator, and the other operators are the redirection operators.
 
 ## Lexemes
 Our job is to scan through the list of characters and group them together into the smallest sequences that still represent something. Each of these blobs of characters is called a lexeme.
@@ -254,12 +278,11 @@ In non-interactive mode, the shell is being used to run a script or a batch of c
 To check whether the shell is running in interactive mode or non-interactive mode, we can use the isatty() function. This function checks whether a file descriptor refers to a terminal or not. If it returns true, then the shell is running in interactive mode and we should display a prompt. If it returns false, then the shell is running in non-interactive mode and we should not display a prompt.
 
 ## Create an infinite loop for the prompt
-
-Once we have determined whether the shell is running in interactive mode or non-interactive mode, we can display a prompt to the user. This input can be a single command or multiple commands separated by a semicolon. To read input from the user, we can use the getline function which reads a line of input from the user. 
+we can display a prompt to the user. This input can be a single command or multiple commands separated by a semicolon. To read input from the user, we can use the getline function which reads a line of input from the user. 
 
 ## Parse User Input
 
-we will need to read the input from the user and split it into tokens. These tokens can then be analyzed to determine the command the user wants to execute and any arguments or options they have provided. 
+we will need to read the input from and split it into tokens. These tokens can then be analyzed to determine the command the user wants to execute and any arguments or options they have provided. 
 
 ## Execute Commands
 
@@ -1059,6 +1082,59 @@ If you want to store a command in a variable and then execute it, you should sto
 bash-3.2$ myvar="ls -l"
 bash-3.2$ eval $myvar
 ```
+
+## true and false
+```
+true
+echo $?  # prints: 0
+
+false
+echo $?  # prints: 1
+```
+In Bash, true and false are commands, not boolean values like in many programming languages.
+
+The true command does nothing and successfully completes immediately, returning a 0 exit status, which signifies success in Unix-like operating systems.
+
+The false command also does nothing but it completes with a non-zero exit status, signifying failure.
+
+## more heredoc
+(For others, the code they posted contains only double quotes, not single quotes)
+We don't have to handle multiline delimiters in minishell.
+
+E.g.:
+```
+$ wc -c << '
+eof'
+> whatever
+> line2
+>
+>eof
+```
+
+Doesn't work, and neither does
+```
+$ wc -c << '
+ eof'
+ > whatever
+ > line2
+ >
+eof
+```
+The difference in the two example is that in the former, I pressed enter on the empty line, and in the latter, I copied a newline followed by the string eof to the clipboard and then pasted it. This will make readline() return a multiline string.
+Neither cases work.
+We also don't have to handle empty delimiters
+```
+$ wc -c <<''
+> something
+>
+10
+```
+Since this requires handling quotes around the delimiter, which is not required by the subject, and it would mean implementing different parsing rules, at which point you could go haywire and ask why not require <<- too.
+
+
+
+
+
 
 ## links
 The Bash reference manual:  

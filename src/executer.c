@@ -6,19 +6,21 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/17 10:18:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 10:34:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executer.h"
 
 /*
-posix compliant
+posix compliant use of the environ variable but wecan discuss this
 */
 extern char **environ;
 
 /*
 NOT yet implemented - TODO
+true and false are shell builtins that do nothing except return an exit status of 0 and 1, respectively.
+we need them eventually for the bonus... true && false || true etc
 */
 void	execute_builtin(t_list *tokenlist, t_data *data)
 {
@@ -62,6 +64,14 @@ void	execute_builtin(t_list *tokenlist, t_data *data)
 	{
 		debug("exit\n");
 	}
+	else if (ft_strncmp(lexeme, "true", 5) == 0)
+	{
+		debug("true\n");
+	}
+	else if (ft_strncmp(lexeme, "false", 6) == 0)
+	{
+		debug("false\n");
+	}
 	else
 	{
 		debug("not an implemented builtin\n");
@@ -70,7 +80,7 @@ void	execute_builtin(t_list *tokenlist, t_data *data)
 }
 
 /*
-free a **char array
+when I need to free a string array like the envpaths
 */
 int	free_array(char **envpaths)
 {
@@ -85,29 +95,31 @@ int	free_array(char **envpaths)
 }
 
 /*
-look for an executable path and returns it if found
-it filrs split the PATH env variable into paths
-check if the base path is in the PATH variable
-if it is return true
-else return false
+In our data struct we have the environment variables in a dynamic array
+mini_get_env will get the path variable and return it
+as a string array. 
+base is the command we are looking for.
 */
 char	*create_path(char *base, t_data *data)
 {
-	char **envpaths = ft_split(mini_get_env(data, "PATH"), ':');
+	int	i; 
+	char *commandpath;
+	char **envpaths;
 
-	int i = 0;
+	i = 0;
+	envpaths = ft_split(mini_get_env(data, "PATH"), ':');
 	while (envpaths[i])
 	{
 		// debug("path: %s", envpaths[i]);
-		char *checkpath = ft_strjoin3(envpaths[i], "/", base);
-		if (access(checkpath, X_OK) == 0)
+		commandpath = ft_strjoin3(envpaths[i], "/", base);
+		if (access(commandpath, X_OK) == 0)
 		{
 			free_array(envpaths);
-			return (checkpath);
+			return (commandpath);
 		}
 		else
 			// debug("command not found");
-		free(checkpath);
+		free(commandpath);
 		i++;
 	}
 	free_array(envpaths);
@@ -187,15 +199,14 @@ to the read end of the pipe, and execute the right node.
 */
 int	execute_ast(t_ast_node *ast, t_data *data)
 {
-	t_list *tokenlist;
-	t_token *token;
-	t_nodetype astnodetype;
 	int status;
+	t_token *token;
+	t_list *tokenlist;
+	t_nodetype astnodetype;
 
 	status = 0;
 	if (ast == NULL)
 		return (0);
-
 	debug("\nexecute:");
 	debug("ast node type: %d ", ast->type);
 	tokenlist = ast->token_list;

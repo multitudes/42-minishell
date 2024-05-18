@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/17 16:16:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 10:26:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,47 +16,46 @@
 
 grammar:
 to get the final table
-list      -> pipeline ((";" | "&" | "&&" | "||") pipeline)* [";"] | ["&"] ["\n"]
+list      -> pipeline (";" | "&" | "&&" | "||") pipeline)* [";"] | ["&"] ["\n"]
 			| "(" list ")";
-pipeline ->  expression  (("|" | "|&" | ";" | "&&" | "||" )expression)* ;
+pipeline ->  command  (("|" | "|&" | ";" | "&&" | "||" )command)* ;
 			| "(" list ")";
-expression ->  	  command 
+command ->  	  simple_command 
 				| builtin 
 				| DLESS 
 				| redirection
 				| [time [-p]] [!] expression
 				| "(" list ")";
 
-command -> name (args)* ;
-builtin -> name (args)* ; 
-redirection -> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
-DLESS -> 	expression "<<" delimiter;
+simple_command 	-> name (args)* ;
+builtin 		-> name (args)* ; 
+redirection 	-> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
+DLESS 			-> expression "<<" delimiter newline content delimiter;
 
 delimiter -> STRING;
 content -> MULTIPLE_LINE_TEXT;
+flags 	-> FLAGS;
+name 	-> WORD | COM_EXPANSION | VAR_EXPANSION;
+args 	-> FLAGS | WORD | STRING | QUOTED_STRING | SIMPLE_QUOTED_STRING | VAR_EXPANSION | EXPR_EXPANSION;
 
-name -> WORD | COM_EXPANSION | VAR_EXPANSION;
-args -> FLAGS | WORD | STRING | QUOTED_STRING | SIMPLE_QUOTED_STRING | VAR_EXPANSION | EXPR_EXPANSION;
+The operators "&&" and "||" shall have equal precedence and shall be evaluated with left associativity. For example, both of the following commands write solely bar to standard output:
+
+false && echo foo || echo bar // false && echo foo is false so echo bar is executed
+true || echo foo && echo bar // true || echo foo is true so echo bar is executed
 
 
-ex
-(make &)  | wc -l
-make &
-
-
-GitHub Copilot
-The redirection operators you've listed are the most commonly used in bash and similar Unix-like shells. Here's a brief description of each:
-
+For this subject:
 <: Redirects standard input from a file.
 >: Redirects standard output to a file, overwriting the file if it exists.
 >>: Redirects standard output to a file, appending to the file if it exists.
+<<: Here Document
+
+There are a few more redirection operators that you might encounter: (copilot says)
 >>&: Redirects both standard output and standard error to a file, appending 
 to the file if it exists.
 2>: Redirects standard error to a file, overwriting the file if it exists.
 &>: Redirects both standard output and standard error to a file, overwriting
  the file if it exists.
-There are a few more redirection operators that you might encounter:
-
 2>>: Redirects standard error to a file, appending to the file if it exists.
 <>: Opens a file for both reading and writing.
 >|: Redirects standard output to a file, overwriting the file even if 
@@ -64,29 +63,8 @@ the noclobber option has been set in the shell.
 &>>: Redirects both standard output and standard error to a file, 
 appending to the file if it exists.
 
-
-=======================================
-to recap :
-a list is a pipeline followed by zero or more pipelines separated by a 
-semicolon,
- ampersand, double ampersand, or double pipe, or a list in parentheses.
-pipeline -> expression (("|" | "|&" | ";")expression* + "&"? ; : 
-A pipeline is an expression followed by zero or more expressions 
-separated by a pipe (|), pipe and (|&), or semicolon (;). 
-The statement can optionally end with an ampersand (&), 
-which would run the command in the background.
-
-expression -> command | builtin | DLESS | redirection | "(" statement ")";  
-An expression can be a command, a builtin command, a DLESS, a redirection, 
-or a statement enclosed in parentheses.
-
-
-In this file
 we will implement a parser method called "recursive descent,"
-which is a top-down parser 
-
-So the root is the first pipe or pipe_and operator..
-
+which is a top-down parser. 
 */
 t_ast_node* new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_list *token_list)
 {
