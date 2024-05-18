@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 10:50:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 12:00:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ struct s_data
 	t_list		*token_list;
 	t_darray	*env_arr;
 	t_ast_node	*ast;
-	char		*DLESS_delimiter;
 	int			exit_status;
 	bool		scanner_error;
 	char		*scanner_err_str;
@@ -101,7 +100,7 @@ struct s_data
 };
 typedef struct s_data t_data;
 
-int		loop(int argc, char **argv);
+int		loop();
 int		init_data(t_data **data);
 void	free_data(t_data *data);
 
