@@ -4,15 +4,15 @@
 
 This team project is about creating a simple shell.  
 
-We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  Below are some exerpts from the bash manual.
+We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  Below are some exerpts from the bash manual:
 
-> Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
+- Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
 
-> A shell allows execution of GNU commands, both synchronously and asynchronously. The shell waits for synchronous commands to complete before accepting more input; asynchronous commands continue to execute in parallel with the shell while it reads and executes additional commands. The redirection constructs permit fine-grained control of the input and output of those commands. Moreover, the shell allows control over the contents of commands’ environments.
+- A shell allows execution of GNU commands, both synchronously and asynchronously. The shell waits for synchronous commands to complete before accepting more input; asynchronous commands continue to execute in parallel with the shell while it reads and executes additional commands. The redirection constructs permit fine-grained control of the input and output of those commands. Moreover, the shell allows control over the contents of commands’ environments.
 
-> Shells also provide a small set of built-in commands (builtins) implementing functionality impossible or inconvenient to obtain via separate utilities. For example, cd, break, continue, and exec cannot be implemented outside of the shell because they directly manipulate the shell itself. The history, getopts, kill, or pwd builtins, among others, could be implemented in separate utilities, but they are more convenient to use as builtin commands. 
+- Shells also provide a small set of built-in commands (builtins) implementing functionality impossible or inconvenient to obtain via separate utilities. For example, cd, break, continue, and exec cannot be implemented outside of the shell because they directly manipulate the shell itself. The history, getopts, kill, or pwd builtins, among others, could be implemented in separate utilities, but they are more convenient to use as builtin commands. 
 
-### Some definitions from the bash manual
+### Some more definitions from the bash manual
 - POSIX  A family of open system standards based on Unix.
 - builtin A command that is implemented internally by the shell itself, rather than by an executable program somewhere in the file system.
 - control operator : A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
@@ -24,7 +24,7 @@ We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  B
 - token:  A sequence of characters considered a single unit by the shell. It is either a word or an operator.
 - word A sequence of characters treated as a unit by the shell. Words may not include unquoted metacharacters.
 
-### allowed functions
+### Allowed functions
 
 Here at 42 we are allowed to use the following functions for this project:
 
@@ -97,8 +97,8 @@ Otherwise, roughly speaking, the shell reads its input and divides the input int
 
 The shell then parses these tokens into commands and other constructs, removes the special meaning of certain words or characters, expands others, redirects input and output as needed, executes the specified command, waits for the command’s exit status, and makes that exit status available for further inspection or processing.
 
-## ideas
-### architecture
+## Ideas
+### Architecture
 A well defined architecture is a better experience for team work, but it doesnt come free. Takes work. Modularity is key. But when modularity doesn’t end up being helpful, it quickly becomes actively harmful and it spirals out of control.
 
 ### Decoupling
@@ -110,7 +110,7 @@ Our minishell will be divided into a few main parts:
 - The execution phase will be responsible for taking the data structure produced by the parsing phase and executing the command it represents.
 - integration tests and unit tests. To be able to make changes and refactor our code with confidence, we will need to have a suite of tests that we can run to ensure that our shell is working as expected.
 
-## The map
+## The road map
 - we start by implementing a loop that reads the user input with the readline() function. The readline function is part of the part of the GNU Readline library and offers other functions like rl_clear_history, rl_on_new_line, rl_replace_line, rl_redisplay,add_history that we are allowed to use in our project.
 - The first step is scanning, also known as lexing, or (if you’re trying to impress someone) lexical analysis.
 - A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like ( and , . Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ).
@@ -188,9 +188,9 @@ command		 	->  simple_command
 					| [time [-p]] [!] expression
 					| "(" list ")";
 
-simple_command 	-> name (args)* ;
+simple_command	-> name (args)* ;
 builtin 		-> name (args)* ; 
-redirection 	-> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
+redirection		-> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
 DLESS 			-> expression "<<" delimiter newline content delimiter;
 
 delimiter 		-> STRING;
