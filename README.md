@@ -1,3 +1,5 @@
+[![miniclams test workflow](https://github.com/multitudes/42-minishell/actions/workflows/main.yml/badge.svg)](https://github.com/multitudes/42-minishell/actions/workflows/main.yml)
+
 # 42-minishell
 
 >  treat your codebase like a good camper does their campsite: always try to leave it a little better than you found it.  - Bob Nystrom
