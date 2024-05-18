@@ -1166,5 +1166,6 @@ https://youtu.be/SToUyjAsaFk?si=GOxMOm4uIVSPp4kO&t=1255
 readline  
 https://web.mit.edu/gnu/doc/html/rlman_2.html
 
-
+coding style git:  
+https://www.conventionalcommits.org/en/v1.0.0/#summary
 
