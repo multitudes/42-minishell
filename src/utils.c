@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:37:46 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 15:55:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 16:30:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,15 @@ if (n > total_length)
 but since in this function I know the total length of the string
 because I allocate it such checks are not needed
 */
-char* ft_strjoin3(const char* s1, const char* s2, const char* s3) 
+char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 {
-	char* result;
-	size_t total_length;
+	char	*result;
+	size_t	total_length;
 
 	total_length = strlen(s1) + strlen(s2) + strlen(s3) + 1;
 	result = malloc(total_length);
 	if (!result)
-		return NULL;
+		return (NULL);
 	ft_strlcpy(result, s1, total_length);
 	ft_strlcat(result, s2, total_length);
 	ft_strlcat(result, s3, total_length);
