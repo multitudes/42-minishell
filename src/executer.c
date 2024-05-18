@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 10:47:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 11:10:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	execute_builtin(t_list *tokenlist, t_data *data)
 	lexeme = (char *)token->lexeme;
 	if (ft_strncmp(lexeme, "echo", 5) == 0)
 	{
-		debug("echo ---- \n");
+		debug("echo builtin---- \n");
 		while (tokenlist)
 		{
 			token = (t_token *)tokenlist->content;
@@ -42,35 +42,35 @@ void	execute_builtin(t_list *tokenlist, t_data *data)
 	}
 	else if (ft_strncmp(lexeme, "cd", 3) == 0)
 	{
-		debug("cd\n");
+		debug("cd builtin\n");
 	}
 	else if (ft_strncmp(lexeme, "pwd", 4) == 0)
 	{
-		debug("pwd\n");
+		debug("pwd builtin\n");
 	}
 	else if (ft_strncmp(lexeme, "export", 7) == 0)
 	{
-		debug("export\n");
+		debug("export builtin\n");
 	}
 	else if (ft_strncmp(lexeme, "unset", 6) == 0)
 	{
-		debug("unset\n");
+		debug("unset builtin\n");
 	}
 	else if (ft_strncmp(lexeme, "env", 4) == 0)
 	{
-		debug("env\n");
+		debug("env builtin\n");
 	}
 	else if (ft_strncmp(lexeme, "exit", 5) == 0)
 	{
-		debug("exit\n");
+		debug("exit builtin\n");
 	}
 	else if (ft_strncmp(lexeme, "true", 5) == 0)
 	{
-		debug("true\n");
+		debug("true builtin\n");
 	}
 	else if (ft_strncmp(lexeme, "false", 6) == 0)
 	{
-		debug("false\n");
+		debug("false builtin\n");
 	}
 	else
 	{

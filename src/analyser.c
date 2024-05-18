@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 10:45:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 11:09:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	(void)data;
 	if (ast == NULL)
 		return ;
-	debug("\nanalyse expand");
+	debug("analyse expand");
 	// assing a ast node type to the node
 	which_ast_node(ast);
 

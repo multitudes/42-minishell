@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 10:26:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 11:08:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,6 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	head = *input_tokens;
 	if (*input_tokens == NULL || input_tokens == NULL)
 		return (NULL);
-	debug("parse_terminal");
 	token = (t_token *)(*input_tokens)->content;
 	
 	// debug the prev and next pointer of current token
@@ -245,15 +244,14 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 		}
 
 		token = (t_token *)(*input_tokens)->content;
-		debug("token type: %d, %s", token->type, token->lexeme);
+		// debug("token type: %d, %s", token->type, token->lexeme);
 		if (token->type == PIPE || token->type == PIPE_AND || token->type == AND_IF || token->type == OR_IF || token->type == SEMI || token->type == AND_TOK)
 			break;
 		*input_tokens = (*input_tokens)->next;
 		if (*input_tokens)
 			token = (t_token *)(*input_tokens)->content;
 	}
-	debug("here? \n");
-	debug("new node - head content: %s", ((t_token *)(head->content))->lexeme);
+	// debug("new node - head content: %s", ((t_token *)(head->content))->lexeme);
 	
 	// if *input_tokens is not null I have a delimiter like a pipe or pipe_and
 	// debug the prev and next pointer of current token
@@ -385,7 +383,7 @@ t_ast_node *create_ast(t_list *input_tokens)
 		// refactoring to a new parser!! 
 		// should return the ast... not yet implemented
 		a = parse_list(&tmp);
-		debug("\nprint ast - a\n");
+		debug("\nprint ast - a");
 		print_ast(a);
 		if (a)
 			debug("my ast root type in : %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
