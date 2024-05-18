@@ -67,7 +67,9 @@ const char* process_ast_node(t_ast_node *ast, t_nodetype expected_node_type, t_t
 	t_token *token = (t_token *)ast->token_list->content;
 	t_tokentype token_type = token->type;
 	t_nodetype node_type = ast->type;
-
+	debug("ast node type: %d ", node_type);
+	debug("ast node token type: %d ", token_type);
+	debug("ast node token lexeme: %s ", token->lexeme);
 	if (ast == NULL)
 		return "ast is null";
 	else if (node_type != expected_node_type)
@@ -84,6 +86,8 @@ const char* process_ast_node(t_ast_node *ast, t_nodetype expected_node_type, t_t
 		return "token lexeme is not expected lexeme";
 	return NULL;
 }
+
+
 /*
 This is a test function. It should return NULL if the test passes
 debug will print to the log
@@ -163,6 +167,66 @@ const char* test_parser_tree_simple_command2() {
 	return result;
 }
 
+/*
+with parentheses
+
+DEBUG src/parser.c:467: token type: 5
+DEBUG src/parser.c:468: lexeme |
+DEBUG src/parser.c:467: token type: 21
+DEBUG src/parser.c:468: lexeme false
+DEBUG src/parser.c:467: token type: 9
+DEBUG src/parser.c:468: lexeme ||
+DEBUG src/parser.c:467: token type: 20
+DEBUG src/parser.c:468: lexeme true
+DEBUG src/parser.c:467: token type: 0
+DEBUG src/parser.c:468: lexeme sdf
+*/
+const char *test_parser_tree_simple_command3() {
+	
+	// i want to check the output of the call to the function in scanner.c file
+	// tokenizer(char *input) returning a t_list of lexemes
+	// I will create a string and check the output of the function
+	std::string str = "false | (true || sdf)";
+	const char* input = str.c_str();
+	init_data(&g_data);
+	g_data->input = input;
+	t_list *lexemes = tokenizer(g_data->input);
+	t_list *current = lexemes;
+	const char *result = NULL;
+	int i = 0;	
+
+	result = process_token(&current, &i, "false", TRUETOK);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "(true || sdf)", EXPRESSION);
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	t_ast_node *ast = create_ast(lexemes);
+
+	t_token *token = (t_token *)ast->token_list->content;
+	t_tokentype token_type = token->type;
+	debug("ast node type: %d ", ast->type);
+	debug("ast node token type: %d ", token_type);
+	debug("ast node token lexeme: %s ", token->lexeme);
+
+	// print all the nodes from the ast
+	// print_ast(ast);
+	
+	//here I need to walk the tree and check the nodes
+	
+	
+	
+	result = process_ast_node(ast, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left, NODE_TERMINAL, FALSETOK, "false");
+
+	result = process_ast_node(ast->right, NODE_LIST, OR_IF, "||");
+	result = process_ast_node(ast->right->left, NODE_TERMINAL, TRUETOK, "true");
+	result = process_ast_node(ast->right->right, NODE_TERMINAL, WORD, "sdf");
+	
+
+	return result;
+}
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -171,7 +235,8 @@ const char *all_tests()
 	// run the tests
 	run_test(test_parser_tree_simple_command);	
 	run_test(test_parser_tree_simple_command2);	
-	
+	run_test(test_parser_tree_simple_command3);
+
 	return NULL;
 }
 
