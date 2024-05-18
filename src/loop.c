@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 12:18:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 12:58:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,9 +261,7 @@ int loop()
 		if (data->input && ft_strncmp(data->input, "", 1))
 		{
 			sanitize_input(data->input);
-			// check best error handling
-			if (!handle_history(data))
-				debug("failed to handle history\n");
+			handle_history(data);
 			data->token_list = tokenizer(data->input);
 			if (data->token_list != NULL)
 			{

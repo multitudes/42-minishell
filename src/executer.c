@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 11:10:17 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 12:58:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,16 @@ void	execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(lexeme, "false", 6) == 0)
 	{
 		debug("false builtin\n");
+	}
+	if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
+	{
+		// debug("clearing history\n");
+		clear_hist_file();
+		rl_clear_history();
+	}
+	else if (ft_strncmp(data->input, "history", 7) == 0)
+	{
+		print_history();
 	}
 	else
 	{

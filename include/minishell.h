@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 12:00:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 12:30:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ including the macro below which is not allowed by norminette.
 
 // for the history - can override with 
 // -DMINIHISTFILE='"new relative path"' -DHISTSIZE=1000
+// look at cat $HOME/.minishell_history
 #define MINIHISTFILEPATH "/.minishell_history"
 #define MINIHISTFILESIZE  1000
 
