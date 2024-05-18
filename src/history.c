@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 13:00:00 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 13:02:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,18 +163,14 @@ int clear_hist_file()
 	char *path;
 
 	path = get_history_file_path();
-	if (path == NULL)
-	{
-		perror("get_history_file_path");
-		return (1);
-	}
 	fd = open(path, O_WRONLY | O_TRUNC);
+	free(path);
 	if (fd == -1)
 	{
 		perror("open");
 		return (1);
 	}
-	debug("removed history\n");
+	// debug("removed history\n");
 	close(fd);
 	return (0);
 }
