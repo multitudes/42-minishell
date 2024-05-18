@@ -90,18 +90,6 @@ const char *test_environment(){
 	return NULL;
 }
 
-/*
-apparently the getenv function is working also outside the minishell
-program
-
-*/
-const char *test_env_variables() {
-	// lets just print something for now
-	std::string envVar = getenv("SHELL");
-	debug("envVar SHELL: %s", envVar.c_str());
-
-	return NULL;
-}
 
 const char *all_tests()
 {
@@ -111,7 +99,7 @@ const char *all_tests()
 	// run the tests
 	run_test(test_basicminishell);
 	run_test(test_environment);	
-	run_test(test_env_variables);
+	
 	return NULL;
 }
 
