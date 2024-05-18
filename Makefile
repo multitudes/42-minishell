@@ -39,7 +39,7 @@ LDLIBS 			=	-lm -lreadline -lcurses
 # OS specific flags
 UNAME 			= 	$(shell uname -s)
 ifeq ($(UNAME), Linux)
-	LDLIBS 		+= -lbsd
+	LDLIBS 		+= # -lbsd
 else ifeq ($(UNAME), Darwin)
 	INCLUDES 	+= -I$(shell brew --prefix readline)/include
 	LDLIBS 		+= -L$(shell brew --prefix readline)/lib
