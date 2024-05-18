@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 10:40:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 10:47:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ bool update_env(t_data *data, const char *key, const char *value)
 	// darray_push(env_arr, NULL);
 	return (true);
 }
+
 /*
 this function will print the environment variables
 */

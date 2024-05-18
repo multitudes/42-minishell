@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 10:34:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 10:47:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 }
 
 /*
-also needs to be refactored
+also needs to be refactored : TODO
 
 traverse the ast and execute the commands node by node left to right
 pipes
