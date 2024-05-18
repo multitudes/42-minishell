@@ -10,5 +10,5 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: Run a script
-      run: echo "Hello, world!"
+    - name: Run tests
+      run: make
