@@ -1,6 +1,6 @@
-name: My First Workflow
+name: My Workflow
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -10,5 +10,8 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: Run tests
+    - name: Install dependencies
+      run: sudo apt-get install libbsd-dev
+
+    - name: Build and test
       run: make
