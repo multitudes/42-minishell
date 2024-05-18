@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 11:09:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 12:21:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	which_ast_node(t_ast_node *ast)
 	// debug("which_ast_node");
 	// print_ast(ast);
 	// check if the token list is a builtin
-	debug("token type: %d", (t_tokentype)(token->type));
-	debug("lexeme %s", (char *)(token->lexeme));
+	// debug("token type: %d", (t_tokentype)(token->type));
+	// debug("lexeme %s", (char *)(token->lexeme));
 	if (token->type == BUILTIN)
 	{
 		ast->type = NODE_BUILTIN;

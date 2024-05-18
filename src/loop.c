@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 12:07:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 12:18:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,8 +223,6 @@ static void	exit_handler(int sig)
 	return ;
 }
 
-
-
 /*
 
 */
@@ -266,14 +264,14 @@ int loop()
 			// check best error handling
 			if (!handle_history(data))
 				debug("failed to handle history\n");
-			t_list *token_list = tokenizer(data->input);
-			if (token_list != NULL)
+			data->token_list = tokenizer(data->input);
+			if (data->token_list != NULL)
 			{
 				/*
 				since the create_ast is recursive I pass the token list
 				separately to avoid rewriting the copy in my data 
 				*/
-				data->ast = create_ast(token_list);
+				data->ast = create_ast(data->token_list);
 				if (data->ast)
 				{
 					// print_ast(data->ast);
@@ -302,6 +300,5 @@ int loop()
 	rl_replace_line("", 0);
 	rl_redisplay();
 	write(1, "exit\n", 6);
-	printf("\a");
 	return (0);
 }

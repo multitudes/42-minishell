@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 11:08:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 12:20:25 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,6 +332,7 @@ t_ast_node	*parse_list(t_list **input_tokens)
 	token = NULL;
 	if (input_tokens == NULL || *input_tokens == NULL)
 		return (NULL);
+	debug("parse list");
 	a = parse_pipeline(input_tokens);
 	while (*input_tokens)
 	{
