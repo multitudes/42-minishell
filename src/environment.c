@@ -6,40 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 10:47:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/18 15:51:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "environment.h"
-
-/*
-This function will join three strings together
-This pattern is often used 
-(see man page for strlcpy and strlcat)
-
-size_t n = ft_strlcpy(result, s1, total_length)
-if (n > total_length)
-	return (NULL); 
-
-but since in this function I know the total length of the string
-because I allocate it such checks are not needed
-*/
-char* ft_strjoin3(const char* s1, const char* s2, const char* s3) {
-    // Allocate enough memory for the new string
-    size_t total_length = strlen(s1) + strlen(s2) + strlen(s3) + 1;
-    char* result = malloc(total_length);
-
-    // Concatenate the strings
-    ft_strlcpy(result, s1, total_length);
-	// debug("result: -%s-", result);
-    ft_strlcat(result, s2, total_length);
-	// debug("result: -%s-", result);
-    ft_strlcat(result, s3, total_length);
-	// debug("result: -%s-", result);
-
-    return result;
-}
 
 bool update_env(t_data *data, const char *key, const char *value)
 {
