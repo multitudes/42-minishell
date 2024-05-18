@@ -51,6 +51,7 @@ const char* test_basicminishell() {
 /*
 example to test env variables
 for instance check the value of $SHELL that on my mac is zsh
+[edit!] this willnot work on different systems so I removed the test 
 */
 const char *test_environment(){
 	// I would like to test my minishell here
@@ -68,8 +69,8 @@ const char *test_environment(){
 		// Get the value of the environment variable
 		const char* value = getenv("SHELL");
 		debug("value shell env var: %s\n", value);
-		my_assert(value != NULL, "Environment variable MY_VARIABLE is not set");
-		my_assert(strcmp(value, "/bin/zsh") == 0, "Environment variable MY_VARIABLE has incorrect value");
+		// my_assert(value != NULL, "Environment variable MY_VARIABLE is not set");
+		// my_assert(strcmp(value, "/bin/zsh") == 0, "Environment variable MY_VARIABLE has incorrect value");
 		execl("../minishell", "minishell", (char*) NULL); // Execute minishell
 
 	    exit(EXIT_FAILURE); // Exit if execl fails
