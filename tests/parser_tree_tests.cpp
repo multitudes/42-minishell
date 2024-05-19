@@ -195,7 +195,7 @@ const char *test_parser_tree_simple_command3() {
 	const char *result = NULL;
 	int i = 0;	
 
-	result = process_token(&current, &i, "false", TRUETOK);
+	result = process_token(&current, &i, "false", FALSETOK);
 	result = process_token(&current, &i, "|", PIPE);
 	result = process_token(&current, &i, "(true || sdf)", EXPRESSION);
 	// this is how I check for the end of the list
