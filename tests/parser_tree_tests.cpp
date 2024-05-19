@@ -371,6 +371,26 @@ const char *test_parser_tree_simple_command6() {
 	return result;
 }
 
+const char *test_parser_tree_simple_command7() {
+	std::string str = "()";
+	const char* input = str.c_str();
+	init_data(&g_data);
+	g_data->input = input;
+	t_list *lexemes = tokenizer(g_data->input);
+	t_list *current = lexemes;
+	const char *result = NULL;
+	int i = 0;	
+
+	result = process_token(&current, &i, "()", EXPRESSION);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	t_ast_node *ast = create_ast(lexemes);
+	assert(ast == NULL);
+
+	return result;
+}
 
 const char *all_tests()
 {
@@ -384,6 +404,7 @@ const char *all_tests()
 	run_test(test_parser_tree_simple_command4);
 	run_test(test_parser_tree_simple_command5);
 	run_test(test_parser_tree_simple_command6);
+	run_test(test_parser_tree_simple_command7);
 
 	return NULL;
 }

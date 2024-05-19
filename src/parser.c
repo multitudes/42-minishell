@@ -6,14 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/19 17:24:30 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/19 17:54:02 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-
 grammar:
 to get the final table
 list      -> pipeline (";" | "&" | "&&" | "||") pipeline)* [";"] | ["&"] ["\n"]
@@ -89,12 +88,7 @@ t_ast_node* new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_lis
 }
 
 /*
-I will start to implement three types of redirection
-    REDIRECT_OUT, // '>'
-    REDIRECT_IN, // '<'
-    DGREAT, // '>>'
-so if a node is not an expression I will check if a redirection or DLESS
-	DLESS // <<
+JUST a check for the type of token
 */
 bool	is_redirection(t_list *input_tokens)
 {
@@ -108,9 +102,7 @@ bool	is_redirection(t_list *input_tokens)
 	while (tmp)
 	{
 		token = (t_token *)tmp->content;
-		// check for redirections
-		if (token->type == REDIRECT_BOTH || \
-		token->type == REDIRECT_OUT || token->type == REDIRECT_IN || \
+		if (token->type == REDIRECT_OUT || token->type == REDIRECT_IN || \
 		token->type == DGREAT || token->type == DLESS)
 			return (1);
 		tmp = tmp->next;
@@ -144,70 +136,56 @@ void print_token(void *token)
     t = (t_token *)((t_list *)token)->content;
     debug("token type: %d, %s", t->type, t->lexeme);
 }
-
-// I get a t_list node in inputwith my token as expression type
-// andwant to substitute it with the content of the expression
+/*
+I get a t_list node in input with my token as expression type
+and want to substitute it with the content of the expression
+it is like cut and paste a linked list
+*/
 bool	extract_expression(t_list **head, t_list **input_tokens)
 {
-	t_list	*tmp;
-	t_token	*curr_token; 
-	t_list	*next_old_list;
+	t_list *tmp;
+	t_token *curr_token;
+	t_list *next_token_old_list;
 
 	curr_token = (t_token *)(*input_tokens)->content;
 	if (input_tokens && *input_tokens && curr_token->type == EXPRESSION)
 	{
-		debug("EXPRESSION");
-		next_old_list = (*input_tokens)->next;
-
-		// will remove the current node but first saving it to a tmp to free it later
+		next_token_old_list = (*input_tokens)->next;
 		tmp = *input_tokens;
-
-		// remove parenthesis from content
-		char *lexem = ft_substr(curr_token->lexeme, 1, ft_strlen(curr_token->lexeme) - 2);
-		debug("lexem %s", lexem);
-
-		// create a new token list
-		t_list *new_token_list = tokenizer(lexem);
-		// debug("new_token_list %s", ((t_token *)(new_token_list->content))->lexeme);
-
-		if (new_token_list)
+		if (ft_strlen(curr_token->lexeme) == 2)
 		{
-			t_list *newlist_last = ft_lstlast(new_token_list);
-			// check the previous it was not the first node in the list
-			// check the next connection - not the last node in the list
-			if (next_old_list)
-			{
-				debug("not last node in the list");
-				next_old_list->prev = newlist_last;
-				newlist_last->next = next_old_list;
-			}
-			// last node in the list
-			else if (next_old_list == NULL)
-			{
-				debug("last node in the list");
-			}
-			if ((*input_tokens)->prev)
-			{
-				debug("not first node in the list");
-				debug("prev %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
-				(*input_tokens)->prev->next = new_token_list;
-				new_token_list->prev = (*input_tokens)->prev;
-			}
+			if (input_tokens && *input_tokens && (*input_tokens)->prev)
+				(*input_tokens)->prev->next = next_token_old_list;
 			else
-			{
-				*head = new_token_list;
-			}
-			*input_tokens = next_old_list;
+				*head = next_token_old_list;
 		}
-		// free the old token list
-		// free(lexem);
+		else
+		{
+			char *lexem = ft_substr(curr_token->lexeme, 1, ft_strlen(curr_token->lexeme) - 2);
+			t_list *new_token_list = tokenizer(lexem);
+			if (new_token_list)
+			{
+				t_list *newlist_last = ft_lstlast(new_token_list);
+				if (next_token_old_list)
+				{
+					next_token_old_list->prev = newlist_last;
+					newlist_last->next = next_token_old_list;
+				}
+				if ((*input_tokens)->prev)
+				{
+					(*input_tokens)->prev->next = new_token_list;
+					new_token_list->prev = (*input_tokens)->prev;
+				}
+				else
+					*head = new_token_list;
+			}
+		}
+		*input_tokens = next_token_old_list;
 		free(curr_token->lexeme);
 		ft_lstdelone(tmp, free);
 		tmp = NULL;
-		// ft_lstiter(*input_tokens, print_token);
-		// debug("IN EXPRESSION return true");
 		return (true);
-	}	
+	}
 	return (false);
 }
 
@@ -250,7 +228,10 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 			has_expr = true;
 			// DEBUG : print every token in the list
 			if (head == NULL)
-				debug("head is NULL");
+				{debug("head is NULL");
+				return (NULL);
+				}
+
 			else
 				debug("head is not NULL");
 			t_list *tmp = head;
