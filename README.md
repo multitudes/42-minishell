@@ -1111,8 +1111,22 @@ $ wc -c <<''
 Since this requires handling quotes around the delimiter, which is not required by the subject, and it would mean implementing different parsing rules, at which point you could go haywire and ask why not require <<- too.
 
 
+## Precedences
+the precedence of || and && in Bash and C is different.
+
+In C, the && operator has higher precedence than the || operator. This means that in an expression with both && and ||, the && parts will be evaluated first.
 
 
+In Bash, however, || and && have equal precedence and are evaluated from left to right.
+
+
+In terms of precedence, in both Bash and C, || has lower precedence than | (in C | is a bitwise OR operator. ).  
+In Bash, it means that in an expression with both | and ||, the | parts will be evaluated first.
+Here's an example of using | and || in Bash:
+```
+command1 | command2 || echo "command1 or command2 failed
+```
+In this example, the output of command1 is piped into command2. If either command1 or command2 fails, the message "command1 or command2 failed" is printed to the console.
 
 
 ## links

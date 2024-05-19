@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 12:20:25 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/19 12:14:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,7 +234,7 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 			head = *input_tokens;
 
 		}		
-	// print every token in the list
+		// DEBUG : print every token in the list
 		t_list *tmp = *input_tokens;
 		while (tmp)
 		{
@@ -354,9 +354,10 @@ t_ast_node	*parse_list(t_list **input_tokens)
 			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
 
 		}
-		debug("new ast node type in parse_list: %d", a->type);	
+		// debug("new ast node type in parse_list: %d", a->type);	
 		if (*input_tokens)
-			*input_tokens = (*input_tokens)->next;
+			debug("in parse list - extraneus token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
+		// 	*input_tokens = (*input_tokens)->next;
 	}
 	return (a);
 }
@@ -381,15 +382,13 @@ t_ast_node *create_ast(t_list *input_tokens)
 	{
 		token = (t_token *)tmp->content;
 		debug("token type: %d, %s", token->type, token->lexeme);
-		// refactoring to a new parser!! 
-		// should return the ast... not yet implemented
 		a = parse_list(&tmp);
-		debug("\nprint ast - a");
-		print_ast(a);
 		if (a)
 			debug("my ast root type in : %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
 		else
 			debug("a is NULL");
+		debug("\nprint ast - a");
+		print_ast(a);
 	}
 	return (a);
 }
