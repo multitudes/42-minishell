@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/19 16:26:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/19 16:51:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,14 +265,16 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 				tmp = tmp->next;
 			}
 			if (*input_tokens)
-			{token = (t_token *)(*input_tokens)->content;	
-			debug("AFTER EXPRESSION: token type: %d, %s", token->type, token->lexeme);}
+			{
+				token = (t_token *)(*input_tokens)->content;	
+				debug("AFTER EXPRESSION: token type: %d, %s", token->type, token->lexeme);
+			}
 			continue;
 		}
 		if (has_expr)
 		{
 			debug("why am I here????");
-			continue;
+			// continue;
 		}
 		if (*input_tokens == NULL)
 			continue;
@@ -365,7 +367,7 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 			return (NULL);
 		}
 		(*input_tokens)->prev = NULL;
-		t_ast_node *b = parse_pipeline(input_tokens);
+		t_ast_node *b = parse_terminal(input_tokens);
 		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
 	}
 	return (a);
@@ -405,11 +407,11 @@ t_ast_node	*parse_list(t_list **input_tokens)
 			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
 		}
 		// debug("new ast node type in parse_list: %d", a->type);	
-		if (*input_tokens)
-			debug("in parse list - extraneus token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
+		// if (*input_tokens)
+		// 	debug("in parse list - extraneus token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
 		if (*input_tokens == NULL)
 			break;
-		*input_tokens = (*input_tokens)->next;
+		// *input_tokens = (*input_tokens)->next;
 	}
 	return (a);
 }
