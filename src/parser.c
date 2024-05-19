@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/19 13:58:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/19 16:26:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,8 +234,9 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	// if ((t_token *)(*input_tokens)->next)
 	// 	debug("next %s", ((t_token *)(*input_tokens)->next->content)->lexeme);
 
-	while (*input_tokens && token->type != PIPE && token->type != PIPE_AND && token->type != AND_IF && token->type != OR_IF)
+	while (*input_tokens && (token->type != PIPE) && (token->type != PIPE_AND) && (token->type != AND_IF) && (token->type != OR_IF))
 	{
+		token = (t_token *)(*input_tokens)->content;
 		debug("parse_terminal token type: %d, %s", token->type, token->lexeme);
 		// debug the prev and next pointer of current token
 		// if ((t_token *)(*input_tokens)->prev)
@@ -253,24 +254,31 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 			else
 				debug("head is not NULL");
 			t_list *tmp = head;
-			t_token *token;
-			token = (t_token *)tmp->content;
+			t_token *token2;
+			token2 = (t_token *)tmp->content;
 			debug("HEAD pointer %p", head);
-			debug("HEAD token type: %d, %s", token->type, token->lexeme);
+			debug("HEAD token type: %d, %s", token2->type, token2->lexeme);
 			while (tmp)
 			{
-				token = (t_token *)tmp->content;
-				debug("token type: %d, %s", token->type, token->lexeme);
+				token2 = (t_token *)tmp->content;
+				debug("token type: %d, %s", token2->type, token2->lexeme);
 				tmp = tmp->next;
 			}
+			if (*input_tokens)
+			{token = (t_token *)(*input_tokens)->content;	
+			debug("AFTER EXPRESSION: token type: %d, %s", token->type, token->lexeme);}
+			continue;
+		}
+		if (has_expr)
+		{
+			debug("why am I here????");
+			continue;
 		}
 		if (*input_tokens == NULL)
 			continue;
 		*input_tokens = (*input_tokens)->next;
-		if (*input_tokens == NULL)
-			break;
-		token = (t_token *)(*input_tokens)->content;
-		// debug("AFTER EXPRESSION: token type: %d, %s", token->type, token->lexeme);
+		if (*input_tokens)
+			token = (t_token *)(*input_tokens)->content;
 		// if (token->type == PIPE || token->type == PIPE_AND || token->type == AND_IF || token->type == OR_IF || token->type == SEMI || token->type == AND_TOK)
 		// 	break;
 	}
@@ -279,9 +287,9 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	// if *input_tokens is not null I have a delimiter like a pipe or pipe_and
 	// debug the prev and next pointer of current token
 	if (*input_tokens)
-	{
-		debug("current token content: %s", ((t_token *)((*input_tokens)->content))->lexeme);
-		debug("current token type: %d", ((t_token *)((*input_tokens)->content))->type);
+	{	
+		token = (t_token *)(*input_tokens)->content;
+		debug("AFTER LOOP EXIT: token type: %d, %s", token->type, token->lexeme);
 	}
 	// if I have a pipe or pipe_and I need to break the list before my node and
 	// pass head to create a node with the previous list until the previous token
@@ -298,16 +306,25 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	}
 	// if I had an expression I need to add a node with the expression content
 	if (has_expr)
-	{
+	{ 		t_list *tmp = head;
+			t_token *token2;
+			token2 = (t_token *)tmp->content;
+			debug("HEAD pointer %p", head);
+			debug("HEAD token type: %d, %s", token2->type, token2->lexeme);
+			while (tmp)
+			{
+				token2 = (t_token *)tmp->content;
+				debug("token type: %d, %s", token2->type, token2->lexeme);
+				tmp = tmp->next;
+			}	
 		a = parse_list(&head);
 		if (a)
-			debug("new ast node type in parse_terminal: %d", a->type);
+			debug("new ast node from extression in parse_terminal: %d", a->type);
 	}
 	else
 		a = new_node(NODE_TERMINAL, NULL, NULL, head);
 	if (a)
 		debug("new ast node type in parse_terminal: %d", a->type);
-
 	return (a);
 }
 
@@ -319,7 +336,8 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 	a = NULL;
 	token = NULL;
 	if (*input_tokens == NULL || input_tokens == NULL)
-		return (NULL);
+		debug("input tokens is NULL");
+		//return (NULL);
 	debug("parse_pipeline");
 
 	a = parse_terminal(input_tokens);
@@ -347,9 +365,8 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 			return (NULL);
 		}
 		(*input_tokens)->prev = NULL;
-		t_ast_node *b = parse_list(input_tokens);
+		t_ast_node *b = parse_pipeline(input_tokens);
 		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
-
 	}
 	return (a);
 }
@@ -386,12 +403,13 @@ t_ast_node	*parse_list(t_list **input_tokens)
 			}
 			b = parse_pipeline(input_tokens);
 			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
-
 		}
 		// debug("new ast node type in parse_list: %d", a->type);	
 		if (*input_tokens)
 			debug("in parse list - extraneus token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
-		// 	*input_tokens = (*input_tokens)->next;
+		if (*input_tokens == NULL)
+			break;
+		*input_tokens = (*input_tokens)->next;
 	}
 	return (a);
 }
