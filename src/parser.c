@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/19 16:51:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/19 17:24:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,13 @@ t_ast_node* new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_lis
 	node->left = left;
 	node->right = right;
 	node->token_list = token_list;
-	if (left != NULL && right != NULL)
-	{
+	if (left != NULL)
 		left->parent = node;
+	if (right != NULL)
 		right->parent = node;
-	}
 	return (node);
 }
+
 /*
 I will start to implement three types of redirection
     REDIRECT_OUT, // '>'

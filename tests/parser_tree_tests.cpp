@@ -323,6 +323,55 @@ const char *test_parser_tree_simple_command5() {
 	return result;
 }
 
+/*
+DEBUG src/parser.c:498: level 4 - token type: 5 - lexeme |
+DEBUG src/parser.c:498: level 5 - token type: 5 - lexeme |
+DEBUG src/parser.c:498: level 6 - token type: 1 - lexeme 111
+DEBUG src/parser.c:498: level 7 - token type: 1 - lexeme 222
+DEBUG src/parser.c:498: level 8 - token type: 1 - lexeme 333
+*/
+const char *test_parser_tree_simple_command6() {
+	std::string str = "111|222    | 333";
+	const char* input = str.c_str();
+	init_data(&g_data);
+	g_data->input = input;
+	t_list *lexemes = tokenizer(g_data->input);
+	t_list *current = lexemes;
+	const char *result = NULL;
+	int i = 0;	
+
+	result = process_token(&current, &i, "111", NUMBER);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "222", NUMBER);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "333", NUMBER);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	t_ast_node *ast = create_ast(lexemes);
+
+	t_token *token = (t_token *)ast->token_list->content;
+	t_tokentype token_type = token->type;
+	debug("ast node type: %d ", ast->type);
+	debug("ast node token type: %d ", token_type);
+	debug("ast node token lexeme: %s ", token->lexeme);
+
+
+	// print all the nodes from the ast
+	// print_ast(ast);
+
+	//here I need to walk the tree and check the nodes
+	result = process_ast_node(ast, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left->left, NODE_TERMINAL, NUMBER, "111");
+	result = process_ast_node(ast->left->right, NODE_TERMINAL, NUMBER, "222");
+	result = process_ast_node(ast->right, NODE_TERMINAL, NUMBER, "333");
+
+	return result;
+}
+
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -334,6 +383,7 @@ const char *all_tests()
 	run_test(test_parser_tree_simple_command3);
 	run_test(test_parser_tree_simple_command4);
 	run_test(test_parser_tree_simple_command5);
+	run_test(test_parser_tree_simple_command6);
 
 	return NULL;
 }
