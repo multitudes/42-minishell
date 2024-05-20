@@ -403,6 +403,23 @@ const char *test_parser_tree_simple_command7() {
 	//here I need to walk the tree and check the nodes
 	result = process_ast_node(ast, NODE_TERMINAL, WORD, "ls");
 
+	// now with ls || ()
+	// ls || ()
+	lexemes = initialiser("ls || ()");
+	current = lexemes;
+
+	result = process_token(&current, &i, "ls", WORD);
+	result = process_token(&current, &i, "||", OR_IF);
+	result = process_token(&current, &i, "()", EXPRESSION);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	ast = create_ast(lexemes);
+
+	//here I need to walk the tree and check the nodes
+	assert(ast==NULL );
+
 	return result;
 }
 
