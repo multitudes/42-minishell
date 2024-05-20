@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/20 14:55:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/20 17:37:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,7 @@ bool	extract_expression(t_list **head, t_list **input_tokens)
 				debug("HEAD is %s", ((t_token *)(*head)->content)->lexeme);
 			debug("empty expression extracted");
 			*input_tokens = next_token_old_list;	
-			return (false);
+			return (true);	
 		}
 		else
 		{
@@ -218,22 +218,22 @@ bool	extract_expression(t_list **head, t_list **input_tokens)
 		return (true);
 	}
 	else
+	
+	if (input_tokens && *input_tokens)
 	{
-		if (input_tokens && *input_tokens)
-		{
-			debug("input tokens is lexeme %s", ((t_token *)(*input_tokens)->content)->lexeme);
-			// debug print lexem input token prev
-			// debug("input tokens prev is lexeme %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
-			if ((*input_tokens)->prev == NULL)
-				*head = (*input_tokens);}
-		debug("HERE not expression");
-		if (*head == NULL)
-			debug("head is NULL");
-		else if (*head)
-			debug("head not NULL");
-		debug("head lexem is %s", ((t_token *)(*head)->content)->lexeme);
-		debug("no expression to extract");
-	}
+		debug("input tokens is lexeme %s", ((t_token *)(*input_tokens)->content)->lexeme);
+		// debug print lexem input token prev
+		// debug("input tokens prev is lexeme %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
+		if ((*input_tokens)->prev == NULL)
+			*head = (*input_tokens);}
+	debug("HERE not expression");
+	if (*head == NULL)
+		debug("head is NULL");
+	else if (*head)
+		debug("head not NULL");
+	debug("head lexem is %s", ((t_token *)(*head)->content)->lexeme);
+	debug("no expression to extract");
+	
 	if (head)
 		debug("currently the head is %s", ((t_token *)(*head)->content)->lexeme);
 	debug("HERE return false");
@@ -263,17 +263,6 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 		if (extract_expression(&head ,input_tokens))
 		{
 			has_expr = true;
-			// t_list *tmp = head;
-			// t_token *token2;
-			// token2 = (t_token *)tmp->content;
-			// debug("HEAD pointer %p", head);
-			// debug("HEAD token type: %d, %s", token2->type, token2->lexeme);
-			// while (tmp)
-			// {
-			// 	token2 = (t_token *)tmp->content;
-			// 	debug("token type: %d, %s", token2->type, token2->lexeme);
-			// 	tmp = tmp->next;
-			// }
 			if (head == NULL)
 				return (NULL);
 			if (*input_tokens == NULL)
@@ -294,18 +283,25 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 			{
 				debug("*input tokens pointer %p", *input_tokens);
 				debug("AFTER EXTRACT: token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
-
+				if ((*input_tokens)->next)
+				{
+					*input_tokens = (*input_tokens)->next;
+					token = (t_token *)(*input_tokens)->content;
+					debug("next token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
+				}
+				else 
+				{
+					debug("next token is NULL");
+					*input_tokens = NULL;
+				}
+				continue;
 			}
 			debug("head  null?");
 			if (head == NULL)
 				return (NULL);
 			debug("head lexeme: %s", ((t_token *)(head->content))->lexeme);
 		}
-		if (has_expr)
-		{
-			debug("why am I here????");
-			// continue;
-		}
+
 		if (*input_tokens == NULL)
 			continue;
 		*input_tokens = (*input_tokens)->next;

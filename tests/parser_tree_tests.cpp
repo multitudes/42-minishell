@@ -376,8 +376,8 @@ const char *test_parser_tree_simple_command7() {
 	result = process_token(&current, &i, "()", EXPRESSION);
 
 	// this is how I check for the end of the list
-	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	
 	ast = create_ast(lexemes);
 	assert(ast == NULL);
 
@@ -465,7 +465,7 @@ const char *all_tests()
 	run_test(test_parser_tree_simple_command4);
 	run_test(test_parser_tree_simple_command5);
 	run_test(test_parser_tree_simple_command6);
-	// run_test(test_parser_tree_simple_command7);
+	run_test(test_parser_tree_simple_command7);
 	run_test(test_parser_tree_simple_command8);
 	run_test(test_parser_tree_simple_command9);
 
