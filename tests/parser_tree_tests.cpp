@@ -376,10 +376,32 @@ const char *test_parser_tree_simple_command7() {
 	result = process_token(&current, &i, "()", EXPRESSION);
 
 	// this is how I check for the end of the list
-
 	
 	ast = create_ast(lexemes);
 	assert(ast == NULL);
+
+	// now with 2 empty parentheses
+	// ()()ls()
+	lexemes = initialiser("()()ls()");
+	current = lexemes;
+
+	result = process_token(&current, &i, "()", EXPRESSION);
+	result = process_token(&current, &i, "()", EXPRESSION);
+	result = process_token(&current, &i, "ls", WORD);
+	result = process_token(&current, &i, "()", EXPRESSION);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	ast = create_ast(lexemes);
+	t_token *token = (t_token *)ast->token_list->content;
+	t_tokentype token_type = token->type;
+	debug("ast node type: %d ", ast->type);
+	debug("ast node token type: %d ", token_type);
+	debug("ast node token lexeme: %s ", token->lexeme);
+
+	//here I need to walk the tree and check the nodes
+	result = process_ast_node(ast, NODE_TERMINAL, WORD, "ls");
 
 	return result;
 }
