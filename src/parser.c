@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/20 14:45:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/20 14:55:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,7 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 		else 
 		{
 			debug("has expr set to false");
-			has_expr = false;
+			// has_expr = false;
 			if (*input_tokens)
 			{
 				debug("*input tokens pointer %p", *input_tokens);

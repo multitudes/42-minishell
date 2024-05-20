@@ -6,13 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:03:58 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:38:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/20 15:05:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-bool	is_delimiting_char(const char c)
+bool	not_a_delimiting_char(const char c)
 {
 	return (ft_isprint(c) && !filename_delimiter(c));
 }

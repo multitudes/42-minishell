@@ -374,6 +374,8 @@ const char* test_scanner_builtins_all_not_impl() {
 }
 
 
+
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -392,6 +394,7 @@ const char *all_tests()
 	run_test(test_scanner_builtins_pwd);
 	run_test(test_scanner_builtins_dot);
 	run_test(test_scanner_builtins_all_not_impl);
+
 	
 	return NULL;
 }

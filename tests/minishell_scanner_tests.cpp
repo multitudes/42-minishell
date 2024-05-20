@@ -429,6 +429,60 @@ const char* test_all_tokens4() {
     return result;
 }
 
+// test ha! ha? etc
+const char* test_all_tokens5() {
+    std::string str = "ha! " ;// ha? ha. ha, ha: ha; ha& ha| ha&& ha|| ha# ha$ ha% ha^ ha~ ha` ha= ha< ha> ha( ha) ha[ ha] ha{ ha} ha\" ha' ha\\ ha/ ha* ha+ ha- ha_ ha@ ha\\";
+    const char* input = str.c_str();
+	t_list *lexemes = tokenizer(input);
+    t_list *current = lexemes;
+    const char *result;
+    int i = 0;
+
+    // Add calls to process_token for each token in the order they appear in the string
+	result = process_token(&current, &i, "ha!", WORD);
+	// result = process_token(&current, &i, "ha?", WORD);
+	// result = process_token(&current, &i, "ha.", WORD);
+	// result = process_token(&current, &i, "ha,", WORD);
+	// result = process_token(&current, &i, "ha:", WORD);
+	// result = process_token(&current, &i, "ha;", WORD);
+	// result = process_token(&current, &i, "ha&", WORD);
+	// result = process_token(&current, &i, "ha|", WORD);
+	// result = process_token(&current, &i, "ha&&", WORD);
+	// result = process_token(&current, &i, "ha||", WORD);
+	// result = process_token(&current, &i, "ha#", WORD);
+	// result = process_token(&current, &i, "ha$", WORD);
+	// result = process_token(&current, &i, "ha%", WORD);
+	// result = process_token(&current, &i, "ha^", WORD);
+	// result = process_token(&current, &i, "ha~", WORD);
+	// result = process_token(&current, &i, "ha`", WORD);
+	// result = process_token(&current, &i, "ha=", WORD);
+	// result = process_token(&current, &i, "ha<", WORD);
+	// result = process_token(&current, &i, "ha>", WORD);
+	// result = process_token(&current, &i, "ha(", WORD);
+	// result = process_token(&current, &i, "ha)", WORD);
+
+	// result = process_token(&current, &i, "ha[", WORD);
+	// result = process_token(&current, &i, "ha]", WORD);
+	// result = process_token(&current, &i, "ha{", WORD);
+	// result = process_token(&current, &i, "ha}", WORD);
+	// result = process_token(&current, &i, "ha\"", WORD);
+	// result = process_token(&current, &i, "ha'", WORD);
+	// result = process_token(&current, &i, "ha\\", WORD);
+	// result = process_token(&current, &i, "ha/", WORD);
+	// result = process_token(&current, &i, "ha*", WORD);
+	// result = process_token(&current, &i, "ha+", WORD);
+	// result = process_token(&current, &i, "ha-", WORD);
+	// result = process_token(&current, &i, "ha_", WORD);
+	// result = process_token(&current, &i, "ha@", WORD);
+	// result = process_token(&current, &i, "ha\\", WORD);
+
+
+	
+	// this is how I check for the end of the list  
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+    return result;
+}
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -449,6 +503,7 @@ const char *all_tests()
 	run_test(test_all_tokens2);
 	run_test(test_all_tokens3);
 	run_test(test_all_tokens4);
+	run_test(test_all_tokens5);
 
 	return NULL;
 }

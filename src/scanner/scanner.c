@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 11:39:31 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/20 15:09:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ bool	is_a_string_thing(t_mini_data *data, int *i)
 	char	*tmp;
 
 	start = *i;
-	while (is_delimiting_char(data->input[*i]))
+	while (not_a_delimiting_char(data->input[*i]))
 		advance(i);
 	if (*i == start)
 		return (false);

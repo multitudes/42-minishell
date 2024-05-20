@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 10:08:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/20 15:05:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ bool	is_alnum(const char c);
 bool	is_alpha(const char c);
 bool	is_pathname(const char c);
 bool	is_in_pathname(const char c);
-bool	is_delimiting_char(const char c);
+bool	not_a_delimiting_char(const char c);
 bool	is_a_pathname_or_num(t_mini_data *data, const char *tmp, int *start);
 bool	is_reserved(t_mini_data *data, char *identifier,int *start);
 bool	is_true_false(t_mini_data *data, char *str, int *start);

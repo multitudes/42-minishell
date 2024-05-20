@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:48:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:59:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/20 15:10:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ bool	filename_delimiter(const char ch)
 	if (is_space(ch) || ch == ';' || ch == '>' || \
 	ch == '<' || ch == '(' || ch == ')' || \
 	ch == '|' || ch == '&' || ch == '$' || ch == '`' || \
-	ch == '"' || ch == '\'' || ch == '!' || ch == '\0')
+	ch == '"' || ch == '\'' || ch == '\0')
 		return (true);
 	return (false);
 }
