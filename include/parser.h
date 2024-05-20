@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/19 12:20:31 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/19 18:07:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ extern "C" {
 #endif
 
 # include "minishell.h"
+
+#define GET_TOKEN(input_tokens) ((t_token *)(input_tokens)->content)
 
 /*
 I am creating a ast tree for my context free grammar with these structs...

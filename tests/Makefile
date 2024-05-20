@@ -2,7 +2,7 @@
 # comment out to enable them need to recompile with make re
 # can use also like ./minishell 2>> error_log.txt to print stderror to a file and have 
 # all debug messages together
-CFLAGS 		+= 	-DNDEBUG
+# CFLAGS 		+= 	-DNDEBUG
 
 CXXFLAGS 	= 	-Wall -Wextra -Werror -std=c++98
 CXX = c++

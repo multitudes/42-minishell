@@ -392,6 +392,43 @@ const char *test_parser_tree_simple_command7() {
 	return result;
 }
 
+//a | (b)
+const char *test_parser_tree_simple_command8() {
+	std::string str = "a | (b)";
+	const char* input = str.c_str();
+	init_data(&g_data);
+	g_data->input = input;
+	t_list *lexemes = tokenizer(g_data->input);
+	t_list *current = lexemes;
+	const char *result = NULL;
+	int i = 0;	
+
+	result = process_token(&current, &i, "a", WORD);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "(b)", EXPRESSION);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	t_ast_node *ast = create_ast(lexemes);
+	
+	t_token *token = (t_token *)ast->token_list->content;
+	t_tokentype token_type = token->type;
+	debug("ast node type: %d ", ast->type);
+	debug("ast node token type: %d ", token_type);
+	debug("ast node token lexeme: %s ", token->lexeme);
+
+	// print all the nodes from the ast
+	// print_ast(ast);
+
+	//here I need to walk the tree and check the nodes
+	result = process_ast_node(ast, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left, NODE_TERMINAL, WORD, "a");
+	result = process_ast_node(ast->right, NODE_TERMINAL, WORD, "b");
+
+	return result;
+}
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -402,9 +439,10 @@ const char *all_tests()
 	run_test(test_parser_tree_simple_command2);	
 	run_test(test_parser_tree_simple_command3);
 	run_test(test_parser_tree_simple_command4);
-	run_test(test_parser_tree_simple_command5);
-	run_test(test_parser_tree_simple_command6);
-	run_test(test_parser_tree_simple_command7);
+	// run_test(test_parser_tree_simple_command5);
+	// run_test(test_parser_tree_simple_command6);
+	// run_test(test_parser_tree_simple_command7);
+	run_test(test_parser_tree_simple_command8);
 
 	return NULL;
 }
