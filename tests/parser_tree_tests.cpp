@@ -87,6 +87,24 @@ const char* process_ast_node(t_ast_node *ast, t_nodetype expected_node_type, t_t
 	return NULL;
 }
 
+/*
+create a refactor of this code to init my test data
+	std::string str = "/bin/ls -la";
+	const char* input = str.c_str();
+	init_data(&g_data);
+	g_data->input = input;
+	t_list *lexemes = tokenizer(g_data->input);
+	t_list *current = lexemes;
+	const char *result = NULL;
+
+*/
+
+t_list *initialiser( std::string input) {
+	init_data(&g_data);
+	g_data->input = input.c_str();
+	t_list *lexemes = tokenizer(g_data->input);
+	return lexemes;
+}
 
 /*
 This is a test function. It should return NULL if the test passes
@@ -99,15 +117,8 @@ RUN_TESTS will run all the tests and print the results
 in this test I will just have one node in the tree
 */
 const char* test_parser_tree_simple_command() {
-	
-	// i want to check the output of the call to the function in scanner.c file
-	// tokenizer(char *input) returning a t_list of lexemes
-	// I will create a string and check the output of the function
-	std::string str = "/bin/ls -la";
-	const char* input = str.c_str();
-	init_data(&g_data);
-	g_data->input = input;
-	t_list *lexemes = tokenizer(g_data->input);
+
+	t_list *lexemes = initialiser("/bin/ls -la");
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;
@@ -136,14 +147,7 @@ in this test I will just have one node in the tree
 */
 const char* test_parser_tree_simple_command2() {
 	
-	// i want to check the output of the call to the function in scanner.c file
-	// tokenizer(char *input) returning a t_list of lexemes
-	// I will create a string and check the output of the function
-	std::string str = "echo \"hello world\"";
-	const char* input = str.c_str();
-	init_data(&g_data);
-	g_data->input = input;
-	t_list *lexemes = tokenizer(g_data->input);
+	t_list *lexemes = initialiser("echo \"hello world\"");
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;
@@ -183,14 +187,7 @@ DEBUG src/parser.c:468: lexeme sdf
 */
 const char *test_parser_tree_simple_command3() {
 	
-	// i want to check the output of the call to the function in scanner.c file
-	// tokenizer(char *input) returning a t_list of lexemes
-	// I will create a string and check the output of the function
-	std::string str = "false | (true || sdf)";
-	const char* input = str.c_str();
-	init_data(&g_data);
-	g_data->input = input;
-	t_list *lexemes = tokenizer(g_data->input);
+	t_list *lexemes = initialiser("false | (true || sdf)"); 
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;	
@@ -214,15 +211,12 @@ const char *test_parser_tree_simple_command3() {
 	
 	//here I need to walk the tree and check the nodes
 	
-	
-	
 	result = process_ast_node(ast, NODE_PIPELINE, PIPE, "|");
 	result = process_ast_node(ast->left, NODE_TERMINAL, FALSETOK, "false");
 
 	result = process_ast_node(ast->right, NODE_LIST, OR_IF, "||");
 	result = process_ast_node(ast->right->left, NODE_TERMINAL, TRUETOK, "true");
 	result = process_ast_node(ast->right->right, NODE_TERMINAL, WORD, "sdf");
-	
 
 	return result;
 }
@@ -234,11 +228,7 @@ const char *test_parser_tree_simple_command4() {
 	// i want to check the output of the call to the function in scanner.c file
 	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
-	std::string str = "false | (true || mhh) ha!";
-	const char* input = str.c_str();
-	init_data(&g_data);
-	g_data->input = input;
-	t_list *lexemes = tokenizer(g_data->input);
+	t_list *lexemes = initialiser("false | (true || mhh) ha!"); 
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;	
@@ -275,11 +265,8 @@ const char *test_parser_tree_simple_command4() {
 }
 
 const char *test_parser_tree_simple_command5() {
-	std::string str = "false || true && false | true && false";
-	const char* input = str.c_str();
-	init_data(&g_data);
-	g_data->input = input;
-	t_list *lexemes = tokenizer(g_data->input);
+
+	t_list *lexemes = initialiser("false || true && false | true && false"); 
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;	
@@ -304,7 +291,6 @@ const char *test_parser_tree_simple_command5() {
 	debug("ast node type: %d ", ast->type);
 	debug("ast node token type: %d ", token_type);
 	debug("ast node token lexeme: %s ", token->lexeme);
-
 
 	// print all the nodes from the ast
 	// print_ast(ast);
@@ -331,11 +317,8 @@ DEBUG src/parser.c:498: level 7 - token type: 1 - lexeme 222
 DEBUG src/parser.c:498: level 8 - token type: 1 - lexeme 333
 */
 const char *test_parser_tree_simple_command6() {
-	std::string str = "111|222    | 333";
-	const char* input = str.c_str();
-	init_data(&g_data);
-	g_data->input = input;
-	t_list *lexemes = tokenizer(g_data->input);
+
+	t_list *lexemes = initialiser("111|222    | 333"); 
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;	
@@ -357,7 +340,6 @@ const char *test_parser_tree_simple_command6() {
 	debug("ast node token type: %d ", token_type);
 	debug("ast node token lexeme: %s ", token->lexeme);
 
-
 	// print all the nodes from the ast
 	// print_ast(ast);
 
@@ -372,11 +354,8 @@ const char *test_parser_tree_simple_command6() {
 }
 
 const char *test_parser_tree_simple_command7() {
-	std::string str = "()";
-	const char* input = str.c_str();
-	init_data(&g_data);
-	g_data->input = input;
-	t_list *lexemes = tokenizer(g_data->input);
+
+	t_list *lexemes = initialiser("()"); 
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;	
@@ -389,16 +368,26 @@ const char *test_parser_tree_simple_command7() {
 	t_ast_node *ast = create_ast(lexemes);
 	assert(ast == NULL);
 
+	// now with 2 empty parentheses
+	lexemes = initialiser("()()");
+	current = lexemes;
+
+	result = process_token(&current, &i, "()", EXPRESSION);
+	result = process_token(&current, &i, "()", EXPRESSION);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	ast = create_ast(lexemes);
+	assert(ast == NULL);
+
 	return result;
 }
 
 //a | (b)
 const char *test_parser_tree_simple_command8() {
-	std::string str = "a | (b)";
-	const char* input = str.c_str();
-	init_data(&g_data);
-	g_data->input = input;
-	t_list *lexemes = tokenizer(g_data->input);
+	
+	t_list *lexemes = initialiser("a | (b)"); 
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;	
@@ -432,10 +421,7 @@ const char *test_parser_tree_simple_command8() {
 // (a) (a) | b
 const char *test_parser_tree_simple_command9() {
 	std::string str = "(a) (a) | b";
-	const char* input = str.c_str();
-	init_data(&g_data);
-	g_data->input = input;
-	t_list *lexemes = tokenizer(g_data->input);
+		t_list *lexemes = initialiser("(a) (a) | b"); 
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;	
@@ -478,7 +464,7 @@ const char *all_tests()
 	run_test(test_parser_tree_simple_command3);
 	run_test(test_parser_tree_simple_command4);
 	run_test(test_parser_tree_simple_command5);
-	// run_test(test_parser_tree_simple_command6);
+	run_test(test_parser_tree_simple_command6);
 	// run_test(test_parser_tree_simple_command7);
 	run_test(test_parser_tree_simple_command8);
 	run_test(test_parser_tree_simple_command9);
