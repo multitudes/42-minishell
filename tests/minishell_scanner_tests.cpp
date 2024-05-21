@@ -25,8 +25,8 @@ const char* process_token(t_list **current, int *i, const char* expected_lexeme,
     debug("token type: %d ", token->type);
 	debug("type %d = expected_type: %d", token->type, expected_tokentype);
     debug("token lexeme: -%s- ", token->lexeme);
-    my_assert(token->type == expected_tokentype, "token type is not the expected type...");
     my_assert(strcmp(token->lexeme, expected_lexeme) == 0, "token lexeme is not expected");
+    my_assert(token->type == expected_tokentype, "token type is not the expected type...");
 
     *current = (*current)->next;
     (*i)++;

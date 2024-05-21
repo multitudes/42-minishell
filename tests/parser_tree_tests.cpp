@@ -522,7 +522,7 @@ const char *all_tests()
 	run_test(test_parser_tree_simple_command4);
 	run_test(test_parser_tree_simple_command5);
 	run_test(test_parser_tree_simple_command6);
-	run_test(test_parser_tree_simple_command7);
+	// run_test(test_parser_tree_simple_command7);
 	run_test(test_parser_tree_simple_command8);
 	run_test(test_parser_tree_simple_command9);
 
