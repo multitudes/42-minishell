@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/21 12:06:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/21 12:19:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,47 +235,35 @@ bool delete_empty_expression(t_list **head, t_list **input_tokens)
 	return (true);
 }
 
-/*
-I get a t_list node in input with my token as expression type
-and want to substitute it with the content of the expression
-it is like cut and paste a linked list
-*/
-bool	extract_expression(t_list **head, t_list **input_tokens)
+bool get_expression_tokens(t_list **head, t_list **input_tokens)
 {
-	t_list *tmp;
+
 	t_token *curr_token;
+	t_list *tmp;	
 	t_list *next_token_old_list;
 
-	next_token_old_list = NULL;
-	debug("in extract expression and current token is %s", ((t_token *)(*input_tokens)->content)->lexeme);
+	tmp = *input_tokens;
+	next_token_old_list = (*input_tokens)->next;
 	curr_token = get_curr_token(*input_tokens);
-	if (get_token_type(*input_tokens) == EXPRESSION)
+	char *lexem = ft_substr(curr_token->lexeme, 1, ft_strlen(curr_token->lexeme) - 2);
+	t_list *new_token_list = tokenizer(lexem);
+	if (new_token_list)
 	{
-		next_token_old_list = (*input_tokens)->next;
-		tmp = *input_tokens;
-		if (ft_strlen(get_token_lexeme(*input_tokens)) == 2)
-			return (delete_empty_expression(head, input_tokens));
-		else
+		t_list *newlist_last = ft_lstlast(new_token_list);
+		if (next_token_old_list)
 		{
-			char *lexem = ft_substr(curr_token->lexeme, 1, ft_strlen(curr_token->lexeme) - 2);
-			t_list *new_token_list = tokenizer(lexem);
-			if (new_token_list)
-			{
-				t_list *newlist_last = ft_lstlast(new_token_list);
-				if (next_token_old_list)
-				{
-					next_token_old_list->prev = newlist_last;
-					newlist_last->next = next_token_old_list;
-				}
-				if ((*input_tokens)->prev)
-				{
-					(*input_tokens)->prev->next = new_token_list;
-					new_token_list->prev = (*input_tokens)->prev;
-				}
-				else
-					*head = new_token_list;
-			}
+			next_token_old_list->prev = newlist_last;
+			newlist_last->next = next_token_old_list;
 		}
+		if ((*input_tokens)->prev)
+		{
+			(*input_tokens)->prev->next = new_token_list;
+			new_token_list->prev = (*input_tokens)->prev;
+		}
+		else
+			*head = new_token_list;
+	}
+	
 		*input_tokens = next_token_old_list;
 		if (head)
 			debug("currently the head is %s", ((t_token *)(*head)->content)->lexeme);
@@ -284,23 +272,24 @@ bool	extract_expression(t_list **head, t_list **input_tokens)
 		free(curr_token);
 		free(tmp);
 		return (true);
-	}
-	else if (input_tokens && *input_tokens)
+}
+
+/*
+I get a t_list node in input with my token as expression type
+and want to substitute it with the content of the expression
+it is like cut and paste a linked list
+*/
+bool	extract_expression(t_list **head, t_list **input_tokens)
+{
+	debug("in extract expression and current token is %s", ((t_token *)(*input_tokens)->content)->lexeme);
+	if (get_token_type(*input_tokens) == EXPRESSION)
 	{
-		debug("input tokens is lexeme %s", ((t_token *)(*input_tokens)->content)->lexeme);
-		if ((*input_tokens)->prev == NULL)
-			*head = (*input_tokens);}
-	debug("HERE not expression");
-	if (*head == NULL)
-		debug("head is NULL");
-	else if (*head)
-		debug("head not NULL");
-	debug("head lexem is %s", ((t_token *)(*head)->content)->lexeme);
-	debug("no expression to extract");
-	
-	if (head)
-		debug("currently the head is %s", ((t_token *)(*head)->content)->lexeme);
-	debug("HERE return false");
+		if (ft_strlen(get_token_lexeme(*input_tokens)) == 2)
+			return (delete_empty_expression(head, input_tokens));
+		else
+			return (get_expression_tokens(head, input_tokens));
+	}
+
 	return (false);
 }
 
