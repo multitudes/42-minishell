@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/20 18:45:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/21 08:48:42 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,35 @@ void print_token(void *token)
     debug("token type: %d, %s", t->type, t->lexeme);
 }
 /*
+	 if I have a pipe or pipe_and or || && I need to break the list before my node and
+	pass head to create a node with the previous list until the previous token
+	ex || is not in the terminal node
+*/
+t_token *consume_token(t_list **input_tokens)
+{
+	t_token *token;
+	
+	if (*input_tokens == NULL)
+		return (NULL);
+	token = (t_token *)(*input_tokens)->content;
+	*input_tokens = (*input_tokens)->next;
+	if (*input_tokens)
+	{
+		if ((*input_tokens)->prev)
+		{
+			(*input_tokens)->prev->next = NULL;
+			(*input_tokens)->prev = NULL;
+		}
+	}
+	if (!input_tokens || !*input_tokens)
+	{
+		// write(2, "syntax error near unexpected token `newline'\n", 44);
+		debug("syntax error near unexpected token `newline'");
+		return (NULL);
+	}
+	return (token);
+}
+/*
 I get a t_list node in input with my token as expression type
 and want to substitute it with the content of the expression
 it is like cut and paste a linked list
@@ -235,23 +264,36 @@ bool	extract_expression(t_list **head, t_list **input_tokens)
 	return (false);
 }
 
+bool	is_not_control_token(t_list *input_tokens)
+{
+	t_token *token;
+	
+	if (input_tokens == NULL)
+		return (false);
+	token = (t_token *)input_tokens->content;
+	if (token->type == PIPE || token->type == PIPE_AND || token->type == AND_IF || \
+	token->type == OR_IF || token->type == SEMI || token->type == AND_TOK)
+		return (false);
+	return (true);
+}
+
 /*
 follows the grammar
 */
 t_ast_node *parse_terminal(t_list **input_tokens)
 {
-	bool has_expr;
-	t_ast_node *a;
-	t_list *head;
-	t_token *token;
+	t_list	*head;
+	t_ast_node	*a;
+	t_token	*token;
+	bool	has_expr;
 
 	a = NULL;
 	has_expr = false;
 	head = *input_tokens;
-	if (*input_tokens == NULL || input_tokens == NULL)
+	if (input_tokens == NULL || *input_tokens == NULL)
 		return (NULL);
 	token = (t_token *)(*input_tokens)->content;
-	while (*input_tokens && (token->type != PIPE) && (token->type != PIPE_AND) && (token->type != AND_IF) && (token->type != OR_IF))
+	while (*input_tokens && is_not_control_token(*input_tokens))
 	{
 		token = (t_token *)(*input_tokens)->content;
 		debug("parse_terminal token type: %d, %s", token->type, token->lexeme);
@@ -374,9 +416,9 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 
 	a = NULL;
 	token = NULL;
-	if (*input_tokens == NULL || input_tokens == NULL)
-		debug("input tokens is NULL");
-		//return (NULL);
+	if (input_tokens == NULL || *input_tokens == NULL)
+	{debug("input tokens is NULL");
+	return (NULL);}
 	debug("parse_pipeline");
 
 	a = parse_terminal(input_tokens);
@@ -384,47 +426,21 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 		debug("new ast node type in parse_pipeline: %d", a->type);
 	else 
 		return (NULL);
-	if (a && *input_tokens)
-	{	
-		debug("got asttype in parse_pipeline: %d and content lexem %s", a->type, ((t_token *)(a->token_list->content))->lexeme);
-		debug("in parse pipeline - existing token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
-		token = (t_token *)(*input_tokens)->content;
-	}
-	// // debug the prev and next pointer of current token
-	// if ((t_token *)(*input_tokens)->prev)
-	// 	debug("\nprev %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
-	// if ((t_token *)(*input_tokens)->next)
-	// 	debug("next %s", ((t_token *)(*input_tokens)->next->content)->lexeme);
-
-	while (*input_tokens && (((t_token *)(*input_tokens)->content)->type == PIPE || ((t_token *)(*input_tokens)->content)->type == PIPE_AND))
+	while (*input_tokens) 
 	{
-		debug("PIPE");
-		*input_tokens = (*input_tokens)->next;
-
-		// consume the pipe or pipe_and token
-		//  if I have a pipe or pipe_and I need to break the list before my node and
-		// pass head to create a node with the previous list until the previous token
-		// ex || is not in the terminal node
-		if (*input_tokens)
+		token = (t_token *)(*input_tokens)->content;
+		if (token->type == PIPE || token->type == PIPE_AND)
 		{
-			if ((*input_tokens)->prev)
-			{
-				// debug("prev %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
-				(*input_tokens)->prev->next = NULL;
-				(*input_tokens)->prev = NULL;
-				// (*input_tokens)->prev->next = NULL;
-			}
+			debug("PIPE");
+			if (consume_token(input_tokens) == NULL)
+				return (NULL);
+			t_ast_node *b = parse_terminal(input_tokens);
+			if (b == NULL)
+				return (free_ast(a));
+			a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
 		}
-		if (!*input_tokens)
-		{
-			// write(2, "syntax error near unexpected token `newline'\n", 44);
-			debug("syntax error near unexpected token `newline'");
-			free_ast(a);
-			return (NULL);
-		}
-		(*input_tokens)->prev = NULL;
-		t_ast_node *b = parse_terminal(input_tokens);
-		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
+		else
+			break;
 	}
 	return (a);
 }
@@ -450,47 +466,21 @@ t_ast_node	*parse_list(t_list **input_tokens)
 	while (*input_tokens)
 	{
 		// check for && and ||
-		
 		token = (t_token *)(*input_tokens)->content;
 		debug("in parse list - new token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
 		if (token->type == AND_IF || token->type == OR_IF)
 		{
 			debug("check for && and ||");
-			*input_tokens = (*input_tokens)->next; // consume the && or || token
-
-			//  if I have a pipe or pipe_and or || && I need to break the list before my node and
-			// pass head to create a node with the previous list until the previous token
-			// ex || is not in the terminal node
-			if (*input_tokens)
-			{
-				if ((*input_tokens)->prev)
-				{
-					// debug("prev %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
-					(*input_tokens)->prev->next = NULL;
-					(*input_tokens)->prev = NULL;
-					// (*input_tokens)->prev->next = NULL;
-				}
-			}
-
-			if (!input_tokens || !*input_tokens)
-			{
-				// write(2, "syntax error near unexpected token `newline'\n", 44);
-				debug("syntax error near unexpected token `newline'");
-				free_ast(a);
+			if (consume_token(input_tokens) == NULL)
 				return (NULL);
-			}
 			b = parse_pipeline(input_tokens);
 			if (b == NULL)
-				return (NULL);
+				return (free_ast(a));
 			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
-			
 		}
 		// debug("new ast node type in parse_list: %d", a->type);	
-		// if (*input_tokens)
-		// 	debug("in parse list - extraneus token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
-		if (*input_tokens == NULL)
-			break;
-		// *input_tokens = (*input_tokens)->next;
+		if (*input_tokens)
+			debug("in parse list - extraneus token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
 	}
 	debug("returning new ast node type in parse_list: %d", a->type);
 	return (a);
@@ -530,14 +520,15 @@ t_ast_node *create_ast(t_list *input_tokens)
 }
 
 
-void		free_ast(t_ast_node *ast)
+void		*free_ast(t_ast_node *ast)
 {
 	if (ast == NULL)
-		return ;
+		return (NULL);
 	free_ast(ast->left);
 	free_ast(ast->right);
 	ft_lstclear(&ast->token_list, free);
 	free(ast);
+	return (NULL);
 }
 
 /* 
