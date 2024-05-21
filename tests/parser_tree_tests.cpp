@@ -437,8 +437,7 @@ const char *test_parser_tree_simple_command7() {
 	// //here I need to walk the tree and check the nodes
 	assert(ast==NULL);
 
-// now with (sdf |s | (s))
-
+	// now with (sdf |s | (s))
 	return result;
 }
 
