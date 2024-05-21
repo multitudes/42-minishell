@@ -90,6 +90,7 @@ Here at 42 we are allowed to use the following functions for this project:
 Also we follow the NORM, a series of rules about linting and formatting of the code. EX functions cannot have more than 25 lines, and we are not allowed to use for loops, but while loops are allowed. 
 Declaring and defining variables in one line is not allowed. etc.
 
+# Teamwork - It's about GIT
 ## Commit style
 
 See https://www.conventionalcommits.org/en/v1.0.0/#summary.  
@@ -111,6 +112,10 @@ The commit contains the following structural elements, to communicate intent to 
 types other than fix: and feat: are allowed, for example @commitlint/config-conventional (based on the Angular convention) recommends build:, chore:, ci:, docs:, style:, refactor:, perf:, test:, and others.  
 footers other than BREAKING CHANGE: <description> may be provided and follow a convention similar to git trailer format.  
 Additional types are not mandated by the Conventional Commits specification, and have no implicit effect in Semantic Versioning (unless they include a BREAKING CHANGE). A scope may be provided to a commit’s type, to provide additional contextual information and is contained within parenthesis, e.g., feat(parser): add ability to parse arrays.  
+
+## Git pull --rebase
+It is preferred to Git Pull because if the command succeeds the history will be linear.  
+
 
 ## Shell Syntax (from the BASH manual)
 
