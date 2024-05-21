@@ -1154,6 +1154,10 @@ command1 | command2 || echo "command1 or command2 failed
 ```
 In this example, the output of command1 is piped into command2. If either command1 or command2 fails, the message "command1 or command2 failed" is printed to the console.
 
+## Associativity
+This is about building the correct ast tree... the image is self explanatory. (image by hhj3 youtube)
+
+<img src="assets/associativity.jpg" alt="associativity" width="400">
 
 ## links
 The Bash reference manual:  
