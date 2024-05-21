@@ -115,7 +115,18 @@ Additional types are not mandated by the Conventional Commits specification, and
 
 ## Git pull --rebase
 It is preferred to Git Pull because if the command succeeds the history will be linear.  
-
+```
+git pull --rebase
+```
+I also added it to my git aliases like
+```
+git config --global alias.pr 'pull --rebase'
+```
+If git pull rebase should fail, it is easy to back up with 
+```
+git rebase --abort
+```
+and pull normally or solve the conflicts.
 
 ## Shell Syntax (from the BASH manual)
 
