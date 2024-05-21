@@ -25,7 +25,7 @@ SRCS 			= 	$(addprefix $(SRC_DIR), main.c loop.c history/history.c history/histo
 scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
-scanner/token_operators.c scanner/history_tokens.c scanner/token_blocks.c \
+scanner/token_operators.c scanner/history_tokens.c scanner/token_blocks.c scanner/token_blocks2.c\
 scanner/redirection_tokens.c environment.c parser.c analyser.c utils.c\
 executer.c error.c darray.c)
 OBJS 			=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))

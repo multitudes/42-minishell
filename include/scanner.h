@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/20 15:05:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/21 13:53:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,6 +223,7 @@ bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type);
 bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int type);
 bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type);
 bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type);
+bool	add_parenthesisblock(t_mini_data *data, int *i, char delim, int t_type);
 bool	is_a_block(t_mini_data *data, int *i);
 bool	is_a_hist_expansion(t_mini_data *data, int *i);
 bool	is_a_dollar_exp(t_mini_data *data, int *i);

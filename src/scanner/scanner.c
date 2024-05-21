@@ -6,11 +6,44 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/20 15:09:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/21 13:48:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*
+scanning function
+Returns a token list which is a linked list of t_list type
+note: we dont need to action some of them but fir completeness I added 
+as much as I could. for instance we do not action the last & on a command
+or redirections like 
+*/
+t_list	*tokenizer(const char *input)
+{
+	int			i;
+	t_mini_data	*data;
+
+	i = 0;
+	data = NULL;
+	if (!init_scanner_data(&data, input))
+		return (NULL);
+	while (i < (int)ft_strlen(data->input) && data->scanner_error == 0)
+	{
+		if (peek(data->input + i, "#", false))
+			break ;
+		else if (got_tokens(data, &i))
+			continue ;
+		else if (!is_space(data->input[i]))
+			scanner_error(data, "error: unrecognized token");
+		else
+			i++;
+	}
+	if (data->scanner_error == 0)
+		return (data->token_list);
+	free_scanner_data(data);
+	return (NULL);
+}
 
 /*
 create a lexeme for flag in this conf -[a-zA-Z]
@@ -84,37 +117,4 @@ bool	got_tokens(t_mini_data *data, int *i)
 		return (true);
 	else
 		return (false);
-}
-
-/*
-scanning function
-Returns a token list which is a linked list of t_list type
-note: we dont need to action some of them but fir completeness I added 
-as much as I could. for instance we do not action the last & on a command
-or redirections like 
-*/
-t_list	*tokenizer(const char *input)
-{
-	int			i;
-	t_mini_data	*data;
-
-	i = 0;
-	data = NULL;
-	if (!init_scanner_data(&data, input))
-		return (NULL);
-	while (i < (int)ft_strlen(data->input) && data->scanner_error == 0)
-	{
-		if (peek(data->input + i, "#", false))
-			break ;
-		else if (got_tokens(data, &i))
-			continue ;
-		else if (!is_space(data->input[i]))
-			scanner_error(data, "error: unrecognized token");
-		else
-			i++;
-	}
-	if (data->scanner_error == 0)
-		return (data->token_list);
-	free_scanner_data(data);
-	return (NULL);
 }

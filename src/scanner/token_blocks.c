@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 20:00:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/21 13:52:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 bool	is_a_block(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "(", false))
-		return (add_tokenblock(data, i, ')', EXPRESSION));
+		return (add_parenthesisblock(data, i, ')', EXPRESSION));
 	else if (peek(data->input + *i, "\'", false))
 		return (add_tokenblock(data, i, '\'', S_QUOTED_STRING));
 	else if (peek(data->input + *i, "\"", false))

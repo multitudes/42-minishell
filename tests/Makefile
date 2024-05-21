@@ -17,7 +17,7 @@ scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scann
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
 scanner/token_operators.c scanner/token_blocks.c scanner/history_tokens.c \
-scanner/redirection_tokens.c environment.c parser.c analyser.c	utils.c	\
+scanner/redirection_tokens.c scanner/token_blocks2.c environment.c parser.c analyser.c utils.c	\
 executer.c error.c darray.c)
 SUT_HDRS 	= 	$(addprefix ../include/, minishell.h scanner.h environment.h \
 parser.h analyser.h executer.h error.h darray.h) 

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/21 13:33:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/21 13:45:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -435,7 +435,7 @@ t_ast_node	*parse_list(t_list **input_tokens)
 		// check for && and ||
 		token = (t_token *)(*input_tokens)->content;
 		debug("in parse list - new token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
-		if (token->type == AND_IF || token->type == OR_IF)
+		if (token->type == AND_IF || token->type == OR_IF || token->type == EXPRESSION)
 		{
 			debug("check for && and ||");
 			if (consume_token(input_tokens) == NULL)
