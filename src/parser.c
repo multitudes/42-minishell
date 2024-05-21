@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/21 11:18:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/21 12:06:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,10 @@ void	print_token(t_list *input_token)
 {
 	t_token *token;
 	if (input_token == NULL)
+	{
+		// debug("token is NULL");
 		return ;
+	}
 	token = (t_token *)input_token->content;
 	debug("token type: %d, %s", token->type, token->lexeme);
 }
@@ -140,9 +143,8 @@ int 	count_list(t_list *input_tokens)
 }
 
 /*
-	 if I have a pipe or pipe_and or || && I need to break the list before my node and
-	pass head to create a node with the previous list until the previous token
-	ex || is not in the terminal node
+This function is used to consume a token from the input_tokens list but also
+needs to break the list before the node 
 */
 t_token *consume_token(t_list **input_tokens)
 {
@@ -168,6 +170,71 @@ t_token *consume_token(t_list **input_tokens)
 	}
 	return (token);
 }
+
+t_token	*get_curr_token(t_list *input_tokens)
+{
+	t_token *token;
+	
+	if (input_tokens == NULL)
+		return (NULL);
+	token = (t_token *)input_tokens->content;
+	return (token);
+}
+
+char *get_token_lexeme(t_list *input_tokens)
+{
+	t_token *token;
+	
+	if (input_tokens == NULL)
+		return (NULL);
+	token = (t_token *)input_tokens->content;
+	return (token->lexeme);
+}
+
+t_tokentype get_token_type(t_list *input_tokens)
+{
+	t_token *token;
+	
+	if (input_tokens == NULL)
+		return (0);
+	token = (t_token *)input_tokens->content;
+	return (token->type);
+}
+bool delete_empty_expression(t_list **head, t_list **input_tokens)
+{
+	t_token *curr_token;
+	t_list *next_token_old_list;
+	t_list *tmp;
+
+	curr_token = get_curr_token(*input_tokens);
+	next_token_old_list = (*input_tokens)->next;
+	tmp = *input_tokens;
+	debug("empty expression");
+	if (*input_tokens && (*input_tokens)->prev)
+	{
+		debug("prev token is %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
+		(*input_tokens)->prev->next = next_token_old_list;
+		if (next_token_old_list)
+		{
+			next_token_old_list->prev = (*input_tokens)->prev;
+		}
+	}
+	else if ((*input_tokens) && ((*input_tokens)->prev == NULL))
+	{
+		*head = next_token_old_list;
+		if (next_token_old_list)
+		{
+			next_token_old_list->prev = NULL;
+		}
+	}
+	debug("empty expression extracted");
+	*input_tokens = next_token_old_list;
+	free(curr_token->lexeme);
+	free(curr_token);
+	free(tmp);
+	return (true);
+}
+
 /*
 I get a t_list node in input with my token as expression type
 and want to substitute it with the content of the expression
@@ -181,43 +248,13 @@ bool	extract_expression(t_list **head, t_list **input_tokens)
 
 	next_token_old_list = NULL;
 	debug("in extract expression and current token is %s", ((t_token *)(*input_tokens)->content)->lexeme);
-	if (input_tokens && *input_tokens) 
-		curr_token = (t_token *)(*input_tokens)->content;
-	if (input_tokens && *input_tokens && curr_token->type == EXPRESSION)
+	curr_token = get_curr_token(*input_tokens);
+	if (get_token_type(*input_tokens) == EXPRESSION)
 	{
 		next_token_old_list = (*input_tokens)->next;
 		tmp = *input_tokens;
-		if (ft_strlen(curr_token->lexeme) == 2)
-		{
-			debug("empty expression");
-			if (*input_tokens && (*input_tokens)->prev)
-			{
-				debug("prev token is %s", ((t_token *)(*input_tokens)->prev->content)->lexeme);
-				(*input_tokens)->prev->next = next_token_old_list;
-				if (next_token_old_list)
-				{
-					next_token_old_list->prev = (*input_tokens)->prev;
-				}
-			}
-			else if ((*input_tokens) && ((*input_tokens)->prev == NULL))
-			{
-				*head = next_token_old_list;
-				if (next_token_old_list)
-				{
-					next_token_old_list->prev = NULL;
-				}
-			}
-			// if (*head == NULL)
-			// 	debug("head is NULL");
-			// else
-			// 	debug("HEAD is %s", ((t_token *)(*head)->content)->lexeme);
-			debug("empty expression extracted");
-			*input_tokens = next_token_old_list;
-			free(curr_token->lexeme);
-			free(curr_token);
-			free(tmp);
-			return (true);	
-		}
+		if (ft_strlen(get_token_lexeme(*input_tokens)) == 2)
+			return (delete_empty_expression(head, input_tokens));
 		else
 		{
 			char *lexem = ft_substr(curr_token->lexeme, 1, ft_strlen(curr_token->lexeme) - 2);
@@ -295,6 +332,7 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	head = *input_tokens;
 	if (input_tokens == NULL || *input_tokens == NULL)
 		return (NULL);
+	print_token(head->prev);
 	token = (t_token *)(*input_tokens)->content;
 	while (is_not_control_token(*input_tokens))
 	{
@@ -344,10 +382,6 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 		if (*input_tokens == NULL)
 			continue;
 		*input_tokens = (*input_tokens)->next;
-		if (*input_tokens)
-			token = (t_token *)(*input_tokens)->content;
-		// if (token->type == PIPE || token->type == PIPE_AND || token->type == AND_IF || token->type == OR_IF || token->type == SEMI || token->type == AND_TOK)
-		// 	break;
 	}
 	// debug("new node - head content: %s", ((t_token *)(head->content))->lexeme);
 	
