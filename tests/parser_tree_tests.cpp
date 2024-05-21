@@ -422,20 +422,22 @@ const char *test_parser_tree_simple_command7() {
 
 	// now with ls | ()
 	// ls | ()
-	// lexemes = initialiser("ls | ()");
-	// current = lexemes;
+	lexemes = initialiser("ls | ()");
+	current = lexemes;
 
-	// result = process_token(&current, &i, "ls", WORD);
-	// result = process_token(&current, &i, "|", PIPE);
-	// result = process_token(&current, &i, "()", EXPRESSION);
+	result = process_token(&current, &i, "ls", WORD);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "()", EXPRESSION);
 
 	// // this is how I check for the end of the list
-	// result = process_token(&current, &i, NULL, NULL_TOKEN);
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	// ast = create_ast(lexemes);
+	ast = create_ast(lexemes);
 
 	// //here I need to walk the tree and check the nodes
-	// assert(ast==NULL);
+	assert(ast==NULL);
+
+// now with (sdf |s | (s))
 
 	return result;
 }
