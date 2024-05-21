@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/21 08:48:42 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/21 11:18:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,15 @@ t_ast_node* new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_lis
 	return (node);
 }
 
+void	print_token(t_list *input_token)
+{
+	t_token *token;
+	if (input_token == NULL)
+		return ;
+	token = (t_token *)input_token->content;
+	debug("token type: %d, %s", token->type, token->lexeme);
+}
+
 /*
 JUST a check for the type of token
 */
@@ -130,12 +139,6 @@ int 	count_list(t_list *input_tokens)
 	return (count);
 }
 
-void print_token(void *token)
-{
-    t_token *t;
-    t = (t_token *)((t_list *)token)->content;
-    debug("token type: %d, %s", t->type, t->lexeme);
-}
 /*
 	 if I have a pipe or pipe_and or || && I need to break the list before my node and
 	pass head to create a node with the previous list until the previous token
@@ -293,10 +296,8 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	if (input_tokens == NULL || *input_tokens == NULL)
 		return (NULL);
 	token = (t_token *)(*input_tokens)->content;
-	while (*input_tokens && is_not_control_token(*input_tokens))
+	while (is_not_control_token(*input_tokens))
 	{
-		token = (t_token *)(*input_tokens)->content;
-		debug("parse_terminal token type: %d, %s", token->type, token->lexeme);
 		if (extract_expression(&head ,input_tokens))
 		{
 			has_expr = true;
@@ -409,6 +410,18 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	return (a);
 }
 
+bool is_pipe_token(t_list *input_tokens)
+{
+	t_token *token;
+	
+	if (input_tokens == NULL)
+		return (false);
+	token = (t_token *)input_tokens->content;
+	if (token->type == PIPE || token->type == PIPE_AND)
+		return (true);
+	return (false);
+}
+
 t_ast_node	*parse_pipeline(t_list **input_tokens)
 {
 	t_ast_node *a;
@@ -426,11 +439,9 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 		debug("new ast node type in parse_pipeline: %d", a->type);
 	else 
 		return (NULL);
-	while (*input_tokens) 
+	while (is_pipe_token(*input_tokens))
 	{
-		token = (t_token *)(*input_tokens)->content;
-		if (token->type == PIPE || token->type == PIPE_AND)
-		{
+			token = (t_token *)(*input_tokens)->content;
 			debug("PIPE");
 			if (consume_token(input_tokens) == NULL)
 				return (NULL);
@@ -438,9 +449,6 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 			if (b == NULL)
 				return (free_ast(a));
 			a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
-		}
-		else
-			break;
 	}
 	return (a);
 }
