@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 15:22:00 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 17:11:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,7 @@ void	load_history(void)
 }
 
 /*
-The function `get_history_file_path` generates the path for the history file. 
-The path is constructed by joining the HOME environment variable and the MINIHISTFILEPATH. 
-MINIHISTFILEPATH is a predefined macro that could be passed as a parameter 
-to the program during compilation as a flag. 
-However, there are several scenarios where the history file might not exist:
-- The MINIHISTFILEPATH macro could be unset, similar to the BUFFER in get_next_line.
-- The HOME environment variable might be unset.
-In case of any failure in obtaining these values, a fallback path is returned.
+
 */
 char	*get_history_file_path(void)
 {
@@ -57,23 +50,28 @@ char	*get_history_file_path(void)
 	char	*home;
 
 	home = getenv("HOME");
+	if (home == NULL || home[0] == '\0')
+	{
+		write(2, "HOME not set\n", 13);
+		return (NULL);
+	}
 	path = ft_strjoin(home, MINIHISTFILEPATH);
-	if (path == NULL || home == NULL || *home == '\0')
-		path = ft_strdup("~/.minishell_history");
+	if (path == NULL)
+		path = ft_strdup("~/minihistfile");
 	return (path);
 }
 
 /*
-The function `add_history` allows scrolling through the 
-history of commands (a feature built into readline). 
-It writes each line to the history file for persistence. 
-Only non-empty lines are added to the history. 
-Additionally, the function checks if the input is a command to clear 
-the history.
-Such commands could be 'history -c' or 'history --clear'.
+- add_history to be able to scroll through the history of commands
+(readline built in)
+- write line to history file for persistence
+-  add to history only if line is not empty
+we will check if the input is a command to delete the history!
+This would be
+history -c or history --clear
 
-returns true if the input is a history command! so I can skip the 
-rest of the readline loop~!
+returns true if the input is a history command! so I can skip the rest of the
+readline loop~!
 */
 bool	handle_history(t_data *data)
 {
