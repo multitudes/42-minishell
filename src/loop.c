@@ -6,13 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 12:58:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 14:15:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "darray.h"
-
 /*
 The environ variable is part of the POSIX standard, so it should be 
 available on any POSIX-compliant system.

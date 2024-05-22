@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 12:30:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 14:12:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,20 +35,20 @@
 # include <stdbool.h>
 # include <stdarg.h>
 # include <libft.h>
-# include "environment.h"
-# include "scanner.h"
 # include <stdio.h>
 # include <errno.h>
 # include <string.h>
 # include <stdlib.h>
 # include <assert.h>
 # include <limits.h>
+# include "darray.h"
+# include "environment.h"
+# include "scanner.h"
 # include "parser.h"
 # include "history.h"
 # include "analyser.h"
 # include "executer.h"
 # include "error.h"
-# include "darray.h"
 
 /*
 This allows us to use the debug macro to print debug messages but to 
@@ -75,6 +75,8 @@ including the macro below which is not allowed by norminette.
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef struct s_darray 	t_darray;
 
 /*
 env_arr = enviroment variables array
@@ -105,8 +107,8 @@ int		loop();
 int		init_data(t_data **data);
 void	free_data(t_data *data);
 
-#ifdef __cplusplus
+# ifdef __cplusplus
 }
-#endif
-
 # endif
+
+#endif

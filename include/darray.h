@@ -6,12 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:27:54 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 08:06:54 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 14:51:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef darray_h
-#define darray_h
+# define darray_h
 
 // needed for the tests - leave it here
 #ifdef __cplusplus
@@ -19,6 +19,17 @@ extern "C" {
 #endif
 
 # include "minishell.h"
+
+// this is our type
+struct	s_darray 
+{
+	int			end;
+	int			max;
+	size_t		element_size;
+	size_t		expand_rate;
+	void		**contents;
+};
+typedef struct s_darray 	t_darray;
 
 # define darray_last(A) ((A)->contents[(A)->end - 1])
 # define darray_first(A) ((A)->contents[0])
@@ -33,19 +44,11 @@ extern "C" {
  The size_t data type in C is an unsigned integer type used to represent the size of objects in bytes. It is defined in the stddef. h header and is commonly used to represent the size of arrays, memory blocks, and strings.
 */
 
-// this is our type
-typedef struct	s_darray 
-{
-	int			end;
-	int			max;
-	size_t		element_size;
-	size_t		expand_rate;
-	void		**contents;
-}				t_darray;
 
 void		*ft_realloc(void *ptr, size_t size, size_t old_size);
 t_darray	*darray_create(size_t element_size, size_t initial_max);
 void		darray_destroy(t_darray * array);
+int			darray_resize(t_darray *array, size_t newsize, size_t old_size);
 void		darray_clear(t_darray * array);
 int			darray_expand(t_darray * array);
 int			darray_contract(t_darray * array);

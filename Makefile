@@ -27,7 +27,7 @@ scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
 scanner/token_operators.c scanner/history_tokens.c scanner/token_blocks.c scanner/token_blocks2.c\
 scanner/redirection_tokens.c environment.c parser.c analyser.c utils.c\
-executer.c error.c darray.c)
+executer.c error.c darray/darray.c darray/darray2.c darray/darray3.c)
 OBJS 			=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 HDRS 			=	$(addprefix include/, minishell.h scanner.h environment.h \
 parser.h analyser.h executer.h error.h darray.h) 
