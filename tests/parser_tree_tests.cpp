@@ -354,12 +354,103 @@ const char *test_parser_tree_simple_command6() {
 }
 
 /*
-this test has been removed becauseI now handle the case 
-of empty parentheses in the scanner
 */
 const char *test_parser_tree_simple_command7() {
 
-	return NULL;
+	t_list *lexemes = initialiser("(a b)||(c d)||(e f)"); 
+	t_list *current = lexemes;
+	const char *result = NULL;
+	int i = 0;	
+
+	result = process_token(&current, &i, "(a b)", EXPRESSION);
+	result = process_token(&current, &i, "||", OR_IF);
+	result = process_token(&current, &i, "(c d)", EXPRESSION);
+	result = process_token(&current, &i, "||", OR_IF);
+	result = process_token(&current, &i, "(e f)", EXPRESSION);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	t_ast_node *ast = create_ast(lexemes);
+
+	t_token *token = (t_token *)ast->token_list->content;
+	t_tokentype token_type = token->type;
+	debug("ast node type: %d ", ast->type);
+	debug("ast node token type: %d ", token_type);
+	debug("ast node token lexeme: %s ", token->lexeme);
+
+	// print all the nodes from the ast
+	// print_ast(ast);
+
+	//here I need to walk the tree and check the nodes
+	result = process_ast_node(ast, NODE_LIST, OR_IF, "||");
+	result = process_ast_node(ast->left, NODE_LIST, OR_IF, "||");
+	result = process_ast_node(ast->left->left, NODE_TERMINAL, WORD, "a");
+	result = process_ast_node(ast->left->right, NODE_TERMINAL, WORD, "c");
+	result = process_ast_node(ast->right, NODE_TERMINAL, WORD, "e");
+
+	// try (a b) | (c d) | (e f)
+	lexemes = initialiser("(a b) | (c d) | (e f)");
+	current = lexemes;
+	result = process_token(&current, &i, "(a b)", EXPRESSION);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "(c d)", EXPRESSION);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "(e f)", EXPRESSION);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	ast = create_ast(lexemes);
+
+	//here I need to walk the tree and check the nodes
+	result = process_ast_node(ast, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left->left, NODE_TERMINAL, WORD, "a");
+	result = process_ast_node(ast->left->right, NODE_TERMINAL, WORD, "c");
+	result = process_ast_node(ast->right, NODE_TERMINAL, WORD, "e");
+
+// try a | (a || b)
+	lexemes = initialiser("a | (b || c)");
+	current = lexemes;
+	result = process_token(&current, &i, "a", WORD);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "(a || b)", EXPRESSION);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	ast = create_ast(lexemes);
+
+	//here I need to walk the tree and check the nodes
+	result = process_ast_node(ast, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left, NODE_TERMINAL, WORD, "a");
+	result = process_ast_node(ast->right, NODE_LIST, OR_IF, "||");
+	result = process_ast_node(ast->right->left, NODE_TERMINAL, WORD, "b");
+	result = process_ast_node(ast->right->right, NODE_TERMINAL, WORD, "c");
+
+	//  try (a | b) || c
+	lexemes = initialiser("(a | b) || c");
+	current = lexemes;
+
+	result = process_token(&current, &i, "(a | b)", EXPRESSION);
+	result = process_token(&current, &i, "||", OR_IF);
+	result = process_token(&current, &i, "c", WORD);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	ast = create_ast(lexemes);
+
+	//here I need to walk the tree and check the nodes
+	result = process_ast_node(ast, NODE_LIST, OR_IF, "||");
+	result = process_ast_node(ast->left, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left->left, NODE_TERMINAL, WORD, "a");
+	result = process_ast_node(ast->left->right, NODE_TERMINAL, WORD, "b");
+	result = process_ast_node(ast->right, NODE_TERMINAL, WORD, "c");
+
+
+	return result;
 }
 
 //a | (b)
@@ -517,6 +608,7 @@ const char *test_parser_tree_simple_command9() {
 
 	return result;
 }
+
 
 const char *all_tests()
 {
