@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 17:17:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 17:17:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	*get_history_file_path(void)
 	}
 	path = ft_strjoin(home, MINIHISTFILEPATH);
 	if (path == NULL)
-		path = ft_strdup("~/.minihistfile");
+		path = ft_strdup("~/.minishell_history");
 	return (path);
 }
 
