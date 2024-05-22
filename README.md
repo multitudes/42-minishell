@@ -437,17 +437,37 @@ After entering the command follwed by `&` the shell will display the process id 
 
 ## Error Handling
 
+We distinguish fatal errors that require termination of the minishell (and freeing of all allocated memory ...) and errors that are noted to the user while program execution continues.
+
 We check the return/exit value of system calls and library functions and store it in a global variable. After the last command is executetd we check the value of the global variable and update the environment variable `$?` with the value.
 
 The shell should provide meaningful error messages to the user when a command fails. 
 
 Examples of the types of errors that a simple shell may encounter and how they can be handled:
-ex incorrect command,  incorrect number of arguments, permission denied, system call error, signal handling, memory allocation error, etc.
+ex incorrect command,  incorrect number of arguments, permission denied, system call error, signal handling, memory allocation error, failed update of history etc.
+
+| Error | How it is handled |
+| -- | -- |
+| ... | ... |
+| Reading history file path from environment fails |  |
+| Open history file path fails | | 
+| Writing to history fails | |
+| Updating environment with history input fails | |
 
 ## Signale
 Signals are used by the operating system to notify a process of various events, such as a segmentation fault or a user interrupt. 
 
-## Memory Leaks
+## Memory management and memory Leaks
+
+   | Allocated memory | when to free? |
+-- | ---------------- | ------------ |
+1  | Array for environment information | upon error and when terminating program |
+2  | Memory for strings read from environment in array | upon error, when updating environment and when terminating program |
+3  | Main data struct | upon error and when terminating program |
+4  | path for history file | immediately after accessing it with open() |
+5  | data->input allocated by readline() in loop() | free after each call or after final call ? |
+6  | Token list (linked list) | |
+7  |  |  |
 
 We use valgrind... On linux.
 ```
