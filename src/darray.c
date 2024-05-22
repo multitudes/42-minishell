@@ -24,7 +24,7 @@ t_darray *darray_create(size_t element_size, size_t initial_max)
 	// here I get a pointer for the struct initiating the memory he needs. The size here is not depending from the contents which will be pointers
 	t_darray *array = malloc(sizeof(t_darray));
 	if (!array) {
-		return NULL;
+		return (NULL);
 	}
 	// The max can be changed - here I initialize with a sensible size
 	array->max = initial_max;
@@ -40,7 +40,7 @@ t_darray *darray_create(size_t element_size, size_t initial_max)
 	// when it is full I create a new array adding DEFAULT_EXPAND_RATE to the max size
 	array->expand_rate = DEFAULT_EXPAND_RATE;
 	
-	return array;
+	return (array);
 }
 
 void darray_clear(t_darray * array)
@@ -71,15 +71,15 @@ void *ft_realloc(void *ptr, size_t size, size_t old_size)
 
 	new_ptr = malloc(size);
 	if (!new_ptr)
-		return NULL;
+		return (NULL);
 	if (ptr == NULL)
-        return new_ptr;
+        return (new_ptr);
 	if (size <= old_size)
 		ft_memcpy(new_ptr, ptr, size);
 	else
  	   ft_memcpy(new_ptr, ptr, old_size);
     free(ptr);
-    return new_ptr;
+    return (new_ptr);
 }
 
 /*
@@ -91,9 +91,9 @@ int darray_resize(t_darray *array, size_t newsize, size_t old_size)
 	array->max = newsize;
 	contents = ft_realloc(array->contents, array->max * sizeof(void *), old_size * sizeof(void *));
 	if (!contents) 
-		return -1;
+		return (-1);
 	array->contents = contents;
-	return 0;
+	return (0);
 }
 
 /*
@@ -106,10 +106,10 @@ int darray_expand(t_darray *array)
 	if (darray_resize(array, array->max + array->expand_rate, old_max) != 0)
 	{
 		debug("Failed to expand array to new size: %d", array->max + (int)array->expand_rate);
-		return -1;
+		return (-1);
 	}
 	ft_memset(array->contents + old_max, 0, array->expand_rate + 1);
-	return 0;
+	return (0);
 }
 
 /*
@@ -123,7 +123,7 @@ int darray_contract(t_darray * array)
 	else
 		new_size = array->end;
 	
-	return darray_resize(array, new_size + 1, array->max);
+	return (darray_resize(array, new_size + 1, array->max));
 }
 
 /*
@@ -157,9 +157,9 @@ int darray_push(t_darray *array, void *el)
 	array->contents[array->end] = el;
 	array->end++;
 	if (darray_end(array) >= darray_max(array))
-		return darray_expand(array);
+		return (darray_expand(array));
 	else 
-		return 0;
+		return (0);
 }
 
 /*
@@ -169,7 +169,7 @@ void *darray_pop(t_darray * array)
 	if (array->end -1 < 0)
 	{
 		debug("Attempt to pop from empty array.");
-		return NULL;
+		return (NULL);
 	}
 	void *el = darray_remove(array, array->end - 1);
 	array->end--;
@@ -177,7 +177,7 @@ void *darray_pop(t_darray * array)
 	{
 		darray_contract(array);
 	}
-	return el;
+	return (el);
 }
 
 /*
@@ -205,9 +205,9 @@ void *darray_get(t_darray *array, int i)
 	if (i >= array->max)
 	{
 		debug("darray attempt to get past max");
-		return NULL;
+		return (NULL);
 	}
-	return array->contents[i];
+	return (array->contents[i]);
 }
 
 /*
@@ -219,7 +219,7 @@ void *darray_remove(t_darray * array, int i)
 	
 	el = array->contents[i];
 	array->contents[i] = NULL;
-	return el;
+	return (el);
 }
 
 /*
@@ -233,7 +233,7 @@ void *darray_new_elem(t_darray *array)
 	if (array->element_size == 0)
 	{
 		debug("Can't use darray_new_elem on 0 size darrays.");
-		return NULL;
+		return (NULL);
 	}
-	return ft_calloc(1, array->element_size);
+	return (ft_calloc(1, array->element_size));
 }
