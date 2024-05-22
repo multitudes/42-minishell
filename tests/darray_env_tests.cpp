@@ -9,6 +9,13 @@
 #include "../include/scanner.h"
 #include "../include/darray.h"
 
+# define darray_last(A) ((A)->contents[(A)->end - 1])
+# define darray_first(A) ((A)->contents[0])
+# define darray_end(A) ((A)->end)
+# define darray_count(A) darray_end(A)
+# define darray_max(A) ((A)->max)
+# define darray_free(E) free((E))
+# define DEFAULT_EXPAND_RATE 300
 
 static t_darray *array = NULL;
 static int *val1 = NULL;
