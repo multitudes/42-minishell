@@ -353,92 +353,13 @@ const char *test_parser_tree_simple_command6() {
 	return result;
 }
 
+/*
+this test has been removed becauseI now handle the case 
+of empty parentheses in the scanner
+*/
 const char *test_parser_tree_simple_command7() {
 
-	t_list *lexemes = initialiser("()"); 
-	t_list *current = lexemes;
-	const char *result = NULL;
-	int i = 0;	
-
-	result = process_token(&current, &i, "()", EXPRESSION);
-
-	// this is how I check for the end of the list
-	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
-	t_ast_node *ast = create_ast(lexemes);
-	assert(ast == NULL);
-
-	// now with 2 empty parentheses
-	lexemes = initialiser("()()");
-	current = lexemes;
-
-	result = process_token(&current, &i, "()", EXPRESSION);
-	result = process_token(&current, &i, "()", EXPRESSION);
-
-	// this is how I check for the end of the list
-	
-	ast = create_ast(lexemes);
-	assert(ast == NULL);
-
-	// now with 2 empty parentheses
-	// ()()ls()
-	lexemes = initialiser("()()ls()");
-	current = lexemes;
-
-	result = process_token(&current, &i, "()", EXPRESSION);
-	result = process_token(&current, &i, "()", EXPRESSION);
-	result = process_token(&current, &i, "ls", WORD);
-	result = process_token(&current, &i, "()", EXPRESSION);
-
-	// this is how I check for the end of the list
-	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
-	ast = create_ast(lexemes);
-	t_token *token = (t_token *)ast->token_list->content;
-	t_tokentype token_type = token->type;
-	debug("ast node type: %d ", ast->type);
-	debug("ast node token type: %d ", token_type);
-	debug("ast node token lexeme: %s ", token->lexeme);
-
-	//here I need to walk the tree and check the nodes
-	result = process_ast_node(ast, NODE_TERMINAL, WORD, "ls");
-
-	// now with ls || ()
-	// ls || ()
-	lexemes = initialiser("ls || ()");
-	current = lexemes;
-
-	result = process_token(&current, &i, "ls", WORD);
-	result = process_token(&current, &i, "||", OR_IF);
-	result = process_token(&current, &i, "()", EXPRESSION);
-
-	// this is how I check for the end of the list
-	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
-	ast = create_ast(lexemes);
-
-	//here I need to walk the tree and check the nodes
-	assert(ast==NULL );
-
-	// now with ls | ()
-	// ls | ()
-	lexemes = initialiser("ls | ()");
-	current = lexemes;
-
-	result = process_token(&current, &i, "ls", WORD);
-	result = process_token(&current, &i, "|", PIPE);
-	result = process_token(&current, &i, "()", EXPRESSION);
-
-	// // this is how I check for the end of the list
-	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
-	ast = create_ast(lexemes);
-
-	// //here I need to walk the tree and check the nodes
-	assert(ast==NULL);
-
-	// now with (sdf |s | (s))
-	return result;
+	return NULL;
 }
 
 //a | (b)
@@ -478,7 +399,7 @@ const char *test_parser_tree_simple_command8() {
 // (a) (a) | b
 const char *test_parser_tree_simple_command9() {
 	std::string str = "(a) (a) | b";
-		t_list *lexemes = initialiser("(a) (a) | b"); 
+	t_list *lexemes = initialiser("(a) (a) | b"); 
 	t_list *current = lexemes;
 	const char *result = NULL;
 	int i = 0;	
@@ -507,6 +428,93 @@ const char *test_parser_tree_simple_command9() {
 	result = process_ast_node(ast->left, NODE_COMMAND, WORD, "a");
 	result = process_ast_node(ast->right, NODE_TERMINAL, WORD, "b");
 
+	// try ( comm ) |  hey!?
+	lexemes = initialiser("( comm ) |  hey!?");
+	current = lexemes;
+	result = process_token(&current, &i, "( comm )", EXPRESSION);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "hey!?", WORD);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	ast = create_ast(lexemes);
+
+	//here I need to walk the tree and check the nodes
+	result = process_ast_node(ast, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left, NODE_COMMAND, WORD, "comm");
+	result = process_ast_node(ast->right, NODE_TERMINAL, WORD, "hey!?");
+
+	// try ( comm1 ) |  hey!? | (comm2)
+
+	lexemes = initialiser("( comm1 ) |  hey!? | (comm2)");
+	current = lexemes;
+	result = process_token(&current, &i, "( comm1 )", EXPRESSION);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "hey!?", WORD);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "(comm2)", EXPRESSION);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	ast = create_ast(lexemes);
+
+	//here I need to walk the tree and check the nodes
+	result = process_ast_node(ast, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left->left, NODE_COMMAND, WORD, "comm1");
+	result = process_ast_node(ast->left->right, NODE_TERMINAL, WORD, "hey!?");
+	result = process_ast_node(ast->right, NODE_COMMAND, WORD, "comm2");
+
+	// try ( comm1 ) |  hey!? || (comm2)
+
+	lexemes = initialiser("( comm1 ) |  hey!? || (comm2)");
+	current = lexemes;
+	result = process_token(&current, &i, "( comm1 )", EXPRESSION);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "hey!?", WORD);
+	result = process_token(&current, &i, "||", OR_IF);
+	result = process_token(&current, &i, "(comm2)", EXPRESSION);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	ast = create_ast(lexemes);
+
+	//here I need to walk the tree and check the nodes
+	result = process_ast_node(ast, NODE_LIST, OR_IF, "||");
+	result = process_ast_node(ast->left, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left->left, NODE_TERMINAL, WORD, "comm1");
+	result = process_ast_node(ast->left->right, NODE_TERMINAL, WORD, "hey!?");
+	result = process_ast_node(ast->right, NODE_TERMINAL, WORD, "comm2");
+
+	// try ( comm1 ) |  hey!? || (comm2) | (comm3)
+	
+	lexemes = initialiser("( comm1 ) |  hey!? || (comm2) | (comm3)");
+	current = lexemes;
+	result = process_token(&current, &i, "( comm1 )", EXPRESSION);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "hey!?", WORD);	
+	result = process_token(&current, &i, "||", OR_IF);
+	result = process_token(&current, &i, "(comm2)", EXPRESSION);
+	result = process_token(&current, &i, "|", PIPE);
+	result = process_token(&current, &i, "(comm3)", EXPRESSION);
+
+	// this is how I check for the end of the list
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	ast = create_ast(lexemes);
+
+	//here I need to walk the tree and check the nodes
+	result = process_ast_node(ast, NODE_LIST, OR_IF, "||");
+	result = process_ast_node(ast->left, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->left->left, NODE_TERMINAL, WORD, "comm1");
+	result = process_ast_node(ast->left->right, NODE_TERMINAL, WORD, "hey!?");
+	result = process_ast_node(ast->right, NODE_PIPELINE, PIPE, "|");
+	result = process_ast_node(ast->right->left, NODE_TERMINAL, WORD, "comm2");
+	result = process_ast_node(ast->right->right, NODE_TERMINAL, WORD, "comm3");
+
 	return result;
 }
 
@@ -522,7 +530,7 @@ const char *all_tests()
 	run_test(test_parser_tree_simple_command4);
 	run_test(test_parser_tree_simple_command5);
 	run_test(test_parser_tree_simple_command6);
-	// run_test(test_parser_tree_simple_command7);
+	run_test(test_parser_tree_simple_command7);
 	run_test(test_parser_tree_simple_command8);
 	run_test(test_parser_tree_simple_command9);
 

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/21 13:45:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 09:18:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,7 +324,9 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	print_token(head->prev);
 	while (is_not_control_token(*input_tokens))
 	{
-		has_expr = extract_expression(&head, input_tokens);
+		if (extract_expression(&head, input_tokens))
+			has_expr = true;
+		debug("has expression: %d", has_expr);
 		if (head == NULL)
 			return (NULL);
 		if (input_tokens == NULL || *input_tokens == NULL)
@@ -337,20 +339,20 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 	debug("has expression: %d", has_expr);
 	if (has_expr && head)
 	{
-		// t_list *tmp = head;
-		// t_token *token2;
-		// token2 = (t_token *)tmp->content;
-		// debug("HEAD pointer %p", head);
-		// // debug("HEAD token type: %d, %s", token2->type, token2->lexeme);
-		// while (tmp)
-		// {
-		// 	token2 = (t_token *)tmp->content;
-		// 	debug("token type: %d, %s", token2->type, token2->lexeme);
-		// 	tmp = tmp->next;
-		// 	if (tmp)
-		// 		debug("next token type: %p %p", tmp, ((t_token *)(tmp->content)));
-		// }
-		// debug("parse as list because expression");
+		t_list *tmp = head;
+		t_token *token2;
+		token2 = (t_token *)tmp->content;
+		debug("HEAD pointer %p", head);
+		// debug("HEAD token type: %d, %s", token2->type, token2->lexeme);
+		while (tmp)
+		{
+			token2 = (t_token *)tmp->content;
+			debug("token type: %d, %s", token2->type, token2->lexeme);
+			tmp = tmp->next;
+			if (tmp)
+				debug("next token type: %p %p", tmp, ((t_token *)(tmp->content)));
+		}
+		debug("parse as list because expression");
 		a = parse_list(&head);
 		if (a)
 			debug("new ast node from expression in parse_terminal: %d", a->type);
