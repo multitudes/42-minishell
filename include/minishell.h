@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 14:12:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 15:52:32 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,10 @@ including the macro below which is not allowed by norminette.
 #define MINIHISTFILESIZE  1000
 
 // needed for the tests - leave it here - norminette allows it I think 
-#ifdef __cplusplus
+# ifdef __cplusplus
+
 extern "C" {
-#endif
+# endif
 
 typedef struct s_darray 	t_darray;
 
@@ -107,8 +108,9 @@ int		loop();
 int		init_data(t_data **data);
 void	free_data(t_data *data);
 
-# ifdef __cplusplus
+#  ifdef __cplusplus
+
 }
-# endif
+#  endif
 
 #endif

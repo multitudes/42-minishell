@@ -87,13 +87,13 @@ const char *test_remove()
 	my_assert(val_check != NULL, "Should not get NULL.");
 	my_assert(*val_check == *val1, "Should get the first value.");
 	my_assert(darray_get(array, 0) == NULL, "Should be gone.");
-	darray_free(val_check);
+	free(val_check);
 	
 	val_check = (int *)darray_remove(array, 1);
 	my_assert(val_check != NULL, "Should not get NULL.");
 	my_assert(*val_check == *val2, "Should get the first value.");
 	my_assert(darray_get(array, 1) == NULL, "Should be gone.");
-	darray_free(val_check);
+	free(val_check);
 	
 	return NULL;
 }
@@ -131,7 +131,7 @@ const char *test_push_pop()
 		int *val = (int *)darray_pop(array);
 		my_assert(val != NULL, "Shouldn't get a NULL.");
 		my_assert(*val == i * 333, "Wrong value.");
-		darray_free(val);
+		free(val);
 	}
 	
 	return NULL;

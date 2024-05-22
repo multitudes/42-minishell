@@ -6,17 +6,19 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:37:49 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 10:34:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 16:02:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ENVIRONMENT_H
-#define ENVIRONMENT_H
+# define ENVIRONMENT_H
 
 // needed for the tests - leave it here
-#ifdef __cplusplus
+# ifdef __cplusplus
+
 extern "C" {
-#endif
+
+# endif
 
 #include "minishell.h"
 
@@ -24,7 +26,6 @@ extern "C" {
 forward declaration
 */
 typedef struct s_data t_data;
-
 
 /*
 enviromnemt list:
@@ -37,8 +38,9 @@ void	print_env(t_data *data);
 char	*mini_get_env(t_data *data, const char *key);
 char	*ft_strjoin3(const char *key, const char *mid, const char *value);
 
-#ifdef __cplusplus
-}
-#endif
+#  ifdef __cplusplus
 
-#endif
+}
+#  endif
+
+# endif
