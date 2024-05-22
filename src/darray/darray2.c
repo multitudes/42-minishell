@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 13:35:47 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 14:42:42 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 16:36:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	darray_push(t_darray *array, void *el)
 {
 	array->contents[array->end] = el;
 	array->end++;
-	if (darray_end(array) >= darray_max(array))
+	if (array->end >= array->max)
 		return (darray_expand(array));
 	else
 		return (0);
@@ -55,21 +55,19 @@ int	darray_push(t_darray *array, void *el)
 */
 void	*darray_pop(t_darray *array)
 {
-	void	*el;
+	void	*element;
 
 	if (array->end -1 < 0)
 	{
 		debug("Attempt to pop from empty array.");
 		return (NULL);
 	}
-	el = darray_remove(array, array->end - 1);
+	element = darray_remove(array, array->end - 1);
 	array->end--;
-	if (darray_end(array) > (int)array->expand_rate && darray_end(array) \
+	if (array->end > (int)array->expand_rate && array->end \
 	% array->expand_rate)
-	{
 		darray_contract(array);
-	}
-	return (el);
+	return (element);
 }
 
 /*

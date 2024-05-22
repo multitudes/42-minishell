@@ -6,14 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 11:51:41 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 15:40:05 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 15:51:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HISTORY_H
-#define HISTORY_H
+# define HISTORY_H
 
-#include "minishell.h"
+# include "minishell.h"
 
 bool	handle_history(t_data *data);
 bool	add_to_hist_file(const char *input);

@@ -5,6 +5,7 @@
 # CFLAGS 		+= 	-DNDEBUG
 
 CXXFLAGS 	= 	-Wall -Wextra -Werror -std=c++98
+CXXFLAGS 	+= 	-g
 CXX = c++
 
 # directories

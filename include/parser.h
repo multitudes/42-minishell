@@ -6,21 +6,20 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/21 11:51:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 16:09:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
 
-// needed for the tests - leave it here
-#ifdef __cplusplus
+// needed for the tests - leave it here - norminette allows it I think 
+# ifdef __cplusplus
+
 extern "C" {
-#endif
+# endif
 
 # include "minishell.h"
-
-#define GET_TOKEN(input_tokens) ((t_token *)(input_tokens)->content)
 
 /*
 I am creating a ast tree for my context free grammar with these structs...
@@ -53,20 +52,22 @@ typedef struct			s_ast_node {
 }						t_ast_node;
 
 t_ast_node	*create_ast(t_list *token_list);
-t_ast_node*	new_node(t_nodetype type, t_ast_node* left, t_ast_node* right, t_list *expr_token_list);
+t_ast_node	*new_node(t_nodetype type, t_ast_node *left, t_ast_node *right, \
+			t_list *expr_token_list);
 t_ast_node	*parse_list(t_list **input_tokens);
 t_ast_node	*parse_pipeline(t_list **input_tokens);
 t_ast_node	*parse_terminal(t_list **input_tokens);
 bool		extract_expression(t_list **head, t_list **input_tokens);
-void 		print_ast(t_ast_node *ast);
+void		print_ast(t_ast_node *ast);
 void		*free_ast(t_ast_node *ast);
 void		print_token(t_list *input_token);
 t_token		*get_curr_token(t_list *input_tokens);
 char		*get_token_lexeme(t_list *input_tokens);
 t_tokentype	get_token_type(t_list *input_tokens);
 
-#ifdef __cplusplus
-}
-#endif
+#  ifdef __cplusplus
 
-#endif  // PARSER_H_
+}
+#  endif
+
+# endif

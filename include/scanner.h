@@ -6,18 +6,17 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/21 13:53:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 15:50:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SCANNER_H
 # define SCANNER_H
 
-// needed for the tests - leave it here
-#ifdef __cplusplus
-extern "C" {
-#endif
+# ifdef __cplusplus
 
+extern "C" {
+# endif
 # include "minishell.h"
 
 /*
@@ -35,12 +34,14 @@ The noclobber option prevents overwriting of files by the > operator.
 
 >& 
 This operator redirects one file descriptor to another. 
-For example, command 2>&1 redirects the standard error (file descriptor 2) to standard output (file descriptor 1).
+For example, command 2>&1 redirects the standard error (file descriptor 2) 
+to standard output (file descriptor 1).
 
 &> 
 This operator redirects both standard output and standard error 
 to a file. It's equivalent to command > file 2>&1. 
-For example, command &> file redirects both the standard output and standard error of command to file.
+For example, command &> file redirects both the standard output and standard 
+error of command to file.
 
 >> This operator appends the output of a command to a file. 
 If the file doesn't exist, it is created. 
@@ -48,130 +49,125 @@ For example, echo Hello >> file.txt appends "Hello" to file.txt,
 preserving its existing contents.
 
 control operator
-A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
+A token that performs a control function. It is a newline or one of the 
+following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
 */
 typedef enum e_tokentype {
-	WORD,  // Any sequence of letters, digits, and underscores
-	NUMBER, // like 42 42.42 -2 etc 
+	WORD,
+	NUMBER,
 	BUILTIN,
 	FLAGS,
-	PATHNAME, 
-	PIPE, // | - | and |& have higher precedence than &&, ||, ;, and &. 
-	PIPE_AND, // |&
-
-	AND_TOK, // &
-	AND_IF, 	// &&
-	OR_IF, // || 
-	
-	//; and & have the same precedence, which is lower than && 
-	//and ||. They allow you to separate commands (;) 
-	//or run a command in the background (&).
-	SEMI, // ;
-	SEMI_AND, // ;&
-	// ;;, ;&, and ;;& are used in the context of a case 
-	// statement to separate different cases.
- 	DSEMI, // double semi colon ;; not implemented
-	DSEMI_AND, // ;;& not implemented
-	EXPRESSION, // (....) will be expanded 
-	COM_EXPANSION, // '$(command)' or '`command`'
-	VAR_EXPANSION,  // ${parameter} or $parameter or $variable
-	EXPR_EXPANSION, //$((arythm expression))
-	QUOTED_STRING, // quoted string "string" 
-	S_QUOTED_STRING, // single quoted string like 'string'
-	// ( and ) can be used to group commands, 
-	// which can override the default precedence rules.
-
-	// to use the && and || operators the true and false will be assigned to these tokens
+	PATHNAME,
+	PIPE,
+	PIPE_AND,
+	AND_TOK,
+	AND_IF,
+	OR_IF,
+	SEMI,
+	SEMI_AND,
+	DSEMI,
+	DSEMI_AND,
+	EXPRESSION,
+	COM_EXPANSION,
+	VAR_EXPANSION,
+	EXPR_EXPANSION,
+	QUOTED_STRING,
+	S_QUOTED_STRING,
 	TRUETOK,
-	FALSETOK, 
-
-	// maybe we dont need them ?
-	// LEFT_PAREN, RIGHT_PAREN, 
-	// LEFT_SQUARE, RIGHT_SQUARE,
- 	// LEFT_CURLY, RIGHT_CURLY,
-
-    // Redirection operators
-	IO_NUMBER, // 'n>' or 'n>>' or 'n>&' or 'n<&' or 'n<>' a numberfollowed by a redirection operator < or >
-    REDIRECT_OUT, // '>'
-    REDIRECT_IN, // '<'
-    DGREAT, // '>>'
-    DLESS, // '<<'
+	FALSETOK,
+	IO_NUMBER,
+	REDIRECT_OUT,
+	REDIRECT_IN,
+	DGREAT,
+	DLESS,
 	DLESS_DELIM,
-	
-	CLOBBER, // '>|'
-	REDIRECT_BOTH, // '&>'
-	GREATAND, // '>&'
-	LESSAND, // '<&'
-	REDIRECT_OUT_APP, // '&>>'	
-	REDIRECT_BOTH_APP, //">>&"
-	EQUAL, // =
- 
-	
-	//The <> operator in bash is used for opening a file in read-write mode. Here's an example:
-	// command <> file.txt
-	LESSGREAT, 		// '<>'
-	DLESSDASH,	 // '<<-' The here-document delimiter is treated as a literal string,
-	GREATER_AND_GREATER, // ">&>",
-	COMMA, MINUS, PLUS, STAR, BANG_EQUAL, BANG,
-	// for the history expansion
-	BANG_BANG, // !! repeat the last command history
-	BANG_DIGIT, // !n repeat the nth command history
-	BANG_HYPHEN_DIGIT, 
-	BANG_ALPHA, 
-	BANG_QUESTION_ALPHA, 
+	CLOBBER,
+	REDIRECT_BOTH,
+	GREATAND,
+	LESSAND,
+	REDIRECT_OUT_APP,
+	REDIRECT_BOTH_APP,
+	EQUAL,
+	LESSGREAT,
+	DLESSDASH,
+	GREATER_AND_GREATER,
+	COMMA,
+	MINUS,
+	PLUS,
+	STAR,
+	BANG_EQUAL,
+	BANG,
+	BANG_BANG,
+	BANG_DIGIT,
+	BANG_HYPHEN_DIGIT,
+	BANG_ALPHA,
+	BANG_QUESTION_ALPHA,
 	BANG_HASH,
-	
 	EQUAL_EQUAL,
-	GREATER_EQUAL, LESS_EQUAL, MINUS_MINUS, PLUS_PLUS,
-	MINUS_EQUAL, PLUS_EQUAL, SLASH_EQUAL, STAR_EQUAL,
-	// Keywords.
-
-	// control operators
-	// metacharacter : A character that, when unquoted, separates words. 
-	// A metacharacter is a space, tab, newline, or: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
-	SPACE_TOK, TAB_TOK, GREATER_AND, 
+	GREATER_EQUAL,
+	LESS_EQUAL,
+	MINUS_MINUS,
+	PLUS_PLUS,
+	MINUS_EQUAL,
+	PLUS_EQUAL,
+	SLASH_EQUAL,
+	STAR_EQUAL,
+	SPACE_TOK,
+	TAB_TOK,
+	GREATER_AND,
 	AMPERSAND,
-
-    // reserved Keywords
-    IF, THEN, ELSE, ELIF, FI, DO, DONE, IN,
-	WHILE, UNTIL, FOR, CASE, 
-	ESAC, SELECT, FUNCTION,
-    // Special variables
-    DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
-    DOLLAR_DOLLAR, // '$$' ‘$’ is used to get the process ID of the shell.
-    DOLLAR_STAR, // '$*' ‘*’ is used to get all the positional parameters.
-    DOLLAR_AT, // '$@'  ‘@’ is used to get all the positional parameters, except for the zeroth positional parameter.
-    DOLLAR_HASH, // '$#'  ‘#’ is used to get the number of positional parameters.
-    DOLLAR_BANG, // '$!'  ‘!’ is used to get the process ID of the last background command.
-	DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.	 
-	DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
+	IF,
+	THEN,
+	ELSE,
+	ELIF,
+	FI,
+	DO,
+	DONE,
+	IN,
+	WHILE,
+	UNTIL,
+	FOR,
+	CASE,
+	ESAC,
+	SELECT,
+	FUNCTION,
+	DOLLAR_QUESTION,
+	DOLLAR_DOLLAR,
+	DOLLAR_STAR,
+	DOLLAR_AT,
+	DOLLAR_HASH,
+	DOLLAR_BANG,
+	DOLLAR_HYPHEN,
+	DOLLAR_DIGIT,
 	DOLLAR,
- 
-
-	DIGIT, CHAR,
-	HASH, COMMENT,
-	CARET, PERCENT, TILDE,
-	EOF_TOK, 
+	DIGIT,
+	CHAR,
+	HASH,
+	COMMENT,
+	CARET,
+	PERCENT,
+	TILDE,
+	EOF_TOK,
 	COMMAND,
 	NULL_TOKEN
-	// to add ‘$’, ‘`’, ‘"’, ‘\’,The special parameters ‘*’ and ‘@’ have special meaning when in double quotes
-	
-}		t_tokentype;
+} t_tokentype;
 
-struct s_mini_data 
+struct						s_mini_data
 {
-	const char	*input;
-	t_list		*token_list;
-	bool		scanner_error;
-	char		*scanner_err_str;
+	const char				*input;
+	t_list					*token_list;
+	bool					scanner_error;
+	char					*scanner_err_str;
 };
-typedef struct s_mini_data t_mini_data;
 
-struct s_token {
-	t_tokentype	type;
-	char		*lexeme;
+typedef struct s_mini_data	t_mini_data;
+
+struct						s_token
+{
+	t_tokentype				type;
+	char					*lexeme;
 };
-typedef struct s_token t_token;
+typedef struct s_token		t_token;
 
 int		init_scanner_data(t_mini_data **data, const char *input);
 void	free_scanner_data(t_mini_data *data);
@@ -181,19 +177,19 @@ bool	peek(const char *input, const char *identifier, bool end_space);
 void	advance(int *i);
 bool	is_space(const char c);
 int		strncicmp(char const *a, char const *b, int n);
-bool 	cmp_char_case_insensitive(const char a, const char b);
+bool	cmp_char_case_insensitive(const char a, const char b);
 bool	is_delimiter(const char ch);
 bool	is_not_delimiter(const char ch);
-bool	is_digit(const char c); 
+bool	is_digit(const char c);
 bool	is_alnum(const char c);
 bool	is_alpha(const char c);
 bool	is_pathname(const char c);
 bool	is_in_pathname(const char c);
 bool	not_a_delimiting_char(const char c);
 bool	is_a_pathname_or_num(t_mini_data *data, const char *tmp, int *start);
-bool	is_reserved(t_mini_data *data, char *identifier,int *start);
+bool	is_reserved(t_mini_data *data, char *identifier, int *start);
 bool	is_true_false(t_mini_data *data, char *str, int *start);
-bool 	is_builtin(t_mini_data *data, char *identifier,int *start);
+bool	is_builtin(t_mini_data *data, char *identifier, int *start);
 bool	add_token(t_mini_data *data, int *i, const char *lxm, int type);
 void	print_token_list(t_list *token_list);
 t_list	*create_token(t_tokentype type, const char *lexeme, int *i);
@@ -210,7 +206,7 @@ bool	is_a_dollar_exp(t_mini_data *data, int *i);
 bool	is_complex_dollar_exp(t_mini_data *data, int *i);
 bool	is_simple_dollar_exp(t_mini_data *data, int *i);
 bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type);
-bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int type);
+bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int typ);
 bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type);
 bool	is_a_math_op(t_mini_data *data, int *i);
 bool	is_a_control_operator(t_mini_data *data, int *i);
@@ -220,7 +216,7 @@ bool	is_a_aggregate_redirection(t_mini_data *data, int *i);
 bool	is_a_simple_redirection(t_mini_data *data, int *i);
 bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), int type);
 bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type);
-bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int type);
+bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int typ);
 bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type);
 bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type);
 bool	add_parenthesisblock(t_mini_data *data, int *i, char delim, int t_type);
@@ -231,8 +227,9 @@ bool	is_a_flag(t_mini_data *data, int *i);
 bool	is_a_string_thing(t_mini_data *data, int *i);
 bool	is_a_redirection(t_mini_data *data, int *i);
 
-#ifdef __cplusplus
-}
-#endif
+#  ifdef __cplusplus
 
-#endif  // SCANNER_H_
+}
+#  endif
+
+# endif  // SCANNER_H_
