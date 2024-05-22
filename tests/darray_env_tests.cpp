@@ -27,11 +27,20 @@ const char* test_create()
 	return NULL;
 }
 
+/*
+darray_destroy(array) contains:
+	if (array) {
+	if (array->contents)
+		free(array->contents);
+	free(array);
+}
+*/
 const char *test_destroy()
 {
 	// no my_assert here?
 	darray_destroy(array);
-
+	// how to check something been freed?
+	
 	return NULL;
 }
 

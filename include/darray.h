@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:27:54 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/04/29 12:13:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 08:06:54 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct	s_darray
 	void		**contents;
 }				t_darray;
 
-void		*ft_realloc(void *ptr, size_t size);
+void		*ft_realloc(void *ptr, size_t size, size_t old_size);
 t_darray	*darray_create(size_t element_size, size_t initial_max);
 void		darray_destroy(t_darray * array);
 void		darray_clear(t_darray * array);
