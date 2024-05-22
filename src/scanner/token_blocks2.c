@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/21 16:01:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 07:42:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ bool is_empty_parenthesis(const char *str, int i, int start)
 		return (true);
 	while (j <= (i - 2))
 	{
-		if (!is_space(str[j]) && str[j] != '(' & str[j] != ')')
+		if (!is_space(str[j]) && (str[j] != '(') && (str[j] != ')'))
 			return (false);
 		j++;	
 	}
