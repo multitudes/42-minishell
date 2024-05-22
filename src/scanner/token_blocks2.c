@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 07:42:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 07:51:00 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,24 +44,18 @@ bool	add_parenthesisblock(t_mini_data *data, int *i, char delim, int t_type)
 	count = 1;
 	while (data->input[*i] && count > 0)
 	{	
-		debug("in paren data->input[*i] = %c\n", data->input[*i]);
-		debug("data start and start + 1 = -%c- -%c-\n", data->input[start], data->input[start + 1]);
 		if (data->input[*i] == '(')
 			count++;
 		if (data->input[*i] == delim )
 			count--;
 		advance(i);
 	}
-	debug("count = %d\n", count);
 	if (count != 0)
 		return (scanner_error(data, "error: unclosed expression"));
-	debug("string = %s\n", data->input);
 	if (is_empty_parenthesis(data->input, *i, start))
 		return (scanner_error(data, "error: empty expression"));
 	tmp = ft_substr(data->input, start, *i - start);
-	debug("tmp = %s start is %d i = %d\n", tmp, start, *i);
 	add_token(data, &start, tmp, t_type);
-	debug("start is %d i = %d\n", start, *i);
 	*i = start;
 	free(tmp);
 	return (true);

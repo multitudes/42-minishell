@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:15:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 10:38:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/22 08:06:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ it behaves exactly like malloc. It simply allocates a new block of
 memory of the specified size. It doesn't need to 
 copy or free anything because there's no existing block of memory.
 */
-void *ft_realloc(void *ptr, size_t size)
+void *ft_realloc(void *ptr, size_t size, size_t old_size)
 {
     void	*new_ptr;
 
@@ -74,19 +74,22 @@ void *ft_realloc(void *ptr, size_t size)
 		return NULL;
 	if (ptr == NULL)
         return new_ptr;
-    ft_memcpy(new_ptr, ptr, size);
+	if (size <= old_size)
+		ft_memcpy(new_ptr, ptr, size);
+	else
+ 	   ft_memcpy(new_ptr, ptr, old_size);
     free(ptr);
     return new_ptr;
 }
 
 /*
 */
-int darray_resize(t_darray *array, size_t newsize)
+int darray_resize(t_darray *array, size_t newsize, size_t old_size)
 {
 	void *contents;
 
 	array->max = newsize;
-	contents = ft_realloc(array->contents, array->max * sizeof(void *));
+	contents = ft_realloc(array->contents, array->max * sizeof(void *), old_size * sizeof(void *));
 	if (!contents) 
 		return -1;
 	array->contents = contents;
@@ -100,7 +103,7 @@ int darray_expand(t_darray *array)
 	size_t	old_max;
 	
 	old_max = array->max;
-	if (darray_resize(array, array->max + array->expand_rate) != 0)
+	if (darray_resize(array, array->max + array->expand_rate, old_max) != 0)
 	{
 		debug("Failed to expand array to new size: %d", array->max + (int)array->expand_rate);
 		return -1;
@@ -120,7 +123,7 @@ int darray_contract(t_darray * array)
 	else
 		new_size = array->end;
 	
-	return darray_resize(array, new_size + 1);
+	return darray_resize(array, new_size + 1, array->max);
 }
 
 /*
