@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/23 11:43:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/23 13:42:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,7 +252,7 @@ int	set_up_signals(void)
 
 void	exit_minishell(t_data *data)
 {
-	free_data(data);
+	free_data(&data);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
