@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/23 11:26:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/23 11:41:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -357,12 +357,11 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 		if (is_not_control_token(get_curr_token(*input_tokens)))
 			*input_tokens = (*input_tokens)->next;
 	}
-	debug("curret token lexeme: %s", get_token_lexeme(*input_tokens));
 	break_list(input_tokens);
 	
 	// if I had an expression I need to return a node with the expression content
 	// so I need to reparse the list
-	debug("has expression: %d", expr_has_node);
+	debug("had expression: %d", expr_has_node);
 	if (expr_has_node)
 	{
 		t_list *tmp = head;
@@ -426,10 +425,10 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 				return (NULL);
 			t_ast_node *b = parse_terminal(input_tokens);
 			if (b == NULL)
-				return (free_ast(a));
+				return (free_ast(&a));
 			a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
 			if (a == NULL)
-				return (free_ast(a));
+				return (free_ast(&a));
 	}
 	return (a);
 }
@@ -458,10 +457,10 @@ t_ast_node	*parse_list(t_list **input_tokens)
 				return (NULL);
 			b = parse_pipeline(input_tokens);
 			if (b == NULL)
-				return (free_ast(a));
+				return (free_ast(&a));
 			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
 			if (a == NULL)
-				return (free_ast(a));
+				return (free_ast(&a));
 		}
 		if (*input_tokens)
 			debug("in parse list - extraneus token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
@@ -494,14 +493,15 @@ t_ast_node *create_ast(t_list *input_tokens)
 }
 
 
-void		*free_ast(t_ast_node *ast)
+void		*free_ast(t_ast_node **ast)
 {
 	if (ast == NULL)
 		return (NULL);
-	free_ast(ast->left);
-	free_ast(ast->right);
-	ft_lstclear(&ast->token_list, free);
-	free(ast);
+	free_ast(&((*ast)->left));
+	free_ast(&((*ast)->right));
+	ft_lstclear(&((*ast)->token_list), free);
+	free(*ast);
+	*ast = NULL;
 	return (NULL);
 }
 
