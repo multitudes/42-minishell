@@ -48,7 +48,7 @@ void	which_ast_node(t_ast_node *ast)
 		debug("NODE_TRUE or NODE_FALSE");
 	}
 	else
-		debug("not TERMINAL");	
+		debug("not TERMINAL");
 }
 
 /*
@@ -66,9 +66,15 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	if (ast == NULL)
 		return ;
 	debug("analyse expand");
-	// assing a ast node type to the node
-	which_ast_node(ast);
-
+	// assignng a ast node type to the node
+	 which_ast_node(ast);
+	//if (ast->type == VAR_EXPANSION)
+	//{
+		//remove "$"
+		//check if followed by "?", then replace ast->tokenlist->content with exit status of last command
+		//else search for string contained in tokenlist content in ENV_ARRAY before "="
+		//if match, replace this string with string behind "="
+	//}
 	// analyze node
 	// expand any lexemes that need to be expanded
 
