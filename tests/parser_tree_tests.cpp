@@ -625,6 +625,25 @@ const char *test_parser_tree_simple_command9() {
 	result = process_ast_node(ast->right->left, NODE_TERMINAL, WORD, "b");
 	result = process_ast_node(ast->right->right, NODE_TERMINAL, WORD, "c");
 	
+	//try ((a) || (b)) | c)
+	// lexemes = initialiser("((a) || (b)) | c");
+	// current = lexemes;
+	// result = process_token(&current, &i, "((a) || (b))", EXPRESSION);
+	// result = process_token(&current, &i, "|", PIPE);
+	// result = process_token(&current, &i, "c", WORD);
+	
+	// // this is how I check for the end of the list
+	// result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	// ast = create_ast(lexemes);
+
+	// //here I need to walk the tree and check the nodes
+	// result = process_ast_node(ast, NODE_PIPELINE, PIPE, "|");
+	// result = process_ast_node(ast->left, NODE_LIST, OR_IF, "||");
+	// result = process_ast_node(ast->left->left, NODE_TERMINAL, WORD, "a");
+	// result = process_ast_node(ast->left->right, NODE_TERMINAL, WORD, "b");
+	// result = process_ast_node(ast->right, NODE_TERMINAL, WORD, "c");
+
 
 	return result;
 }
