@@ -392,6 +392,7 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 {
 	t_ast_node *a;
 	t_token *token;
+	t_ast_node *b;
 
 	a = NULL;
 	token = NULL;
@@ -405,7 +406,7 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 			token = get_curr_token(*input_tokens);
 			if (consume_token(input_tokens) == NULL)
 				return (NULL);
-			t_ast_node *b = parse_terminal(input_tokens);
+			b = parse_terminal(input_tokens);
 			if (b == NULL)
 				return (free_ast(&a));
 			a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
@@ -415,7 +416,11 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 	return (a);
 }
 	
-/**/
+/*
+Parsing sequence of pipelines separated by operators "&&", "||"
+
+Question: Could / should we rename these functions to more clearly describe what they return, e.g. instead of "parse_list", we could write "get_list" or similar!?
+*/
 t_ast_node	*parse_list(t_list **input_tokens)
 {
 	t_token *token;
@@ -451,6 +456,9 @@ t_ast_node	*parse_list(t_list **input_tokens)
 }
 
 /*
+Creates ast node(s) from tokens.
+Question: is tmp variable needed or could iteration be done directly on &input_tokens?
+
 introducing a new node type for the tree, t_ast_node.
 The tree will be composed of nodes, each node will have a type,
 a left and a right node, and a list of tokens as a t_list.
@@ -463,13 +471,13 @@ t_ast_node *create_ast(t_list *input_tokens)
 	a = NULL;
 	tmp = input_tokens;
 	if (input_tokens == NULL)
-		return (NULL);		
+		return (NULL);
 	while (tmp)
 	{
 		a = parse_list(&tmp);
 		if (!a)
 			return (NULL);
-		print_ast(a);
+		print_ast(a, 0);
 	}
 	return (a);
 }
@@ -488,8 +496,8 @@ void		*free_ast(t_ast_node **ast)
 }
 
 /* 
-need to print the ast tree  
-and each node should be printed with its type to debug
+For debugging: print the ast tree  
+Each node is printed with its type.
 like NODE_LIST, which is the default node
 ..need to think if I want to assign a type to each node here
 or in the analyser?
@@ -506,9 +514,9 @@ struct s_token {
 };
 typedef struct s_token t_token;
 */
-void print_ast(t_ast_node *a)
+void print_ast(t_ast_node *a, int level)
 {
-	static int level = 0;
+	
 	t_list *tokenlist;
 	t_token *token;
 
@@ -524,7 +532,7 @@ void print_ast(t_ast_node *a)
 	while (tokenlist)
 	{
 		token = (t_token *)tokenlist->content;
-		debug("level %d - token type: %d - lexeme %s", level, (t_tokentype)(token->type), token->lexeme);
+		debug("level %d - token type: %d - lexeme %s", level , (t_tokentype)(token->type), token->lexeme);
 		tokenlist = tokenlist->next;
 	}
 
@@ -535,13 +543,11 @@ void print_ast(t_ast_node *a)
 	// debug("---------left -----------");
 	if (a->left)
 	{		
-		level++;
-		print_ast(a->left);
+		print_ast(a->left, ++level);
 	}
 	//debug("---------right -----------");
 	if (a->right)
 	{
-		level++;
-		print_ast(a->right);
+		print_ast(a->right, ++level);
 	}
 }
