@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/23 11:41:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/23 11:59:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,36 +272,18 @@ bool replace_expression_tokens(t_list **head, t_list **input_tokens)
 		return (false);
 	has_node = token_list_has_astnode(new_token_list);
 	*input_tokens = (*input_tokens)->next;
-	if (has_node)
+	if (*input_tokens)
 	{
-		if (*input_tokens)
-		{
-			(*input_tokens)->prev = ft_lstlast(new_token_list);
-			ft_lstlast(new_token_list)->next = *input_tokens;
-		}
-		if ((expr_node)->prev)
-		{
-			expr_node->prev->next = new_token_list;
-			new_token_list->prev = expr_node->prev;
-		}
-		else
-			*head = new_token_list;
+		(*input_tokens)->prev = ft_lstlast(new_token_list);
+		ft_lstlast(new_token_list)->next = *input_tokens;
 	}
-	else if (!has_node)	
+	if ((expr_node)->prev)
 	{
-		if (*input_tokens)
-		{
-			(*input_tokens)->prev = ft_lstlast(new_token_list);
-			ft_lstlast(new_token_list)->next = *input_tokens;
-		}
-		if ((expr_node)->prev)
-		{
-			expr_node->prev->next = new_token_list;
-			new_token_list->prev = expr_node->prev;
-		}
-		else
-			*head = new_token_list;
-	}	
+		expr_node->prev->next = new_token_list;
+		new_token_list->prev = expr_node->prev;
+	}
+	else
+		*head = new_token_list;
 	free(curr_token->lexeme);
 	free(curr_token);
 	free(expr_node);
