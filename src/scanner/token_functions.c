@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 10:06:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/23 09:28:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,20 +69,22 @@ data struct so the loop will stop and free the data
 it still returns true because when a token subfunction returns true
 it means the token has been recognized and the scanner can move on
 otherwise it would keep on looking for the token
+* defensive programming. passing a string literal to add_token will
+never fail but I still check for NULL lexemes!
 */
-bool	add_token(t_mini_data *data, int *i, const char *tmp, int type)
+bool	add_token(t_mini_data *data, int *i, const char *lexem, int type)
 {
 	t_list	*token;
 
-	if (!tmp)
-		scanner_error(data, "error: malloc tmp failed");
+	if (!lexem)
+		scanner_error(data, "error: empty lexem in token creation");
 	else
 	{
-		token = create_token(type, tmp, i);
+		token = create_token(type, lexem, i);
 		if (token)
 			ft_lstadd_back(&data->token_list, token);
 		else
-			scanner_error(data, "error: malloc token failed");
+			scanner_error(data, "error: malloc in create_token failed");
 	}
 	return (true);
 }
