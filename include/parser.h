@@ -58,7 +58,7 @@ t_ast_node	*parse_list(t_list **input_tokens);
 t_ast_node	*parse_pipeline(t_list **input_tokens);
 t_ast_node	*parse_terminal(t_list **input_tokens);
 bool		extract_expression(t_list **head, t_list **input_tokens);
-void		print_ast(t_ast_node *ast);
+void		print_ast(t_ast_node *ast, int level);
 void		*free_ast(t_ast_node **ast);
 void		print_token(t_list *input_token);
 t_token		*get_curr_token(t_list *input_tokens);
