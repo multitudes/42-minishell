@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 14:15:07 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/23 07:47:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,55 +223,72 @@ static void	exit_handler(int sig)
 }
 
 /*
+on mac with ctrl - c , I get a new line on bash without 
+displaying ^C
+signal handling:
+◦ ctrl-C SIGINT displays a new prompt on a new line. 
+◦ ctrl-D exits the shell.
+◦ ctrl-\ SIGQUIT does nothing.	
+this line is maybe not needed rl_catch_signals = 0;
+but works better on the mac... 
+also removed these couple lines... This was for testing
+	// else if (isatty(STDIN_FILENO) == 0)
+	// 	debug("non interactive mode \n");
+*/
+int	set_up_signals(void)
+{
+	if (isatty(STDIN_FILENO) == -1)
+		return (_exit_err("is atty failed\n"));
+	else if (isatty(STDIN_FILENO))
+	{
+		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
+		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
+			return (_exit_err("SIG_ERR signal failed\n"));
+	}
+	rl_catch_signals = 0;
+	return (0);
+}
 
+void	exit_minishell(t_data *data)
+{
+	free_data(data);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+	write(1, "exit\n", 6);
+}
+
+/*
+set_up_signals() returns 1 but if it fails I leave it failing 
+silently or should we exit the program?
+The readLine() function, reads a line of input from
+the user on the command line and returns the result.
+To kill an interactive command-line app, type Control-D.
+Doing so signals an “end-of-file” condition to the program.
+When that happens readLine() returns null ,
+so we check for that to exit the loop.
 */
 int loop()
 {
 	t_data *data;
 
 	data = NULL;
-	// init data structure with environ and path
 	if (!init_data(&data))
 		return (1);
 	load_history();
-
-	// on mac I with ctrl - c i get a new line on bash
-	rl_catch_signals = 0;
-	// signal handling
-	// ◦ ctrl-C SIGINT displays a new prompt on a new line. 
-	// ◦ ctrl-D exits the shell.
-	// ◦ ctrl-\ SIGQUIT does nothing.	
-	if (isatty(STDIN_FILENO))
-	{
-		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
-		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-			return (_exit_err("SIG_ERR signal failed\n"));
-		debug("interactive mode \n");
-	}
-	else if (isatty(STDIN_FILENO) == 0)
-		debug("non interactive mode \n");
-	else if (isatty(STDIN_FILENO) == -1)
-		perror("isatty\n");
-			
+	set_up_signals();		
 	while (data->input != NULL)
 	{
 		data->input = readline("minishell $ ");
-		
 		if (data->input && ft_strncmp(data->input, "", 1))
 		{
-			sanitize_input(data->input);
 			handle_history(data);
 			data->token_list = tokenizer(data->input);
 			if (data->token_list != NULL)
 			{
-				/*
-				since the create_ast is recursive I pass the token list
-				separately to avoid rewriting the copy in my data 
-				*/
 				data->ast = create_ast(data->token_list);
 				if (data->ast)
 				{
-					// print_ast(data->ast);
 					analyse_expand(data->ast, data);
 					execute_ast(data->ast, data);
 				}
@@ -280,22 +297,6 @@ int loop()
 			}
 		}
 	}
-	/*
-	The readLine() function, reads a line of input from
-	the user on the command line and returns the result.
-	To kill an interactive command-line app, type Control-D.
-	Doing so signals an “end-of-file” condition to the program.
-	When that happens readLine() returns null ,
-	so we check for that to exit the loop.
-	*/
-
-//	debug("freeing ===================");
-	free_data(data);
-	// printf("rl_end %d\n", rl_end);
-	// readline cleanup
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	write(1, "exit\n", 6);
+	exit_minishell(data);
 	return (0);
 }

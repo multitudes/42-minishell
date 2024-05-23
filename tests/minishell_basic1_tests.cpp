@@ -48,6 +48,60 @@ const char* test_basicminishell() {
 	return NULL;
 }
 
+
+const char* test_basicminishell2() {
+int pipefd[2];
+int pipefd_out[2]; // New pipe for capturing output
+
+pipe(pipefd);
+pipe(pipefd_out); // Initialize new pipe
+
+pid_t pid = fork();
+
+if (pid == 0) {
+    // Child process
+    close(pipefd[1]); // Close write end of input pipe
+    dup2(pipefd[0], STDIN_FILENO); // Redirect standard input to read end of input pipe
+
+    close(pipefd_out[0]); // Close read end of output pipe
+    dup2(pipefd_out[1], STDOUT_FILENO); // Redirect standard output to write end of output pipe
+
+    execl("../minishell", "minishell", (char*) NULL); // Execute minishell
+    exit(EXIT_FAILURE); // Exit if execl fails
+} else {
+    // Parent process
+    close(pipefd[0]); // Close read end of input pipe
+    write(pipefd[1], "\x04", 1); // Write Ctrl-D to write end of input pipe
+    close(pipefd[1]); // Close write end of input pipe
+
+    close(pipefd_out[1]); // Close write end of output pipe
+
+    // Read the output of the minishell
+    char buffer[1024];
+    int n = read(pipefd_out[0], buffer, sizeof(buffer)); // Read from read end of output pipe
+    buffer[n] = '\0';
+    debug("output: -%s-", buffer);
+
+ 
+	// should be output a string like
+	// \nminishell $ exit\n
+	my_assert(strcmp(buffer, "minishell $ minishell $ exit\n") == 0, "Output is not as expected");
+	// flush the buffer (fprintf)
+	fflush(NULL);	
+
+	int status;
+	waitpid(pid, &status, 0); // Wait for child process to exit
+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+		debug("exit status: %d", WEXITSTATUS(status));
+		return "Minishell exited with non-zero status";
+	}
+    }
+	return NULL;
+}
+
+
+
+
 /*
 example to test env variables
 for instance check the value of $SHELL that on my mac is zsh
@@ -98,6 +152,7 @@ const char *all_tests()
 	
 	// run the tests
 	run_test(test_basicminishell);
+	run_test(test_basicminishell2);
 	run_test(test_environment);	
 	
 	return NULL;
