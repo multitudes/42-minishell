@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/23 11:11:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/23 11:26:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,20 +272,36 @@ bool replace_expression_tokens(t_list **head, t_list **input_tokens)
 		return (false);
 	has_node = token_list_has_astnode(new_token_list);
 	*input_tokens = (*input_tokens)->next;
-	
-	if (*input_tokens)
+	if (has_node)
 	{
-		(*input_tokens)->prev = ft_lstlast(new_token_list);
-		ft_lstlast(new_token_list)->next = *input_tokens;
+		if (*input_tokens)
+		{
+			(*input_tokens)->prev = ft_lstlast(new_token_list);
+			ft_lstlast(new_token_list)->next = *input_tokens;
+		}
+		if ((expr_node)->prev)
+		{
+			expr_node->prev->next = new_token_list;
+			new_token_list->prev = expr_node->prev;
+		}
+		else
+			*head = new_token_list;
 	}
-	if ((expr_node)->prev)
+	else if (!has_node)	
 	{
-		expr_node->prev->next = new_token_list;
-		new_token_list->prev = expr_node->prev;
-	}
-	else
-		*head = new_token_list;
-	
+		if (*input_tokens)
+		{
+			(*input_tokens)->prev = ft_lstlast(new_token_list);
+			ft_lstlast(new_token_list)->next = *input_tokens;
+		}
+		if ((expr_node)->prev)
+		{
+			expr_node->prev->next = new_token_list;
+			new_token_list->prev = expr_node->prev;
+		}
+		else
+			*head = new_token_list;
+	}	
 	free(curr_token->lexeme);
 	free(curr_token);
 	free(expr_node);
@@ -338,9 +354,12 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 			return (NULL);
 		if (input_tokens == NULL || *input_tokens == NULL)
 			break;
-		*input_tokens = (*input_tokens)->next;
+		if (is_not_control_token(get_curr_token(*input_tokens)))
+			*input_tokens = (*input_tokens)->next;
 	}
+	debug("curret token lexeme: %s", get_token_lexeme(*input_tokens));
 	break_list(input_tokens);
+	
 	// if I had an expression I need to return a node with the expression content
 	// so I need to reparse the list
 	debug("has expression: %d", expr_has_node);
