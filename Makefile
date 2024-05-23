@@ -69,10 +69,12 @@ $(NAME): $(OBJS) $(HDRS)
 clean:
 	rm -rf $(OBJ_DIR)
 	#$(MAKE) -C $(LIBFTDIR) clean
+	$(MAKE) -C tests clean
 	
 fclean: clean
 	rm -f $(NAME)
 	# $(MAKE) -C $(LIBFTDIR) fclean
+	$(MAKE) -C tests fclean
 
 re: fclean all
 

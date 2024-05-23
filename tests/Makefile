@@ -68,6 +68,7 @@ runtests:
 clean:
 	rm -f *.o
 	rm -f tests.log
+	find . -name "*.dSYM" -type d -exec rm -rf {} +
 
 fclean: clean
 	rm -rf $(TESTS)
