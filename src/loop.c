@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/23 08:28:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/23 11:43:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,15 @@ util function
 it makes sense to collect what we malloc in our data struct
 because it is easier to free at the end or when we need to exit
 */
-void	free_data(t_data *data)
+void	free_data(t_data **data)
 {
-	if (data == NULL)
+	if (data == NULL || *data == NULL)
 		return ;
 	// free the environ array
-	darray_clear_destroy(data->env_arr);
-	free(data->ast);
+	darray_clear_destroy((*data)->env_arr);
+	free((*data)->ast);
 	free(data);
+	*data = NULL;
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 10:47:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/23 11:59:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,45 +232,69 @@ t_tokentype get_token_type(t_list *input_tokens)
 	return (token->type);
 }
 
+bool	token_list_has_astnode(t_list *new_token_list)
+{
+	t_list *tmp;
+	
+	tmp = new_token_list;
+	if (new_token_list == NULL)
+		return (false);		
+	while (tmp)
+	{
+		if (is_not_control_token(get_curr_token(tmp)))
+			return (true);
+		tmp = tmp->next;
+	}
+	return (false);
+}
+
 /*
 I now take care of empty expressions in the scanner
 NOTE: I do not change head if there is a node before the expression
+new_token_list from the tokenizer is the new list of tokens
+and if that is null I already have the scanner error message 
+on stderr and do not need to print anothererror... I will continue?
+return -1?
 */
 bool replace_expression_tokens(t_list **head, t_list **input_tokens)
 {
-	t_list *expr_node;
-	t_token *curr_token;
-	t_list *new_token_list;
+	t_list	*expr_node;
+	t_token	*curr_token;
+	t_list	*new_token_list;
+	bool	has_node;
 
+	has_node = false;
 	expr_node = *input_tokens;
 	curr_token = get_curr_token(expr_node);
 	new_token_list = tokenizer(ft_substr(curr_token->lexeme, 1, ft_strlen(curr_token->lexeme) - 2));
+	// check if I have a token delimiter in my new token list
+	if (new_token_list == NULL)
+		return (false);
+	has_node = token_list_has_astnode(new_token_list);
 	*input_tokens = (*input_tokens)->next;
-	if (new_token_list)
+	if (*input_tokens)
 	{
-		if (*input_tokens)
-		{
-			(*input_tokens)->prev = ft_lstlast(new_token_list);
-			ft_lstlast(new_token_list)->next = *input_tokens;
-		}
-		if ((expr_node)->prev)
-		{
-			expr_node->prev->next = new_token_list;
-			new_token_list->prev = expr_node->prev;
-		}
-		else
-			*head = new_token_list;
+		(*input_tokens)->prev = ft_lstlast(new_token_list);
+		ft_lstlast(new_token_list)->next = *input_tokens;
 	}
+	if ((expr_node)->prev)
+	{
+		expr_node->prev->next = new_token_list;
+		new_token_list->prev = expr_node->prev;
+	}
+	else
+		*head = new_token_list;
 	free(curr_token->lexeme);
 	free(curr_token);
 	free(expr_node);
-	return (true);
+	return (has_node);
 }
 
 /*
 I get a t_list node in input with my token as expression type
 and want to substitute it with the content of the expression
 it is like cut and paste a linked list
+if I have an expression and cant replace it then I keep on running?
 */
 bool	extract_expression(t_list **head, t_list **input_tokens)
 {
@@ -279,13 +303,10 @@ bool	extract_expression(t_list **head, t_list **input_tokens)
 	return (false);
 }
 
-bool	is_not_control_token(t_list *input_tokens)
+bool	is_not_control_token(t_token *token)
 {
-	t_token *token;
-	
-	if (input_tokens == NULL)
+	if (token == NULL)
 		return (false);
-	token = (t_token *)input_tokens->content;
 	if (token->type == PIPE || token->type == PIPE_AND || token->type == AND_IF || \
 	token->type == OR_IF || token->type == SEMI || token->type == AND_TOK)
 		return (false);
@@ -299,29 +320,31 @@ t_ast_node *parse_terminal(t_list **input_tokens)
 {
 	t_list	*head;
 	t_ast_node	*a;
-	bool	has_expr;
+	bool	expr_has_node;
 
 	a = NULL;
-	has_expr = false;
+	expr_has_node = false;
 	head = *input_tokens;
 	if (input_tokens == NULL || *input_tokens == NULL)
 		return (NULL);
 	// print_token(head->prev);
-	while (is_not_control_token(*input_tokens))
+	while (is_not_control_token(get_curr_token(*input_tokens)))
 	{
 		if (extract_expression(&head, input_tokens))
-			has_expr = true;
+			expr_has_node = true;
 		if (head == NULL)
 			return (NULL);
 		if (input_tokens == NULL || *input_tokens == NULL)
 			break;
-		*input_tokens = (*input_tokens)->next;
+		if (is_not_control_token(get_curr_token(*input_tokens)))
+			*input_tokens = (*input_tokens)->next;
 	}
 	break_list(input_tokens);
+	
 	// if I had an expression I need to return a node with the expression content
 	// so I need to reparse the list
-	debug("has expression: %d", has_expr);
-	if (has_expr && head)
+	debug("had expression: %d", expr_has_node);
+	if (expr_has_node)
 	{
 		t_list *tmp = head;
 		t_token *token2;
@@ -384,10 +407,10 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 				return (NULL);
 			t_ast_node *b = parse_terminal(input_tokens);
 			if (b == NULL)
-				return (free_ast(a));
+				return (free_ast(&a));
 			a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
 			if (a == NULL)
-				return (free_ast(a));
+				return (free_ast(&a));
 	}
 	return (a);
 }
@@ -416,10 +439,10 @@ t_ast_node	*parse_list(t_list **input_tokens)
 				return (NULL);
 			b = parse_pipeline(input_tokens);
 			if (b == NULL)
-				return (free_ast(a));
+				return (free_ast(&a));
 			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
 			if (a == NULL)
-				return (free_ast(a));
+				return (free_ast(&a));
 		}
 		if (*input_tokens)
 			debug("in parse list - extraneus token type: %d, %s", ((t_token *)(*input_tokens)->content)->type, ((t_token *)(*input_tokens)->content)->lexeme);
@@ -452,14 +475,15 @@ t_ast_node *create_ast(t_list *input_tokens)
 }
 
 
-void		*free_ast(t_ast_node *ast)
+void		*free_ast(t_ast_node **ast)
 {
 	if (ast == NULL)
 		return (NULL);
-	free_ast(ast->left);
-	free_ast(ast->right);
-	ft_lstclear(&ast->token_list, free);
-	free(ast);
+	free_ast(&((*ast)->left));
+	free_ast(&((*ast)->right));
+	ft_lstclear(&((*ast)->token_list), free);
+	free(*ast);
+	*ast = NULL;
 	return (NULL);
 }
 
