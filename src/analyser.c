@@ -58,15 +58,29 @@ void	expand_variable(t_data *data, t_token *token)
 
 		debug("expand_variable");
 		key = token->lexeme;
-		temp = ft_strdup(token->lexeme = mini_get_env(data, key + 1));
+		if (mini_get_env(data, key + 1))
+			temp = ft_strdup(token->lexeme = mini_get_env(data, key + 1));
+		else
+			temp = NULL;
 		free(key);
 		token->lexeme = temp;
+}
+
+void	read_exit_status(t_data *data, t_token *token)
+{
+	char	*temp;
+
+	debug("read_exit_status");
+	temp = ft_itoa(data->exit_status);
+	free(token->lexeme);
+	token->lexeme = temp;
 }
 /*
 the function of the analyser is to walk on the tree and analyze and expand 
 the nodes that need to.
-Required is expansion of env variables (incl $PATH) and of $?
+Required is expansion of env variables (incl $PATH), of local variables and of $?
 Optional are the ~, $!, etc..)
+" " ' ' 
 Also optional appear to be $(..) ${..} $'..' $".."
 I replicate here the code for the print_ast function which is in parser.c
 and walks the tree. The idea is to walk through each node... expand
@@ -74,44 +88,36 @@ and then pass it to the executor
 */
 void analyse_expand(t_ast_node *ast, t_data *data)
 {
+	t_list	*token_list;
 	t_token	*token;
 
 	//(void)data;
-	token = ast->token_list->content;
+	token_list = ast->token_list;
+	token = token_list->content; //assignment here only needed for debugging
 	if (ast == NULL)
 		return ;
 	debug("analyse expand");
-	print_ast(ast, 0);
-	debug("token type: %d", (token->type));
-	debug("ast node type: %d", ast->type);
+	debug("token type: %d ast node type: %d lexeme: %s", token->type, ast->type, token->lexeme);
 	// assignng a ast node type to the node
 	// which_ast_node(ast);
-	if (token->type == VAR_EXPANSION && ast->type == NODE_TERMINAL)
-		expand_variable(data, token);
-	if (token->type == )
+	while (token_list)
+	{
+		token = token_list->content;
+		if (token->type == VAR_EXPANSION && ast->type == NODE_TERMINAL)
+			expand_variable(data, token);
+		if (token->type == DOLLAR_QUESTION)
+			read_exit_status(data, token);
+		debug("token type: %d ast node type: %d lexeme: %s", token->type, ast->type, token->lexeme);
+		token_list = token_list->next;
+	}
+	debug("---------left -----------");
 	if (ast->left)
 		analyse_expand(ast->left, data);
+	else
+		debug("left is NULL");
+	debug("---------right -----------");
 	if (ast->right)
 		analyse_expand(ast->right, data);
-	print_ast(ast, 0);
-	//{
-		//remove "$"
-		//check if followed by "?", then replace ast->tokenlist->content with exit status of last command
-		//else search for string contained in tokenlist content in ENV_ARRAY before "="
-		//if match, replace this string with string behind "="
-	//}
-	// analyze node
-	// expand any lexemes that need to be expanded
-
-	// go to the next nodes and repeat
-	// debug("---------left -----------");
-	// if (ast->left)
-	// 	analyse_expand(ast->left, data);
-	// else
-	// 	debug("left is NULL");
-	// debug("---------right -----------");
-	// if (ast->right)
-	// 	analyse_expand(ast->right, data);
-	// else
-	// 	debug("right is NULL");
+	else
+		debug("right is NULL");
 }
