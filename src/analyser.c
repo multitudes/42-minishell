@@ -75,6 +75,12 @@ void	read_exit_status(t_data *data, t_token *token)
 	free(token->lexeme);
 	token->lexeme = temp;
 }
+
+void	extract_string(t_token *token)
+{
+	debug("extract_string");
+	ft_strlcpy(token->lexeme, (const char *)token->lexeme + 1, ft_strlen(token->lexeme) - 1);
+}
 /*
 the function of the analyser is to walk on the tree and analyze and expand 
 the nodes that need to.
@@ -107,6 +113,9 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 			expand_variable(data, token);
 		if (token->type == DOLLAR_QUESTION)
 			read_exit_status(data, token);
+		if (token->type == S_QUOTED_STRING)
+			extract_string(token);
+		//if (token->type == QUOTED_STRING)
 		debug("token type: %d ast node type: %d lexeme: %s", token->type, ast->type, token->lexeme);
 		token_list = token_list->next;
 	}
