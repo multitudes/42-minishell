@@ -173,6 +173,7 @@ int		init_scanner_data(t_mini_data **data, const char *input);
 void	free_scanner_data(t_mini_data *data);
 t_list	*create_token(t_tokentype type, const char *lexeme, int *start);
 t_list	*tokenizer(const char *input);
+t_list	*string_tokenizer(const char *input);
 bool	peek(const char *input, const char *identifier, bool end_space);
 void	advance(int *i);
 bool	is_space(const char c);

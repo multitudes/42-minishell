@@ -81,6 +81,38 @@ void	extract_string(t_token *token)
 	debug("extract_string");
 	ft_strlcpy(token->lexeme, (const char *)token->lexeme + 1, ft_strlen(token->lexeme) - 1);
 }
+
+void	expand_string(t_data *data, t_token *token)
+{
+	char	*old_lexeme;
+	t_list	*string_tokens;
+	t_list	*ptr_to_list;
+	char	*temp_lexeme;
+
+	debug("expand_string");
+	old_lexeme = ft_strtrim(token->lexeme, "\"");
+	if (!ft_strchr(old_lexeme, '$'))
+	{
+		token->lexeme = old_lexeme;
+		return ;
+	}
+	string_tokens = string_tokenizer((const char *)old_lexeme);
+	ptr_to_list = string_tokens;
+	free(token->lexeme);
+	token->lexeme = NULL;
+	while (string_tokens)
+	{
+		if (((t_token *)string_tokens->content)->type == VAR_EXPANSION)
+			expand_variable(data, (t_token *)string_tokens->content);
+		if (((t_token *)string_tokens->content)->type == DOLLAR_QUESTION)
+			read_exit_status(data, (t_token *)string_tokens->content);
+		temp_lexeme = token->lexeme;
+		token->lexeme = ft_strjoin((const char *)temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
+		free(temp_lexeme);
+		string_tokens = string_tokens->next;
+	}
+	ft_lstclear(&ptr_to_list, free_token); //free_token function is from scanner.h
+}
 /*
 the function of the analyser is to walk on the tree and analyze and expand 
 the nodes that need to.
@@ -99,11 +131,10 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 
 	//(void)data;
 	token_list = ast->token_list;
-	token = token_list->content; //assignment here only needed for debugging
 	if (ast == NULL)
 		return ;
 	debug("analyse expand");
-	debug("token type: %d ast node type: %d lexeme: %s", token->type, ast->type, token->lexeme);
+	debug("Received token type: %d ast node type: %d lexeme: %s", ((t_token *)token_list->content)->type, ast->type, ((t_token *)token_list->content)->lexeme);
 	// assignng a ast node type to the node
 	// which_ast_node(ast);
 	while (token_list)
@@ -115,8 +146,10 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 			read_exit_status(data, token);
 		if (token->type == S_QUOTED_STRING)
 			extract_string(token);
-		//if (token->type == QUOTED_STRING)
-		debug("token type: %d ast node type: %d lexeme: %s", token->type, ast->type, token->lexeme);
+		if (token->type == QUOTED_STRING)
+			expand_string(data, token);
+		token->type = WORD;
+		debug("Expanded token type: %d ast node type: %d lexeme: %s", token->type, ast->type, token->lexeme);
 		token_list = token_list->next;
 	}
 	debug("---------left -----------");

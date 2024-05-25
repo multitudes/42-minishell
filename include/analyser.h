@@ -25,6 +25,7 @@ void	analyse_expand(t_ast_node *ast, t_data *data);
 void	expand_variable(t_data *data, t_token *token);
 void	read_exit_status(t_data *data, t_token *token);
 void	extract_string(t_token *token);
+void	expand_string(t_data *data, t_token *token);
 void	which_ast_node(t_ast_node *ast);
 
 #  ifdef __cplusplus
