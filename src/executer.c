@@ -9,7 +9,7 @@
 /*   Updated: 2024/05/26 09:01:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+#include "minishell.h"
 #include "executer.h"
 #include "built_ins.h"
 

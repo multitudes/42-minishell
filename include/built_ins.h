@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef BUILT_INS_H
+# define BUILT_INS_H
 
 // needed for the tests - leave it here
 # ifdef __cplusplus
