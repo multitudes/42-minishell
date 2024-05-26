@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "executer.h"
+#include "built-ins.h"
 
 /*
 posix compliant use of the environ variable but wecan discuss this
