@@ -101,6 +101,60 @@ Here at 42 we are allowed to use the following functions for this project:
 
 Also we follow the NORM, a series of rules about linting and formatting of the code. Examples: functions cannot have more than 25 lines; we are not allowed to use "for"-loops, but while loops are allowed; declaring and defining variables in one line is not allowed. etc.
 
+## Built-in functions to recreate
+Built-in commands are special commands that are implemented in the shell itself rather than being external programs. Some common built-in commands include cd, echo, and exit. Built-in commands such as “cd” or “exit” cannot be executed using the `execve()` function. Our minishell shall have the following built-ins which we need to recreate:
+◦ echo with option -n
+◦ cd with only a relative or absolute path 
+◦ pwd with no options
+◦ export with no options
+◦ unset with no options
+◦ env with no options or arguments
+◦ exit with no options
+
+Bash and other shalls have many more built-in commands.
+
+The functionality of the built-in commands is described in the BASH manual and a short summary provided in the following.
+
+### Built-in: `echo [-n] [arg ...]`
+(_Bash built-in command_)
+Output `args` separated by spaces and terminated with a newline. With `-n` option trailing newline is suppressed.
+
+Return status is zero unless a write occurs.
+### Built-in: `cd [directory]` (with relative or absolute path)
+(_original Bourne Shell built-in_)
+Used to change the current working directory to another directory. If directory is not specified the `HOME` shell variable is used. If directory is '-', it is converted to $OLDPWD before attempting directory change. (arguably not required in our project).
+Successful execution of `cd` should set `PWD` to new directory and `OLDPWD` to the working directory before the change.
+Return status is zero upon success, non-zero otherwise.
+
+### Built-in: `pwd` (without options)
+(_original Bourne Shell built-in_)
+Prints the absolute pathname of the current working directory (can contain symbolic links though this may be implementation defined as the normally available options either explicitly prohibit symbolic links (`-P`) or explicitly allow symbolic links (`-L`).
+Return status is zero unless an error is encountered while determining the name of the current directory (or an invalid option is supplied).
+
+### Built-in: `export [name[=value]]` (without options)
+(_original Bourne Shell built-in_)
+Without any other options (as in our implementation) `name` refers to variables. Export allows to pass specified names/variable to be passed to child processes. When no names are provided, a list of all exported variables is displayed. When a value is provided after `name` and `=` the variable is set to `value`.
+To note: "All values undergo tilde expansion, parameter and variable expansion, command substitution, arithmetic expansion, and quote removal." (see 3.4 Shell Parameters in the Bash Manual)
+Return status is zero unless invalid option is supplied or one of the names is not a valid shell variable name.
+
+To clarify: difference between environment variables and exported variables
+
+### Built-in: `unset [name]` (without options)
+(_original Bourne Shell built-in_)
+Removes each variable or function with `name`.
+> If no options are supplied, each name refers to a variable; if there is no variable by that name, a function with that name, if any, is unset. [...] Some shell variables lose their special behavior if they are unset.
+Read-only variables and functions cannot be unset.
+Return status is zero unless `name` is read-only or cannot not be unset.
+To clarify: should we actually treat the removal/unsetting of functions? How do we identify read-only variables and functions?
+
+### Built-in: `env` (without options or arguments)
+`env` is not described as a built-in in the BASH manual. The variable $ENV is described related to POSIX variant of invoking shell.
+Presumably env prints the current environment, i.e. the inherited environment plus any modifications through `export` and `unset`.
+
+### Built-in: `exit [n]` (without options)
+(_original Bourne Shell built-in_)
+The built-in command `exit`,- as the name implies -, exits the shell. The exit status shall be set to that of the last executed command. The BASH built-in allows soptionally to set the exit status as an argument ([n]).
+
 # Teamwork - It's about GIT
 ## Commit style
 
