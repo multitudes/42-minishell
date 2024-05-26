@@ -9,7 +9,7 @@
 /*   Updated: 2024/05/22 09:51:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+#include "utils.h"
 #include "minishell.h"
 
 /*
@@ -36,6 +36,65 @@ t_list	*tokenizer(const char *input)
 			continue ;
 		else if (!is_space(data->input[i]))
 			scanner_error(data, "error: unrecognized token");
+		else
+			i++;
+	}
+	if (data->scanner_error == 0)
+		return (data->token_list);
+	free_scanner_data(data);
+	return (NULL);
+}
+
+/*
+Function tokenizes $-indicated variables,
+all preceding and subsequent characters are returned
+as non-interpreted tokens of type WORD.
+Function enables expansion of '"'-delimited strings.
+*/
+t_list	*string_tokenizer(const char *input)
+{
+	int			i;
+	int			start;
+	char		*temp_lexeme;
+	t_mini_data	*data;
+
+	data = NULL;
+	i = 0;
+	start = 0;
+	if (!init_scanner_data(&data, input))
+		return (NULL);
+	while (i < (int)ft_strlen(data->input) && data->scanner_error == 0)
+	{
+		if (peek(data->input + i, "$", false))
+		{
+			if (i > start)
+			{
+				temp_lexeme = ft_strndup(data->input + start, i - start);//!!!! create ft_strndup function !!!!
+				if (temp_lexeme)
+					add_token(data, &start, temp_lexeme, WORD);
+				else
+					scanner_error(data, "error: malloc failed");//change error message?
+				free(temp_lexeme);
+			}
+			if (is_a_dollar_exp(data, &i))
+			{
+				start = i;
+				continue ;
+			}
+		}
+		if ((data->input)[i + 1] == '\0')
+		{
+			if (i > start)
+			{
+				temp_lexeme = strndup(data->input + start, i - start + 1);//!!!! create ft_strndup function !!!!
+				if (temp_lexeme)
+					add_token(data, &start, temp_lexeme, WORD);
+				else
+					scanner_error(data, "error: malloc failed");//change error message?
+				free(temp_lexeme);
+			}
+			i++;
+		}
 		else
 			i++;
 	}

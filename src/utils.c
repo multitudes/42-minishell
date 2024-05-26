@@ -9,8 +9,38 @@
 /*   Updated: 2024/05/18 16:30:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+#include <stdlib.h>
+#include "libft.h"
 #include "minishell.h"
+
+/*
+ The strndup() function is similar to ft_strdup, but copies at most n bytes. 
+ If s is longer than n, only n bytes are copied,
+ and a terminating null byte ('\0') is added.
+ The duplicate string is allocated with malloc, which needs to be freed.
+*/
+char	*ft_strndup(const char *s, size_t n)
+{
+	size_t	i;
+	char	*new_str;
+
+	if (s == NULL)
+		return (NULL);
+	if (ft_strlen(s) <= n)
+		return (ft_strdup(s));
+	else
+		new_str = malloc(n + 1);
+	if (new_str == NULL)
+		return (NULL);
+	i = 0;
+	while (i < n)
+	{
+		new_str[i] = s[i];
+		i++;
+	}
+	new_str[i] = '\0';
+	return (new_str);
+}
 
 /*
 util . otherwise non ascii chars like ∂ will wreac havoc and the read function

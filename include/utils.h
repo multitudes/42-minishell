@@ -15,7 +15,8 @@
 
 # include "minishell.h"
 
-int ft_isascii(const int c);
+int     ft_isascii(const int c);
+char	*ft_strndup(const char *s, size_t n);
 
 
 #endif  // UTILS_H_

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 12:58:18 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/26 09:01:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -437,6 +437,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 	else if (astnodetype == NODE_TERMINAL)
 	{
 		debug("NODE_TERMINAL\n");
+				execute_command(tokenlist, data);
 		return (0);
 	}
 	else
