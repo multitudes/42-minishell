@@ -24,9 +24,9 @@ extern "C" {
 
 void	execute_builtin(t_list *tokenlist, t_data *data);
 
-# ifdef __cplusplus
+#  ifdef __cplusplus
 
 }
-# endif
+#  endif
 
 #endif

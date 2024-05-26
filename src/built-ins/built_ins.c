@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
-#include "built-ins.h"
+#include "built_ins.h"
 #include "libft.h"
 #include "scanner.h"
 #include "environment.h"
