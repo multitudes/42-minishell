@@ -1,18 +1,23 @@
 [![42](https://img.shields.io/badge/-Berlin-blue.svg?logo=data:image/svg%2bxml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOC4xLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIg0KCSBpZD0iQ2FscXVlXzEiIHNvZGlwb2RpOmRvY25hbWU9IjQyX2xvZ28uc3ZnIiBpbmtzY2FwZTp2ZXJzaW9uPSIwLjQ4LjIgcjk4MTkiIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOmlua3NjYXBlPSJodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy9uYW1lc3BhY2VzL2lua3NjYXBlIg0KCSB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAtMjAwIDk2MCA5NjAiDQoJIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAtMjAwIDk2MCA5NjAiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHBvbHlnb24gaWQ9InBvbHlnb241IiBwb2ludHM9IjMyLDQxMi42IDM2Mi4xLDQxMi42IDM2Mi4xLDU3OCA1MjYuOCw1NzggNTI2LjgsMjc5LjEgMTk3LjMsMjc5LjEgNTI2LjgsLTUxLjEgMzYyLjEsLTUxLjEgDQoJMzIsMjc5LjEgIi8+DQo8cG9seWdvbiBpZD0icG9seWdvbjciIHBvaW50cz0iNTk3LjksMTE0LjIgNzYyLjcsLTUxLjEgNTk3LjksLTUxLjEgIi8+DQo8cG9seWdvbiBpZD0icG9seWdvbjkiIHBvaW50cz0iNzYyLjcsMTE0LjIgNTk3LjksMjc5LjEgNTk3LjksNDQzLjkgNzYyLjcsNDQzLjkgNzYyLjcsMjc5LjEgOTI4LDExNC4yIDkyOCwtNTEuMSA3NjIuNywtNTEuMSAiLz4NCjxwb2x5Z29uIGlkPSJwb2x5Z29uMTEiIHBvaW50cz0iOTI4LDI3OS4xIDc2Mi43LDQ0My45IDkyOCw0NDMuOSAiLz4NCjwvc3ZnPg0K)](https://42berlin.de) [![My Workflow](https://github.com/multitudes/42-minishell/actions/workflows/main.yml/badge.svg)](https://github.com/multitudes/42-minishell/actions/workflows/main.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![Version](https://img.shields.io/badge/version-0.1.1-blue)  
 
 
-# 42-minishell
+# Project: 42-minishell
 >  treat your codebase like a good camper does their campsite: always try to leave it a little better than you found it.  - Bob Nystrom
 
-This team project is about creating a simple shell.  
+This team project is about creating a simple shell.
 
-We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  Below are some exerpts from the bash manual:
+We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  
 
-- Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
+## What is a shell?
+A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them. Generally, a shell is a user interface that allows us to use computer resources such as memory. Think of a command-line interface such as Bash of Fish.
+
+The bash manual describes a shell as follows:
 
 - A shell allows execution of GNU commands, both synchronously and asynchronously. The shell waits for synchronous commands to complete before accepting more input; asynchronous commands continue to execute in parallel with the shell while it reads and executes additional commands. The redirection constructs permit fine-grained control of the input and output of those commands. Moreover, the shell allows control over the contents of commands’ environments.
 
-- Shells also provide a small set of built-in commands (builtins) implementing functionality impossible or inconvenient to obtain via separate utilities. For example, cd, break, continue, and exec cannot be implemented outside of the shell because they directly manipulate the shell itself. The history, getopts, kill, or pwd builtins, among others, could be implemented in separate utilities, but they are more convenient to use as builtin commands. 
+- Shells also provide a small set of built-in commands (builtins) implementing functionality impossible or inconvenient to obtain via separate utilities. For example, cd, break, continue, and exec cannot be implemented outside of the shell because they directly manipulate the shell itself. The history, getopts, kill, or pwd builtins, among others, could be implemented in separate utilities, but they are more convenient to use as builtin commands.
+
+- Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
 
 ### Some more definitions from the bash manual
 - POSIX  A family of open system standards based on Unix.
@@ -26,7 +31,15 @@ We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  B
 - token:  A sequence of characters considered a single unit by the shell. It is either a word or an operator.
 - word A sequence of characters treated as a unit by the shell. Words may not include unquoted metacharacters.
 
-### Allowed functions
+### Shell Syntax (from the BASH manual)
+
+When the shell reads input, it proceeds through a sequence of operations. If the input indicates the beginning of a comment, the shell ignores the comment symbol (‘#’), and the rest of that line.
+
+Otherwise, roughly speaking, the shell reads its input and divides the input into words and operators, employing the quoting rules to select which meanings to assign various words and characters.
+
+The shell then parses these tokens into commands and other constructs, removes the special meaning of certain words or characters, expands others, redirects input and output as needed, executes the specified command, waits for the command’s exit status, and makes that exit status available for further inspection or processing.
+
+## Allowed functions
 
 Here at 42 we are allowed to use the following functions for this project:
 
@@ -126,26 +139,18 @@ git rebase --abort
 ```
 and pull normally or solve the conflicts.
 
-## Shell Syntax (from the BASH manual)
-
-When the shell reads input, it proceeds through a sequence of operations. If the input indicates the beginning of a comment, the shell ignores the comment symbol (‘#’), and the rest of that line.
-
-Otherwise, roughly speaking, the shell reads its input and divides the input into words and operators, employing the quoting rules to select which meanings to assign various words and characters.
-
-The shell then parses these tokens into commands and other constructs, removes the special meaning of certain words or characters, expands others, redirects input and output as needed, executes the specified command, waits for the command’s exit status, and makes that exit status available for further inspection or processing.
-
 ## Ideas
 ### Architecture
-A well defined architecture is a better experience for team work, but it doesnt come free. Takes work. Modularity is key. But when modularity doesn’t end up being helpful, it quickly becomes actively harmful and it spirals out of control.
+A well defined architecture is a better experience for team work, but it doesnt come free, takes work and modularity is key. But when modularity doesn’t end up being helpful, it quickly becomes actively harmful and it spirals out of control.
 
 ### Decoupling
-A part of creating a good architecture is decoupling. Decoupling is the process of separating the different parts of a system so that they are not dependent on each other. This makes the system more flexible and easier to maintain.  
+A part of creating a good architecture is decoupling. Decoupling is the process of separating the different parts of a system so that they are not dependent on each other. This makes the system more flexible and easier to maintain.
 Our minishell will be divided into a few main parts:
-- The scanner or lexemer, splitting the input into tokens.
-- The parsing phase will be responsible for taking the tokens, and building a data structure that represents the command to be executed.
-- The expander, expansions of variables and expressions.
-- The execution phase will be responsible for taking the data structure produced by the parsing phase and executing the command it represents.
-- integration tests and unit tests. To be able to make changes and refactor our code with confidence, we will need to have a suite of tests that we can run to ensure that our shell is working as expected.
+- The scanner or lexemer, which splits the input into tokens.
+- The parser, which takes the tokens, and builds/employs a data structure that represents the command(s) to be executed.
+- The analyser/expander, which expands variables and expressions.
+- The executer, which takes the data structure produced by the parser and expanded by the analyser and executes the command(s) it represents.
+Furthermore we use integration tests and unit tests: To be able to make changes and refactor our code with confidence, we will need to have a suite of tests that we can run to ensure that our shell is working as expected.
 
 ## The road map
 - we start by implementing a loop that reads the user input with the readline() function. The readline function is part of the part of the GNU Readline library and offers other functions like rl_clear_history, rl_on_new_line, rl_replace_line, rl_redisplay,add_history that we are allowed to use in our project.
@@ -167,50 +172,63 @@ A parser takes the flat sequence of tokens and builds a tree structure that mirr
 
 - Our shell should also have a working history.
 
-## Context free grammar
+## Grammar as foundation
+The syntax of a programming language is defined by a grammar. The syntax of a programming language is a precise description of all its grammatically correct programs. Noam Chomsky defined four categories of grammars: regular, context-free, context- sensitive, and unrestricted.
 
-I really liked the explanation of context-free grammar in the book Crafting Interpreters by Rob Nystrom. Looking in chapter 4 of the book, he explains that the first step is scanning. 
+## Inspiration: Context Free Grammar (CFG). 
+A formal grammar takes a set of atomic pieces it calls its “alphabet”. Then it defines a (usually infinite) set of “strings” that are “in” the grammar. Each string is a sequence of “letters” in the alphabet.
+
+A grammar naturally describes the hierarchical structure of most programming language constructs. For example, an if-else statement in Java can have  
+`if (expression) statement else statement`
+That is, an if-else statement si the concatenation of the keyword if, an opening parenthesis, an expression, a closing parenthesis, a statement, the keyword else, and another statement. Using the variable expr to denote an expres- sion and the variable stmt to denote a statement, this structuring rule can be expressed as  
+`stmt →if (expr) stmt else stmt`
+
+If you start with the rules, you can use them to generate strings that are in the grammar. Strings created this way are called derivations because each is “derived” from the rules of the grammar. In each step of the game, you pick a rule and follow what it tells you to do. Most of the lingo around formal grammars comes from playing them in this direction. Rules are called productions because they produce strings in the grammar.
+Each production in a context-free grammar has a head—its name—and a body which describes what it generates. In its pure form, the body is simply a list of symbols. Symbols come in two delectable flavors:
+A terminal is a letter from the grammar’s alphabet. You can think of it like a literal value. In the syntactic grammar we’re defining, the terminals are individual lexemes—tokens coming from the scanner like if or 1234.
+These are called “terminals”, in the sense of an “end point” because they don’t lead to any further “moves” in the game. You simply produce that one symbol.
+A nonterminal is a named reference to another rule in the grammar. It means “play that rule and insert whatever it produces here”. In this way, the grammar composes.
+
+To make this concrete, we need a way to write down these production rules. People have been trying to crystallize grammar all the way back to Pāṇini’s Ashtadhyayi, which codified Sanskrit grammar a mere couple thousand years ago. Not much progress happened until John Backus and company needed a notation for specifying ALGOL 58 and came up with Backus-Naur form.
+
+I really liked the explanation of context-free grammar in the book Crafting Interpreters by Rob Nystrom. Looking in chapter 4 of the book, he explains that the first step is scanning.
 
 > Scanning is a good starting point for us too because the code isn’t very hard—pretty much a switch statement with delusions of grandeur.
 
 A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like ( and , . Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ). The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. These trees have a couple of different names—“parse tree” or “abstract syntax tree”. In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”. Everything up to this point is considered the front end of the implementation. The back end is where the interpreter actually runs the program. There are a few different ways to do this, but the most common is tree-walk interpreters. To run the program, the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
 
-We need to create our grammar. to do so we head to our Bash manual!
+## Grammar of a shell
+We need to create our grammar. To do so we head to our Bash manual!
 
-Some of the definitions there are interesting to us:
-- blank
-	A space or tab character.
-- word
-	A sequence of characters considered as a single unit by the shell. Also known as a token.
-- name
-	A word consisting only of alphanumeric characters and underscores, and beginning with an alphabetic character or an underscore. Also referred to as an identifier.
-- metacharacter
-	A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
-- control operator
-	A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
-- operator
-	A sequence of characters considered a single unit by the shell. It is either a word or an operator.
-- reserved word
-	A word that has a special meaning to the shell. Most reserved words introduce shell flow control constructs, such as loops or conditionals. The reserved words recognized by the shell are: `! case do done elif else esac fi for if in then until while { } time [[ ]]`
+Some of the tokens that are of interest to us:
 
-I think this is a good starting point for our grammar. We can start by defining the tokens that we will use in our shell.
+| Token | Definition |
+| -- | -- |
+| blank | A space or tab character. |
+| word | A sequence of characters considered as a single unit by the shell. Also known as a token. |
+| name | A word consisting only of alphanumeric characters and underscores, and beginning with an alphabetic character or an underscore. Also referred to as an identifier. |
+| metacharacter | A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: '\|', '&', ';', '(', ')', '<', or '>'. |
+| control operator | A token that performs a control function. It is a newline or one of the following: '\|\|', '&&', '&', ';', ';;', ';&', ';;&', '\|', '\|&', '(', or ')'. |
+| operator | A sequence of characters considered a single unit by the shell. It is either a word or an operator. |
+| reserved word | A word that has a special meaning to the shell. Most reserved words introduce shell flow control constructs, such as loops or conditionals. The reserved words recognized by the shell are: `! case esac do done if elif else fi for  in then until while { } time [[ ]]`
 
-also there is the question of priority. I would call them commands and not expression like a compiler would.
+Also there is the question of priority:
 
-&& and || have the same precedence and are left-associative. They allow you to execute a command based on the success (&&) or failure (||) of the previous command.  
-; and & have the same precedence, which is lower than && and ||. They allow you to separate commands (;) or run a command in the background (&).  
-| and |& have higher precedence than &&, ||, ;, and &. They allow you to create pipelines, where the output of one command is used as the input of the next command (|), or where both the output and error output of one command are used as the input of the next command (|&).  
-( and ) can be used to group commands, which can override the default precedence rules.  
-;;, ;&, and ;;& are used in the context of a case statement to separate different cases.  
-[[ and ]] are used for conditional expressions.  
-{ and } are used to group commands in a block.
-The syntax of a programming language is defined by a grammar. The syntax of a programming language is a precise description of all its grammatically correct programs. Noam Chomsky defined four categories of grammars: regular, context-free, context- sensitive, and unrestricted.
+- && and || have the same precedence and are left-associative. They allow you to execute a command based on the success (&&) or failure (||) of the previous command.  
+- ; and & have the same precedence, which is lower than && and ||. They allow you to separate commands (;) or run a command in the background (&).  
+- | and |& have higher precedence than &&, ||, ;, and &. They allow you to create pipelines, where the output of one command is used as the input of the next command (|), or where both the output and error output of one command are used as the input of the next command (|&).  
+- ( and ) can be used to group commands, which can override the default precedence rules.  
+- ;;, ;&, and ;;& are used in the context of a case statement to separate different cases.  
+- [[ and ]] are used for conditional expressions.  
+- { and } are used to group commands in a block.
 
 How do we write down a grammar that contains an infinite number of valid strings? We obviously can’t list them all out. Instead, we create a finite set of rules.  
 This is from the book Crafting Interpreters by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:
 <img src="assets/expression_grammar.png" alt="Expression Grammar" width="400">
 
-so also reading the shell grammar page (link below) I got a better understanding of how to write the grammar for our shell andcame up with the following grammar:
+## Grammar of our shell
+This is a good starting point for our grammar.
+Through reading the shell grammar page (link below) I got a better understanding of how to write the grammar for our shell and came up with the following:
 ```
 grammar:
 to get the final table
@@ -272,23 +290,7 @@ The core of the scanner is a loop. Starting at the first character of the source
 ## Parsing
 In order to evaluate an arithmetic node, you need to know the numeric values of its subtrees, so you have to evaluate those first. That means working your way from the leaves up to the root—a post-order traversal:If I gave you an arithmetic expression, you could draw one of these trees pretty easily.
 
-## Context-free grammar (CFG). 
-A formal grammar takes a set of atomic pieces it calls its “alphabet”. Then it defines a (usually infinite) set of “strings” that are “in” the grammar. Each string is a sequence of “letters” in the alphabet.
-
-A grammar naturally describes the hierarchical structure of most programming language constructs. For example, an if-else statement in Java can have  
-`if (expression) statement else statement`
-That is, an if-else statement si the concatenation of the keyword if, an opening parenthesis, an expression, a closing parenthesis, a statement, the keyword else, and another statement. Using the variable expr to denote an expres- sion and the variable stmt to denote a statement, this structuring rule can be expressed as  
-`stmt →if (expr) stmt else stmt`
-
-If you start with the rules, you can use them to generate strings that are in the grammar. Strings created this way are called derivations because each is “derived” from the rules of the grammar. In each step of the game, you pick a rule and follow what it tells you to do. Most of the lingo around formal grammars comes from playing them in this direction. Rules are called productions because they produce strings in the grammar.
-Each production in a context-free grammar has a head—its name—and a body which describes what it generates. In its pure form, the body is simply a list of symbols. Symbols come in two delectable flavors:
-A terminal is a letter from the grammar’s alphabet. You can think of it like a literal value. In the syntactic grammar we’re defining, the terminals are individual lexemes—tokens coming from the scanner like if or 1234.
-These are called “terminals”, in the sense of an “end point” because they don’t lead to any further “moves” in the game. You simply produce that one symbol.
-A nonterminal is a named reference to another rule in the grammar. It means “play that rule and insert whatever it produces here”. In this way, the grammar composes.
-
-To make this concrete, we need a way to write down these production rules. People have been trying to crystallize grammar all the way back to Pāṇini’s Ashtadhyayi, which codified Sanskrit grammar a mere couple thousand years ago. Not much progress happened until John Backus and company needed a notation for specifying ALGOL 58 and came up with Backus-Naur form.
-
-## Functions authorised
+## Allowed functions
 ### The readline function
 The readline() function is not a standard C library function, but rather a function provided by the GNU Readline library.  
 
@@ -328,25 +330,16 @@ LDLIBS += -L$(shell brew --prefix readline)/lib
 ### rl_clear_history
 The rl_clear_history function is part of the GNU Readline library, and it is used to clear the history list maintained by Readline. The history list typically stores previously entered command lines, allowing users to recall and edit them.
 
+## Structure and functional elements
+### Phases of the interpreter: scanning, parsing, and evaluating code.
 
-## Structure 
-- Phases of the interpreter—scanning, parsing, and
-evaluating code.
+1. A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like ( and , . Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min )
 
-The first step is scanning, also known as lexing,
-A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like ( and , . Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min )
+2. The next step is parsing. This is where our syntax gets a grammar, the ability to compose larger expressions and statements out of smaller parts. A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar.
 
+3. ...
 
-The next step is parsing. This is where our syntax gets a grammar, the ability to compose larger expressions and statements out of smaller parts.  
-A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar.  
-
-## What is a shell?
-
-A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them. Generally, a shell is a user interface that allows us to use computer resources such as memory. Think of a command-line interface such as Bash of Fish. 
-
-Data streams: standard input, output and error
-
-## Interactive and non-interactive shells and scripts
+### Interactive and non-interactive shells and scripts
 
 One important aspect to consider when creating a simple shell is whether it is running in interactive mode or non-interactive mode.
 
@@ -356,18 +349,18 @@ In non-interactive mode, the shell is being used to run a script or a batch of c
 
 To check whether the shell is running in interactive mode or non-interactive mode, we can use the isatty() function. This function checks whether a file descriptor refers to a terminal or not. If it returns true, then the shell is running in interactive mode and we should display a prompt. If it returns false, then the shell is running in non-interactive mode and we should not display a prompt.
 
-## Create an infinite loop for the prompt
+### Create an infinite loop for the prompt
 we can display a prompt to the user. This input can be a single command or multiple commands separated by a semicolon. To read input from the user, we can use the getline function which reads a line of input from the user. 
 
-## Parsing User Input
+### Parsing User Input
 
 we will need to read the input from and split it into tokens. These tokens can then be analyzed to determine the command the user wants to execute and any arguments or options they have provided. 
 
-## Executing Commands
+### Executing Commands
 
 This involves creating a child process to run the command and using system calls to execute it. To execute the command, we can use the 'execve()' function which executes a command by searching for the executable file in the system’s path environment variable. You will also need to handle any errors that may occur during command execution.  
 
-## Handling the PATH
+### Handling the PATH
 
 A path is a list of directories that the shell uses to search for executable files. When a user enters a command in the shell, the shell searches for the corresponding executable file in each directory listed in the path until it finds the executable.
 
@@ -375,11 +368,11 @@ One way to handle paths using a linked list is to create a data structure that s
 
 Once we have the linked list of directories, we can use it to search for executable files when a user enters a command in the shell. 
 
-## Implement Built-In Commands
+### Implement Built-In Commands
 
 Built-in commands are special commands that are implemented by the shell itself rather than being external programs. Some common built-in commands include cd, echo, and exit. You will need to implement these commands yourself. Built-in commands such as “cd” or “exit” cannot be executed using the `execve()` function.  
 
-## Support Input/Output Redirection
+### Support Input/Output Redirection
 
 Input/output redirection allows the user to redirect the input or output of a command to a file instead of the screen or keyboard (standard input or output). To implement I/O redirection, we can use the dup2() function to redirect input or output to a file descriptor.
 Redirection operators in Bash are used to control the input and output of commands. They allow you to manipulate where a command reads its input from and where it writes its output to. Here are some common redirection operators:
@@ -410,7 +403,7 @@ Redirection operators in Bash are used to control the input and output of comman
      ```
      This command uses a here document to pass multiple lines to the `cat` command.
 
-## Support Pipes
+### Support Pipes
 
 To implement pipes, we can use the pipe() function to create a pipe and the fork() function to create a child process for each command.
 
@@ -421,7 +414,7 @@ To implement pipes, we can use the pipe() function to create a pipe and the fork
 
 this will not needed in our minishell but leaving it here for completeness:  
 
-## Background Jobs 
+### Background Jobs 
 (not to be implemented in this project)
 
 Background jobs allow a command to be executed in the background, allowing the user to continue working in the shell while the command runs. 
@@ -433,7 +426,7 @@ $
 ```
 After entering the command follwed by `&` the shell will display the process id of the background job and the job number.
 
-## Error Handling
+### Error Handling
 
 We distinguish fatal errors that require termination of the minishell (and freeing of all allocated memory ...) and errors that are noted to the user while program execution continues.
 
@@ -452,10 +445,10 @@ ex incorrect command,  incorrect number of arguments, permission denied, system 
 | Writing to history fails | |
 | Updating environment with history input fails | |
 
-## Signale
+### Signals
 Signals are used by the operating system to notify a process of various events, such as a segmentation fault or a user interrupt. 
 
-## Memory management and memory Leaks
+### Memory management and memory Leaks
 
    | Allocated memory | when to free? |
 -- | ---------------- | ------------ |
