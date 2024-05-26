@@ -22,7 +22,7 @@ extern "C" {
 # include "minishell.h"
 
 int		execute_ast(t_ast_node *ast, t_data *data);
-void	execute_builtin(t_list *tokenlist, t_data *data);
+//void	execute_builtin(t_list *tokenlist, t_data *data);
 int		execute_command(t_list *tokenlist, t_data *data);
 char	*create_path(char *base, t_data *data);
 
