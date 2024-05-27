@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 16:15:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/27 16:32:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,78 +29,6 @@
 posix compliant use of the environ variable but wecan discuss this
 */
 extern char **environ;
-/*
-
-NOT yet implemented - TODO
-true and false are shell builtins that do nothing except return an exit status of 0 and 1, respectively.
-we need them eventually for the bonus... true && false || true etc
-
-void	execute_builtin(t_list *tokenlist, t_data *data)
-{
-	t_token *token;
-	char *lexeme;
-	(void)data;
-
-	token = (t_token *)tokenlist->content;
-	lexeme = (char *)token->lexeme;
-	if (ft_strncmp(lexeme, "echo", 5) == 0)
-	{
-		debug("echo builtin---- \n");
-		while (tokenlist)
-		{
-			token = (t_token *)tokenlist->content;
-			debug("lexeme: %s\n", token->lexeme);
-			tokenlist = tokenlist->next;
-		}
-	}
-	else if (ft_strncmp(lexeme, "cd", 3) == 0)
-	{
-		debug("cd builtin\n");
-	}
-	else if (ft_strncmp(lexeme, "pwd", 4) == 0)
-	{
-		debug("pwd builtin\n");
-	}
-	else if (ft_strncmp(lexeme, "export", 7) == 0)
-	{
-		debug("export builtin\n");
-	}
-	else if (ft_strncmp(lexeme, "unset", 6) == 0)
-	{
-		debug("unset builtin\n");
-	}
-	else if (ft_strncmp(lexeme, "env", 4) == 0)
-	{
-		debug("env builtin\n");
-	}
-	else if (ft_strncmp(lexeme, "exit", 5) == 0)
-	{
-		debug("exit builtin\n");
-	}
-	else if (ft_strncmp(lexeme, "true", 5) == 0)
-	{
-		debug("true builtin\n");
-	}
-	else if (ft_strncmp(lexeme, "false", 6) == 0)
-	{
-		debug("false builtin\n");
-	}
-	if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
-	{
-		// debug("clearing history\n");
-		clear_hist_file();
-		rl_clear_history();
-	}
-	else if (ft_strncmp(data->input, "history", 7) == 0)
-	{
-		print_history();
-	}
-	else
-	{
-		debug("not an implemented builtin\n");
-	}
-
-}*/
 
 /*
 when I need to free a string array like the envpaths
@@ -133,7 +61,6 @@ char *create_path(char *base, t_data *data)
 	envpaths = ft_split(mini_get_env(data, "PATH"), ':');
 	while (envpaths[i])
 	{
-		// debug("path: %s", envpaths[i]);
 		commandpath = ft_strjoin3(envpaths[i], "/", base);
 		if (access(commandpath, X_OK) == 0)
 		{
@@ -141,94 +68,95 @@ char *create_path(char *base, t_data *data)
 			return (commandpath);
 		}
 		else
-			// debug("command not found");
 			free(commandpath);
 		i++;
 	}
 	free_array(envpaths);
 	return (NULL);
 }
+ 
 
+int count_tokens(t_list *tokenlist) {
+	int count = 0;
+	while (tokenlist) {
+		count++;
+		tokenlist = tokenlist->next;
+	}
+	return count;
+}
+
+char **get_args_from_tokenlist(t_list *tokenlist)
+{
+	int count = count_tokens(tokenlist);
+	char **args = malloc(sizeof(char *) * (count + 1));
+	if (!args)
+	{
+		perror("malloc args");
+		return NULL;
+	}
+
+	int i = 0;
+	while (tokenlist)
+	{
+		t_token *token = (t_token *)tokenlist->content;
+		args[i] = token->lexeme;
+		i++;
+		tokenlist = tokenlist->next;
+	}
+	args[i] = NULL;
+
+	return args;
+}
 /*
 needs to be completely refactored
 */
 int execute_command(t_list *tokenlist, t_data *data)
 {
-	t_token *token;
-	(void)data;
-	char *argv[100];
+	pid_t pid;
 	char *cmd;
-	int i;
+	int status;
+	char **argv;
 
-	i = 0;
-	// convert token list to argvs
-	while (tokenlist)
+	argv = get_args_from_tokenlist(tokenlist);
+	if (!argv)
 	{
-		token = (t_token *)tokenlist->content;
-		argv[i] = token->lexeme;
-		debug("argv[%d]: -%s-", i, argv[i]);
-		i++;
-		tokenlist = tokenlist->next;
+		perror("malloc argv");
+		return 1;
 	}
-	argv[i] = NULL;
 
-	// If the command name contains no slashes, the shell attempts to locate it.
 	if (ft_strchr(argv[0], '/') == NULL)
 	{
-
-		// check if the path is in the PATH variable
 		cmd = create_path(argv[0], data);
 		if (!cmd)
-		{
 			debug("not on path\n");
-		}
 		else
-		{
-			debug("command found on path: %s", cmd);
 			argv[0] = cmd;
-		}
 	}
 	else
 	{
-		// trying to execute the command with access
 		if (access(argv[0], X_OK) == -1)
-		{
-			debug("command not executable\n");
 			return 1;
-		}
-		else
-			debug("command executable\n");
 	}
-	pid_t pid = fork();
-	int status;
+	pid = fork();
 	if (pid == 0)
-	{ // Child process
+	{
 		execve(argv[0], argv, (char **)data->env_arr->contents);
-
 		write(2, "minishell: command not found\n", 30);
-		perror("execve");
 		exit(EXIT_FAILURE); // execvp returns only if there's an error
 	}
-	else if (pid < 0)
-	{ // Fork failed
+	else if (pid == -1)
+	{
 		perror("fork");
 	}
 	else
-	{							  // Parent process
-		waitpid(pid, &status, 0); // Wait for child process to finish
+	{
+		waitpid(pid, &status, 0); 
 	}
 	data->exit_status = WEXITSTATUS(status);
-	// debug("child exited with status %d\n", WEXITSTATUS(status));
 	if (WIFEXITED(status))
-	{
 		debug("child exited with status %d\n", WEXITSTATUS(status));
-	}
 	else
-	{
 		debug("child did not exit normally\n");
-	}
-	// debug("status: %d\n", data->exit_status);
-	// If execve returns at all, an error occurred.
 	return (status);
 }
 
