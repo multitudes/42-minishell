@@ -9,19 +9,20 @@
 /*   Updated: 2024/05/26 09:01:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+#include "minishell.h"
 #include "executer.h"
+#include "built_ins.h"
 
 /*
 posix compliant use of the environ variable but wecan discuss this
 */
 extern char **environ;
-
 /*
+
 NOT yet implemented - TODO
 true and false are shell builtins that do nothing except return an exit status of 0 and 1, respectively.
 we need them eventually for the bonus... true && false || true etc
-*/
+
 void	execute_builtin(t_list *tokenlist, t_data *data)
 {
 	t_token *token;
@@ -87,7 +88,7 @@ void	execute_builtin(t_list *tokenlist, t_data *data)
 		debug("not an implemented builtin\n");
 	}
 	
-}
+}*/
 
 /*
 when I need to free a string array like the envpaths

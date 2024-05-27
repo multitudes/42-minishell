@@ -49,6 +49,7 @@
 # include "analyser.h"
 # include "executer.h"
 # include "error.h"
+# include "built_ins.h"
 
 /*
 This allows us to use the debug macro to print debug messages but to 
