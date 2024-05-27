@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 16:49:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/27 17:04:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,12 +239,12 @@ also removed these couple lines... This was for testing
 int	set_up_signals(void)
 {
 	if (isatty(STDIN_FILENO) == -1)
-		return (_return_err_failure("is atty failed\n"));
+		return (_return_exit_failure("is atty failed\n"));
 	else if (isatty(STDIN_FILENO))
 	{
 		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-			return (_return_err_failure("SIG_ERR signal failed\n"));
+			return (_return_exit_failure("SIG_ERR signal failed\n"));
 	}
 	rl_catch_signals = 0;
 	return (0);

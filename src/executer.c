@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 16:49:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/27 17:06:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,13 +115,13 @@ int resolve_command_path(char **argv, t_data *data)
 	{
 		cmd = create_path(argv[0], data);
 		if (!cmd)
-				return (_return_err_failure("minishell: command not on path\n");
+				return (_return_exit_failure("minishell: command not on path\n"));
 		argv[0] = cmd;
 	}
 	else
 	{
 		if (access(argv[0], X_OK) == -1)
-			return (_return_err_failure("minishell: command not found\n"));
+			return (_return_exit_failure("minishell: command not found\n"));
 	}
 	return 0;
 }
@@ -132,21 +132,19 @@ needs to be completely refactored
 int execute_command(t_list *tokenlist, t_data *data)
 {
 	pid_t pid;
-	char *cmd;
 	int status;
 	char **argv;
 
 	argv = get_args_from_tokenlist(tokenlist);
 	if (!argv)
-		return (_return_err_failure("malloc argv");
-	if (!resolve_command_path(argv[0], data))
-		return (_return_err_failure("minishell: command not found\n");
+		return (_return_exit_failure("malloc argv"));
+	if (!resolve_command_path(argv, data))
+		return (_return_exit_failure("minishell: command not found\n"));
 	pid = fork();
 	if (pid == 0)
 	{
 		execve(argv[0], argv, (char **)data->env_arr->contents);
-		write(2, "minishell: command not found\n", 30);
-		exit(EXIT_FAILURE); // execvp returns only if there's an error
+		_exit_err_failure("minishell: execve failed\n");	
 	}
 	else if (pid == -1)
 	{
