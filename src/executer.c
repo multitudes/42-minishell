@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 18:16:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/27 18:36:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,6 @@ int	execute_pipeline(t_ast_node *ast, t_data *data)
 	// create a pipe
 	if (pipe(data->pipe_fd) == -1)
 		return (_error_with_status("pipe error", data));
-
 	// fork the process
 	pid1 = fork();
 	debug("forked! pid1: %d", pid1);
@@ -220,55 +219,33 @@ int	execute_pipeline(t_ast_node *ast, t_data *data)
 	else if (pid1 == 0)
 	{
 		debug("first child process pid1: %d", pid1);
-		// child process
-		// redirect the stdout to the write end of the pipe
-		// close the read end of the pipe (unused)
 		if (close(data->pipe_fd[0]) == -1)
-			return (_error_with_status("close 1 error", data));
-		/*
-		defensive check
-		need duplicate and close one of the file descriptors
-		*/
+			return (_exit_err_failure("close 1 error"));
 		if (data->pipe_fd[1] != STDOUT_FILENO)
 		{
 			if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
-				return (_error_with_status("dup2 1 error", data));
+				return (_exit_err_failure("dup2 1 error"));
 			if (close(data->pipe_fd[1]) == -1)
-				return (_error_with_status("close 2 error", data));
+				return (_exit_err_failure("close 2 error"));
 		}
-		// execute the left node and exit child process
 		exit(execute_ast(ast->left, data));
 	}
-	else
-		debug("parent process pid1: %d falls through", pid1);
 	pid2 = fork();
 	if (pid2 == -1)
 		return (_error_with_status("fork 2 failed", data));
 	else if (pid2 == 0)
 	{
-		// second child process
 		debug("second child process pid1: %d", pid2);
-		// close the write end of the pipe (unused)
 		if (close(data->pipe_fd[1]) == -1)
-			return (_error_with_status("close 3 - child write end of the pipe", data));
-		/*
-		defensive check
-		need duplicate and close one of the file descriptors
-		*/
+			return (_exit_err_failure("close 3 - child write end of the pipe"));
 		if (data->pipe_fd[0] != STDIN_FILENO)
 		{
 			if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
-				return (_error_with_status("dup2 2 failed", data));
+				return (_exit_err_failure("dup2 2 failed"));
 			if (close(data->pipe_fd[0]) == -1)
-				return (_error_with_status("close fd 4", data));
+				return (_exit_err_failure("close fd 4"));
 		}
-		// execute the left node and exit child process
 		exit(execute_ast(ast->right, data));
-	}
-	else
-	{
-		// parent process
-		debug("parent process pid2: %d", pid2);
 	}
 	/* Parent closes unused file descriptors for pipe, and waits for children */
 	if (close(data->pipe_fd[0]) == -1)
@@ -279,16 +256,8 @@ int	execute_pipeline(t_ast_node *ast, t_data *data)
 }
 
 /*
-also needs to be refactored : TODO
-
-traverse the ast and execute the commands node by node left to right
-pipes
-To handle the piping in your code, you need to create a pipe using the
-pipe() function, then fork the process. In the child process,
-you need to redirect the stdout to the write end of the pipe,
-then execute the left node. In the parent process,
-you need to wait for the child to finish, then redirect the stdin
-to the read end of the pipe, and execute the right node.
+Traverse the ast and execute the commands node by node 
+left to right
 */
 int execute_ast(t_ast_node *ast, t_data *data)
 {
@@ -315,7 +284,5 @@ int execute_ast(t_ast_node *ast, t_data *data)
 		status = execute_command(tokenlist, data);
 	else if (astnodetype == NODE_TERMINAL)
 		status = execute_command(tokenlist, data);
-	else
-		debug("not TERMINAL NODE\n");
 	return (status);
 }
