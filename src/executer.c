@@ -6,19 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 16:32:30 by lbrusa           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   scrap.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 16:01:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/27 16:49:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,37 +64,68 @@ char *create_path(char *base, t_data *data)
 }
  
 
-int count_tokens(t_list *tokenlist) {
-	int count = 0;
+int count_tokens(t_list *tokenlist) 
+{
+	int count;
+
+	count = 0;
 	while (tokenlist) {
 		count++;
 		tokenlist = tokenlist->next;
 	}
-	return count;
+	return (count);
 }
+
 
 char **get_args_from_tokenlist(t_list *tokenlist)
 {
-	int count = count_tokens(tokenlist);
-	char **args = malloc(sizeof(char *) * (count + 1));
+	int 	i;
+	int		count;
+	char 	**args;
+	
+	i = 0;
+	count = count_tokens(tokenlist);
+	args = malloc(sizeof(char *) * (count + 1));
 	if (!args)
 	{
 		perror("malloc args");
-		return NULL;
+		return (NULL);
 	}
-
-	int i = 0;
 	while (tokenlist)
 	{
 		t_token *token = (t_token *)tokenlist->content;
-		args[i] = token->lexeme;
-		i++;
+		args[i++] = token->lexeme;
 		tokenlist = tokenlist->next;
 	}
 	args[i] = NULL;
-
-	return args;
+	return (args);
 }
+
+/*
+resolve_command_path will check if the command is in the PATH
+or if it is an absolute path. 
+if it cannot be resolved it will return 1
+*/
+int resolve_command_path(char **argv, t_data *data)
+{
+	char *cmd;
+	
+	cmd = NULL;
+	if (ft_strchr(argv[0], '/') == NULL)
+	{
+		cmd = create_path(argv[0], data);
+		if (!cmd)
+				return (_return_err_failure("minishell: command not on path\n");
+		argv[0] = cmd;
+	}
+	else
+	{
+		if (access(argv[0], X_OK) == -1)
+			return (_return_err_failure("minishell: command not found\n"));
+	}
+	return 0;
+}
+
 /*
 needs to be completely refactored
 */
@@ -119,24 +138,9 @@ int execute_command(t_list *tokenlist, t_data *data)
 
 	argv = get_args_from_tokenlist(tokenlist);
 	if (!argv)
-	{
-		perror("malloc argv");
-		return 1;
-	}
-
-	if (ft_strchr(argv[0], '/') == NULL)
-	{
-		cmd = create_path(argv[0], data);
-		if (!cmd)
-			debug("not on path\n");
-		else
-			argv[0] = cmd;
-	}
-	else
-	{
-		if (access(argv[0], X_OK) == -1)
-			return 1;
-	}
+		return (_return_err_failure("malloc argv");
+	if (!resolve_command_path(argv[0], data))
+		return (_return_err_failure("minishell: command not found\n");
 	pid = fork();
 	if (pid == 0)
 	{
