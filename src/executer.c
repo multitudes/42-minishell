@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 17:06:07 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/27 18:16:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ char *create_path(char *base, t_data *data)
 	return (NULL);
 }
  
-
 int count_tokens(t_list *tokenlist) 
 {
 	int count;
@@ -115,19 +114,25 @@ int resolve_command_path(char **argv, t_data *data)
 	{
 		cmd = create_path(argv[0], data);
 		if (!cmd)
-				return (_return_exit_failure("minishell: command not on path\n"));
+			return (_error_with_status("minishell: command not on path\n", data));
 		argv[0] = cmd;
 	}
 	else
 	{
 		if (access(argv[0], X_OK) == -1)
-			return (_return_exit_failure("minishell: command not found\n"));
+			return (_error_with_status("minishell: command not found\n", data));
 	}
 	return 0;
 }
 
 /*
-needs to be completely refactored
+
+
+removed these debug line for now
+if (WIFEXITED(status))
+	debug("child exited with status %d\n", WEXITSTATUS(status));
+else
+	debug("child did not exit normally\n");
 */
 int execute_command(t_list *tokenlist, t_data *data)
 {
@@ -137,9 +142,9 @@ int execute_command(t_list *tokenlist, t_data *data)
 
 	argv = get_args_from_tokenlist(tokenlist);
 	if (!argv)
-		return (_return_exit_failure("malloc argv"));
-	if (!resolve_command_path(argv, data))
-		return (_return_exit_failure("minishell: command not found\n"));
+		return (_error_with_status("malloc argv", data));
+	if (resolve_command_path(argv, data) == EXIT_FAILURE)
+		return (EXIT_FAILURE);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -147,19 +152,130 @@ int execute_command(t_list *tokenlist, t_data *data)
 		_exit_err_failure("minishell: execve failed\n");	
 	}
 	else if (pid == -1)
-	{
-		perror("fork");
-	}
+		return (_error_with_status("minishell: fork failed\n", data));
 	else
-	{
 		waitpid(pid, &status, 0); 
-	}
 	data->exit_status = WEXITSTATUS(status);
-	if (WIFEXITED(status))
-		debug("child exited with status %d\n", WEXITSTATUS(status));
-	else
-		debug("child did not exit normally\n");
 	return (status);
+}
+
+/*
+we will not use WIFEXITED but maybe this ? (((*(int *)&(status)) & 0177) == 0)
+or are we allowed to use it?
+*/
+int	get_status_of_children(pid_t pid1, pid_t pid2, t_data *data)
+{		
+	int status;
+
+	status = -1;
+	if (waitpid(pid1, &status, 0) == -1)
+		return (_error_with_status("waitpid 1", data));	
+	data->exit_status = WEXITSTATUS(status);
+	status = -1;
+	if (waitpid(pid2, &status, 0) == -1)
+		return (_error_with_status("waitpid 2", data));
+	data->exit_status = WEXITSTATUS(status);
+	return (status);
+}
+
+int execute_list(t_ast_node *ast, t_data *data)
+{
+	int status;
+
+	status = 0;
+	debug("NODE_LIST || &&");
+	// get the token from the tokenlist
+	t_tokentype tokentype = ((t_token *)ast->token_list->content)->type;
+	status = execute_ast(ast->left, data);
+	if (status == 0 && tokentype == AND_IF)
+	{
+		debug("ANDTOKEN");
+		status = execute_ast(ast->right, data);
+	}
+	else if (status != 0 && tokentype == OR_IF)
+	{
+		debug("ORTOKEN");
+		status = execute_ast(ast->right, data);
+	}
+	debug("status now %d", status);
+	return (status);
+}
+
+
+int	execute_pipeline(t_ast_node *ast, t_data *data)
+{
+	debug("NODE_PIPELINE");
+	pid_t pid1;
+	pid_t pid2;
+
+	// create a pipe
+	if (pipe(data->pipe_fd) == -1)
+		return (_error_with_status("pipe error", data));
+
+	// fork the process
+	pid1 = fork();
+	debug("forked! pid1: %d", pid1);
+	if (pid1 == -1)
+		return (_error_with_status("fork 1 error", data));
+	else if (pid1 == 0)
+	{
+		debug("first child process pid1: %d", pid1);
+		// child process
+		// redirect the stdout to the write end of the pipe
+		// close the read end of the pipe (unused)
+		if (close(data->pipe_fd[0]) == -1)
+			return (_error_with_status("close 1 error", data));
+		/*
+		defensive check
+		need duplicate and close one of the file descriptors
+		*/
+		if (data->pipe_fd[1] != STDOUT_FILENO)
+		{
+			if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
+				return (_error_with_status("dup2 1 error", data));
+			if (close(data->pipe_fd[1]) == -1)
+				return (_error_with_status("close 2 error", data));
+		}
+		// execute the left node and exit child process
+		exit(execute_ast(ast->left, data));
+	}
+	else
+		debug("parent process pid1: %d falls through", pid1);
+	pid2 = fork();
+	if (pid2 == -1)
+		return (_error_with_status("fork 2 failed", data));
+	else if (pid2 == 0)
+	{
+		// second child process
+		debug("second child process pid1: %d", pid2);
+		// close the write end of the pipe (unused)
+		if (close(data->pipe_fd[1]) == -1)
+			return (_error_with_status("close 3 - child write end of the pipe", data));
+		/*
+		defensive check
+		need duplicate and close one of the file descriptors
+		*/
+		if (data->pipe_fd[0] != STDIN_FILENO)
+		{
+			if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
+				return (_error_with_status("dup2 2 failed", data));
+			if (close(data->pipe_fd[0]) == -1)
+				return (_error_with_status("close fd 4", data));
+		}
+		// execute the left node and exit child process
+		exit(execute_ast(ast->right, data));
+	}
+	else
+	{
+		// parent process
+		debug("parent process pid2: %d", pid2);
+	}
+	/* Parent closes unused file descriptors for pipe, and waits for children */
+	if (close(data->pipe_fd[0]) == -1)
+		return (_error_with_status("close fd 5", data));
+	if (close(data->pipe_fd[1]) == -1)
+		return (_error_with_status("close fd 6", data));
+	return (get_status_of_children(pid1, pid2, data));
 }
 
 /*
@@ -177,7 +293,6 @@ to the read end of the pipe, and execute the right node.
 int execute_ast(t_ast_node *ast, t_data *data)
 {
 	int status;
-	t_token *token;
 	t_list *tokenlist;
 	t_nodetype astnodetype;
 
@@ -190,226 +305,16 @@ int execute_ast(t_ast_node *ast, t_data *data)
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);
 	astnodetype = ast->type;
-	token = (t_token *)tokenlist->content;
-	debug("token type: %d", (t_tokentype)(token->type));
-	// debug("lexeme %s\n", (char *)(token->lexeme));
-
-	// true and false keywords
-	if (astnodetype == NODE_TRUE)
-	{
-		debug("NODE_TRUE");
-
-		return (0);
-	}
-	else if (astnodetype == NODE_FALSE)
-	{
-		debug("NODE_FALSE");
-		return (1);
-	}
-	else if (astnodetype == NODE_LIST)
-	{
-		debug("NODE_LIST || &&");
-		// get the token from the tokenlist
-		t_token *token = (t_token *)ast->token_list->content;
-		debug("node value, %s - status now %d", token->lexeme, status);
-		status = execute_ast(ast->left, data);
-		if (status == 0 && token->type == AND_IF)
-		{
-			debug("ANDTOKEN");
-			status = execute_ast(ast->right, data);
-		}
-		else if (status != 0 && token->type == OR_IF)
-		{
-			debug("ORTOKEN");
-			status = execute_ast(ast->right, data);
-		}
-		debug("status now %d", status);
-		return (status);
-	}
+	if (astnodetype == NODE_LIST)
+		status = execute_list(ast, data);
 	else if (astnodetype == NODE_PIPELINE)
-	{
-		debug("NODE_PIPELINE");
-
-		pid_t pid1, pid2;
-
-		// create a pipe
-		if (pipe(data->pipe_fd) == -1)
-		{
-			perror("pipe");
-			return (0); // should be error
-		}
-
-		// fork the process
-		pid1 = fork();
-		debug("forked! pid1: %d", pid1);
-		if (pid1 == -1)
-		{
-			perror("fork");
-			return (0);
-		}
-		else if (pid1 == 0)
-		{
-			debug("first child process pid1: %d", pid1);
-			// child process
-			// redirect the stdout to the write end of the pipe
-			// close the read end of the pipe (unused)
-			if (close(data->pipe_fd[0]) == -1)
-			{
-				perror("close 1 - child read end of the pipe");
-				return (0);
-			}
-
-			/*
-			defensive check
-			need duplicate and close one of the file descriptors
-			*/
-			if (data->pipe_fd[1] != STDOUT_FILENO)
-			{
-				if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
-				{
-					perror("dup2 1");
-					return (0);
-				}
-				if (close(data->pipe_fd[1]) == -1)
-				{
-					perror("close 2");
-					return (0);
-				}
-			}
-
-			// execute the left node
-			status = execute_ast(ast->left, data);
-
-			// debug("should not get here?");
-			exit(status);
-		}
-		else
-		{
-			// parent falls through to create the next child
-			debug("parent process pid1: %d falls through", pid1);
-		}
-
-		// fork the process again
-		pid2 = fork();
-		debug("forked second time! pid1: %d", pid2);
-
-		if (pid2 == -1)
-		{
-			perror("fork");
-			data->exit_status = 1;
-			return (1);
-		}
-		else if (pid2 == 0)
-		{
-			// second child process
-			debug("second child process pid1: %d", pid2);
-			// close the write end of the pipe (unused)
-			if (close(data->pipe_fd[1]) == -1)
-			{
-				perror("close 3 - child write end of the pipe");
-				return (0);
-			}
-
-			/*
-			defensive check
-			need duplicate and close one of the file descriptors
-			*/
-			if (data->pipe_fd[0] != STDIN_FILENO)
-			{
-				if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
-				{
-					perror("dup2 2");
-					return (0);
-				}
-				if (close(data->pipe_fd[0]) == -1)
-				{
-					perror("close 4");
-					return (0);
-				}
-			}
-
-			// execute the left node
-			status = execute_ast(ast->right, data);
-
-			exit(status);
-		}
-		else
-		{
-			// parent falls through to create the next child
-			debug("parent process pid1: %d falls through", pid1);
-		}
-
-		/* Parent closes unused file descriptors for pipe, and waits for children */
-		if (close(data->pipe_fd[0]) == -1)
-		{
-			perror("close 5");
-			return (1);
-		}
-		if (close(data->pipe_fd[1]) == -1)
-		{
-			perror("close 6");
-
-			return (1);
-		}
-		// with waitpid we can wait for a specific child process and get status
-		int status;
-		status = -1;
-		if (waitpid(pid1, &status, 0) == -1)
-		{
-			perror("waitpid");
-			data->exit_status = 1;
-			return (1);
-		}
-		// we will not use WIFEXITED but maybe this ? (((*(int *)&(status)) & 0177) == 0)
-		data->exit_status = WEXITSTATUS(status);
-		debug("child exited with status %d\n", WEXITSTATUS(status));
-		if (WIFEXITED(status))
-		{
-			debug("child exited with status %d\n", WEXITSTATUS(status));
-		}
-		else
-		{
-			debug("child did not exit normally\n");
-		}
-		status = -1;
-		// wait for the second child
-		if (waitpid(pid2, &status, 0) == -1)
-		{
-			perror("waitpid");
-			data->exit_status = 1;
-			return (1);
-		}
-		data->exit_status = WEXITSTATUS(status);
-		debug("child exited with status %d\n", WEXITSTATUS(status));
-		if (WIFEXITED(status))
-		{
-			debug("child exited with status %d\n", WEXITSTATUS(status));
-		}
-		else
-		{
-			debug("child did not exit normally\n");
-		}
-		return (status);
-	}
-
-	// to be continued with the other cases
+		status = execute_pipeline(ast, data);
 	else if (astnodetype == NODE_BUILTIN)
-	{
 		execute_builtin(tokenlist, data);
-		return (0);
-	}
 	else if (astnodetype == NODE_COMMAND)
-	{
-		debug("NODE_COMMAND");
 		status = execute_command(tokenlist, data);
-		return (status);
-	}
 	else if (astnodetype == NODE_TERMINAL)
-	{
-		debug("NODE_TERMINAL\n");
 		status = execute_command(tokenlist, data);
-		return (0);
-	}
 	else
 		debug("not TERMINAL NODE\n");
 	return (status);
