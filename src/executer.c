@@ -6,10 +6,22 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/26 09:01:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/27 16:15:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   scrap.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
+/*   Updated: 2024/05/27 16:01:29 by lbrusa           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "executer.h"
 #include "built_ins.h"
 
@@ -87,13 +99,13 @@ void	execute_builtin(t_list *tokenlist, t_data *data)
 	{
 		debug("not an implemented builtin\n");
 	}
-	
+
 }*/
 
 /*
 when I need to free a string array like the envpaths
 */
-int	free_array(char **envpaths)
+int free_array(char **envpaths)
 {
 	int i = 0;
 	while (envpaths[i])
@@ -108,12 +120,12 @@ int	free_array(char **envpaths)
 /*
 In our data struct we have the environment variables in a dynamic array
 mini_get_env will get the path variable and return it
-as a string array. 
+as a string array.
 base is the command we are looking for.
 */
-char	*create_path(char *base, t_data *data)
+char *create_path(char *base, t_data *data)
 {
-	int	i; 
+	int i;
 	char *commandpath;
 	char **envpaths;
 
@@ -130,7 +142,7 @@ char	*create_path(char *base, t_data *data)
 		}
 		else
 			// debug("command not found");
-		free(commandpath);
+			free(commandpath);
 		i++;
 	}
 	free_array(envpaths);
@@ -140,7 +152,7 @@ char	*create_path(char *base, t_data *data)
 /*
 needs to be completely refactored
 */
-int	execute_command(t_list *tokenlist, t_data *data)
+int execute_command(t_list *tokenlist, t_data *data)
 {
 	t_token *token;
 	(void)data;
@@ -160,7 +172,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 	}
 	argv[i] = NULL;
 
-	// If the command name contains no slashes, the shell attempts to locate it. 
+	// If the command name contains no slashes, the shell attempts to locate it.
 	if (ft_strchr(argv[0], '/') == NULL)
 	{
 
@@ -170,13 +182,13 @@ int	execute_command(t_list *tokenlist, t_data *data)
 		{
 			debug("not on path\n");
 		}
-		else 
+		else
 		{
 			debug("command found on path: %s", cmd);
 			argv[0] = cmd;
 		}
 	}
-	else 
+	else
 	{
 		// trying to execute the command with access
 		if (access(argv[0], X_OK) == -1)
@@ -187,13 +199,37 @@ int	execute_command(t_list *tokenlist, t_data *data)
 		else
 			debug("command executable\n");
 	}
+	pid_t pid = fork();
+	int status;
+	if (pid == 0)
+	{ // Child process
+		execve(argv[0], argv, (char **)data->env_arr->contents);
 
-    execve(argv[0], argv, (char **)data->env_arr->contents);
-
-    // If execve returns at all, an error occurred.
-	write(2, "minishell: command not found\n", 30);
-    perror("execve");
-    return 127;
+		write(2, "minishell: command not found\n", 30);
+		perror("execve");
+		exit(EXIT_FAILURE); // execvp returns only if there's an error
+	}
+	else if (pid < 0)
+	{ // Fork failed
+		perror("fork");
+	}
+	else
+	{							  // Parent process
+		waitpid(pid, &status, 0); // Wait for child process to finish
+	}
+	data->exit_status = WEXITSTATUS(status);
+	// debug("child exited with status %d\n", WEXITSTATUS(status));
+	if (WIFEXITED(status))
+	{
+		debug("child exited with status %d\n", WEXITSTATUS(status));
+	}
+	else
+	{
+		debug("child did not exit normally\n");
+	}
+	// debug("status: %d\n", data->exit_status);
+	// If execve returns at all, an error occurred.
+	return (status);
 }
 
 /*
@@ -201,14 +237,14 @@ also needs to be refactored : TODO
 
 traverse the ast and execute the commands node by node left to right
 pipes
-To handle the piping in your code, you need to create a pipe using the 
-pipe() function, then fork the process. In the child process, 
-you need to redirect the stdout to the write end of the pipe, 
-then execute the left node. In the parent process, 
-you need to wait for the child to finish, then redirect the stdin 
+To handle the piping in your code, you need to create a pipe using the
+pipe() function, then fork the process. In the child process,
+you need to redirect the stdout to the write end of the pipe,
+then execute the left node. In the parent process,
+you need to wait for the child to finish, then redirect the stdin
 to the read end of the pipe, and execute the right node.
 */
-int	execute_ast(t_ast_node *ast, t_data *data)
+int execute_ast(t_ast_node *ast, t_data *data)
 {
 	int status;
 	t_token *token;
@@ -232,6 +268,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 	if (astnodetype == NODE_TRUE)
 	{
 		debug("NODE_TRUE");
+
 		return (0);
 	}
 	else if (astnodetype == NODE_FALSE)
@@ -263,10 +300,8 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 	{
 		debug("NODE_PIPELINE");
 
-		
-
 		pid_t pid1, pid2;
-		
+
 		// create a pipe
 		if (pipe(data->pipe_fd) == -1)
 		{
@@ -277,12 +312,12 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 		// fork the process
 		pid1 = fork();
 		debug("forked! pid1: %d", pid1);
-		if (pid1 == -1) 
+		if (pid1 == -1)
 		{
 			perror("fork");
 			return (0);
 		}
-		else if ( pid1 == 0 )
+		else if (pid1 == 0)
 		{
 			debug("first child process pid1: %d", pid1);
 			// child process
@@ -293,19 +328,19 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 				perror("close 1 - child read end of the pipe");
 				return (0);
 			}
-			
-			/* 
+
+			/*
 			defensive check
-			need duplicate and close one of the file descriptors	
+			need duplicate and close one of the file descriptors
 			*/
-			if (data->pipe_fd[1] != STDOUT_FILENO) 
+			if (data->pipe_fd[1] != STDOUT_FILENO)
 			{
 				if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
 				{
 					perror("dup2 1");
 					return (0);
 				}
-        		if (close(data->pipe_fd[1]) == -1)
+				if (close(data->pipe_fd[1]) == -1)
 				{
 					perror("close 2");
 					return (0);
@@ -313,27 +348,28 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			}
 
 			// execute the left node
-			execute_ast(ast->left, data);
-		
+			status = execute_ast(ast->left, data);
+
 			// debug("should not get here?");
-			exit(1);
+			exit(status);
 		}
 		else
 		{
 			// parent falls through to create the next child
 			debug("parent process pid1: %d falls through", pid1);
 		}
-		
+
 		// fork the process again
 		pid2 = fork();
-		debug("forked second time! pid1: %d", pid2);	
+		debug("forked second time! pid1: %d", pid2);
 
-		if (pid2 == -1) 
+		if (pid2 == -1)
 		{
 			perror("fork");
-			return (0);
+			data->exit_status = 1;
+			return (1);
 		}
-		else if ( pid2 == 0 )
+		else if (pid2 == 0)
 		{
 			// second child process
 			debug("second child process pid1: %d", pid2);
@@ -343,19 +379,19 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 				perror("close 3 - child write end of the pipe");
 				return (0);
 			}
-			
-			/* 
+
+			/*
 			defensive check
-			need duplicate and close one of the file descriptors	
+			need duplicate and close one of the file descriptors
 			*/
-			if (data->pipe_fd[0] != STDIN_FILENO) 
+			if (data->pipe_fd[0] != STDIN_FILENO)
 			{
 				if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
 				{
 					perror("dup2 2");
 					return (0);
 				}
-        		if (close(data->pipe_fd[0]) == -1)
+				if (close(data->pipe_fd[0]) == -1)
 				{
 					perror("close 4");
 					return (0);
@@ -363,26 +399,27 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			}
 
 			// execute the left node
-			execute_ast(ast->right, data);
-		
-			exit(1);
+			status = execute_ast(ast->right, data);
+
+			exit(status);
 		}
 		else
 		{
 			// parent falls through to create the next child
 			debug("parent process pid1: %d falls through", pid1);
 		}
-		
+
 		/* Parent closes unused file descriptors for pipe, and waits for children */
 		if (close(data->pipe_fd[0]) == -1)
 		{
 			perror("close 5");
-			return (0);
+			return (1);
 		}
 		if (close(data->pipe_fd[1]) == -1)
 		{
 			perror("close 6");
-			return (0);
+
+			return (1);
 		}
 		// with waitpid we can wait for a specific child process and get status
 		int status;
@@ -390,7 +427,8 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 		if (waitpid(pid1, &status, 0) == -1)
 		{
 			perror("waitpid");
-			return (0);
+			data->exit_status = 1;
+			return (1);
 		}
 		// we will not use WIFEXITED but maybe this ? (((*(int *)&(status)) & 0177) == 0)
 		data->exit_status = WEXITSTATUS(status);
@@ -408,7 +446,8 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 		if (waitpid(pid2, &status, 0) == -1)
 		{
 			perror("waitpid");
-			return (0);
+			data->exit_status = 1;
+			return (1);
 		}
 		data->exit_status = WEXITSTATUS(status);
 		debug("child exited with status %d\n", WEXITSTATUS(status));
@@ -420,7 +459,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 		{
 			debug("child did not exit normally\n");
 		}
-		return (1);	
+		return (status);
 	}
 
 	// to be continued with the other cases
@@ -429,19 +468,19 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 		execute_builtin(tokenlist, data);
 		return (0);
 	}
-	else if (astnodetype == NODE_COMMAND )
+	else if (astnodetype == NODE_COMMAND)
 	{
 		debug("NODE_COMMAND");
-		execute_command(tokenlist, data);
-		return (0);
+		status = execute_command(tokenlist, data);
+		return (status);
 	}
 	else if (astnodetype == NODE_TERMINAL)
 	{
 		debug("NODE_TERMINAL\n");
-				execute_command(tokenlist, data);
+		status = execute_command(tokenlist, data);
 		return (0);
 	}
 	else
 		debug("not TERMINAL NODE\n");
-	return (0);
+	return (status);
 }
