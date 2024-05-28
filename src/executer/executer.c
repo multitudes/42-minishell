@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 11:50:17 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 13:29:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,13 @@ int resolve_command_path(char **argv, t_data *data)
 	{
 		cmd = create_path(argv[0], data);
 		if (!cmd)
-			return (error_set_status("minishell: command not on path\n", data));
+			return (error_set_status("minishell: command not on path\n", 1));
 		argv[0] = cmd;
 	}
 	else
 	{
 		if (access(argv[0], X_OK) == -1)
-			return (error_set_status("minishell: command not found\n", data));
+			return (error_set_status("minishell: command not found\n", 1));
 	}
 	return 0;
 }
@@ -84,7 +84,7 @@ int execute_command(t_list *tokenlist, t_data *data)
 
 	argv = get_args_from_tokenlist(tokenlist);
 	if (!argv)
-		return (error_set_status("malloc argv", data));
+		return (error_set_status("malloc argv", 1));
 	if (resolve_command_path(argv, data) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	pid = fork();
@@ -94,7 +94,7 @@ int execute_command(t_list *tokenlist, t_data *data)
 		exit_err_failure("minishell: execve failed\n");	
 	}
 	else if (pid == -1)
-		return (error_set_status("minishell: fork failed\n", data));
+		return (error_set_status("minishell: fork failed\n", 1));
 	else
 		waitpid(pid, &status, 0); 
 	data->exit_status = WEXITSTATUS(status);
@@ -105,18 +105,17 @@ int execute_command(t_list *tokenlist, t_data *data)
 we will not use WIFEXITED but maybe this ? (((*(int *)&(status)) & 0177) == 0)
 or are we allowed to use it?
 */
-int	get_status_of_children(pid_t pid1, pid_t pid2, t_data *data)
+int	get_status_of_children(pid_t pid1, pid_t pid2)
 {		
 	int status;
 
 	status = -1;
 	if (waitpid(pid1, &status, 0) == -1)
-		return (error_set_status("waitpid 1", data));	
-	data->exit_status = WEXITSTATUS(status);
-	status = -1;
+		status = error_set_status("waitpid 1", 1);	
+	status = WEXITSTATUS(status);
 	if (waitpid(pid2, &status, 0) == -1)
-		return (error_set_status("waitpid 2", data));
-	data->exit_status = WEXITSTATUS(status);
+		status = error_set_status("waitpid 2", 1);
+	status = WEXITSTATUS(status);
 	return (status);
 }
 
@@ -178,22 +177,22 @@ int	execute_pipeline(t_ast_node *ast, t_data *data)
 	pid_t pid2;
 
 	if (pipe(data->pipe_fd) == -1)
-		return (error_set_status("pipe error", data));
+		return (error_set_status("pipe error", 1));
 	pid1 = fork();
 	if (pid1 == -1)
-		return (error_set_status("fork 1 error", data));
+		return (error_set_status("fork 1 error", 1));
 	else if (pid1 == 0)
 	 	handle_first_child_process(data, ast);
 	pid2 = fork();
 	if (pid2 == -1)
-		return (error_set_status("fork 2 failed", data));
+		return (error_set_status("fork 2 failed", 1));
 	else if (pid2 == 0)
 		handle_second_child_process(data, ast);
 	if (close(data->pipe_fd[0]) == -1)
-		return (error_set_status("close fd 5", data));
+		return (error_set_status("close fd 5", 1));
 	if (close(data->pipe_fd[1]) == -1)
-		return (error_set_status("close fd 6", data));
-	return (get_status_of_children(pid1, pid2, data));
+		return (error_set_status("close fd 6", 1));
+	return (get_status_of_children(pid1, pid2));
 }
 
 /*

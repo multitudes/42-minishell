@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 11:49:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 13:26:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,14 @@ extern char **environ;
 util function
 it makes sense to collect what we malloc in our data struct
 because it is easier to free at the end or when we need to exit
+token_list is freed in the loop with the ast
 */
 void	free_data(t_data **data)
 {
 	if (data == NULL || *data == NULL)
 		return ;
-	//token_list is freed in the tokenizer?
 	debug("freeing env darray");
 	darray_clear_destroy((*data)->env_arr);
-	// free the ast tree
 	debug("freeing ast");
 	free_ast(&(*data)->ast);
 	free(*data);
@@ -256,6 +255,7 @@ static void	exit_handler(int sig)
         rl_replace_line("", 0);
         rl_redisplay();
     }
+
 	return ;
 }
 
@@ -275,12 +275,12 @@ also removed these couple lines... This was for testing
 int	set_up_signals(void)
 {
 	if (isatty(STDIN_FILENO) == -1)
-		return (error_set_status("is atty failed\n", NULL));
+		return (error_set_status("is atty failed\n", 1));
 	else if (isatty(STDIN_FILENO))
 	{
 		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-			return (error_set_status("SIG_ERR signal failed\n", NULL));
+			return (error_set_status("SIG_ERR signal failed\n", 1));
 	}
 	rl_catch_signals = 0;
 	return (0);
