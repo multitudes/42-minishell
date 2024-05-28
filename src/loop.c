@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 09:19:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 10:45:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,34 +23,34 @@ the environ variable is better than getting it in main.. (not posix compliant)
 */
 extern char **environ;
 
-void free_ast(t_ast_node *node) 
-{
-    if (node == NULL) {
-        return;
-    }
-    // Free the left and right children
-    free_ast(node->left);
-    free_ast(node->right);
+// void free_ast(t_ast_node *node) 
+// {
+//     if (node == NULL) {
+//         return;
+//     }
+//     // Free the left and right children
+//     free_ast(node->left);
+//     free_ast(node->right);
 
-    // Free the token list
-    t_list *current = node->token_list;
-    while (current != NULL) {
-        t_list *next = current->next;
+//     // Free the token list
+//     t_list *current = node->token_list;
+//     while (current != NULL) {
+//         t_list *next = current->next;
 
-        // Free the token
-        t_token *token = (t_token *)current->content;
-        free(token->lexeme);  // Free the lexeme string
-        free(token);  // Free the token itself
+//         // Free the token
+//         t_token *token = (t_token *)current->content;
+//         free(token->lexeme);  // Free the lexeme string
+//         free(token);  // Free the token itself
 
-        // Free the list node
-        free(current);
+//         // Free the list node
+//         free(current);
 
-        current = next;
-    }
+//         current = next;
+//     }
 
-    // Free the AST node itself
-    free(node);
-}
+//     // Free the AST node itself
+//     free(node);
+// }
 
 /*
 util function
@@ -62,10 +62,12 @@ void	free_data(t_data **data)
 	if (data == NULL || *data == NULL)
 		return ;
 	//token_list is freed in the tokenizer?
+	debug("freeing env darray");
 	darray_clear_destroy((*data)->env_arr);
 	// free the ast tree
-	free((*data)->ast);
-	free(data);
+	
+	free(*data);
+	debug("data freed");
 	*data = NULL;
 }
 
@@ -285,6 +287,8 @@ int	set_up_signals(void)
 
 void	exit_minishell(t_data *data)
 {
+	debug("exit_minishell");
+	debug("freeing data");
 	free_data(&data);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -313,7 +317,6 @@ int loop()
 	set_up_signals();		
 	while (data->input != NULL)
 	{
-		free(data->input);
 		data->input = readline("minishell $ ");
 		if (data->input && ft_strncmp(data->input, "", 1))
 		{
@@ -326,14 +329,14 @@ int loop()
 				{
 					analyse_expand(data->ast, data);
 					g_exit_status = execute_ast(data->ast, data);
-					free_ast((data->ast));
+					free_ast(&(data->ast));
 				}
 				else
 					debug("syntax parse error");
 			}
-			free(data->input);
 		}
+		free((char *)(data->input));
 	}
 	exit_minishell(data);
-	return (0);
+	return (0); 
 }
