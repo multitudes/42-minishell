@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   built-ins.h                                        :+:      :+:    :+:   */
+/*   builtins.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -22,7 +22,7 @@ extern "C" {
 
 # include "minishell.h"
 
-void	execute_builtin(t_list *tokenlist, t_data *data);
+int	execute_builtin(t_list *tokenlist, t_data *data);
 
 #  ifdef __cplusplus
 
