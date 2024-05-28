@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 19:44:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 19:46:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,7 +267,7 @@ int loop()
 	data = NULL;
 	if (!init_data(&data))
 		return (1);
-		debug("init_data done");
+	debug("init_data done");
 	load_history();
 	set_up_signals();		
 	while (data->input != NULL)
