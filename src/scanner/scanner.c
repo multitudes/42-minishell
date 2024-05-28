@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 11:23:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 14:37:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ or redirections like
 t_list	*tokenizer(const char *input)
 {
 	int			i;
+	t_list		*token_list;
 	t_mini_data	*data;
 
 	i = 0;
@@ -39,9 +40,11 @@ t_list	*tokenizer(const char *input)
 		else
 			i++;
 	}
-	if (data->scanner_error == 0)
-		return (data->token_list);
-	free_scanner_data(&data);
+	token_list = data->token_list;
+	if (!data->scanner_error)
+		return (free_scanner_data(&data));
+	token_list = free_scanner_data(&data);
+	ft_lstclear(&(token_list), free_token);
 	return (NULL);
 }
 
