@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 10:45:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 11:03:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,8 @@ void	free_data(t_data **data)
 	debug("freeing env darray");
 	darray_clear_destroy((*data)->env_arr);
 	// free the ast tree
-	
+	debug("freeing ast");
+	free_ast(&(*data)->ast);
 	free(*data);
 	debug("data freed");
 	*data = NULL;
@@ -296,6 +297,14 @@ void	exit_minishell(t_data *data)
 	write(1, "exit\n", 6);
 }
 
+void	update_env_exit_status_with(int exit_status, t_data *data)
+{
+	g_exit_status = exit_status;
+	debug("final ast exit status: %d", g_exit_status);
+	debug("Set env exit status to %d", g_exit_status);
+	update_env(data, "?", ft_itoa(g_exit_status));
+}
+
 /*
 set_up_signals() returns 1 but if it fails I leave it failing 
 silently or should we exit the program?
@@ -328,7 +337,7 @@ int loop()
 				if (data->ast)
 				{
 					analyse_expand(data->ast, data);
-					g_exit_status = execute_ast(data->ast, data);
+					update_env_exit_status_with(execute_ast(data->ast, data), data);
 					free_ast(&(data->ast));
 				}
 				else
