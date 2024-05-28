@@ -40,9 +40,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(lexeme, "pwd", 4) == 0)
 		status = execute_pwd_builtin();
 	else if (ft_strncmp(lexeme, "export", 7) == 0)
-	{
-		debug("export builtin");
-	}
+		status = execute_export_builtin(data, tokenlist);
 	else if (ft_strncmp(lexeme, "unset", 6) == 0)
 	{
 		debug("unset builtin");
@@ -55,10 +53,12 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	}
 	else if (ft_strncmp(lexeme, "true", 5) == 0)
 	{
+		status = 0;
 		debug("true builtin");
 	}
 	else if (ft_strncmp(lexeme, "false", 6) == 0)
 	{
+		status = 1;
 		debug("false builtin");
 	}
 	else if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
@@ -158,6 +158,11 @@ int	execute_echo_builtin(t_list *tokenlist)
 			status = 1;
 	}
 	return (status);
+}
+
+int	execute_export_builtin(t_data *data, t_list *tokenlist)
+{
+
 }
 
 int	execute_pwd_builtin(void)
