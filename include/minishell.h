@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 13:23:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 18:30:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ including the macro below which is not allowed by norminette.
 #endif
 
 // global.h
-extern int g_exit_status;
+extern int g_signal;
 
 // for the history - can override with 
 // -DMINIHISTFILE='"new relative path"' -DHISTSIZE=1000

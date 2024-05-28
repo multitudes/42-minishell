@@ -6,14 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 14:35:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 18:30:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "darray.h"
 
-int	g_exit_status;
+int	g_signal;
 
 /*
 The environ variable is part of the POSIX standard, so it should be 
@@ -299,10 +299,10 @@ void	exit_minishell(t_data *data)
 
 void	update_env_exit_status_with(int exit_status, t_data *data)
 {
-	g_exit_status = exit_status;
-	debug("final ast exit status: %d", g_exit_status);
-	debug("Set env exit status to %d", g_exit_status);
-	update_env(data, "?", ft_itoa(g_exit_status));
+	g_signal = exit_status;
+	debug("final ast exit status: %d", g_signal);
+	debug("Set env exit status to %d", g_signal);
+	update_env(data, "?", ft_itoa(g_signal));
 }
 
 /*
