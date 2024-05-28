@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 12:21:18 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 19:08:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,6 @@ void	which_ast_node(t_ast_node *ast)
 		return ;
 	token = (t_token *)tokenlist->content;
 	debug("which_ast_node");
-	// check if the token list is a builtin
-	// debug("token type: %d", (t_tokentype)(token->type));
-	// debug("lexeme %s", (char *)(token->lexeme));
 	if (token->type == BUILTIN)
 	{
 		ast->type = NODE_BUILTIN;
@@ -118,6 +115,7 @@ void	expand_string(t_data *data, t_token *token)
 	ft_lstclear(&ptr_to_list, free_token); //free_token function is from scanner.h
 	token->type = WORD;
 }
+
 /*
 the function of the analyser is to walk on the tree and analyze and expand 
 the nodes that need to.

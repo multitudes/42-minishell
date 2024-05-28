@@ -6,14 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 14:35:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 19:46:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "darray.h"
 
-int	g_exit_status;
+int	g_signal;
 
 /*
 The environ variable is part of the POSIX standard, so it should be 
@@ -22,35 +22,6 @@ according to the linux programming language by kerrisk (page 127), using
 the environ variable is better than getting it in main.. (not posix compliant)
 */
 extern char **environ;
-
-// void free_ast(t_ast_node *node) 
-// {
-//     if (node == NULL) {
-//         return;
-//     }
-//     // Free the left and right children
-//     free_ast(node->left);
-//     free_ast(node->right);
-
-//     // Free the token list
-//     t_list *current = node->token_list;
-//     while (current != NULL) {
-//         t_list *next = current->next;
-
-//         // Free the token
-//         t_token *token = (t_token *)current->content;
-//         free(token->lexeme);  // Free the lexeme string
-//         free(token);  // Free the token itself
-
-//         // Free the list node
-//         free(current);
-
-//         current = next;
-//     }
-
-//     // Free the AST node itself
-//     free(node);
-// }
 
 /*
 util function
@@ -165,65 +136,42 @@ char *add_newline(char *input)
 	return (here_content);
 }
 
+bool init_data2(t_data **data)
+{
+	(*data)->input = "";
+	(*data)->token_list = NULL;
+	(*data)->ast = NULL;
+	(*data)->exit_status = 0;
+	return (true);
+}
 
 /*
 initialiser for data
 */
-int	init_data(t_data **data)
+bool	init_data(t_data **data)
 {
-	size_t i;
-	char *env;
-	t_darray *env_array;
+	size_t		i;
+	char		*env;
+	t_darray	*env_array;
 
-	// check if environ is NULL
-	if (environ == NULL)
-	{
-		perror("environ is NULL");
-		// return (0);
-	}
 	i = 0;
-	
-	// save the envp - start with a array of with el of size 100 which will be expanded
-	// if needed
 	env_array = darray_create(sizeof(char *), 100);
 	if (env_array == NULL)
-	{
-		perror("malloc env_array");
-		return (0);
-	}
-
+		return (zero_and_printerr("env_array env"));
 	while (environ && environ[i])
 	{ 
-		env = ft_strdup(environ[i]);
-		if (env == NULL)
-		{
-			perror("malloc env");
-			darray_clear_destroy(env_array);
-			return (0);
-		}
-		if (darray_push(env_array, env) == -1)
-		{
-			perror("malloc darray_push");
-			darray_clear_destroy(env_array);
-			return (0);
-		}
-		i++;
+		env = ft_strdup(environ[i++]);
+		if (env == NULL && darray_clear_destroy(env_array))
+			return (zero_and_printerr("malloc env"));
+		if (darray_push(env_array, env) == -1 && darray_clear_destroy(env_array))
+			return (zero_and_printerr("darray_push"));
 	}
 	darray_push(env_array, NULL);
-	debug("added %d env vars to my minishell data\n", env_array->end);
 	*data = malloc(sizeof(t_data));
-	if (*data == NULL)
-	{
-		perror("malloc init_data");
-		darray_clear_destroy(env_array);
-		return (0);
-	}
+	if (*data == NULL && darray_clear_destroy(env_array))
+		return (zero_and_printerr("malloc data"));
 	(*data)->env_arr = env_array;
-	(*data)->ast = NULL;
-	(*data)->exit_status = 0;
-	(*data)->input = "";
-	(*data)->token_list = NULL;
-	return (1);
+	return (init_data2(data));
 }
 
 /*
@@ -275,12 +223,12 @@ also removed these couple lines... This was for testing
 int	set_up_signals(void)
 {
 	if (isatty(STDIN_FILENO) == -1)
-		return (error_set_status("is atty failed\n", 1));
+		return (status_and_print("is atty failed\n", 1));
 	else if (isatty(STDIN_FILENO))
 	{
 		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-			return (error_set_status("SIG_ERR signal failed\n", 1));
+			return (status_and_print("SIG_ERR signal failed\n", 1));
 	}
 	rl_catch_signals = 0;
 	return (0);
@@ -299,10 +247,7 @@ void	exit_minishell(t_data *data)
 
 void	update_env_exit_status_with(int exit_status, t_data *data)
 {
-	g_exit_status = exit_status;
-	debug("final ast exit status: %d", g_exit_status);
-	debug("Set env exit status to %d", g_exit_status);
-	update_env(data, "?", ft_itoa(g_exit_status));
+	update_env(data, "?", ft_itoa(exit_status));
 }
 
 /*
@@ -322,6 +267,7 @@ int loop()
 	data = NULL;
 	if (!init_data(&data))
 		return (1);
+	debug("init_data done");
 	load_history();
 	set_up_signals();		
 	while (data->input != NULL)

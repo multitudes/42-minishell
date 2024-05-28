@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:27:54 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 16:07:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 18:44:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int			darray_expand(t_darray *array);
 int			darray_contract(t_darray *array);
 int			darray_push(t_darray *array, void *el);
 void		*darray_pop(t_darray *array);
-void		darray_clear_destroy(t_darray *array);
+int			darray_clear_destroy(t_darray *array);
 void		*darray_remove(t_darray *array, int i);
 void		*darray_new_elem(t_darray *array);
 void		darray_set(t_darray *array, int i, void *el);
