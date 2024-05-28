@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 08:31:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 15:35:59 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,3 +78,54 @@ int count_tokens(t_list *tokenlist)
 	}
 	return (count);
 }
+
+/*
+Since until now we store the token as linked list
+we convert it to a char array for the execve function
+*/ 
+char **get_args_from_tokenlist(t_list *tokenlist)
+{
+	int 	i;
+	int		count;
+	char 	**args;
+	
+	i = 0;
+	count = count_tokens(tokenlist);
+	args = malloc(sizeof(char *) * (count + 1));
+	if (!args)
+		return (NULL);
+	while (tokenlist)
+	{
+		t_token *token = (t_token *)tokenlist->content;
+		args[i++] = token->lexeme;
+		tokenlist = tokenlist->next;
+	}
+	args[i] = NULL;
+	return (args);
+}
+
+/*
+resolve_command_path will check if the command is in the PATH
+or if it is an absolute path. 
+if it cannot be resolved it will return 1
+*/
+int resolve_command_path(char **argv, t_data *data)
+{
+	char *cmd;
+	
+	cmd = NULL;
+	if (ft_strchr(argv[0], '/') == NULL)
+	{
+		cmd = create_path(argv[0], data);
+		if (!cmd)
+			return (error_set_status("minishell: command not on path\n", 1));
+		argv[0] = cmd;
+	}
+	else
+	{
+		if (access(argv[0], X_OK) == -1)
+			return (error_set_status("minishell: command not found\n", 1));
+	}
+	return 0;
+}
+
