@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 13:29:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 15:39:41 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,13 @@ extern "C" {
 # include "minishell.h"
 
 int		execute_ast(t_ast_node *ast, t_data *data);
+int 	execute_list(t_ast_node *ast, t_data *data);
+int		execute_pipeline(t_ast_node *ast, t_data *data);
 int		execute_command(t_list *tokenlist, t_data *data);
+int		handle_first_child_process(t_data *data, t_ast_node *ast);
+int		handle_second_child_process(t_data *data, t_ast_node *ast);
 char	*create_path(char *base, t_data *data);
+char 	**get_args_from_tokenlist(t_list *tokenlist);
 int		resolve_command_path(char **argv, t_data *data);
 int		count_tokens(t_list *tokenlist);
 int		get_status_of_children(pid_t pid1, pid_t pid2);
