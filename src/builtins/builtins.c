@@ -40,7 +40,8 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(lexeme, "pwd", 4) == 0)
 		status = execute_pwd_builtin();
 	else if (ft_strncmp(lexeme, "export", 7) == 0)
-		status = execute_export_builtin(data, tokenlist);
+		debug("export builtin");
+//		status = execute_export_builtin(data, tokenlist);
 	else if (ft_strncmp(lexeme, "unset", 6) == 0)
 	{
 		debug("unset builtin");
@@ -160,10 +161,10 @@ int	execute_echo_builtin(t_list *tokenlist)
 	return (status);
 }
 
-int	execute_export_builtin(t_data *data, t_list *tokenlist)
+/*int	execute_export_builtin(t_data *data, t_list *tokenlist)
 {
 
-}
+}*/
 
 int	execute_pwd_builtin(void)
 {
