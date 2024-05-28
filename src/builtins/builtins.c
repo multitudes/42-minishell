@@ -90,10 +90,10 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 
 int	execute_env_builtin(t_data *data)
 {
-	int			error;
+	int	status;
 
 	debug("env builtin");
-	error = 0;
-	error = print_env(data->env_arr);
-	return (error);
+	status = 0;
+	status = print_env(data->env_arr);
+	return (status);
 }
