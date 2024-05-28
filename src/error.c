@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 18:27:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 18:28:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ Updating the global makes sense when I am in the parent process.
 int	error_set_status(char *msg, int status)
 {
 	perror(msg);
-	g_exit_status = status;
 	return (status);
 }
 
