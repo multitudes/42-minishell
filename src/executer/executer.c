@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 15:36:18 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 18:24:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@
 /*
 posix compliant use of the environ variable but wecan discuss this
 */
-extern char **environ;
+extern char	**environ;
 
 int	execute_pipeline(t_ast_node *ast, t_data *data)
 {
-	pid_t pid1;
-	pid_t pid2;
+	pid_t	pid1;
+	pid_t	pid2;
 
 	if (pipe(data->pipe_fd) == -1)
 		return (error_set_status("pipe error", 1));
@@ -29,7 +29,7 @@ int	execute_pipeline(t_ast_node *ast, t_data *data)
 	if (pid1 == -1)
 		return (error_set_status("fork 1 error", 1));
 	else if (pid1 == 0)
-	 	handle_first_child_process(data, ast);
+		handle_first_child_process(data, ast);
 	pid2 = fork();
 	if (pid2 == -1)
 		return (error_set_status("fork 2 failed", 1));
@@ -46,11 +46,11 @@ int	execute_pipeline(t_ast_node *ast, t_data *data)
 Traverse the ast and execute the commands node by node 
 left to right
 */
-int execute_ast(t_ast_node *ast, t_data *data)
+int	execute_ast(t_ast_node *ast, t_data *data)
 {
-	int status;
-	t_list *tokenlist;
-	t_nodetype astnodetype;
+	int			status;
+	t_list		*tokenlist;
+	t_nodetype	astnodetype;
 
 	status = 0;
 	if (ast == NULL)
