@@ -10,11 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "builtins.h"
 #include "libft.h"
 #include "scanner.h"
 #include "environment.h"
 #include "history.h"
+#include <unistd.h>
 
 /*
 NOT yet implemented - TODO
@@ -24,9 +26,9 @@ we need them eventually for the bonus... true && false || true etc
 int    execute_builtin(t_list *tokenlist, t_data *data)
 {
 	t_token *token;
-	char *lexeme;
+	char 	*lexeme;
 	int		status;
-	(void)data; //I think this does not do anything!?
+//	(void)data; //I think this does not do anything!?
 
 	token = (t_token *)tokenlist->content;
 	lexeme = (char *)token->lexeme;
@@ -35,33 +37,31 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 		status = execute_echo_builtin(tokenlist);
 	else if (ft_strncmp(lexeme, "cd", 3) == 0)
 	{
-		debug("cd builtin\n");
+		debug("cd builtin");
 	}
 	else if (ft_strncmp(lexeme, "pwd", 4) == 0)
-	{
-		debug("pwd builtin\n");
-	}
+		status = execute_pwd_builtin();
 	else if (ft_strncmp(lexeme, "export", 7) == 0)
 	{
-		debug("export builtin\n");
+		debug("export builtin");
 	}
 	else if (ft_strncmp(lexeme, "unset", 6) == 0)
 	{
-		debug("unset builtin\n");
+		debug("unset builtin");
 	}
 	else if (ft_strncmp(lexeme, "env", 4) == 0)
 		status = execute_env_builtin(data);
 	else if (ft_strncmp(lexeme, "exit", 5) == 0)
 	{
-		debug("exit builtin\n");
+		debug("exit builtin");
 	}
 	else if (ft_strncmp(lexeme, "true", 5) == 0)
 	{
-		debug("true builtin\n");
+		debug("true builtin");
 	}
 	else if (ft_strncmp(lexeme, "false", 6) == 0)
 	{
-		debug("false builtin\n");
+		debug("false builtin");
 	}
 	else if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
 	{
@@ -135,4 +135,23 @@ int	execute_echo_builtin(t_list *tokenlist)
 			status = 1;
 	}
 	return (status);
+}
+
+int	execute_pwd_builtin(void)
+{
+	int		status;
+	char	*buf;
+	char	*current_directory;
+
+	debug("pwd builtin");
+	buf = malloc(sizeof(char) * BUFREADSIZE);
+	current_directory = getcwd(buf, BUFREADSIZE);
+	if (!current_directory)
+	{
+		debug("Buffer for reading current directory too small");
+	}
+	status = printf("%s\n", current_directory);
+	if (status < 0)
+		return (1);
+	return (0);
 }
