@@ -25,10 +25,12 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 {
 	t_token *token;
 	char *lexeme;
+	int		status;
 	(void)data; //I think this does not do anything!?
 
 	token = (t_token *)tokenlist->content;
 	lexeme = (char *)token->lexeme;
+	status = 0;
 	if (ft_strncmp(lexeme, "echo", 5) == 0)
 	{
 		debug("echo builtin---- \n");
@@ -56,9 +58,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 		debug("unset builtin\n");
 	}
 	else if (ft_strncmp(lexeme, "env", 4) == 0)
-	{
-		debug("env builtin\n");
-	}
+		status = execute_env_builtin(data);
 	else if (ft_strncmp(lexeme, "exit", 5) == 0)
 	{
 		debug("exit builtin\n");
@@ -71,7 +71,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	{
 		debug("false builtin\n");
 	}
-	if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
+	else if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
 	{
 		// debug("clearing history\n");
 		clear_hist_file();
@@ -83,7 +83,17 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	}
 	else
 	{
-		debug("not an implemented builtin\n");
+		debug("not an implemented builtin");
 	}
-	return (0);
+	return (status);
+}
+
+int	execute_env_builtin(t_data *data)
+{
+	int			error;
+
+	debug("env builtin");
+	error = 0;
+	error = print_env(data->env_arr);
+	return (error);
 }

@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "analyser.h"
+#include "scanner.h"
 
 /*
 it checks if the terminal ast node is a builtin or a command
@@ -25,6 +27,7 @@ void	which_ast_node(t_ast_node *ast)
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return ;
 	token = (t_token *)tokenlist->content;
+	debug("which_ast_node");
 	if (token->type == BUILTIN)
 	{
 		ast->type = NODE_BUILTIN;
@@ -59,6 +62,7 @@ void	expand_variable(t_data *data, t_token *token)
 			temp = NULL;
 		free(key);
 		token->lexeme = temp;
+		token->type = WORD;
 }
 
 void	read_exit_status(t_data *data, t_token *token)
@@ -69,12 +73,14 @@ void	read_exit_status(t_data *data, t_token *token)
 	temp = ft_itoa(data->exit_status);
 	free(token->lexeme);
 	token->lexeme = temp;
+	token->type = WORD;
 }
 
 void	extract_string(t_token *token)
 {
 	debug("extract_string");
 	ft_strlcpy(token->lexeme, (const char *)token->lexeme + 1, ft_strlen(token->lexeme) - 1);
+	token->type = WORD;
 }
 
 void	expand_string(t_data *data, t_token *token)
@@ -107,6 +113,7 @@ void	expand_string(t_data *data, t_token *token)
 		string_tokens = string_tokens->next;
 	}
 	ft_lstclear(&ptr_to_list, free_token); //free_token function is from scanner.h
+	token->type = WORD;
 }
 
 /*
@@ -132,19 +139,18 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	debug("analyse expand");
 	debug("Received token type: %d ast node type: %d lexeme: %s", ((t_token *)token_list->content)->type, ast->type, ((t_token *)token_list->content)->lexeme);
 	// assignng a ast node type to the node
-	// which_ast_node(ast);
+	which_ast_node(ast);
 	while (token_list)
 	{
 		token = token_list->content;
-		if (token->type == VAR_EXPANSION && ast->type == NODE_TERMINAL)
+		if (token->type == VAR_EXPANSION)
 			expand_variable(data, token);
-		if (token->type == DOLLAR_QUESTION)
+		else if (token->type == DOLLAR_QUESTION)
 			read_exit_status(data, token);
-		if (token->type == S_QUOTED_STRING)
+		else if (token->type == S_QUOTED_STRING)
 			extract_string(token);
-		if (token->type == QUOTED_STRING)
+		else if (token->type == QUOTED_STRING)
 			expand_string(data, token);
-		token->type = WORD;
 		debug("Expanded token type: %d ast node type: %d lexeme: %s", token->type, ast->type, token->lexeme);
 		token_list = token_list->next;
 	}
