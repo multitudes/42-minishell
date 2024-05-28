@@ -36,9 +36,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	if (ft_strncmp(lexeme, "echo", 5) == 0)
 		status = execute_echo_builtin(tokenlist);
 	else if (ft_strncmp(lexeme, "cd", 3) == 0)
-	{
-		debug("cd builtin");
-	}
+		status = execute_cd_builtin(data, tokenlist);
 	else if (ft_strncmp(lexeme, "pwd", 4) == 0)
 		status = execute_pwd_builtin();
 	else if (ft_strncmp(lexeme, "export", 7) == 0)
@@ -70,13 +68,38 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 		rl_clear_history();
 	}
 	else if (ft_strncmp(data->input, "history", 7) == 0)
-	{
-		print_history();
-	}
+		print_history(); //we need exit status of history command ! (after all) ;)
 	else
 	{
 		debug("not an implemented builtin");
 	}
+	return (status);
+}
+
+int	execute_cd_builtin(t_data *data, t_list *tokenlist)
+{
+	t_token	*token;
+	int		cd_return;
+	int		status;
+	char	*buf;
+
+	debug("cd builtin");
+	token = tokenlist->content;
+	if (ft_strncmp(token->lexeme, "cd", 3) == 0)
+	{
+		debug("lexeme: %s (Not printed)", token->lexeme);
+		tokenlist = tokenlist->next;
+		token = tokenlist->content;
+	}
+	buf = malloc(sizeof(char) * BUFREADSIZE);
+	if (!update_env(data, "OLDPWD", getcwd(buf, BUFREADSIZE)))
+		status = 1;
+	cd_return = chdir(token->lexeme);
+	if (cd_return != 0)
+		status = 1;
+	if (!update_env(data, "PWD", getcwd(buf, BUFREADSIZE)))
+		status = 1;
+	free(buf);
 	return (status);
 }
 
@@ -110,7 +133,7 @@ int	execute_echo_builtin(t_list *tokenlist)
 	}
 	else
 	{
-		debug("Echo builtin falsely called");
+		debug("echo builtin falsely called");
 		return (1);
 	}
 	if (ft_strncmp(token->lexeme, "-n", 3) == 0)
@@ -151,7 +174,9 @@ int	execute_pwd_builtin(void)
 		debug("Buffer for reading current directory too small");
 	}
 	status = printf("%s\n", current_directory);
+	free(buf);
 	if (status < 0)
 		return (1);
 	return (0);
 }
+
