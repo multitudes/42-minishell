@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 18:45:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 13:29:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,63 +19,9 @@ posix compliant use of the environ variable but wecan discuss this
 extern char **environ;
 
 /*
-when I need to free a string array like the envpaths
-*/
-int free_array(char **envpaths)
-{
-	int i = 0;
-	while (envpaths[i])
-	{
-		free(envpaths[i]);
-		i++;
-	}
-	free(envpaths);
-	return (0);
-}
-
-/*
-In our data struct we have the environment variables in a dynamic array
-mini_get_env will get the path variable and return it
-as a string array.
-base is the command we are looking for.
-*/
-char *create_path(char *base, t_data *data)
-{
-	int i;
-	char *commandpath;
-	char **envpaths;
-
-	i = 0;
-	envpaths = ft_split(mini_get_env(data, "PATH"), ':');
-	while (envpaths[i])
-	{
-		commandpath = ft_strjoin3(envpaths[i], "/", base);
-		if (access(commandpath, X_OK) == 0)
-		{
-			free_array(envpaths);
-			return (commandpath);
-		}
-		else
-			free(commandpath);
-		i++;
-	}
-	free_array(envpaths);
-	return (NULL);
-}
- 
-int count_tokens(t_list *tokenlist) 
-{
-	int count;
-
-	count = 0;
-	while (tokenlist) {
-		count++;
-		tokenlist = tokenlist->next;
-	}
-	return (count);
-}
-
-
+Since until now we store the token as linked list
+we convert it to a char array for the execve function
+*/ 
 char **get_args_from_tokenlist(t_list *tokenlist)
 {
 	int 	i;
@@ -86,10 +32,7 @@ char **get_args_from_tokenlist(t_list *tokenlist)
 	count = count_tokens(tokenlist);
 	args = malloc(sizeof(char *) * (count + 1));
 	if (!args)
-	{
-		perror("malloc args");
 		return (NULL);
-	}
 	while (tokenlist)
 	{
 		t_token *token = (t_token *)tokenlist->content;
@@ -114,13 +57,13 @@ int resolve_command_path(char **argv, t_data *data)
 	{
 		cmd = create_path(argv[0], data);
 		if (!cmd)
-			return (_error_with_status("minishell: command not on path\n", data));
+			return (error_set_status("minishell: command not on path\n", 1));
 		argv[0] = cmd;
 	}
 	else
 	{
 		if (access(argv[0], X_OK) == -1)
-			return (_error_with_status("minishell: command not found\n", data));
+			return (error_set_status("minishell: command not found\n", 1));
 	}
 	return 0;
 }
@@ -141,17 +84,17 @@ int execute_command(t_list *tokenlist, t_data *data)
 
 	argv = get_args_from_tokenlist(tokenlist);
 	if (!argv)
-		return (_error_with_status("malloc argv", data));
+		return (error_set_status("malloc argv", 1));
 	if (resolve_command_path(argv, data) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	pid = fork();
 	if (pid == 0)
 	{
 		execve(argv[0], argv, (char **)data->env_arr->contents);
-		_exit_err_failure("minishell: execve failed\n");	
+		exit_err_failure("minishell: execve failed\n");	
 	}
 	else if (pid == -1)
-		return (_error_with_status("minishell: fork failed\n", data));
+		return (error_set_status("minishell: fork failed\n", 1));
 	else
 		waitpid(pid, &status, 0); 
 	data->exit_status = WEXITSTATUS(status);
@@ -162,30 +105,28 @@ int execute_command(t_list *tokenlist, t_data *data)
 we will not use WIFEXITED but maybe this ? (((*(int *)&(status)) & 0177) == 0)
 or are we allowed to use it?
 */
-int	get_status_of_children(pid_t pid1, pid_t pid2, t_data *data)
+int	get_status_of_children(pid_t pid1, pid_t pid2)
 {		
 	int status;
 
 	status = -1;
 	if (waitpid(pid1, &status, 0) == -1)
-		return (_error_with_status("waitpid 1", data));	
-	data->exit_status = WEXITSTATUS(status);
-	status = -1;
+		status = error_set_status("waitpid 1", 1);	
+	status = WEXITSTATUS(status);
 	if (waitpid(pid2, &status, 0) == -1)
-		return (_error_with_status("waitpid 2", data));
-	data->exit_status = WEXITSTATUS(status);
+		status = error_set_status("waitpid 2", 1);
+	status = WEXITSTATUS(status);
 	return (status);
 }
 
 int execute_list(t_ast_node *ast, t_data *data)
 {
 	int status;
+	t_tokentype tokentype;
 
-	status = 0;
 	debug("NODE_LIST || &&");
-	// get the token from the tokenlist
-	t_tokentype tokentype = ((t_token *)ast->token_list->content)->type;
 	status = execute_ast(ast->left, data);
+	tokentype = ((t_token *)ast->token_list->content)->type;
 	if (status == 0 && tokentype == AND_IF)
 	{
 		debug("ANDTOKEN");
@@ -200,58 +141,58 @@ int execute_list(t_ast_node *ast, t_data *data)
 	return (status);
 }
 
+int handle_first_child_process(t_data *data, t_ast_node *ast) 
+{
+	if (close(data->pipe_fd[0]) == -1)
+		return (exit_err_failure("close 1 error"));
+	if (data->pipe_fd[1] != STDOUT_FILENO)
+	{
+		if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
+			return (exit_err_failure("dup2 1 error"));
+		if (close(data->pipe_fd[1]) == -1)
+			return (exit_err_failure("close 2 error"));
+	}
+	exit(execute_ast(ast->left, data));
+}
+
+
+int handle_second_child_process(t_data *data, t_ast_node *ast) 
+{
+	if (close(data->pipe_fd[1]) == -1)
+		return (exit_err_failure("close 3 - child write end of the pipe"));
+	if (data->pipe_fd[0] != STDIN_FILENO)
+	{
+		if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
+			return (exit_err_failure("dup2 2 failed"));
+		if (close(data->pipe_fd[0]) == -1)
+			return (exit_err_failure("close fd 4"));
+	}
+	exit(execute_ast(ast->right, data));
+}
+
 
 int	execute_pipeline(t_ast_node *ast, t_data *data)
 {
-	debug("NODE_PIPELINE");
 	pid_t pid1;
 	pid_t pid2;
 
-	// create a pipe
 	if (pipe(data->pipe_fd) == -1)
-		return (_error_with_status("pipe error", data));
-	// fork the process
+		return (error_set_status("pipe error", 1));
 	pid1 = fork();
-	debug("forked! pid1: %d", pid1);
 	if (pid1 == -1)
-		return (_error_with_status("fork 1 error", data));
+		return (error_set_status("fork 1 error", 1));
 	else if (pid1 == 0)
-	{
-		debug("first child process pid1: %d", pid1);
-		if (close(data->pipe_fd[0]) == -1)
-			return (_exit_err_failure("close 1 error"));
-		if (data->pipe_fd[1] != STDOUT_FILENO)
-		{
-			if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
-				return (_exit_err_failure("dup2 1 error"));
-			if (close(data->pipe_fd[1]) == -1)
-				return (_exit_err_failure("close 2 error"));
-		}
-		exit(execute_ast(ast->left, data));
-	}
+	 	handle_first_child_process(data, ast);
 	pid2 = fork();
 	if (pid2 == -1)
-		return (_error_with_status("fork 2 failed", data));
+		return (error_set_status("fork 2 failed", 1));
 	else if (pid2 == 0)
-	{
-		debug("second child process pid1: %d", pid2);
-		if (close(data->pipe_fd[1]) == -1)
-			return (_exit_err_failure("close 3 - child write end of the pipe"));
-		if (data->pipe_fd[0] != STDIN_FILENO)
-		{
-			if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
-				return (_exit_err_failure("dup2 2 failed"));
-			if (close(data->pipe_fd[0]) == -1)
-				return (_exit_err_failure("close fd 4"));
-		}
-		exit(execute_ast(ast->right, data));
-	}
-	/* Parent closes unused file descriptors for pipe, and waits for children */
+		handle_second_child_process(data, ast);
 	if (close(data->pipe_fd[0]) == -1)
-		return (_error_with_status("close fd 5", data));
+		return (error_set_status("close fd 5", 1));
 	if (close(data->pipe_fd[1]) == -1)
-		return (_error_with_status("close fd 6", data));
-	return (get_status_of_children(pid1, pid2, data));
+		return (error_set_status("close fd 6", 1));
+	return (get_status_of_children(pid1, pid2));
 }
 
 /*

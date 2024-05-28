@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/23 11:44:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 13:23:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 # include <stdlib.h>
 # include <assert.h>
 # include <limits.h>
+# include "utils.h"
 # include "darray.h"
 # include "environment.h"
 # include "scanner.h"
@@ -65,6 +66,9 @@ including the macro below which is not allowed by norminette.
 #define debug(M, ...) fprintf(stderr, "DEBUG %s:%d: " M "\n",\
         __FILE__, __LINE__, ##__VA_ARGS__)
 #endif
+
+// global.h
+extern int g_exit_status;
 
 // for the history - can override with 
 // -DMINIHISTFILE='"new relative path"' -DHISTSIZE=1000
@@ -108,6 +112,7 @@ typedef struct s_data t_data;
 int		loop();
 int		init_data(t_data **data);
 void	free_data(t_data **data);
+void	update_env_exit_status(int exit_status, t_data *data);
 
 #  ifdef __cplusplus
 

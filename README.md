@@ -1006,6 +1006,38 @@ Here's a breakdown of what "Left-to-right, Leftmost derivation" means:
 
 LL parsers are often used for their simplicity and efficiency. They can be used to parse a wide range of programming languages, although they are not powerful enough to parse all of them.
 
+## Execution
+
+This is the pseudocode for the executor which will start at the root of the AST and recursively execute the commands:
+
+```
+function execute_ast(node):
+	if node is a list (&& or ||):
+        status = execute_ast(node's left child)
+        if (status == 0 and node's operator is AND) 
+			or (status != 0 and node's operator is OR):
+            	status = execute_ast(node's right child)
+    if node is a pipe:
+        create a new process with fork()
+        if in child process:
+            set up the pipe with pipe()
+            redirect stdout to write end of pipe with dup2()
+            close read end of pipe
+            status = execute_ast(node's left child)
+        else:
+            close write end of pipe
+            redirect stdin to read end of pipe
+            status = execute_ast(node's right child)
+	else if node is a builtin:
+		status = execute builtin
+    else:
+        status = execute command with fork and execve()
+	return status
+
+start with process_node(root of AST)
+```
+
+
 ## Git rebase
 Working in a team and using git sometimes it is better to use rebase instead of merge.
 
@@ -1053,7 +1085,62 @@ int main() {
 }
 ```
 
-## see the exit status of the last command.
+## We are allowed to use a global variable
+With this global we can track the error codes in our program.
+It is necessary to have a global because of the forks and because when we handle a signal we cannot access or pass data parameters. 
+
+## Error handling and error codes
+
+In Bash, when a command finishes execution, it returns an exit status. The exit status is an integer number. To help identify the type of error, if any, Bash uses specific exit status numbers. Here are some of the most common ones:
+
+- `0`: Success. The command executed successfully.
+- `1`: General errors such as "divide by zero" and other impermissible operations.
+- `2`: Misuse of shell builtins, according to Bash documentation. Missing keyword or command, or permission problem.
+- `126`: Command invoked cannot execute. Permission problem or command is not an executable.
+- `127`: "Command not found."
+- `128`: Invalid argument to exit. `exit` takes only integer args in the range 0 - 255.
+- `128+n`: Fatal error signal "n". The error code plus the signal number that killed the process.
+- `130`: Script terminated by Control-C.
+- `255*`: Exit status out of range. `exit` takes only integer args in the range 0 - 255.
+
+These are just a few examples. The exact list can vary between systems. For a more comprehensive list, you can refer to the documentation for your specific system or shell.
+
+## errno
+`errno` is a global variable that is set by system calls and some library functions in the event of an error to indicate what went wrong. Its value is significant only when the return value of the call indicated an error (i.e., -1 from most system calls; -1 or NULL from most library functions), and it is overwritten by the next function that fails.
+
+Here are some common `errno` values:
+
+- `EACCES` (13): Permission denied.
+- `EAGAIN` (11): Resource temporarily unavailable.
+- `EBADF` (9): Bad file descriptor.
+- `EBUSY` (16): Device or resource busy.
+- `EEXIST` (17): File exists.
+- `EFAULT` (14): Bad address.
+- `EFBIG` (27): File too large.
+- `EINTR` (4): Interrupted system call.
+- `EINVAL` (22): Invalid argument.
+- `EIO` (5): Input/output error.
+- `EISDIR` (21): Is a directory.
+- `EMFILE` (24): Too many open files.
+- `ENFILE` (23): File table overflow.
+- `ENOENT` (2): No such file or directory.
+- `ENOMEM` (12): Out of memory.
+- `ENOSPC` (28): No space left on device.
+- `EPERM` (1): Operation not permitted.
+- `EPIPE` (32): Broken pipe.
+- `ESRCH` (3): No such process.
+
+In the context of the `close` function, the relevant `errno` values are:
+
+- `EBADF`: The file descriptor isn't valid.
+- `EINTR`: The `close` call was interrupted by a signal.
+- `EIO`: An I/O error occurred.
+
+For a complete list, you can refer to the man page by typing `man errno` in the terminal or check the official documentation for your system's C library.
+
+## See the exit status of the last command.
+In Bash, the exit status of the last command is stored in the special variable $?. You can access this variable to see the exit status of the last command that was executed.
+
 ```
 echo $?
 ```

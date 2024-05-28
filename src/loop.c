@@ -6,12 +6,15 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 17:38:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 13:26:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "darray.h"
+
+int	g_exit_status;
+
 /*
 The environ variable is part of the POSIX standard, so it should be 
 available on any POSIX-compliant system.
@@ -20,19 +23,51 @@ the environ variable is better than getting it in main.. (not posix compliant)
 */
 extern char **environ;
 
+// void free_ast(t_ast_node *node) 
+// {
+//     if (node == NULL) {
+//         return;
+//     }
+//     // Free the left and right children
+//     free_ast(node->left);
+//     free_ast(node->right);
+
+//     // Free the token list
+//     t_list *current = node->token_list;
+//     while (current != NULL) {
+//         t_list *next = current->next;
+
+//         // Free the token
+//         t_token *token = (t_token *)current->content;
+//         free(token->lexeme);  // Free the lexeme string
+//         free(token);  // Free the token itself
+
+//         // Free the list node
+//         free(current);
+
+//         current = next;
+//     }
+
+//     // Free the AST node itself
+//     free(node);
+// }
+
 /*
 util function
 it makes sense to collect what we malloc in our data struct
 because it is easier to free at the end or when we need to exit
+token_list is freed in the loop with the ast
 */
 void	free_data(t_data **data)
 {
 	if (data == NULL || *data == NULL)
 		return ;
-	// free the environ array
+	debug("freeing env darray");
 	darray_clear_destroy((*data)->env_arr);
-	free((*data)->ast);
-	free(data);
+	debug("freeing ast");
+	free_ast(&(*data)->ast);
+	free(*data);
+	debug("data freed");
 	*data = NULL;
 }
 
@@ -220,6 +255,7 @@ static void	exit_handler(int sig)
         rl_replace_line("", 0);
         rl_redisplay();
     }
+
 	return ;
 }
 
@@ -239,12 +275,12 @@ also removed these couple lines... This was for testing
 int	set_up_signals(void)
 {
 	if (isatty(STDIN_FILENO) == -1)
-		return (_error_with_status("is atty failed\n", NULL));
+		return (error_set_status("is atty failed\n", 1));
 	else if (isatty(STDIN_FILENO))
 	{
 		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-			return (_error_with_status("SIG_ERR signal failed\n", NULL));
+			return (error_set_status("SIG_ERR signal failed\n", 1));
 	}
 	rl_catch_signals = 0;
 	return (0);
@@ -252,11 +288,21 @@ int	set_up_signals(void)
 
 void	exit_minishell(t_data *data)
 {
+	debug("exit_minishell");
+	debug("freeing data");
 	free_data(&data);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
 	write(1, "exit\n", 6);
+}
+
+void	update_env_exit_status_with(int exit_status, t_data *data)
+{
+	g_exit_status = exit_status;
+	debug("final ast exit status: %d", g_exit_status);
+	debug("Set env exit status to %d", g_exit_status);
+	update_env(data, "?", ft_itoa(g_exit_status));
 }
 
 /*
@@ -291,13 +337,15 @@ int loop()
 				if (data->ast)
 				{
 					analyse_expand(data->ast, data);
-					execute_ast(data->ast, data);
+					update_env_exit_status_with(execute_ast(data->ast, data), data);
+					free_ast(&(data->ast));
 				}
 				else
 					debug("syntax parse error");
 			}
 		}
+		free((char *)(data->input));
 	}
 	exit_minishell(data);
-	return (0);
+	return (0); 
 }

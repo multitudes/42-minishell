@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/23 11:35:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 11:28:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,7 @@ typedef enum	e_nodetype
 	NODE_PIPELINE, 
 	NODE_COMMAND, 
 	NODE_TERMINAL,
-	NODE_TRUE,
-	NODE_FALSE,
 	NODE_BUILTIN,
-	// NODE_REDIRECT, 
-	// NODE_DLESS,
 } 				t_nodetype;
 
 /*
