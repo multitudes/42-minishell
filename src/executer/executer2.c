@@ -6,12 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 15:38:30 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 15:56:22 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executer.h"
-
 
 /*
 removed these debug line for now
@@ -20,11 +19,11 @@ if (WIFEXITED(status))
 else
 	debug("child did not exit normally\n");
 */
-int execute_command(t_list *tokenlist, t_data *data)
+int	execute_command(t_list *tokenlist, t_data *data)
 {
-	pid_t pid;
-	int status;
-	char **argv;
+	pid_t	pid;
+	int		status;
+	char	**argv;
 
 	argv = get_args_from_tokenlist(tokenlist);
 	if (!argv)
@@ -35,7 +34,7 @@ int execute_command(t_list *tokenlist, t_data *data)
 	if (pid == 0)
 	{
 		execve(argv[0], argv, (char **)data->env_arr->contents);
-		exit_err_failure("minishell: execve failed\n");	
+		exit_err_failure("minishell: execve failed\n");
 	}
 	else if (pid == -1)
 		return (error_set_status("minishell: fork failed\n", 1));
@@ -50,12 +49,12 @@ we will not use WIFEXITED but maybe this ? (((*(int *)&(status)) & 0177) == 0)
 or are we allowed to use it?
 */
 int	get_status_of_children(pid_t pid1, pid_t pid2)
-{		
-	int status;
+{
+	int	status;
 
 	status = -1;
 	if (waitpid(pid1, &status, 0) == -1)
-		status = error_set_status("waitpid 1", 1);	
+		status = error_set_status("waitpid 1", 1);
 	status = WEXITSTATUS(status);
 	if (waitpid(pid2, &status, 0) == -1)
 		status = error_set_status("waitpid 2", 1);
@@ -63,10 +62,10 @@ int	get_status_of_children(pid_t pid1, pid_t pid2)
 	return (status);
 }
 
-int execute_list(t_ast_node *ast, t_data *data)
+int	execute_list(t_ast_node *ast, t_data *data)
 {
-	int status;
-	t_tokentype tokentype;
+	int			status;
+	t_tokentype	tokentype;
 
 	debug("NODE_LIST || &&");
 	status = execute_ast(ast->left, data);
@@ -85,7 +84,7 @@ int execute_list(t_ast_node *ast, t_data *data)
 	return (status);
 }
 
-int handle_first_child_process(t_data *data, t_ast_node *ast)
+int	handle_first_child_process(t_data *data, t_ast_node *ast)
 {
 	if (close(data->pipe_fd[0]) == -1)
 		return (exit_err_failure("close 1 error"));
@@ -99,8 +98,7 @@ int handle_first_child_process(t_data *data, t_ast_node *ast)
 	exit(execute_ast(ast->left, data));
 }
 
-
-int handle_second_child_process(t_data *data, t_ast_node *ast)
+int	handle_second_child_process(t_data *data, t_ast_node *ast)
 {
 	if (close(data->pipe_fd[1]) == -1)
 		return (exit_err_failure("close 3 - child write end of the pipe"));
