@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 11:29:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 11:49:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 Used to returnfrom the program with an error message. and exit 1
 if data is not null will update the error exit code
 */
-int	error_with_status(char *msg, t_data *data)
+int	error_set_status(char *msg, t_data *data)
 {
 	write(2, msg, ft_strlen(msg));
 	if (data)
