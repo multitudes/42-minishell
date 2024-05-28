@@ -6,12 +6,15 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 17:38:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 09:19:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "darray.h"
+
+int	g_exit_status;
+
 /*
 The environ variable is part of the POSIX standard, so it should be 
 available on any POSIX-compliant system.
@@ -19,6 +22,35 @@ according to the linux programming language by kerrisk (page 127), using
 the environ variable is better than getting it in main.. (not posix compliant)
 */
 extern char **environ;
+
+void free_ast(t_ast_node *node) 
+{
+    if (node == NULL) {
+        return;
+    }
+    // Free the left and right children
+    free_ast(node->left);
+    free_ast(node->right);
+
+    // Free the token list
+    t_list *current = node->token_list;
+    while (current != NULL) {
+        t_list *next = current->next;
+
+        // Free the token
+        t_token *token = (t_token *)current->content;
+        free(token->lexeme);  // Free the lexeme string
+        free(token);  // Free the token itself
+
+        // Free the list node
+        free(current);
+
+        current = next;
+    }
+
+    // Free the AST node itself
+    free(node);
+}
 
 /*
 util function
@@ -29,8 +61,9 @@ void	free_data(t_data **data)
 {
 	if (data == NULL || *data == NULL)
 		return ;
-	// free the environ array
+	//token_list is freed in the tokenizer?
 	darray_clear_destroy((*data)->env_arr);
+	// free the ast tree
 	free((*data)->ast);
 	free(data);
 	*data = NULL;
@@ -280,6 +313,7 @@ int loop()
 	set_up_signals();		
 	while (data->input != NULL)
 	{
+		free(data->input);
 		data->input = readline("minishell $ ");
 		if (data->input && ft_strncmp(data->input, "", 1))
 		{
@@ -291,11 +325,13 @@ int loop()
 				if (data->ast)
 				{
 					analyse_expand(data->ast, data);
-					execute_ast(data->ast, data);
+					g_exit_status = execute_ast(data->ast, data);
+					free_ast((data->ast));
 				}
 				else
 					debug("syntax parse error");
 			}
+			free(data->input);
 		}
 	}
 	exit_minishell(data);

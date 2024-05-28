@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 18:45:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 08:49:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,63 +19,9 @@ posix compliant use of the environ variable but wecan discuss this
 extern char **environ;
 
 /*
-when I need to free a string array like the envpaths
-*/
-int free_array(char **envpaths)
-{
-	int i = 0;
-	while (envpaths[i])
-	{
-		free(envpaths[i]);
-		i++;
-	}
-	free(envpaths);
-	return (0);
-}
-
-/*
-In our data struct we have the environment variables in a dynamic array
-mini_get_env will get the path variable and return it
-as a string array.
-base is the command we are looking for.
-*/
-char *create_path(char *base, t_data *data)
-{
-	int i;
-	char *commandpath;
-	char **envpaths;
-
-	i = 0;
-	envpaths = ft_split(mini_get_env(data, "PATH"), ':');
-	while (envpaths[i])
-	{
-		commandpath = ft_strjoin3(envpaths[i], "/", base);
-		if (access(commandpath, X_OK) == 0)
-		{
-			free_array(envpaths);
-			return (commandpath);
-		}
-		else
-			free(commandpath);
-		i++;
-	}
-	free_array(envpaths);
-	return (NULL);
-}
- 
-int count_tokens(t_list *tokenlist) 
-{
-	int count;
-
-	count = 0;
-	while (tokenlist) {
-		count++;
-		tokenlist = tokenlist->next;
-	}
-	return (count);
-}
-
-
+Since until now we store the token as linked list
+we convert it to a char array for the execve function
+*/ 
 char **get_args_from_tokenlist(t_list *tokenlist)
 {
 	int 	i;
@@ -86,10 +32,7 @@ char **get_args_from_tokenlist(t_list *tokenlist)
 	count = count_tokens(tokenlist);
 	args = malloc(sizeof(char *) * (count + 1));
 	if (!args)
-	{
-		perror("malloc args");
 		return (NULL);
-	}
 	while (tokenlist)
 	{
 		t_token *token = (t_token *)tokenlist->content;
@@ -180,12 +123,11 @@ int	get_status_of_children(pid_t pid1, pid_t pid2, t_data *data)
 int execute_list(t_ast_node *ast, t_data *data)
 {
 	int status;
+	t_tokentype tokentype;
 
-	status = 0;
 	debug("NODE_LIST || &&");
-	// get the token from the tokenlist
-	t_tokentype tokentype = ((t_token *)ast->token_list->content)->type;
 	status = execute_ast(ast->left, data);
+	tokentype = ((t_token *)ast->token_list->content)->type;
 	if (status == 0 && tokentype == AND_IF)
 	{
 		debug("ANDTOKEN");

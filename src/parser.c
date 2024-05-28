@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/23 11:59:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 09:27:00 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -482,6 +482,14 @@ t_ast_node *create_ast(t_list *input_tokens)
 	return (a);
 }
 
+/*
+this function is used to free the token list in the ast node
+*/
+void free_token(void *content) {
+    t_token *token = (t_token *)content;
+    free(token->lexeme);
+    free(token);
+}
 
 void		*free_ast(t_ast_node **ast)
 {
@@ -489,7 +497,7 @@ void		*free_ast(t_ast_node **ast)
 		return (NULL);
 	free_ast(&((*ast)->left));
 	free_ast(&((*ast)->right));
-	ft_lstclear(&((*ast)->token_list), free);
+	ft_lstclear(&((*ast)->token_list), free_token);
 	free(*ast);
 	*ast = NULL;
 	return (NULL);

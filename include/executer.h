@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 17:51:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 08:27:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int		execute_command(t_list *tokenlist, t_data *data);
 char	*create_path(char *base, t_data *data);
 int		resolve_command_path(char **argv, t_data *data);
 int		count_tokens(t_list *tokenlist);
+int 	free_array(char **envpaths);
 
 #  ifdef __cplusplus
 

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/23 11:44:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 09:17:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ typedef struct s_data t_data;
 int		loop();
 int		init_data(t_data **data);
 void	free_data(t_data **data);
+void	free_ast(t_ast_node *node); 
 
 #  ifdef __cplusplus
 
