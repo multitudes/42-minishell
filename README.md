@@ -1006,6 +1006,38 @@ Here's a breakdown of what "Left-to-right, Leftmost derivation" means:
 
 LL parsers are often used for their simplicity and efficiency. They can be used to parse a wide range of programming languages, although they are not powerful enough to parse all of them.
 
+## Execution
+
+This is the pseudocode for the executor which will start at the root of the AST and recursively execute the commands:
+
+```
+function execute_ast(node):
+	if node is a list (&& or ||):
+        status = execute_ast(node's left child)
+        if (status == 0 and node's operator is AND) 
+			or (status != 0 and node's operator is OR):
+            	status = execute_ast(node's right child)
+    if node is a pipe:
+        create a new process with fork()
+        if in child process:
+            set up the pipe with pipe()
+            redirect stdout to write end of pipe with dup2()
+            close read end of pipe
+            status = execute_ast(node's left child)
+        else:
+            close write end of pipe
+            redirect stdin to read end of pipe
+            status = execute_ast(node's right child)
+	else if node is a builtin:
+		status = execute builtin
+    else:
+        status = execute command with fork and execve()
+	return status
+
+start with process_node(root of AST)
+```
+
+
 ## Git rebase
 Working in a team and using git sometimes it is better to use rebase instead of merge.
 
@@ -1053,7 +1085,9 @@ int main() {
 }
 ```
 
-## see the exit status of the last command.
+## See the exit status of the last command.
+In Bash, the exit status of the last command is stored in the special variable $?. You can access this variable to see the exit status of the last command that was executed.
+
 ```
 echo $?
 ```
