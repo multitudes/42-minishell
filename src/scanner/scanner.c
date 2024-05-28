@@ -6,10 +6,10 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 09:51:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 11:23:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "utils.h"
+
 #include "minishell.h"
 
 /*
@@ -41,7 +41,7 @@ t_list	*tokenizer(const char *input)
 	}
 	if (data->scanner_error == 0)
 		return (data->token_list);
-	free_scanner_data(data);
+	free_scanner_data(&data);
 	return (NULL);
 }
 
@@ -100,7 +100,7 @@ t_list	*string_tokenizer(const char *input)
 	}
 	if (data->scanner_error == 0)
 		return (data->token_list);
-	free_scanner_data(data);
+	free_scanner_data(&data);
 	return (NULL);
 }
 

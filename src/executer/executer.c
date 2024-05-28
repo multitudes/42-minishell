@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 08:49:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 11:30:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,13 @@ int resolve_command_path(char **argv, t_data *data)
 	{
 		cmd = create_path(argv[0], data);
 		if (!cmd)
-			return (_error_with_status("minishell: command not on path\n", data));
+			return (error_with_status("minishell: command not on path\n", data));
 		argv[0] = cmd;
 	}
 	else
 	{
 		if (access(argv[0], X_OK) == -1)
-			return (_error_with_status("minishell: command not found\n", data));
+			return (error_with_status("minishell: command not found\n", data));
 	}
 	return 0;
 }
@@ -84,17 +84,17 @@ int execute_command(t_list *tokenlist, t_data *data)
 
 	argv = get_args_from_tokenlist(tokenlist);
 	if (!argv)
-		return (_error_with_status("malloc argv", data));
+		return (error_with_status("malloc argv", data));
 	if (resolve_command_path(argv, data) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	pid = fork();
 	if (pid == 0)
 	{
 		execve(argv[0], argv, (char **)data->env_arr->contents);
-		_exit_err_failure("minishell: execve failed\n");	
+		exit_err_failure("minishell: execve failed\n");	
 	}
 	else if (pid == -1)
-		return (_error_with_status("minishell: fork failed\n", data));
+		return (error_with_status("minishell: fork failed\n", data));
 	else
 		waitpid(pid, &status, 0); 
 	data->exit_status = WEXITSTATUS(status);
@@ -111,11 +111,11 @@ int	get_status_of_children(pid_t pid1, pid_t pid2, t_data *data)
 
 	status = -1;
 	if (waitpid(pid1, &status, 0) == -1)
-		return (_error_with_status("waitpid 1", data));	
+		return (error_with_status("waitpid 1", data));	
 	data->exit_status = WEXITSTATUS(status);
 	status = -1;
 	if (waitpid(pid2, &status, 0) == -1)
-		return (_error_with_status("waitpid 2", data));
+		return (error_with_status("waitpid 2", data));
 	data->exit_status = WEXITSTATUS(status);
 	return (status);
 }
@@ -151,48 +151,48 @@ int	execute_pipeline(t_ast_node *ast, t_data *data)
 
 	// create a pipe
 	if (pipe(data->pipe_fd) == -1)
-		return (_error_with_status("pipe error", data));
+		return (error_with_status("pipe error", data));
 	// fork the process
 	pid1 = fork();
 	debug("forked! pid1: %d", pid1);
 	if (pid1 == -1)
-		return (_error_with_status("fork 1 error", data));
+		return (error_with_status("fork 1 error", data));
 	else if (pid1 == 0)
 	{
 		debug("first child process pid1: %d", pid1);
 		if (close(data->pipe_fd[0]) == -1)
-			return (_exit_err_failure("close 1 error"));
+			return (exit_err_failure("close 1 error"));
 		if (data->pipe_fd[1] != STDOUT_FILENO)
 		{
 			if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
-				return (_exit_err_failure("dup2 1 error"));
+				return (exit_err_failure("dup2 1 error"));
 			if (close(data->pipe_fd[1]) == -1)
-				return (_exit_err_failure("close 2 error"));
+				return (exit_err_failure("close 2 error"));
 		}
 		exit(execute_ast(ast->left, data));
 	}
 	pid2 = fork();
 	if (pid2 == -1)
-		return (_error_with_status("fork 2 failed", data));
+		return (error_with_status("fork 2 failed", data));
 	else if (pid2 == 0)
 	{
 		debug("second child process pid1: %d", pid2);
 		if (close(data->pipe_fd[1]) == -1)
-			return (_exit_err_failure("close 3 - child write end of the pipe"));
+			return (exit_err_failure("close 3 - child write end of the pipe"));
 		if (data->pipe_fd[0] != STDIN_FILENO)
 		{
 			if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
-				return (_exit_err_failure("dup2 2 failed"));
+				return (exit_err_failure("dup2 2 failed"));
 			if (close(data->pipe_fd[0]) == -1)
-				return (_exit_err_failure("close fd 4"));
+				return (exit_err_failure("close fd 4"));
 		}
 		exit(execute_ast(ast->right, data));
 	}
 	/* Parent closes unused file descriptors for pipe, and waits for children */
 	if (close(data->pipe_fd[0]) == -1)
-		return (_error_with_status("close fd 5", data));
+		return (error_with_status("close fd 5", data));
 	if (close(data->pipe_fd[1]) == -1)
-		return (_error_with_status("close fd 6", data));
+		return (error_with_status("close fd 6", data));
 	return (get_status_of_children(pid1, pid2, data));
 }
 

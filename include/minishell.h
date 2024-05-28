@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 10:56:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 11:26:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 # include <stdlib.h>
 # include <assert.h>
 # include <limits.h>
+# include "utils.h"
 # include "darray.h"
 # include "environment.h"
 # include "scanner.h"

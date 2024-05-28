@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:23:18 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/27 17:38:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 11:29:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ extern "C" {
 # define NORETURN
 # endif
 
-int _error_with_status(char *msg, t_data *data);
-int	_exit_err_failure(char *msg) NORETURN;
+int error_with_status(char *msg, t_data *data);
+int	exit_err_failure(char *msg) NORETURN;
 
 #  ifdef __cplusplus
 
