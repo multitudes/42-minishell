@@ -26,7 +26,7 @@ extern "C" {
 forward declaration
 */
 typedef struct s_data t_data;
-
+typedef struct s_darray t_darray;
 /*
 enviromnemt list:
 - from the system I get the environ variable as a char **environ
@@ -34,7 +34,7 @@ enviromnemt list:
 */
 
 bool	update_env(t_data *data, const char *key, const char *value);
-void	print_env(t_data *data);
+int		print_env(t_darray *env_array);
 char	*mini_get_env(t_data *data, const char *key);
 char	*ft_strjoin3(const char *key, const char *mid, const char *value);
 

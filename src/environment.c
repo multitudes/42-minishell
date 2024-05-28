@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 #include "environment.h"
+#include "darray.h"
 
 bool update_env(t_data *data, const char *key, const char *value)
 {
@@ -59,18 +60,19 @@ bool update_env(t_data *data, const char *key, const char *value)
 /*
 this function will print the environment variables
 */
-void print_env(t_data *data)
+int	print_env(t_darray *env_arr)
 {
-	t_darray	*env_arr;
-	int			i;
+	int	i;
+	int	status;
 
 	i = 0;
-	env_arr = data->env_arr;
-	printf("printing env\n");
-	printf("{");
-	while (env_arr->contents[i] != NULL)
-		printf("\"%s\",", (char *)darray_get(env_arr, i++));
-	printf("}\n");
+	status = 0;
+	while (env_arr && env_arr->contents && env_arr->contents[i] != NULL)
+	{
+		if (printf("%s\n", (char *)darray_get(env_arr, i++)) < 0)
+			status = 1;
+	}
+	return (status);
 }
 
 /*

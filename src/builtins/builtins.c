@@ -71,7 +71,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	{
 		debug("false builtin\n");
 	}
-	if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
+	else if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
 	{
 		// debug("clearing history\n");
 		clear_hist_file();
@@ -83,31 +83,17 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	}
 	else
 	{
-		debug("not an implemented builtin\n");
+		debug("not an implemented builtin");
 	}
 	return (status);
 }
 
 int	execute_env_builtin(t_data *data)
 {
-	t_darray	*env_array;
-	size_t		n_bytes;
 	int			error;
-	int			i;
 
-	debug("env builtin\n");
-	n_bytes = 0;
+	debug("env builtin");
 	error = 0;
-	i = 0;
-	env_array = data->env_arr;
-	while (env_array && env_array->contents && env_array->contents[i])
-	{
-		n_bytes = write(1, &(env_array->contents[i]), ft_strlen(env_array->contents[i]));
-		if (n_bytes < ft_strlen(env_array->contents[i]))
-			error = 1;
-		i++;
-	}
-	if (error == 1)
-		return (1);
-	return (0);
+	error = print_env(data->env_arr);
+	return (error);
 }
