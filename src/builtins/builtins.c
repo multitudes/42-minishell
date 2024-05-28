@@ -25,10 +25,12 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 {
 	t_token *token;
 	char *lexeme;
+	int		status;
 	(void)data; //I think this does not do anything!?
 
 	token = (t_token *)tokenlist->content;
 	lexeme = (char *)token->lexeme;
+	status = 0;
 	if (ft_strncmp(lexeme, "echo", 5) == 0)
 	{
 		debug("echo builtin---- \n");
@@ -56,9 +58,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 		debug("unset builtin\n");
 	}
 	else if (ft_strncmp(lexeme, "env", 4) == 0)
-	{
-		debug("env builtin\n");
-	}
+		status = execute_env_builtin(data);
 	else if (ft_strncmp(lexeme, "exit", 5) == 0)
 	{
 		debug("exit builtin\n");
@@ -85,5 +85,29 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	{
 		debug("not an implemented builtin\n");
 	}
+	return (status);
+}
+
+int	execute_env_builtin(t_data *data)
+{
+	t_darray	*env_array;
+	size_t		n_bytes;
+	int			error;
+	int			i;
+
+	debug("env builtin\n");
+	n_bytes = 0;
+	error = 0;
+	i = 0;
+	env_array = data->env_arr;
+	while (env_array && env_array->contents && env_array->contents[i])
+	{
+		n_bytes = write(1, &(env_array->contents[i]), ft_strlen(env_array->contents[i]));
+		if (n_bytes < ft_strlen(env_array->contents[i]))
+			error = 1;
+		i++;
+	}
+	if (error == 1)
+		return (1);
 	return (0);
 }
