@@ -21,10 +21,18 @@ extern "C" {
 # endif
 
 # include "minishell.h"
+# include "libft.h"
+# include "scanner.h"
+# include "environment.h"
+# include "history.h"
+# include <unistd.h>
+
+# define BUFREADSIZE 300
 
 int	execute_builtin(t_list *tokenlist, t_data *data);
 int	execute_echo_builtin(t_list *tokenlist);
 int	execute_env_builtin(t_data *data);
+int	execute_pwd_builtin(void);
 
 #  ifdef __cplusplus
 
