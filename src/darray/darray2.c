@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 13:35:47 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 16:36:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 18:44:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,11 @@ void	darray_destroy(t_darray *array)
 
 /*
 */
-void	darray_clear_destroy(t_darray *array)
+int	darray_clear_destroy(t_darray *array)
 {
 	darray_clear(array);
 	darray_destroy(array);
+	return (1);
 }
 
 /*

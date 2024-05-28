@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 15:56:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 19:05:54 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,20 @@ int	execute_command(t_list *tokenlist, t_data *data)
 
 	argv = get_args_from_tokenlist(tokenlist);
 	if (!argv)
-		return (error_set_status("malloc argv", 1));
+		return (status_and_print("malloc argv", 1));
 	if (resolve_command_path(argv, data) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	pid = fork();
 	if (pid == 0)
 	{
 		execve(argv[0], argv, (char **)data->env_arr->contents);
-		exit_err_failure("minishell: execve failed\n");
+		exit_err_status(NULL, 127);
 	}
 	else if (pid == -1)
-		return (error_set_status("minishell: fork failed\n", 1));
+		return (status_and_print("minishell: fork failed\n", 1));
 	else
 		waitpid(pid, &status, 0); 
-	data->exit_status = WEXITSTATUS(status);
+	status = WEXITSTATUS(status);
 	return (status);
 }
 
@@ -54,10 +54,10 @@ int	get_status_of_children(pid_t pid1, pid_t pid2)
 
 	status = -1;
 	if (waitpid(pid1, &status, 0) == -1)
-		status = error_set_status("waitpid 1", 1);
+		status = status_and_print("waitpid 1", 1);
 	status = WEXITSTATUS(status);
 	if (waitpid(pid2, &status, 0) == -1)
-		status = error_set_status("waitpid 2", 1);
+		status = status_and_print("waitpid 2", 1);
 	status = WEXITSTATUS(status);
 	return (status);
 }
@@ -87,13 +87,13 @@ int	execute_list(t_ast_node *ast, t_data *data)
 int	handle_first_child_process(t_data *data, t_ast_node *ast)
 {
 	if (close(data->pipe_fd[0]) == -1)
-		return (exit_err_failure("close 1 error"));
+		return (exit_err_status("close 1 error", 1));
 	if (data->pipe_fd[1] != STDOUT_FILENO)
 	{
 		if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
-			return (exit_err_failure("dup2 1 error"));
+			exit_err_status("dup2 1 error", 1);
 		if (close(data->pipe_fd[1]) == -1)
-			return (exit_err_failure("close 2 error"));
+			exit_err_status("close 2 error", 1);
 	}
 	exit(execute_ast(ast->left, data));
 }
@@ -101,13 +101,13 @@ int	handle_first_child_process(t_data *data, t_ast_node *ast)
 int	handle_second_child_process(t_data *data, t_ast_node *ast)
 {
 	if (close(data->pipe_fd[1]) == -1)
-		return (exit_err_failure("close 3 - child write end of the pipe"));
+		exit_err_status("close 3 - child write end of the pipe", 1);
 	if (data->pipe_fd[0] != STDIN_FILENO)
 	{
 		if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
-			return (exit_err_failure("dup2 2 failed"));
+			exit_err_status("dup2 2 failed", 1);
 		if (close(data->pipe_fd[0]) == -1)
-			return (exit_err_failure("close fd 4"));
+			exit_err_status("close fd 4", 1);
 	}
 	exit(execute_ast(ast->right, data));
 }
