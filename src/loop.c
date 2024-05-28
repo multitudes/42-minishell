@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 18:30:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 18:31:59 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,9 +299,6 @@ void	exit_minishell(t_data *data)
 
 void	update_env_exit_status_with(int exit_status, t_data *data)
 {
-	g_signal = exit_status;
-	debug("final ast exit status: %d", g_signal);
-	debug("Set env exit status to %d", g_signal);
 	update_env(data, "?", ft_itoa(g_signal));
 }
 
