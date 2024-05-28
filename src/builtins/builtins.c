@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   built_ins.c                                        :+:      :+:    :+:   */
+/*   builtins.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "built_ins.h"
+#include "builtins.h"
 #include "libft.h"
 #include "scanner.h"
 #include "environment.h"
@@ -21,7 +21,7 @@ NOT yet implemented - TODO
 true and false are shell builtins that do nothing except return an exit status of 0 and 1, respectively.
 we need them eventually for the bonus... true && false || true etc
 */
-void    execute_builtin(t_list *tokenlist, t_data *data)
+int    execute_builtin(t_list *tokenlist, t_data *data)
 {
 	t_token *token;
 	char *lexeme;
@@ -85,4 +85,5 @@ void    execute_builtin(t_list *tokenlist, t_data *data)
 	{
 		debug("not an implemented builtin\n");
 	}
+	return (0);
 }
