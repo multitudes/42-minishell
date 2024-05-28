@@ -6,17 +6,29 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/23 07:36:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/27 17:45:04 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "error.h"
 
 /*
-Used to exit the program with an error message. and exit 1
+Used to returnfrom the program with an error message. and exit 1
+if data is not null will update the error exit code
 */
-int	_exit_err(char *msg)
+int	_error_with_status(char *msg, t_data *data)
 {
 	write(2, msg, ft_strlen(msg));
-	return (1);
+	if (data)
+		data->exit_status = 1;
+	return (EXIT_FAILURE);
+}
+
+/*
+will exit the program with an error message
+*/
+int	_exit_err_failure(char *msg)
+{
+	write(2, msg, ft_strlen(msg));
+	exit(EXIT_FAILURE);
 }
