@@ -32,15 +32,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	lexeme = (char *)token->lexeme;
 	status = 0;
 	if (ft_strncmp(lexeme, "echo", 5) == 0)
-	{
-		debug("echo builtin---- \n");
-		while (tokenlist)
-		{
-			token = (t_token *)tokenlist->content;
-			debug("lexeme: %s\n", token->lexeme);
-			tokenlist = tokenlist->next;
-		}
-	}
+		status = execute_echo_builtin(tokenlist);
 	else if (ft_strncmp(lexeme, "cd", 3) == 0)
 	{
 		debug("cd builtin\n");
@@ -95,5 +87,52 @@ int	execute_env_builtin(t_data *data)
 	debug("env builtin");
 	status = 0;
 	status = print_env(data->env_arr);
+	return (status);
+}
+
+int	execute_echo_builtin(t_list *tokenlist)
+{
+	int		status;
+	t_token	*token;
+	int		new_line;
+	int		printf_return;
+
+	debug("echo builtin");
+	status = 0;
+	new_line = 1;
+	printf_return = 0;
+	token = tokenlist->content;
+	if (ft_strncmp(token->lexeme, "echo", 5) == 0)
+	{
+		debug("lexeme: %s (Not printed)", token->lexeme);
+		tokenlist = tokenlist->next;
+		token = tokenlist->content;
+	}
+	else
+	{
+		debug("Echo builtin falsely called");
+		return (1);
+	}
+	if (ft_strncmp(token->lexeme, "-n", 3) == 0)
+	{
+		new_line = 0;
+		debug("lexeme: %s (newline at end to be suppressed)", token->lexeme);
+		tokenlist = tokenlist->next;
+		token = tokenlist->content;
+	}
+	while (tokenlist)
+	{
+		token = tokenlist->content;
+		debug("lexeme: %s", token->lexeme);
+		if (tokenlist->next)
+			printf_return = printf("%s ", token->lexeme);
+		else if (new_line == 0)
+			printf_return = printf("%s", token->lexeme);
+		else
+			printf_return = printf("%s\n", token->lexeme);
+		tokenlist = tokenlist->next;
+		if (printf_return < 0)
+			status = 1;
+	}
 	return (status);
 }
