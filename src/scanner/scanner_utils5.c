@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:11:00 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 11:22:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/28 14:34:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,19 @@ int	init_scanner_data(t_mini_data **data, const char *input)
 	return (1);
 }
 
-void	free_scanner_data(t_mini_data **data)
+/*
+I free the minidata struct used in the scanner but return 
+the pointer to what I need, the tokenlist
+*/
+t_list	*free_scanner_data(t_mini_data **data)
 {
+	t_list	*tokenlist;
+
+	tokenlist = (*data)->token_list;
 	if (data == NULL || *data == NULL)
-		return ;
-	free((void *)(*data)->input);
-	ft_lstclear(&(*data)->token_list, free_token);
+		return (NULL);
+	// free((void *)(*data)->input);
 	free(*data);
 	*data = NULL;
+	return (tokenlist);
 }
