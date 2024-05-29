@@ -91,7 +91,6 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 	int		cd_return;
 	int		status;
 	char	*dir;
-	char	*temp;
 
 	debug("cd builtin");
 	token = tokenlist->content;
@@ -117,23 +116,13 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 	}
 	else
 	{
-		if (mini_get_env(data, "HOME"))
-			temp = ft_strdup(mini_get_env(data, "HOME"));
-		else
-			temp = NULL;
-		if (temp)
-		{
-			cd_return = chdir(temp);
-			if (cd_return != 0)
-				status = 1;
-			dir = getcwd(NULL, 0);
-			if (!update_env(data, "PWD", dir))
-				status = 1;
-			free(temp);
-			free(dir);
-		}
-		else
-			debug("$HOME could not be found or changed to.");
+		cd_return = chdir(mini_get_env(data, "HOME"));
+		if (cd_return != 0)
+			status = 1;
+		dir = getcwd(NULL, 0);
+		if (!update_env(data, "PWD", dir))
+			status = 1;
+		free(dir);
 	}		
 	return (status);
 }
