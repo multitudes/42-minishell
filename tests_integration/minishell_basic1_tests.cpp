@@ -6,14 +6,23 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../include/minishell.h"
-
+#include <fstream>
 
 const char* test_basicminishell() {
-	// I would like to test my minishell here
-
+	
 	return NULL;
 }
 
+
+const char *test_basicminishell2() {
+    
+	return NULL;
+}
+
+const char *test_basicminishell3() {
+    
+	return NULL;
+}
 
 const char *all_tests()
 {
@@ -22,7 +31,8 @@ const char *all_tests()
 	
 	// run the tests
 	run_test(test_basicminishell);
-
+	run_test(test_basicminishell2);
+	run_test(test_basicminishell3);
 	
 	return NULL;
 }
