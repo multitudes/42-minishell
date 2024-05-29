@@ -87,8 +87,13 @@ TODOs:
 - interpret errors from called getcwd system function.
 - Implement additional functionality:
 -- when additional invaldid arguments are given the command should abort and an error message given
--- when command 'cd $HOME $HOME' is entered in BASH the current directory is output in relative format (which is a strange behavior)
+-- when command 'cd $HOME $HOME' is entered in BASH "bash: cd: too many arguments" is output with exit code 1
+-- if invalid name is given output is "bash: cd: ARGUMENT_GIVEN: No such file or directory" with exit code 130 !
 -- If directory is '-', it is converted to $OLDPWD before attempting directory change.
+(from The Open Group Base Specifications Issue 7, 2018 edition:
+"When a <hyphen-minus> is used as the operand,
+this shall be equivalent to the command: cd "$OLDPWD" && pwd")
+-- when $HOME is undefined just performing `cd` is implementation defined (How is this handled in BASH?)
 */
 int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 {
@@ -108,6 +113,11 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 	if (!update_env(data, "OLDPWD", dir))
 		status = 1;
 	free(dir);
+	if (tokenlist && tokenlist->next)
+	{
+		write(2, "minishell: cd: too many arguments\n", 34);
+		return (1);
+	}
 	if (tokenlist)
 	{
 		token = tokenlist->content;
@@ -214,6 +224,7 @@ but echo on the variable will actually execute the newlines
 - while env without arguments does not display the variable.
 - it is possible to assign multiple value to a variable `export VAR=1:2:3:"string" (in this case the quotes are not shown (neither with env nor with export))
 - it can also end with a ':'
+- export `VAR=2=3` gets added to the environment as `VAR='2=3'` (env would display this variable as `VAR=2=3`)
 QUESTION:
 - where do we want to store our local variables?
 */
@@ -258,3 +269,11 @@ int	execute_pwd_builtin(void)
 	return (0);
 }
 
+/*
+read-only environment variables cannot be unset. How do we manage this?
+Do we only work with our local environmental variable or also those of the system?
+int	execute_unset_builtin(t_data *data, t_list tokenlist)
+{
+
+}
+*/
