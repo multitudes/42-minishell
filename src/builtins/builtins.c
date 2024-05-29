@@ -19,9 +19,8 @@
 #include <unistd.h>
 
 /*
-NOT yet implemented - TODO
-true and false are shell builtins that do nothing except return an exit status of 0 and 1, respectively.
-we need them eventually for the bonus... true && false || true etc
+Function to call to execute minishell builtin functions + history, true, false.
+Returns exit status of executed builtin.
 */
 int    execute_builtin(t_list *tokenlist, t_data *data)
 {
@@ -77,12 +76,18 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	return (status);
 }
 
+/*
+Minishell builtin for "cd" command.
+Updates PWD and OLDPWD environment variables.
+TODOs:
+- interpret errors from called getcwd system function.
+*/
 int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 {
 	t_token	*token;
 	int		cd_return;
 	int		status;
-	char	*buf;
+	char	*dir;
 
 	debug("cd builtin");
 	token = tokenlist->content;
@@ -92,18 +97,23 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 		tokenlist = tokenlist->next;
 		token = tokenlist->content;
 	}
-	buf = malloc(sizeof(char) * BUFREADSIZE);
-	if (!update_env(data, "OLDPWD", getcwd(buf, BUFREADSIZE)))
+	dir = getcwd(NULL, 0);
+	if (!update_env(data, "OLDPWD", dir))
 		status = 1;
+	free(dir);
 	cd_return = chdir(token->lexeme);
 	if (cd_return != 0)
 		status = 1;
-	if (!update_env(data, "PWD", getcwd(buf, BUFREADSIZE)))
+	dir = getcwd(NULL, 0);
+	if (!update_env(data, "PWD", dir))
 		status = 1;
-	free(buf);
+	free(dir);
 	return (status);
 }
 
+/*
+Writes contents of environment to standard output.
+*/
 int	execute_env_builtin(t_data *data)
 {
 	int	status;
@@ -114,6 +124,9 @@ int	execute_env_builtin(t_data *data)
 	return (status);
 }
 
+/*
+Executes builtin "echo" function with and without '-n' option.
+*/
 int	execute_echo_builtin(t_list *tokenlist)
 {
 	int		status;
@@ -160,26 +173,30 @@ int	execute_echo_builtin(t_list *tokenlist)
 	return (status);
 }
 
-/*int	execute_export_builtin(t_data *data, t_list *tokenlist)
+/*
+int	execute_export_builtin(t_data *data, t_list *tokenlist)
 {
 
 }*/
 
+/*
+Executes builtin 'pwd' command.
+TODO:
+- interpret possible errors from system function `getcwd()`
+*/
 int	execute_pwd_builtin(void)
 {
 	int		status;
-	char	*buf;
 	char	*current_directory;
 
 	debug("pwd builtin");
-	buf = malloc(sizeof(char) * BUFREADSIZE);
-	current_directory = getcwd(buf, BUFREADSIZE);
+	current_directory = getcwd(NULL, 0);
 	if (!current_directory)
 	{
 		debug("Buffer for reading current directory too small");
 	}
 	status = printf("%s\n", current_directory);
-	free(buf);
+	free(current_directory);
 	if (status < 0)
 		return (1);
 	return (0);
