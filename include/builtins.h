@@ -27,8 +27,6 @@ extern "C" {
 # include "history.h"
 # include <unistd.h>
 
-# define BUFREADSIZE 300
-
 int	execute_builtin(t_list *tokenlist, t_data *data);
 int	execute_cd_builtin(t_data *data, t_list *tokenlist);
 int	execute_echo_builtin(t_list *tokenlist);
