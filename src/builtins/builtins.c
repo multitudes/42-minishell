@@ -130,19 +130,18 @@ int	execute_echo_builtin(t_list *tokenlist)
 	{
 		debug("lexeme: %s (Not printed)", token->lexeme);
 		tokenlist = tokenlist->next;
-		token = tokenlist->content;
 	}
 	else
 	{
 		debug("echo builtin falsely called");
 		return (1);
 	}
-	if (ft_strncmp(token->lexeme, "-n", 3) == 0)
+	if (tokenlist && ft_strncmp((char *)((t_token *)tokenlist->content)->lexeme, "-n", 3) == 0)
 	{
+		token = tokenlist->content;
 		new_line = 0;
 		debug("lexeme: %s (newline at end to be suppressed)", token->lexeme);
 		tokenlist = tokenlist->next;
-		token = tokenlist->content;
 	}
 	while (tokenlist)
 	{
@@ -150,14 +149,14 @@ int	execute_echo_builtin(t_list *tokenlist)
 		debug("lexeme: %s", token->lexeme);
 		if (tokenlist->next)
 			printf_return = printf("%s ", token->lexeme);
-		else if (new_line == 0)
-			printf_return = printf("%s", token->lexeme);
 		else
-			printf_return = printf("%s\n", token->lexeme);
+			printf_return = printf("%s", token->lexeme);
 		tokenlist = tokenlist->next;
 		if (printf_return < 0)
 			status = 1;
 	}
+	if (new_line == 1)
+			printf_return = printf("\n");
 	return (status);
 }
 
