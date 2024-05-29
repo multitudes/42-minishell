@@ -86,9 +86,7 @@ Updates PWD and OLDPWD environment variables.
 TODOs:
 - interpret errors from called getcwd system function.
 - Implement additional functionality:
--- when additional invaldid arguments are given the command should abort and an error message given
--- when command 'cd $HOME $HOME' is entered in BASH "bash: cd: too many arguments" is output with exit code 1
--- if invalid name is given output is "bash: cd: ARGUMENT_GIVEN: No such file or directory" with exit code 130 !
+-- if invalid name is given output is "bash: cd: ARGUMENT_GIVEN: No such file or directory" with exit code 1
 -- If directory is '-', it is converted to $OLDPWD before attempting directory change.
 (from The Open Group Base Specifications Issue 7, 2018 edition:
 "When a <hyphen-minus> is used as the operand,
@@ -162,7 +160,7 @@ int	execute_env_builtin(t_data *data)
 /*
 Executes builtin "echo" function with and without '-n' option.
 TO CHECK:
-When suppressing the newline at the end, does echo actually introduse a carriage return or similar?
+When suppressing the newline at the end, does echo actually introduce a carriage return or similar?
 */
 int	execute_echo_builtin(t_list *tokenlist)
 {
@@ -212,8 +210,8 @@ int	execute_echo_builtin(t_list *tokenlist)
 
 /*
 Executes 'export' builtin. No options interpreted.
-- No arguments should give a sorted list of the environment variables (lower case variables come after all upper case variables),
-a few variables are quoted and apparently the last command is not included
+- No arguments should give a sorted list of the environment variables (lower case variables come after all upper case variables) with `declare -x ` appended,
+variablevalues are in double quotes and apparently the last command (`export`) is not included
 - when a string with newline characters is assigned to a variable in BASH
 (e.g. VAR="first\nsecond\nthird" - single or double quotes give the same result),
 and export, then `export` and `env` list the variable with displayed \n-characters, in env case without quotes, in export case with quotes
@@ -271,9 +269,15 @@ int	execute_pwd_builtin(void)
 
 /*
 read-only environment variables cannot be unset. How do we manage this?
-Do we only work with our local environmental variable or also those of the system?
+Do we only work with our local environmental variables or also those of the system?
+*/
+/*
 int	execute_unset_builtin(t_data *data, t_list tokenlist)
 {
+	t_token *token;
 
-}
-*/
+	token = tokenlist->content;
+//	if (mini_get_env(data, token->lexeme))
+		//delete variable from environment
+		//build delete function for darray/environment
+}*/
