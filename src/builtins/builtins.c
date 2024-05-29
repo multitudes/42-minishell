@@ -29,7 +29,10 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	int		status;
 //	(void)data; //I think this does not do anything!?
 
-	token = (t_token *)tokenlist->content;
+	if (tokenlist)
+		token = (t_token *)tokenlist->content;
+	else
+		return (1);
 	lexeme = (char *)token->lexeme;
 	status = 0;
 	if (ft_strncmp(lexeme, "echo", 5) == 0)
@@ -83,6 +86,8 @@ Updates PWD and OLDPWD environment variables.
 TODOs:
 - interpret errors from called getcwd system function.
 - Implement additional functionality:
+-- when additional invaldid arguments are given the command should abort and an error message given
+-- when command 'cd $HOME $HOME' is entered in BASH the current directory is output in relative format (which is a strange behavior)
 -- If directory is '-', it is converted to $OLDPWD before attempting directory change.
 */
 int	execute_cd_builtin(t_data *data, t_list *tokenlist)
@@ -202,6 +207,7 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 	t_token	*token;
 
 	debug("export builtin");
+	if 
 	token = tokenlist->content;
 	if (ft_strncmp(token->lexeme, "export", 7) == 0)
 	{
