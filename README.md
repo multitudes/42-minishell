@@ -63,8 +63,8 @@ Here at 42 we are allowed to use the following functions for this project:
 | `fork()` | Creates a new process by duplicating the calling process. |
 | `wait()` | Waits for a child process to terminate. |
 | `waitpid()`  | Waits for a specific child process to terminate. |
-| `wait3()` | Waits for a child process to terminate and returns resource usage information. |
-| `wait4()` | Waits for a child process to terminate and returns resource usage information. | 	
+| `wait3()` | Waits for any of the children process to terminate and returns resource usage information. |
+| `wait4()` | Waits for a child process (passing its pid) to terminate and returns resource usage information. | 	
 | `signal()` | Sets a signal handler for a specific signal. |
 | `sigaction()` | Sets a signal handler for a specific signal. |
 | `sigemptyset()` | Initializes an empty signal set. |
@@ -74,11 +74,11 @@ Here at 42 we are allowed to use the following functions for this project:
 | `getcwd()` | Gets the current working directory. |
 | `chdir()` | Changes the current working directory. |
 | `stat()` | Gets file status. |
-| `lstat()` | Gets file status. |
-| `fstat()` | Gets file status. |
+| `lstat()` | Gets file status. The file is a symbolic link. |
+| `fstat()` | Gets status of the file pointed to from a file descriptor. |
 | `unlink()` | Deletes a name from the filesystem. |
-| `dup()` | Duplicates a file descriptor. |
-| `dup2()` | Duplicates a file descriptor. |
+| `dup()` | creates a copy of the given file descriptor. The new descriptor is the lowest-numbered file descriptor not currently open for the proces |
+| `dup2()` | Duplicates a file descriptor, but it takes an additional argument: the desired file descriptor number for the copy. |
 | `pipe()` | Creates a pipe.  |
 | `opendir()` | Opens a directory stream. |	
 | `readdir()` | Reads a directory stream. |
