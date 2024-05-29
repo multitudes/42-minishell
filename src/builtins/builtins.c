@@ -78,9 +78,12 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 
 /*
 Minishell builtin for "cd" command.
+Relative and absolute path as arguments.
 Updates PWD and OLDPWD environment variables.
 TODOs:
 - interpret errors from called getcwd system function.
+- Implement additional functionality:
+-- If directory is '-', it is converted to $OLDPWD before attempting directory change.
 */
 int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 {
@@ -88,6 +91,7 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 	int		cd_return;
 	int		status;
 	char	*dir;
+	char	*temp;
 
 	debug("cd builtin");
 	token = tokenlist->content;
@@ -95,24 +99,51 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 	{
 		debug("lexeme: %s (Not printed)", token->lexeme);
 		tokenlist = tokenlist->next;
-		token = tokenlist->content;
 	}
 	dir = getcwd(NULL, 0);
 	if (!update_env(data, "OLDPWD", dir))
 		status = 1;
 	free(dir);
-	cd_return = chdir(token->lexeme);
-	if (cd_return != 0)
-		status = 1;
-	dir = getcwd(NULL, 0);
-	if (!update_env(data, "PWD", dir))
-		status = 1;
-	free(dir);
+	if (tokenlist)
+	{
+		token = tokenlist->content;
+		cd_return = chdir(token->lexeme);
+		if (cd_return != 0)
+			status = 1;
+		dir = getcwd(NULL, 0);
+		if (!update_env(data, "PWD", dir))
+			status = 1;
+		free(dir);
+	}
+	else
+	{
+		if (mini_get_env(data, "HOME"))
+			temp = ft_strdup(mini_get_env(data, "HOME"));
+		else
+			temp = NULL;
+		if (temp)
+		{
+			cd_return = chdir(temp);
+			if (cd_return != 0)
+				status = 1;
+			dir = getcwd(NULL, 0);
+			if (!update_env(data, "PWD", dir))
+				status = 1;
+			free(temp);
+			free(dir);
+		}
+		else
+			debug("$HOME could not be found or changed to.");
+	}		
 	return (status);
 }
 
 /*
 Writes contents of environment to standard output.
+No options or arguments implemented.
+TODO:
+- adding extra arguments after env on the command line changes behavior significantly in BASH
+-- e.g. env $HOME, env echo $HOME (mostly 'env' gets ignored in these cases)
 */
 int	execute_env_builtin(t_data *data)
 {
@@ -149,7 +180,7 @@ int	execute_echo_builtin(t_list *tokenlist)
 		debug("echo builtin falsely called");
 		return (1);
 	}
-	if (tokenlist && ft_strncmp((char *)((t_token *)tokenlist->content)->lexeme, "-n", 3) == 0)
+	if (tokenlist && ft_strncmp(((t_token *)tokenlist->content)->lexeme, "-n", 3) == 0)
 	{
 		token = tokenlist->content;
 		new_line = 0;
@@ -174,8 +205,20 @@ int	execute_echo_builtin(t_list *tokenlist)
 }
 
 /*
+Executes 'export' builtin. No options interpreted.
+*/
+/*
 int	execute_export_builtin(t_data *data, t_list *tokenlist)
 {
+	t_token	*token;
+
+	debug("export builtin");
+	token = tokenlist->content;
+	if (ft_strncmp(token->lexeme, "export", 7) == 0)
+	{
+		debug("lexeme: %s (Not printed)", token->lexeme);
+		tokenlist = tokenlist->next;
+	}
 
 }*/
 
