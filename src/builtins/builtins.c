@@ -151,6 +151,8 @@ int	execute_env_builtin(t_data *data)
 
 /*
 Executes builtin "echo" function with and without '-n' option.
+TO CHECK:
+When suppressing the newline at the end, does echo actually introduse a carriage return or similar?
 */
 int	execute_echo_builtin(t_list *tokenlist)
 {
@@ -200,6 +202,20 @@ int	execute_echo_builtin(t_list *tokenlist)
 
 /*
 Executes 'export' builtin. No options interpreted.
+- No arguments should give a sorted list of the environment variables (lower case variables come after all upper case variables),
+a few variables are quoted and apparently the last command is not included
+- when a string with newline characters is assigned to a variable in BASH
+(e.g. VAR="first\nsecond\nthird" - single or double quotes give the same result),
+and export, then `export` and `env` list the variable with displayed \n-characters, in env case without quotes, in export case with quotes
+but echo on the variable will actually execute the newlines
+- it should be possible to export several variables at once, while also giving a value or not.
+- If no value is provided export assigns empty string to `name` unless the variable already exists.
+- export without arguments then display this variable as `name=''
+- while env without arguments does not display the variable.
+- it is possible to assign multiple value to a variable `export VAR=1:2:3:"string" (in this case the quotes are not shown (neither with env nor with export))
+- it can also end with a ':'
+QUESTION:
+- where do we want to store our local variables?
 */
 /*
 int	execute_export_builtin(t_data *data, t_list *tokenlist)
@@ -207,14 +223,16 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 	t_token	*token;
 
 	debug("export builtin");
-	if 
 	token = tokenlist->content;
 	if (ft_strncmp(token->lexeme, "export", 7) == 0)
 	{
 		debug("lexeme: %s (Not printed)", token->lexeme);
 		tokenlist = tokenlist->next;
 	}
-
+	if (!tokenlist)
+		debug("Print sorted and reformatted env list here.");
+	if (tokenlist)
+		debug("Parse arguments for export builtin.");
 }*/
 
 /*
