@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/29 11:13:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/30 17:26:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int	get_status_of_children(pid_t pid1, pid_t pid2)
 	if (waitpid(pid2, &status, 0) == -1)
 		status = status_and_print("waitpid 2", 1);
 	status = WEXITSTATUS(status);
+	debug("status of my children %d", status);
 	return (status);
 }
 

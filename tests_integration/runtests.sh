@@ -1,4 +1,4 @@
-echo "Running unit tests:"
+echo "Running integration tests:"
 
 # not a bug below. I do not loop on the c files but on the executables
 # therefore even if i dont have valgrind each test executes as a separate compiled program like it had a main in it. this happened already in the makefile but I can run the shell script separately. 
