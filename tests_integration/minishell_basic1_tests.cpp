@@ -38,7 +38,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
         write(pipefdin[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefdin[1], "\x04", 1);
 		close(pipefdin[1]);
-		usleep(1100);
+		usleep(2100);
 
         char buffer[1024];
         int n = read(pipefd_out[0], buffer, sizeof(buffer));
