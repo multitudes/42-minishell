@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/29 11:19:42 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/30 09:28:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ t_ast_node *create_ast(t_list *input_tokens)
 		a = parse_list(&tmp);
 		if (!a)
 			return (NULL);
-		print_ast(a, 0);
 	}
 	return (a);
 }
@@ -93,33 +92,18 @@ void print_ast(t_ast_node *a, int level)
 	t_token *token;
 
 	if (a == NULL)
-	{
-		debug("ast is NULL");
 		return ;
-	}
 	tokenlist = a->token_list;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return ;
-	// traverse the token list
 	while (tokenlist)
 	{
 		token = (t_token *)tokenlist->content;
 		debug("level %d - token type: %d - lexeme %s", level , (t_tokentype)(token->type), token->lexeme);
 		tokenlist = tokenlist->next;
 	}
-
-	// analyze node
-	// expand any lexemes that need to be expanded
-
-	// go to the next nodes and repeat
-	// debug("---------left -----------");
 	if (a->left)
-	{		
 		print_ast(a->left, ++level);
-	}
-	//debug("---------right -----------");
 	if (a->right)
-	{
 		print_ast(a->right, ++level);
-	}
 }
