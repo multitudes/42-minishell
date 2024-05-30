@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/30 10:01:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/30 10:02:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 		if (head == NULL)
 			return (NULL);
 		if (input_tokens == NULL || *input_tokens == NULL)
-			break;
+			break ;
 		if (is_not_control_token(get_curr_token(*input_tokens)))
 			*input_tokens = (*input_tokens)->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/30 09:28:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/30 10:04:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@ introducing a new node type for the tree, t_ast_node.
 The tree will be composed of nodes, each node will have a type,
 a left and a right node, and a list of tokens as a t_list.
 */
-t_ast_node *create_ast(t_list *input_tokens)
+t_ast_node	*create_ast(t_list *input_tokens)
 {
-	t_ast_node *a;
-	t_list *tmp;
-	
+	t_ast_node	*a;
+	t_list		*tmp;
+
 	a = NULL;
 	tmp = input_tokens;
 	if (input_tokens == NULL)
@@ -51,7 +51,7 @@ I use free_token as a function to free because the token list
 contents are of type (void*)content and I need to cast it to
 t_token* to free the lexeme string and the token itself. 
 */
-void		*free_ast(t_ast_node **ast)
+void	*free_ast(t_ast_node **ast)
 {
 	debug("free_ast");
 	if (ast == NULL || *ast == NULL)
@@ -85,11 +85,10 @@ struct s_token {
 };
 typedef struct s_token t_token;
 */
-void print_ast(t_ast_node *a, int level)
+void	print_ast(t_ast_node *a, int level)
 {
-	
-	t_list *tokenlist;
-	t_token *token;
+	t_list	*tokenlist;
+	t_token	*token;
 
 	if (a == NULL)
 		return ;
@@ -99,7 +98,8 @@ void print_ast(t_ast_node *a, int level)
 	while (tokenlist)
 	{
 		token = (t_token *)tokenlist->content;
-		debug("level %d - token type: %d - lexeme %s", level , (t_tokentype)(token->type), token->lexeme);
+		debug("level %d - token type: %d - lexeme %s", level, \
+		(t_tokentype)(token->type), token->lexeme);
 		tokenlist = tokenlist->next;
 	}
 	if (a->left)
