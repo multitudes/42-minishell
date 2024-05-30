@@ -57,9 +57,9 @@ void	expand_variable(t_data *data, t_token *token)
 		debug("expand_variable");
 		key = token->lexeme;
 		if (token->type == TILDE)
-			temp = ft_strdup(token->lexeme = mini_get_env(data, "HOME"));
-		else if (mini_get_env(data, key + 1))
-			temp = ft_strdup(token->lexeme = mini_get_env(data, key + 1));
+			temp = ft_strdup(token->lexeme = mini_get_env(data->env_arr, "HOME"));
+		else if (mini_get_env(data->env_arr, key + 1))
+			temp = ft_strdup(token->lexeme = mini_get_env(data->env_arr, key + 1));
 		else
 			temp = NULL;
 		free(key);

@@ -27,7 +27,6 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	t_token *token;
 	char 	*lexeme;
 	int		status;
-//	(void)data; //I think this does not do anything!?
 
 	if (tokenlist)
 		token = (t_token *)tokenlist->content;
@@ -42,8 +41,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(lexeme, "pwd", 4) == 0)
 		status = execute_pwd_builtin();
 	else if (ft_strncmp(lexeme, "export", 7) == 0)
-		debug("export builtin");
-//		status = execute_export_builtin(data, tokenlist);
+		status = execute_export_builtin(data, tokenlist);
 	else if (ft_strncmp(lexeme, "unset", 6) == 0)
 	{
 		debug("unset builtin");
@@ -108,7 +106,7 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 		tokenlist = tokenlist->next;
 	}
 	dir = getcwd(NULL, 0);
-	if (!update_env(data, "OLDPWD", dir))
+	if (!update_env(data->env_arr, "OLDPWD", dir))
 		status = 1;
 	free(dir);
 	if (tokenlist && tokenlist->next)
@@ -123,17 +121,17 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 		if (cd_return != 0)
 			status = 1; // 1 is the exit status but prints minishell: cd (dir) : No such file or directory
 		dir = getcwd(NULL, 0);
-		if (!update_env(data, "PWD", dir))
+		if (!update_env(data->env_arr, "PWD", dir))
 			status = 1;
 		free(dir);
 	}
 	else
 	{
-		cd_return = chdir(mini_get_env(data, "HOME"));
+		cd_return = chdir(mini_get_env(data->env_arr, "HOME"));
 		if (cd_return != 0)
 			status = 1;
 		dir = getcwd(NULL, 0);
-		if (!update_env(data, "PWD", dir))
+		if (!update_env(data->env_arr, "PWD", dir))
 			status = 1;
 		free(dir);
 	}		
@@ -225,12 +223,14 @@ but echo on the variable will actually execute the newlines
 QUESTION:
 - where do we want to store our local variables?
 */
-/*
+
 int	execute_export_builtin(t_data *data, t_list *tokenlist)
 {
 	t_token	*token;
+	int		status;
 
 	debug("export builtin");
+	status = 0;
 	token = tokenlist->content;
 	if (ft_strncmp(token->lexeme, "export", 7) == 0)
 	{
@@ -238,10 +238,11 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 		tokenlist = tokenlist->next;
 	}
 	if (!tokenlist)
-		debug("Print sorted and reformatted env list here.");
+		status = print_env_export(data->env_arr);
 	if (tokenlist)
 		debug("Parse arguments for export builtin.");
-}*/
+	return (status);
+}
 
 /*
 Executes builtin 'pwd' command.
