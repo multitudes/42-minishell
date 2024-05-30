@@ -26,7 +26,6 @@ int	copy_env_darray(t_darray **new_array, t_darray *source_arr)
 	while (source_arr && source_arr->contents && source_arr->contents[i])
 	{ 
 		env = ft_strdup(source_arr->contents[i++]);
-		debug("String in new env array: %s", env);
 		if (!ft_strncmp(env, "_=", 2))
 			continue ;
 		if (env == NULL && darray_clear_destroy(*new_array))
