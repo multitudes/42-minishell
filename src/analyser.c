@@ -28,7 +28,7 @@ void	which_ast_node(t_ast_node *ast)
 		return ;
 	token = (t_token *)tokenlist->content;
 	debug("which_ast_node");
-	if (token->type == BUILTIN)
+	if (token->type == BUILTIN || token->type == TILDE)
 	{
 		ast->type = NODE_BUILTIN;
 		debug("NODE_BUILTIN");
@@ -56,7 +56,9 @@ void	expand_variable(t_data *data, t_token *token)
 
 		debug("expand_variable");
 		key = token->lexeme;
-		if (mini_get_env(data, key + 1))
+		if (token->type == TILDE)
+			temp = ft_strdup(token->lexeme = mini_get_env(data, "HOME"));
+		else if (mini_get_env(data, key + 1))
 			temp = ft_strdup(token->lexeme = mini_get_env(data, key + 1));
 		else
 			temp = NULL;
@@ -105,7 +107,9 @@ void	expand_string(t_data *data, t_token *token)
 	{
 		if (((t_token *)string_tokens->content)->type == VAR_EXPANSION)
 			expand_variable(data, (t_token *)string_tokens->content);
-		if (((t_token *)string_tokens->content)->type == DOLLAR_QUESTION)
+		if (((t_token *)string_tokens->content)->type == TILDE)
+			expand_variable(data, (t_token *)string_tokens->content);
+		else if (((t_token *)string_tokens->content)->type == DOLLAR_QUESTION)
 			read_exit_status(data, (t_token *)string_tokens->content);
 		temp_lexeme = token->lexeme;
 		token->lexeme = ft_strjoin((const char *)temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
@@ -143,7 +147,7 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	while (token_list)
 	{
 		token = token_list->content;
-		if (token->type == VAR_EXPANSION)
+		if (token->type == VAR_EXPANSION || token->type == TILDE)
 			expand_variable(data, token);
 		else if (token->type == DOLLAR_QUESTION)
 			read_exit_status(data, token);
