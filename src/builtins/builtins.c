@@ -121,7 +121,7 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 		token = tokenlist->content;
 		cd_return = chdir(token->lexeme);
 		if (cd_return != 0)
-			status = 1;
+			status = 1; // 1 is the exit status but prints minishell: cd (dir) : No such file or directory
 		dir = getcwd(NULL, 0);
 		if (!update_env(data, "PWD", dir))
 			status = 1;
