@@ -33,9 +33,12 @@ enviromnemt list:
 	and I save it in my data struct
 */
 
-bool	update_env(t_data *data, const char *key, const char *value);
+bool	update_env(t_darray *env_arr, const char *key, const char *value);
+int		copy_env_darray(t_darray **new_array, t_darray *source_arr);
+char	*get_var_key(const char *variable);
 int		print_env(t_darray *env_array);
-char	*mini_get_env(t_data *data, const char *key);
+int		print_env_export(t_darray *env_arr);
+char	*mini_get_env(t_darray *env_array, const char *key);
 char	*ft_strjoin3(const char *key, const char *mid, const char *value);
 
 #  ifdef __cplusplus

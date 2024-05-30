@@ -52,7 +52,7 @@ char	*create_path(char *base, t_data *data)
 	char	**envpaths;
 
 	i = 0;
-	envpaths = ft_split(mini_get_env(data, "PATH"), ':');
+	envpaths = ft_split(mini_get_env(data->env_arr, "PATH"), ':');
 	while (envpaths[i])
 	{
 		commandpath = ft_strjoin3(envpaths[i], "/", base);

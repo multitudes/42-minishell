@@ -247,7 +247,7 @@ void	exit_minishell(t_data *data)
 
 void	update_env_exit_status_with(int exit_status, t_data *data)
 {
-	update_env(data, "?", ft_itoa(exit_status));
+	update_env(data->env_arr, "?", ft_itoa(exit_status));
 }
 
 /*

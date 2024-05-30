@@ -79,7 +79,7 @@ bool	handle_history(t_data *data)
 	if (!add_to_hist_file(data->input))
 		perror("add_to_hist_file");
 	add_history(data->input);
-	if (update_env(data, "_", data->input) == FALSE)
+	if (update_env(data->env_arr, "_", data->input) == FALSE)
 		perror("update_env for _ with history input");
 	return (0);
 }
