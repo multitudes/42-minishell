@@ -119,7 +119,6 @@ int	print_env_export(t_darray *env_arr)
 	if (copy_env_darray(&export_arr, env_arr))
 		return (1);
 //	sort_array_for_export(export_arr);
-	print_env(export_arr);
 	while (export_arr && export_arr->contents && export_arr->contents[i] != NULL)
 	{
 		key = get_var_key(export_arr->contents[i++]);

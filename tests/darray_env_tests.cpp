@@ -193,8 +193,8 @@ const char *test_env_update()
 	// init data structure with environ and path
 	if (!init_data(&data))
 		return "Failed to init data";	
-	update_env(data, "_", "./value");
-	const char *env = mini_get_env(data, "_");
+	update_env(data->env_arr, "_", "./value");
+	const char *env = mini_get_env(data->env_arr, "_");
 	if (strcmp(env, "./value") != 0)
 	{
 		return "Failed to update _ env var";
