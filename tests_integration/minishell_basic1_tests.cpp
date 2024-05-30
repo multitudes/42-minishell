@@ -8,69 +8,89 @@
 #include "../include/minishell.h"
 #include <fstream>
 
-const char* test_basicminishell() {
 
-	int pipefdin[2];
-	int pipefd_out[2]; // New pipe for capturing output
+#include <string>
+#include <cstring>
 
-	if (pipe(pipefdin) == -1)
-		return "Failed to create pipe";
-	if (pipe(pipefd_out) == -1)
-		return "Failed to create second pipe"; // Initialize new pipe
+int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass) {
+    int pipefdin[2];
+    int pipefd_out[2]; 
 
-	pid_t pid = fork();
-	my_assert(pid != -1, "Failed to fork");
-	
-	if (pid == 0) {
-		// Child process
-		dup2(pipefdin[0], STDIN_FILENO); // Redirect standard input to read end of input pipe
-		if (close(pipefdin[0]) == -1)
-			return "Failed to close pipefd"; // Close read end of input pipe
-		if (close(pipefdin[1]) == -1)
-			return "Failed to close pipefd"; // Close write end of input pipe
-		if (dup2(pipefd_out[1], STDOUT_FILENO) == -1)
-			return "dup failed"; // Redirect standard output to write end of output pipe
-		if (close(pipefd_out[1]) == -1)
-			return "Failed to close pipefd_out"; // Close write end of output pipe
-		if (close(pipefd_out[0]) == -1)
-			return "Failed to close pipefd_out"; // Close read end of output pipe
-		execl("../minishell", "minishell", (char*) NULL); // Execute minishell
-		exit(EXIT_FAILURE); // Exit if execl fails
-	} else {
-		// Parent process
-		close(pipefdin[0]); // Close read end of input pipe
-		// usleep(1); // Wait for child process to start
-		write(pipefdin[1], "echo home\n", 11); // Write Ctrl-D to write end of input pipe
-		write(pipefdin[1], "\x04", 1); // Write Ctrl-D to write end of input pipe
-		close(pipefdin[1]); // Close write end of input pipe
+    if (pipe(pipefdin) == -1)
+        return -1;
+    if (pipe(pipefd_out) == -1)
+        return (-1);
+    pid_t pid = fork();
+    if (pid == -1)
+		return (-1);
+    
+    if (pid == 0) {
+        dup2(pipefdin[0], STDIN_FILENO); 
+        close(pipefdin[0]);
+        close(pipefdin[1]);
+        dup2(pipefd_out[1], STDOUT_FILENO);
+        close(pipefd_out[1]);
+        execl("../minishell", "minishell", (char*) NULL);
+        exit(EXIT_FAILURE);
+    } else {
+        close(pipefd_out[1]);
+        close(pipefdin[0]);
+        write(pipefdin[1], command_to_exec.c_str(), command_to_exec.size());
+        // write(pipefdin[1], "\x04", 1);
+		close(pipefdin[1]);
+		usleep(1100);
 
+        char buffer[1024];
+        int n = read(pipefd_out[0], buffer, sizeof(buffer));
+        buffer[n] = '\0';
+       	debug("output: -%s-", buffer);
+        
 
-		// Read the output of the minishell
-		char buffer[1024];
-		int n = read(pipefd_out[0], buffer, sizeof(buffer)); // Read from read end of output pipe
-		// wait here a moment
-		// sleep(1);
-		buffer[n] = '\0';
-		debug("output: -%s-", buffer);
-
-		my_assert((strcmp(buffer, "minishell $ echo home\n") == 0 ), "Output is not as expected");
-		close(pipefd_out[0]); // Close read end of output pipe
-		close(pipefd_out[1]); // Close write end of output pipe
-
+        if (strcmp(buffer, expected_output.c_str()) == 0)
+			*pass = true;
+		debug("pass: %s", pass ? "true" : "false");
+		close(pipefd_out[0]);
 		int status;
-		waitpid(pid, &status, 0); // Wait for child process to exit
-		if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-			debug("exit status: %d", WEXITSTATUS(status));
-			return "Minishell exited with non-zero status";
+		waitpid(pid, &status, 0);
+
+		if (WIFEXITED(status)) {
+			printf("child exited, status=%d\n", WEXITSTATUS(status));
+		} else if (WIFSIGNALED(status)) {
+			printf("child killed by signal %d (%s)", WTERMSIG(status), strsignal(WTERMSIG(status)));
+		} else if (WIFSTOPPED(status)) {
+			printf("child stopped by signal %d (%s)\n", WSTOPSIG(status), strsignal(WSTOPSIG(status)));
 		}
-		debug("exit status: %d", WEXITSTATUS(status));
-    }
+		return WEXITSTATUS(status);
+	}
+}
+
+const char* test_basicminishell_exit() {
+
+	bool pass = false;
+	std::string command_to_exec = "exit\n";
+	std::string expected_output = "minishell $ exit\nminishell $ minishell $ exit\n";
+	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+	debug("command_to_exec: %s", command_to_exec.c_str());
+	debug("expected_output: %s", expected_output.c_str());
+	debug("status: %d and pass %s", status, pass ? "true" : "false");
+
 	return NULL;
 }
 
 
-const char *test_basicminishell2() {
-    
+const char *test_basicminishell2_echo() {
+	bool pass = false;
+	std::string command_to_exec = "echo\n";
+	std::string expected_output = "minishell $ echo\n\nminishell $ minishell $ exit\n";
+	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+	debug("command_to_exec: %s", command_to_exec.c_str());
+	debug("expected_output: %s", expected_output.c_str());
+	debug("status: %d and pass %s", status, pass ? "true" : "false");
+
 	return NULL;
 }
 
@@ -85,8 +105,8 @@ const char *all_tests()
 	suite_start();
 	
 	// run the tests
-	run_test(test_basicminishell);
-	run_test(test_basicminishell2);
+	run_test(test_basicminishell_exit);
+	run_test(test_basicminishell2_echo);
 	run_test(test_basicminishell3);
 	
 	return NULL;
