@@ -15,7 +15,7 @@ The bash manual describes a shell as follows:
 
 - A shell allows execution of GNU commands, both synchronously and asynchronously. The shell waits for synchronous commands to complete before accepting more input; asynchronous commands continue to execute in parallel with the shell while it reads and executes additional commands. The redirection constructs permit fine-grained control of the input and output of those commands. Moreover, the shell allows control over the contents of commands’ environments.
 
-- Shells also provide a small set of built-in commands (builtins) implementing functionality impossible or inconvenient to obtain via separate utilities. For example, cd, break, continue, and exec cannot be implemented outside of the shell because they directly manipulate the shell itself. The history, getopts, kill, or pwd builtins, among others, could be implemented in separate utilities, but they are more convenient to use as builtin commands.
+- Shells also provide a small set of builtin commands (builtins) implementing functionality impossible or inconvenient to obtain via separate utilities. For example, cd, break, continue, and exec cannot be implemented outside of the shell because they directly manipulate the shell itself. The history, getopts, kill, or pwd builtins, among others, could be implemented in separate utilities, but they are more convenient to use as builtin commands.
 
 - Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
 
@@ -101,8 +101,8 @@ Here at 42 we are allowed to use the following functions for this project:
 
 Also we follow the NORM, a series of rules about linting and formatting of the code. Examples: functions cannot have more than 25 lines; we are not allowed to use "for"-loops, but while loops are allowed; declaring and defining variables in one line is not allowed. etc.
 
-## Built-in functions to recreate
-Built-in commands are special commands that are implemented in the shell itself rather than being external programs. Some common built-in commands include cd, echo, and exit. Built-in commands such as “cd” or “exit” cannot be executed using the `execve()` function. Our minishell shall have the following built-ins which we need to recreate:
+## Builtin functions to recreate
+Builtin commands are special commands that are implemented in the shell itself rather than being external programs. Some common builtin commands include cd, echo, and exit. Builtin commands such as “cd” or “exit” cannot be executed using the `execve()` function. Our minishell shall have the following Builtins which we need to recreate:
 ◦ echo with option -n
 ◦ cd with only a relative or absolute path 
 ◦ pwd with no options
@@ -111,49 +111,52 @@ Built-in commands are special commands that are implemented in the shell itself 
 ◦ env with no options or arguments
 ◦ exit with no options
 
-Bash and other shalls have many more built-in commands.
+Bash and other shalls have many more builtin commands.
 
-The functionality of the built-in commands is described in the BASH manual and a short summary provided in the following.
+The functionality of the builtin commands is described in the BASH manual and a short summary provided in the following.
 
-### Built-in: `echo [-n] [arg ...]`
-(_Bash built-in command_)
+### Builtin: `echo [-n] [arg ...]`
+(_Bash builtin command_)
 Output `args` separated by spaces and terminated with a newline. With `-n` option trailing newline is suppressed.
+Just `echo` prints a newline. `echo -n` prints nothing. `echo -n "hello"` prints `hello` without a newline.  `echo -n -nnnn` prints nothing.  
+`echo -n -nwhy` prints `-nwhy`. (dont ask me why :) but I think it is since the flag is not recognized as a flag but as a string). 
+Return status is zero (usually since it is hard to fail!).  
 
-Return status is zero unless a write occurs.
-### Built-in: `cd [directory]` (with relative or absolute path)
-(_original Bourne Shell built-in_)
-Used to change the current working directory to another directory. If directory is not specified the `HOME` shell variable is used. If directory is '-', it is converted to $OLDPWD before attempting directory change. (arguably not required in our project).
-Successful execution of `cd` should set `PWD` to new directory and `OLDPWD` to the working directory before the change.
+### Builtin: `cd [directory]` (with relative or absolute path)
+(_original Bourne Shell builtin_)
+Used to change the current working directory to another directory. If directory is not specified the `HOME` shell variable is used. If directory is '-', it is converted to $OLDPWD before attempting directory change. 
+Successful execution of `cd` should set `PWD` to new directory and `OLDPWD` to the working directory before the change.  
+can fail if the directory is not existent. if the directory is not a directory. if the directory is not readable. if the directory is not searchable. if the directory is not writable. if the directory is not accessible. Errors are printed to stderr and can be like `cd: no such file or directory: /nonexistent` or `cd: permission denied: /root`.  
 Return status is zero upon success, non-zero otherwise.
 
-### Built-in: `pwd` (without options)
-(_original Bourne Shell built-in_)
+### Builtin: `pwd` (without options)
+(_original Bourne Shell builtin_)
 Prints the absolute pathname of the current working directory (can contain symbolic links though this may be implementation defined as the normally available options either explicitly prohibit symbolic links (`-P`) or explicitly allow symbolic links (`-L`).
 Return status is zero unless an error is encountered while determining the name of the current directory (or an invalid option is supplied).
 
-### Built-in: `export [name[=value]]` (without options)
-(_original Bourne Shell built-in_)
+### Builtin: `export [name[=value]]` (without options)
+(_original Bourne Shell builtin_)
 Without any other options (as in our implementation) `name` refers to variables. Export allows to pass specified names/variable to be passed to child processes. When no names are provided, a list of all exported variables is displayed. When a value is provided after `name` and `=` the variable is set to `value`.
 To note: "All values undergo tilde expansion, parameter and variable expansion, command substitution, arithmetic expansion, and quote removal." (see 3.4 Shell Parameters in the Bash Manual)
 Return status is zero unless invalid option is supplied or one of the names is not a valid shell variable name.
 
 To clarify: difference between environment variables and exported variables
 
-### Built-in: `unset [name]` (without options)
-(_original Bourne Shell built-in_)
+### Builtin: `unset [name]` (without options)
+(_original Bourne Shell builtin_)
 Removes each variable or function with `name`.
 > If no options are supplied, each name refers to a variable; if there is no variable by that name, a function with that name, if any, is unset. [...] Some shell variables lose their special behavior if they are unset.
 Read-only variables and functions cannot be unset.
 Return status is zero unless `name` is read-only or cannot not be unset.
 To clarify: should we actually treat the removal/unsetting of functions? How do we identify read-only variables and functions?
 
-### Built-in: `env` (without options or arguments)
-`env` is not described as a built-in in the BASH manual. The variable $ENV is described related to POSIX variant of invoking shell.
+### Builtin: `env` (without options or arguments)
+`env` is not described as a builtin in the BASH manual. The variable $ENV is described related to POSIX variant of invoking shell.
 Presumably env prints the current environment, i.e. the inherited environment plus any modifications through `export` and `unset`.
 
-### Built-in: `exit [n]` (without options)
-(_original Bourne Shell built-in_)
-The built-in command `exit`,- as the name implies -, exits the shell. The exit status shall be set to that of the last executed command. The BASH built-in allows soptionally to set the exit status as an argument ([n]).
+### Builtin: `exit [n]` (without options)
+(_original Bourne Shell builtin_)
+The builtin command `exit`,- as the name implies -, exits the shell. The exit status shall be set to that of the last executed command. The BASH builtin allows soptionally to set the exit status as an argument ([n]).
 
 # Teamwork - It's about GIT
 ## Commit style
@@ -424,7 +427,7 @@ Once we have the linked list of directories, we can use it to search for executa
 
 ### Implement Built-In Commands
 
-Built-in commands are special commands that are implemented by the shell itself rather than being external programs. Some common built-in commands include cd, echo, and exit. You will need to implement these commands yourself. Built-in commands such as “cd” or “exit” cannot be executed using the `execve()` function.  
+Builtin commands are special commands that are implemented by the shell itself rather than being external programs. Some common builtin commands include cd, echo, and exit. You will need to implement these commands yourself. Builtin commands such as “cd” or “exit” cannot be executed using the `execve()` function.  
 
 ### Support Input/Output Redirection
 
@@ -498,6 +501,55 @@ ex incorrect command,  incorrect number of arguments, permission denied, system 
 | Open history file path fails | | 
 | Writing to history fails | |
 | Updating environment with history input fails | |
+
+
+
+## `strerror(errno)` and `perror` 
+
+They are both used to print human-readable error messages, but they are used differently.  
+`strerror(errno)` is a function that returns a pointer to a string that describes the error code passed in the argument errno. You can use it with `printf` to format and print the error message.
+
+```c
+printf("getcwd() error: %s\n", strerror(errno));
+```
+
+On the other hand, `perror` is a function that prints a descriptive error message to stderr. The argument you pass to `perror` is a string that is printed as a prefix to the error message.
+
+```c
+perror("getcwd() error");
+```
+So, if you want to use `perror` in your code, you don't need to use it inside `printf`. It prints the error message directly.
+
+## Error Handling in C
+Using system functions and library in C can be useful to use the functioms like `strerror()` and `perror()` to print errors. Most of these functions return a value to indicate success or failure, and set the `errno` variable to indicate the type of error that occurred.
+For example the `getcwd()` function can fail in a few scenarios, and it sets the `errno` variable to indicate the type of error. Here are some possible error codes:
+
+- `ENOMEM`: Insufficient memory to allocate the pathname string. This happens when `getcwd()` can't allocate memory for the pathname string.
+
+- `ERANGE`: The size of the buffer is insufficient to store the pathname. This happens when the buffer size provided to `getcwd()` is smaller than the length of the absolute pathname of the working directory, including the terminating null byte.
+
+- `EACCES`: Permission to read or search a component of the filename was denied. This happens when one of the directories in the pathname did not allow search (execute) permission.
+
+- `EFAULT`: The buffer argument points outside the process's allocated address space.
+
+Here's an example 
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+
+int main() {
+    char buffer[1024];
+    if (getcwd(buffer, sizeof(buffer)) == NULL) {
+        printf("getcwd() error: %s\n", strerror(errno));
+        return 1;
+    }
+    printf("Current working directory: %s\n", buffer);
+    return 0;
+}
+```
+
 
 ### Signals
 Signals are used by the operating system to notify a process of various events, such as a segmentation fault or a user interrupt. 
@@ -1177,7 +1229,7 @@ bash: .: filename argument required
 .: usage: . filename [arguments]
 ```
 I asked copilot:  
-The . command in Bash is a built-in command for sourcing a file. This means it executes the file in the current shell, rather than spawning a new subshell. This is useful when you want to load a script that modifies the environment, such as setting environment variables.
+The . command in Bash is a builtin command for sourcing a file. This means it executes the file in the current shell, rather than spawning a new subshell. This is useful when you want to load a script that modifies the environment, such as setting environment variables.
 
 The . command expects a filename as an argument, but it didn't receive one.
 
