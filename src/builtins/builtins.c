@@ -194,7 +194,6 @@ int	execute_echo_builtin(t_list *tokenlist)
 	while (tokenlist)
 	{
 		token = tokenlist->content;
-		debug("lexeme: %s", token->lexeme);
 		if (tokenlist->next)
 			printf_return = printf("%s ", token->lexeme);
 		else
