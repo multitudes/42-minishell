@@ -13,31 +13,45 @@
 #include <cstring>
 
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass) {
-    int pipefdin[2];
+    int pipefd_in[2];
     int pipefd_out[2]; 
 
-    if (pipe(pipefdin) == -1)
-        return -1;
+    if (pipe(pipefd_in) == -1)
+        perror("pipe");
     if (pipe(pipefd_out) == -1)
-        return (-1);
+        perror("pipe");
     pid_t pid = fork();
     if (pid == -1)
-		return (-1);
+		perror("fork");
     
     if (pid == 0) {
-        dup2(pipefdin[0], STDIN_FILENO); 
-        close(pipefdin[0]);
-        close(pipefdin[1]);
-        dup2(pipefd_out[1], STDOUT_FILENO);
-        close(pipefd_out[1]);
+		if (pipefd_in[0] != STDIN_FILENO)
+		{
+			if (dup2(pipefd_in[0], STDIN_FILENO) == -1)
+				perror("dup2");
+			if (close(pipefd_in[0]) == -1)
+				perror("close");
+		}
+        if (close(pipefd_in[1]) == -1)
+			perror("close");
+		if (pipefd_out[1] != STDOUT_FILENO)
+		{
+			if (dup2(pipefd_out[1], STDOUT_FILENO) == -1)
+				perror("dup2");
+			if (close(pipefd_out[1]) == -1)
+				perror("close");
+		}
         execl("../minishell", "minishell", (char*) NULL);
         exit(EXIT_FAILURE);
     } else {
-        close(pipefd_out[1]);
-        close(pipefdin[0]);
-        write(pipefdin[1], command_to_exec.c_str(), command_to_exec.size());
+        if (close(pipefd_out[1]) == -1)
+			perror("close");
+        if (close(pipefd_in[0]) == -1)
+			perror("close");
+        write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefdin[1], "\x04", 1);
-		close(pipefdin[1]);
+		if (close(pipefd_in[1]) == -1)
+			perror("close");
 		usleep(2100);
 
         char buffer[1024];
@@ -48,8 +62,11 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 
         if (strcmp(buffer, expected_output.c_str()) == 0)
 			*pass = true;
-		debug("pass: %s", pass ? "true" : "false");
-		close(pipefd_out[0]);
+		debug("pass: %s", *pass ? "true" : "false");
+		
+		if (close(pipefd_out[0]) == -1)
+			perror("close");
+			
 		int status;
 		waitpid(pid, &status, 0);
 
