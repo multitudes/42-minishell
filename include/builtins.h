@@ -33,6 +33,7 @@ int	execute_echo_builtin(t_list *tokenlist);
 int	execute_env_builtin(t_data *data);
 int	execute_export_builtin(t_data *data, t_list *tokenlist);
 int	execute_pwd_builtin(void);
+int execute_unset_builtin(t_data *data, t_list *tokenlist);
 
 #  ifdef __cplusplus
 
