@@ -6,11 +6,36 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/30 17:26:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/31 12:41:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executer.h"
+
+/*
+getting the status properly involves using WIFEXITED and WEXITSTATUS
+so I this is an utility function to return the status of the child.
+WIFEXITED returns true if the child terminated normally and the status
+of the child is returned by WEXITSTATUS. If the child did not terminate
+normally, WIFSIGNALED will return true and WTERMSIG will return the signal
+number that caused the child to terminate, so the status will be the 
+signal number plus 128.
+WIFSTOPPED returns true if the child process is stopped and WSTOPSIG will
+return the signal number that caused the child to stop. The status will
+be the signal number that caused the child to stop plus 128.
+WIFCONTINUED is a status that is returned when the child is resumed by
+a SIGCONT signal. The status will be 0.
+*/
+int	get_wait_status(int status)
+{
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+		return (WTERMSIG(status) + 128);
+	else
+		return (status_and_print("child did not exit normally\n", 1));
+}
+
 
 /*
 removed these debug line for now
@@ -37,11 +62,10 @@ int	execute_command(t_list *tokenlist, t_data *data)
 		null_and_print_err(NULL, 127);
 	}
 	else if (pid == -1)
-		return (status_and_print("minishell: fork failed\n", 1));
+		return (status_and_print("minishell: fork failed\n", EXIT_FAILURE));
 	else
-		waitpid(pid, &status, 0); 
-	status = WEXITSTATUS(status);
-	return (status);
+		waitpid(pid, &status, 0);
+	return (get_wait_status(status));
 }
 
 /*
