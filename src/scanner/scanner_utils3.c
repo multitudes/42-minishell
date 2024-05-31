@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:57:41 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:38:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/31 15:53:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,19 @@ bool	str_is_pathname(const char *str)
 		return (true);
 	}
 	return (false);
+}
+
+/*
+Recognizing a globbing wanna be expansion, any string with the letter *
+it will be for the bonus eventually!
+*/
+bool	is_a_globbing(t_mini_data *data, const char *tmp, int *start)
+{
+	if (ft_strchr(tmp, '*'))
+		add_token(data, start, tmp, GLOBBING);
+	else
+		return (false);
+	return (true);
 }
 
 bool	is_a_pathname_or_num(t_mini_data *data, const char *tmp, int *start)
