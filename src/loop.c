@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/31 13:01:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/31 13:05:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 /*
 Allowed global variable for signals only. 
 will record the signal number which has been received
+We should check first if using WTERMSIG(status) is enough
+otherwise we might need this. WTERMSIG(status) returns the signal number
+that caused the child to terminate when the child did not
+exit normally and it has been added to the executor.
 */
 int	g_signal;
 
