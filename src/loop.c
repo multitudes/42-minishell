@@ -6,13 +6,17 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 19:46:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/31 13:01:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "darray.h"
 
+/*
+Allowed global variable for signals only. 
+will record the signal number which has been received
+*/
 int	g_signal;
 
 /*
@@ -197,13 +201,15 @@ the terminal.
 static void	exit_handler(int sig)
 {
     if (sig == SIGINT)
-    {
+    {	
+		g_signal = sig;
         write(1, "\n", 1);
         rl_on_new_line();
         rl_replace_line("", 0);
         rl_redisplay();
     }
-
+	else
+		g_signal = sig;
 	return ;
 }
 
@@ -215,10 +221,12 @@ signal handling:
 ◦ ctrl-D exits the shell.
 ◦ ctrl-\ SIGQUIT does nothing.	
 this line is maybe not needed rl_catch_signals = 0;
-but works better on the mac... 
-also removed these couple lines... This was for testing
-	// else if (isatty(STDIN_FILENO) == 0)
-	// 	debug("non interactive mode \n");
+but works better on the mac... producing result closer 
+to the bash shell mac version
+all other signals are sent to the handler so we update the global
+variable with the number of the signal received but 
+usually only SIGINT is handled. the value of sigint is 2 
+whichy is added to 128 and gives 130, the exit code for ctrl-c
 */
 int	set_up_signals(void)
 {
@@ -227,9 +235,22 @@ int	set_up_signals(void)
 	else if (isatty(STDIN_FILENO))
 	{
 		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
-		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-			return (status_and_print("SIG_ERR signal failed\n", 1));
+		(signal(SIGQUIT, SIG_IGN) == SIG_ERR) || \
+			(signal(SIGBUS, exit_handler) == SIG_ERR) || \
+			(signal(SIGFPE, exit_handler) == SIG_ERR) || \
+			(signal(SIGHUP, exit_handler) == SIG_ERR) || \
+			(signal(SIGILL, exit_handler) == SIG_ERR) || \
+			(signal(SIGSYS, exit_handler) == SIG_ERR) || \
+			(signal(SIGPIPE, exit_handler) == SIG_ERR) || \
+			(signal(SIGSEGV, exit_handler) == SIG_ERR) || \
+			(signal(SIGTERM, exit_handler) == SIG_ERR) || \
+			(signal(SIGTSTP, SIG_IGN) == SIG_ERR) || \
+			(signal(SIGTTIN, SIG_IGN) == SIG_ERR) || \
+			(signal(SIGTTOU, SIG_IGN) == SIG_ERR) || \
+			(signal(SIGXCPU, exit_handler) == SIG_ERR))
+		return (status_and_print("SIG_ERR signal failed\n", 1));
 	}
+	// TODO still not sure if needed!
 	rl_catch_signals = 0;
 	return (0);
 }
