@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/31 12:41:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/31 13:13:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,17 +74,18 @@ or are we allowed to use it?
 */
 int	get_status_of_children(pid_t pid1, pid_t pid2)
 {
-	int	status;
-
-	status = -1;
+	int status;
+	int	finalstatus;
+	
+	finalstatus = -1;
 	if (waitpid(pid1, &status, 0) == -1)
-		status = status_and_print("waitpid 1", 1);
-	status = WEXITSTATUS(status);
+		finalstatus = status_and_print("waitpid 1", 1);
+	finalstatus = get_wait_status(status);
 	if (waitpid(pid2, &status, 0) == -1)
-		status = status_and_print("waitpid 2", 1);
-	status = WEXITSTATUS(status);
-	debug("status of my children %d", status);
-	return (status);
+		finalstatus = status_and_print("waitpid 2", 1);
+	finalstatus = get_wait_status(status);
+	debug("status of my children %d", finalstatus);
+	return (finalstatus);
 }
 
 int	execute_list(t_ast_node *ast, t_data *data)
