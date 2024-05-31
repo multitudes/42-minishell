@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/30 10:02:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/31 16:26:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ t_ast_node	*parse_list(t_list **input_tokens)
 		if (token->type == AND_IF || token->type == OR_IF || \
 		token->type == EXPRESSION)
 		{
-			if (consume_token(input_tokens) == NULL)
+			if (token->type != EXPRESSION && consume_token(input_tokens) == NULL)
 				return (NULL);
 			b = parse_pipeline(input_tokens);
 			if (b == NULL)
@@ -120,10 +120,13 @@ t_ast_node	*parse_list(t_list **input_tokens)
 			if (a == NULL)
 				return (free_ast(&a));
 		}
-		if (*input_tokens)
+		else if (*input_tokens)
+		{
 			debug("extraneus tken: %d, %s", \
 			((t_token *)(*input_tokens)->content)->type, \
 			((t_token *)(*input_tokens)->content)->lexeme);
+			*input_tokens = (*input_tokens)->next;
+		}
 	}
 	return (a);
 }

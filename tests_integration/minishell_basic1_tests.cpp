@@ -70,15 +70,12 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		int status;
 		waitpid(pid, &status, 0);
 
-		if (WIFEXITED(status)) {
-			printf("child exited, status=%d\n", WEXITSTATUS(status));
-		} else if (WIFSIGNALED(status)) {
-			printf("child killed by signal %d (%s)", WTERMSIG(status), strsignal(WTERMSIG(status)));
-		} else if (WIFSTOPPED(status)) {
-			printf("child stopped by signal %d (%s)\n", WSTOPSIG(status), strsignal(WSTOPSIG(status)));
-		}
-		return WEXITSTATUS(status);
+		if (WIFEXITED(status))
+			return (WEXITSTATUS(status));
+		else if (WIFSIGNALED(status))
+			return (WTERMSIG(status) + 128);
 	}
+	return 0;
 }
 
 const char* test_basicminishell_exit() {
@@ -112,7 +109,10 @@ const char *test_basicminishell2_echo() {
 }
 
 const char *test_basicminishell3() {
-    
+	// I want to test the following commands in bash with 
+	// popen ... like this: "echo\n"
+
+
 	return NULL;
 }
 
