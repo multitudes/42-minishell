@@ -17,27 +17,41 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
     int pipefd_out[2]; 
 
     if (pipe(pipefdin) == -1)
-        return -1;
+        perror("pipe");
     if (pipe(pipefd_out) == -1)
-        return (-1);
+        perror("pipe");
     pid_t pid = fork();
     if (pid == -1)
-		return (-1);
+		perror("fork");
     
     if (pid == 0) {
-        dup2(pipefdin[0], STDIN_FILENO); 
-        close(pipefdin[0]);
-        close(pipefdin[1]);
-        dup2(pipefd_out[1], STDOUT_FILENO);
-        close(pipefd_out[1]);
+		if (pipefdin[1] != STDIN_FILENO)
+		{
+			if (dup2(pipefdin[1], STDIN_FILENO) == -1)
+				perror("dup2");
+			if (close(pipefdin[1]))
+				perror("close");
+		}
+        if (close(pipefdin[0]) == -1)
+			perror("close");
+		if (pipefd_out[1] != STDOUT_FILENO)
+		{
+			if (dup2(pipefd_out[1], STDOUT_FILENO))
+				perror("dup2");
+			if (close(pipefd_out[1]))
+				perror("close");
+		}
         execl("../minishell", "minishell", (char*) NULL);
         exit(EXIT_FAILURE);
     } else {
-        close(pipefd_out[1]);
-        close(pipefdin[0]);
+        if (close(pipefd_out[1]))
+			perror("close");
+        if (close(pipefdin[0]))
+			perror("close");
         write(pipefdin[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefdin[1], "\x04", 1);
-		close(pipefdin[1]);
+		if (close(pipefdin[1]))
+			perror("close");
 		usleep(2100);
 
         char buffer[1024];
@@ -48,8 +62,11 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 
         if (strcmp(buffer, expected_output.c_str()) == 0)
 			*pass = true;
-		debug("pass: %s", pass ? "true" : "false");
-		close(pipefd_out[0]);
+		debug("pass: %s", *pass ? "true" : "false");
+		
+		if (close(pipefd_out[0]))
+			perror("close");
+			
 		int status;
 		waitpid(pid, &status, 0);
 
