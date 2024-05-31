@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 14:24:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/31 15:47:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ typedef enum e_tokentype {
 	TILDE,
 	EOF_TOK,
 	COMMAND,
+	GLOBBING,
 	NULL_TOKEN
 } t_tokentype;
 
