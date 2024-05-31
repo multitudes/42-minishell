@@ -283,10 +283,11 @@ int	execute_unset_builtin(t_data *data, t_list *tokenlist)
 	}
 	if (!tokenlist)
 		return (0);
-	if (token->lexeme == NULL || ft_strlen(token->lexeme) == 0) //do I write a newline before returning?
-		return (0);
-	else
+	while (tokenlist)
+	{
 		token = tokenlist->content;
+		if (token->lexeme != NULL && ft_strlen(token->lexeme) != 0)
+			delete_env_entry(data->env_arr, token->lexeme);
 	// if (restricted_variable(token->lexeme))
 	// {
 	// 	//consider returning error message in restricted_variable() function, also consider other possible restricted variables.
@@ -295,7 +296,7 @@ int	execute_unset_builtin(t_data *data, t_list *tokenlist)
 	// 	write(2, ":cannot unset: readonly variable", 32);
 	// 	return (1);
 	// }
-	if (delete_env_entry(data->env_arr, token->lexeme))
-		return (0);
+		tokenlist = tokenlist->next;
+	}
 	return (0);
 }

@@ -67,7 +67,7 @@ int		get_var_index(t_darray *env_arr, const char *key)
 	debug("get var index");
 	debug("used key: %s and key length: %i", key, (int)ft_strlen(key));
 	i = 0;
-	while (i < env_arr->end)
+	while (i < env_arr->end && env_arr->contents[i])
 	{
 		var = env_arr->contents[i];
 		debug("current index and variable: %i %s\n", i, var);
