@@ -1152,7 +1152,7 @@ if (WIFEXITED(status)) /* child exited normally */
 else if (WIFSIGNALED(status)) /* child exited on a signal */
 	exit_status = WTERMSIG(status) + 128; /* 128 is the offset for signals */
 else
-	status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
+	exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
 
 ... // do something with exit_status
 ```
