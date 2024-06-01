@@ -38,6 +38,7 @@ void	*darray_remove(t_darray *array, int i)
 	debug("darray_remove");
 	el = array->contents[i];
 	array->contents[i] = NULL;
+	return (el);
 }
 
 /*
