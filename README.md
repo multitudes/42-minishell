@@ -1275,6 +1275,22 @@ In this example, gotostr will contain an escape sequence that moves the cursor t
 
 Please note that termcap is quite old and has largely been replaced by terminfo and the ncurses library, which provide similar functionality but are more powerful and flexible.
 
+## Builtins
+
+In a shell, builtins are commands that are built into the shell itself, rather than being external programs. This means that the shell executes builtins directly, without needing to fork and exec an external program. We can check if a command is a builtin like this with the `type` command in bash shell:
+```
+c4c1c1% type exit
+exit is a shell builtin
+c4c1c1% type cd  
+cd is a shell builtin
+c4c1c1% type echo
+echo is a shell builtin
+c4c1c1% type .
+. is a shell builtin
+c4c1c1% type ls
+ls is /usr/bin/ls
+[...]
+```
 ## what could a dot do?
 My scanner has an option for a dot. but is a dot something recognized by the bash shell? lets find out.
 
