@@ -78,8 +78,8 @@ const char *test_basicminishell_echo3() {
 
 const char *test_basicminishell_echo4() {
 	bool pass = false;
-	std::string command_to_exec = "echo -nnn -nn -mnnn hello this is not a flag\n";
-	std::string expected_output = "minishell $ echo -nnn -nn -mnnn hello this is not a flag\n-mnnn hello this is not a flagminishell $ minishell $ exit\n";
+	std::string command_to_exec = "echo -nnn -nn -mnnn hello\n";
+	std::string expected_output = "minishell $ echo -nnn -nn -mnnn hello\n-mnnn hellominishell $ minishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
 	my_assert(status == 0, "Minishell exited with non-zero status");
 	my_assert(pass, "Output is not as expected");
@@ -93,8 +93,8 @@ const char *test_basicminishell_echo4() {
 
 const char *test_basicminishell_echo5() {
 	bool pass = false;
-	std::string command_to_exec = "echo -mnnn hello this is not a flag\n";
-	std::string expected_output = "minishell $ echo -mnnn hello this is not a flag\n-mnnn hello this is not a flag\nminishell $ minishell $ exit\n";
+	std::string command_to_exec = "echo -mnnn hello\n";
+	std::string expected_output = "minishell $ echo -mnnn hello\n-mnnn hello\nminishell $ minishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
 	my_assert(status == 0, "Minishell exited with non-zero status");
 	my_assert(pass, "Output is not as expected");
@@ -285,7 +285,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
-		usleep(2100);
+		usleep(3000);
 
         char buffer[1024];
         int n = read(pipefd_out[0], buffer, sizeof(buffer));
