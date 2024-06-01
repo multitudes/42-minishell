@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/01 14:47:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/01 14:48:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 /*
 it checks if the terminal ast node is a builtin or a command
 but this could be already done in the parser 🧐🤨
+This function is probably just for debug purposes
+need to check that the parser interprets the tokens correctly
 */
 void	which_ast_node(t_ast_node *ast)
 {
