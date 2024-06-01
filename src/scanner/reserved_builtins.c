@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:40:02 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:40:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/01 11:34:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,29 +85,29 @@ typeset ulimit umask unalias wait readarray"
 */
 bool	not_implemented_builtin(const char *id)
 {
-	if (!strncicmp(id, "bg", 3) || !strncicmp(id, "fc", 2) || !strncicmp(id, \
-	":", 2) || !strncicmp(id, "bind", 5) || !strncicmp(id, "break", 6) || \
-	!strncicmp(id, "builtin", 8) || !strncicmp(id, "caller", 6) || \
-	!strncicmp(id, "command", 7) || !strncicmp(id, "compgen", 7) || \
-	!strncicmp(id, ".", 2) || !strncicmp(id, "complete", 9) || !strncicmp(id, \
-	"continue", 8) || !strncicmp(id, "declare", 7) || !strncicmp(id, "dirs", \
-	4) || !strncicmp(id, "disown", 6) || !strncicmp(id, "enable", 6) || \
-	!strncicmp(id, "eval", 4) || !strncicmp(id, "exec", 4) || !strncicmp(id, \
-	"alias", 6) || !strncicmp(id, "fg", 2) || !strncicmp(id, "getopts", 7) || \
-	!strncicmp(id, "hash", 4) || !strncicmp(id, "help", 4) || !strncicmp(id, \
-	"history", 7) || !strncicmp(id, "jobs", 4) || !strncicmp(id, "kill", 4) || \
-	!strncicmp(id, "let", 3) || !strncicmp(id, "local", 5) || !strncicmp(id, \
-	"logout", 6) || !strncicmp(id, "mapfile", 7) || !strncicmp(id, "popd", 4) \
-	|| !strncicmp(id, "printf", 6) || !strncicmp(id, "pushd", 5) || \
-	!strncicmp(id, "read", 4) || !strncicmp(id, "readonly", 8) || \
-	!strncicmp(id, "return", 6) || !strncicmp(id, "set", 3) || \
-	!strncicmp(id, "shift", 5) || !strncicmp(id, "shopt", 5) || \
-	!strncicmp(id, "source", 6) || !strncicmp(id, "suspend", 7) || \
-	!strncicmp(id, "test", 4) || !strncicmp(id, "times", 5) || \
-	!strncicmp(id, "trap", 4) || !strncicmp(id, "type", 4) || \
-	!strncicmp(id, "typeset", 7) || !strncicmp(id, "ulimit", 6) || \
-	!strncicmp(id, "umask", 5) || !strncicmp(id, "unalias", 7) || \
-	!strncicmp(id, "wait", 4) || !strncicmp(id, "readarray", 9))
+	if (!ft_strncicmp(id, "bg", 3) || !ft_strncicmp(id, "fc", 2) || !ft_strncicmp(id, \
+	":", 2) || !ft_strncicmp(id, "bind", 5) || !ft_strncicmp(id, "break", 6) || \
+	!ft_strncicmp(id, "builtin", 8) || !ft_strncicmp(id, "caller", 6) || \
+	!ft_strncicmp(id, "command", 7) || !ft_strncicmp(id, "compgen", 7) || \
+	!ft_strncicmp(id, ".", 2) || !ft_strncicmp(id, "complete", 9) || !ft_strncicmp(id, \
+	"continue", 8) || !ft_strncicmp(id, "declare", 7) || !ft_strncicmp(id, "dirs", \
+	4) || !ft_strncicmp(id, "disown", 6) || !ft_strncicmp(id, "enable", 6) || \
+	!ft_strncicmp(id, "eval", 4) || !ft_strncicmp(id, "exec", 4) || !ft_strncicmp(id, \
+	"alias", 6) || !ft_strncicmp(id, "fg", 2) || !ft_strncicmp(id, "getopts", 7) || \
+	!ft_strncicmp(id, "hash", 4) || !ft_strncicmp(id, "help", 4) || !ft_strncicmp(id, \
+	"history", 7) || !ft_strncicmp(id, "jobs", 4) || !ft_strncicmp(id, "kill", 4) || \
+	!ft_strncicmp(id, "let", 3) || !ft_strncicmp(id, "local", 5) || !ft_strncicmp(id, \
+	"logout", 6) || !ft_strncicmp(id, "mapfile", 7) || !ft_strncicmp(id, "popd", 4) \
+	|| !ft_strncicmp(id, "printf", 6) || !ft_strncicmp(id, "pushd", 5) || \
+	!ft_strncicmp(id, "read", 4) || !ft_strncicmp(id, "readonly", 8) || \
+	!ft_strncicmp(id, "return", 6) || !ft_strncicmp(id, "set", 3) || \
+	!ft_strncicmp(id, "shift", 5) || !ft_strncicmp(id, "shopt", 5) || \
+	!ft_strncicmp(id, "source", 6) || !ft_strncicmp(id, "suspend", 7) || \
+	!ft_strncicmp(id, "test", 4) || !ft_strncicmp(id, "times", 5) || \
+	!ft_strncicmp(id, "trap", 4) || !ft_strncicmp(id, "type", 4) || \
+	!ft_strncicmp(id, "typeset", 7) || !ft_strncicmp(id, "ulimit", 6) || \
+	!ft_strncicmp(id, "umask", 5) || !ft_strncicmp(id, "unalias", 7) || \
+	!ft_strncicmp(id, "wait", 4) || !ft_strncicmp(id, "readarray", 9))
 		return (true);
 	return (false);
 }

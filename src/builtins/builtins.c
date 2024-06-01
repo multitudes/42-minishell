@@ -155,53 +155,60 @@ int	execute_env_builtin(t_data *data)
 	return (status);
 }
 
+bool	write_data(int fd, const void *str, int *status) 
+{
+    ssize_t result; 
+	
+	result = write(fd, str, ft_strlen(str));
+    if (result == -1 || result != (ssize_t)ft_strlen(str)) 
+	{
+        perror("write");
+		*status = EXIT_FAILURE;
+		return (false);
+    }
+	return (true);
+}
+
+bool	allowed_flags(const char *flag_lexem, const char *allowed_flags)
+{
+	flag_lexem++;
+	while (*flag_lexem)
+	{
+		if (!ft_strchr(allowed_flags, *flag_lexem))
+			return (false);
+		flag_lexem++;
+	}
+	return (true);
+}
+
 /*
-Executes builtin "echo" function with and without '-n' option.
-TO CHECK:
-When suppressing the newline at the end, does echo actually introduce a carriage return or similar?
+Executes builtin "echo" function with and without '-n' option
+which suppresses the trailing newline.
 */
 int	execute_echo_builtin(t_list *tokenlist)
 {
 	int		status;
-	t_token	*token;
 	int		new_line;
-	int		printf_return;
 
 	debug("echo builtin");
 	status = 0;
 	new_line = 1;
-	printf_return = 0;
-	token = tokenlist->content;
-	if (ft_strncmp(token->lexeme, "echo", 5) == 0)
-	{
-		debug("lexeme: %s (Not printed)", token->lexeme);
-		tokenlist = tokenlist->next;
-	}
-	else
-	{
-		debug("echo builtin falsely called");
-		return (1);
-	}
-	if (tokenlist && ft_strncmp(((t_token *)tokenlist->content)->lexeme, "-n", 3) == 0)
-	{
-		token = tokenlist->content;
-		new_line = 0;
-		debug("lexeme: %s (newline at end to be suppressed)", token->lexeme);
-		tokenlist = tokenlist->next;
-	}
+	tokenlist = tokenlist->next;
 	while (tokenlist)
 	{
-		token = tokenlist->content;
-		if (tokenlist->next)
-			printf_return = printf("%s ", token->lexeme);
+		debug("lexeme: %s", get_token_lexeme(tokenlist));
+		if (get_token_type(tokenlist) == FLAGS && allowed_flags(get_token_lexeme(tokenlist), "n"))
+				new_line = 0;
 		else
-			printf_return = printf("%s", token->lexeme);
+		{
+			write_data(1, get_token_lexeme(tokenlist), &status);
+			if (tokenlist->next != NULL)
+				write_data(1, " ", &status);
+		}
 		tokenlist = tokenlist->next;
-		if (printf_return < 0)
-			status = 1;
 	}
-	if (new_line == 1)
-			printf_return = printf("\n");
+	if (new_line)
+		write_data(1, "\n", &status);		
 	return (status);
 }
 
