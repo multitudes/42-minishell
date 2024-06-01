@@ -28,10 +28,8 @@ void	*darray_get(t_darray *array, int i)
 }
 
 /*
-removing the element at index, moving the subsequent elements up
-and returning the element that was removed (to free).
-add call to contract_array ?
--- setting the element at index to null and returning what we removed
+setting the element at index to null
+and returning what we removed (to free)
 */
 void	*darray_remove(t_darray *array, int i)
 {
@@ -40,6 +38,19 @@ void	*darray_remove(t_darray *array, int i)
 	debug("darray_remove");
 	el = array->contents[i];
 	array->contents[i] = NULL;
+}
+
+/*
+removing the element at index, moving the subsequent elements up
+and returning the element that was removed (to free).
+add call to contract_array ?
+*/
+void	*darray_remove_and_prune(t_darray *array, int i)
+{
+	void	*el;
+
+	debug("darray_remove_and_prune");
+	el = darray_remove(array, i);
 	while (i < array->end)
 	{
 		array->contents[i] = array->contents[i + 1];

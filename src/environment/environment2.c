@@ -48,7 +48,7 @@ int	delete_env_entry(t_darray *env_arr, char *key)
 		return (0);
 	else
 	{
-		var = darray_remove(env_arr, i);
+		var = darray_remove_and_prune(env_arr, i);
 		free(var);
 	}
 	return (0);
