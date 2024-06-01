@@ -24,40 +24,35 @@ Returns exit status of executed builtin.
 */
 int    execute_builtin(t_list *tokenlist, t_data *data)
 {
-	t_token *token;
-	char 	*lexeme;
 	int		status;
 
-	if (tokenlist)
-		token = (t_token *)tokenlist->content;
-	else
-		return (1);
-	lexeme = (char *)token->lexeme;
+	if (!tokenlist)
+		return (EXIT_FAILURE);
 	status = 0;
-	if (ft_strncicmp(lexeme, "echo", 5) == 0)
+	if (ft_strncicmp(get_token_lexeme(tokenlist), "echo", 5) == 0)
 		status = execute_echo_builtin(tokenlist);
-	else if (ft_strncicmp(lexeme, "cd", 3) == 0)
+	else if (ft_strncicmp(get_token_lexeme(tokenlist), "cd", 3) == 0)
 		status = execute_cd_builtin(data, tokenlist);
-	else if (ft_strncicmp(lexeme, "pwd", 4) == 0)
+	else if (ft_strncicmp(get_token_lexeme(tokenlist), "pwd", 4) == 0)
 		status = execute_pwd_builtin();
-	else if (ft_strncicmp(lexeme, "export", 7) == 0)
+	else if (ft_strncicmp(get_token_lexeme(tokenlist), "export", 7) == 0)
 		status = execute_export_builtin(data, tokenlist);
-	else if (ft_strncicmp(lexeme, "unset", 6) == 0)
+	else if (ft_strncicmp(get_token_lexeme(tokenlist), "unset", 6) == 0)
 	{
 		debug("unset builtin");
 	}
-	else if (ft_strncicmp(lexeme, "env", 4) == 0)
+	else if (ft_strncicmp(get_token_lexeme(tokenlist), "env", 4) == 0)
 		status = execute_env_builtin(data);
-	else if (ft_strncicmp(lexeme, "exit", 5) == 0)
+	else if (ft_strncicmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
 	{
 		debug("exit builtin");
 	}
-	else if (ft_strncicmp(lexeme, "true", 5) == 0)
+	else if (ft_strncicmp(get_token_lexeme(tokenlist), "true", 5) == 0)
 	{
 		status = 0;
 		debug("true builtin");
 	}
-	else if (ft_strncicmp(lexeme, "false", 6) == 0)
+	else if (ft_strncicmp(get_token_lexeme(tokenlist), "false", 6) == 0)
 	{
 		status = 1;
 		debug("false builtin");
