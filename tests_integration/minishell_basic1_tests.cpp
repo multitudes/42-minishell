@@ -74,7 +74,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 
         if (strcmp(buffer, expected_output.c_str()) == 0)
 			*pass = true;
-		debug("pass: %s", pass ? "true" : "false");
+		debug("pass: %s", *pass ? "true" : "false");
 		
 		// clean up closing the file descriptors that I used
 		close(pipefd_out[0]);
@@ -108,7 +108,7 @@ const char* test_basicminishell_exit() {
 }
 
 
-const char *test_basicminishell2_echo() {
+const char *test_basicminishell_echo() {
 	bool pass = false;
 	std::string command_to_exec = "echo\n";
 	std::string expected_output = "minishell $ echo\n\nminishell $ minishell $ exit\n";
@@ -121,6 +121,66 @@ const char *test_basicminishell2_echo() {
 
 	return NULL;
 }
+
+const char *test_basicminishell_echo2() {
+	bool pass = false;
+	std::string command_to_exec = "echo -n\n";
+	std::string expected_output = "minishell $ echo -n\nminishell $ minishell $ exit\n";
+	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+	debug("command_to_exec: %s", command_to_exec.c_str());
+	debug("expected_output: %s", expected_output.c_str());
+	debug("status: %d and pass %s", status, pass ? "true" : "false");
+
+	return NULL;
+}
+
+
+const char *test_basicminishell_echo3() {
+	bool pass = false;
+	std::string command_to_exec = "echo -nnn -nn\n";
+	std::string expected_output = "minishell $ echo -nnn -nn\nminishell $ minishell $ exit\n";
+	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+	debug("command_to_exec: %s", command_to_exec.c_str());
+	debug("expected_output: %s", expected_output.c_str());
+	debug("status: %d and pass %s", status, pass ? "true" : "false");
+
+	return NULL;
+}
+
+
+const char *test_basicminishell_echo4() {
+	bool pass = false;
+	std::string command_to_exec = "echo -nnn -nn -mnnn hello this is not a flag\n";
+	std::string expected_output = "minishell $ echo -nnn -nn -mnnn hello this is not a flag\n-mnnn hello this is not a flagminishell $ minishell $ exit\n";
+	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+	debug("command_to_exec: %s", command_to_exec.c_str());
+	debug("expected_output: %s", expected_output.c_str());
+	debug("status: %d and pass %s", status, pass ? "true" : "false");
+
+	return NULL;
+}
+
+
+const char *test_basicminishell_echo5() {
+	bool pass = false;
+	std::string command_to_exec = "echo -mnnn hello this is not a flag\n";
+	std::string expected_output = "minishell $ echo -mnnn hello this is not a flag\n-mnnn hello this is not a flag\nminishell $ minishell $ exit\n";
+	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+	debug("command_to_exec: %s", command_to_exec.c_str());
+	debug("expected_output: %s", expected_output.c_str());
+	debug("status: %d and pass %s", status, pass ? "true" : "false");
+
+	return NULL;
+}
+
 
 const char *test_basicminishell3() {
 	// I want to test the following commands in bash with 
@@ -137,7 +197,11 @@ const char *all_tests()
 	
 	// run the tests
 	run_test(test_basicminishell_exit);
-	run_test(test_basicminishell2_echo);
+	run_test(test_basicminishell_echo);
+	run_test(test_basicminishell_echo2);
+	run_test(test_basicminishell_echo3);
+	run_test(test_basicminishell_echo4);
+	run_test(test_basicminishell_echo5);
 	run_test(test_basicminishell3);
 	
 	return NULL;
