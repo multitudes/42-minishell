@@ -207,19 +207,21 @@ int	execute_echo_builtin(t_list *tokenlist)
 
 /*
 Executes 'export' builtin. No options interpreted.
-- No arguments should give a sorted list of the environment variables (lower case variables come after all upper case variables) with `declare -x ` appended,
-variablevalues are in double quotes and apparently the last command (`export`) is not included
+- No arguments should give a sorted list of the environment variables (lower case variables come after all upper case variables) with `declare -x ` prepended,
+variable values are in double quotes and apparently the last command (i.e. `export`) is not included
 - when a string with newline characters is assigned to a variable in BASH
 (e.g. VAR="first\nsecond\nthird" - single or double quotes give the same result),
 and export, then `export` and `env` list the variable with displayed \n-characters, in env case without quotes, in export case with quotes
 but echo on the variable will actually execute the newlines
 - it should be possible to export several variables at once, while also giving a value or not.
-- If no value is provided export assigns empty string to `name` unless the variable already exists.
-- export without arguments then display this variable as `name=''
-- while env without arguments does not display the variable.
-- it is possible to assign multiple value to a variable `export VAR=1:2:3:"string" (in this case the quotes are not shown (neither with env nor with export))
+- If no value is provided export does not assigne a value to `name` and simply displays it as `name` unless the variable already exists, then it is left unchanged
+- if export is executed without values but with `export name=` then `export` displays this variable as `name='' (i.e. assigns an empty string)
+- while env without arguments does not display the variable at all
+- it is possible to assign multiple values to a variable `export VAR=1:2:3:"string" (in this case the quotes are not shown (neither with env nor with export))
 - it can also end with a ':'
 - export `VAR=2=3` gets added to the environment as `VAR='2=3'` (env would display this variable as `VAR=2=3`)
+- export `VAR=` gets added as `VAR=""` (empty string)
+- export `VAR==2` gets added as `VAR="=2"`
 QUESTION:
 - where do we want to store our local variables?
 */
@@ -239,8 +241,12 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 	}
 	if (!tokenlist)
 		status = print_env_export(data->env_arr);
-	if (tokenlist)
+	while (tokenlist)
+	{
+
 		debug("Parse arguments for export builtin.");
+		tokenlist = tokenlist->next;
+	}
 	return (status);
 }
 
