@@ -197,6 +197,65 @@ const char *test_basicminishell_echo6() {
 	return NULL;
 }
 
+const char *test_basicminishell_echo7() {
+	bool pass = false;
+	std::string command_to_exec = "echo $HOME\n";
+	std::string my_home = getenv("HOME");
+	std::string expected_output = "minishell $ echo $HOME\n" + my_home + "\nminishell $ minishell $ exit\n";
+	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+	debug("command_to_exec: %s", command_to_exec.c_str());
+	debug("expected_output: %s", expected_output.c_str());
+	debug("status: %d and pass %s", status, pass ? "true" : "false");
+
+	return NULL;
+}
+
+const char *test_basicminishell_echo8() {
+	bool pass = false;
+	std::string command_to_exec = "echo $HOMe\n";
+	std::string expected_output = "minishell $ echo $HOMe\n\nminishell $ minishell $ exit\n";
+	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+	debug("command_to_exec: %s", command_to_exec.c_str());
+	debug("expected_output: %s", expected_output.c_str());
+	debug("status: %d and pass %s", status, pass ? "true" : "false");
+
+	return NULL;
+}
+
+//	std::string command_to_exec = "echo ~\n";
+const char *test_basicminishell_echo9() {
+	bool pass = false;
+	std::string command_to_exec = "echo ~\n";
+	std::string my_home = getenv("HOME");
+	std::string expected_output = "minishell $ echo ~\n" + my_home + "\nminishell $ minishell $ exit\n";
+	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+	debug("command_to_exec: %s", command_to_exec.c_str());
+	debug("expected_output: %s", expected_output.c_str());
+	debug("status: %d and pass %s", status, pass ? "true" : "false");
+
+	return NULL;
+}
+
+const char *test_basicminishell_echo10() {
+	bool pass = false;
+	std::string command_to_exec = "echo $PATH\n";
+	std::string my_path = getenv("PATH");
+	std::string expected_output = "minishell $ echo $PATH\n" + my_path + "\nminishell $ minishell $ exit\n";
+	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+	debug("command_to_exec: %s", command_to_exec.c_str());
+	debug("expected_output: %s", expected_output.c_str());
+	debug("status: %d and pass %s", status, pass ? "true" : "false");
+
+	return NULL;
+}
 
 const char *test_basicminishell3() {
 	// I want to test the following commands in bash with 
@@ -219,6 +278,11 @@ const char *all_tests()
 	run_test(test_basicminishell_echo4);
 	run_test(test_basicminishell_echo5);
 	run_test(test_basicminishell_echo6);
+	run_test(test_basicminishell_echo7);
+	run_test(test_basicminishell_echo8);
+	run_test(test_basicminishell_echo9);
+	run_test(test_basicminishell_echo10);
+
 	run_test(test_basicminishell3);
 	
 	return NULL;
