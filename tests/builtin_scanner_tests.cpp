@@ -279,32 +279,32 @@ const char* test_scanner_builtins_dot() {
 
 /*
 make a test for all those
-	if (!(strncicmp(id, "alias", 6)) || strncicmp(id, "bg", 3) == 0 || \
-	strncicmp(id, "bind", 5) == 0 || strncicmp(id, "break", 6) == 0 || \
-	strncicmp(id, "builtin", 8) == 0 || strncicmp(id, "caller", 6) == 0 || \
-	strncicmp(id, "command", 7) == 0 || strncicmp(id, "compgen", 7) == 0 || \
-	strncicmp(id, ".", 2) == 0 || strncicmp(id, "complete", 9) == 0 || \
-	strncicmp(id, "continue", 8) == 0 || strncicmp(id, "declare", 7) == 0 || \
-	strncicmp(id, "dirs", 4) == 0 || strncicmp(id, "disown", 6) == 0 || \
-	strncicmp(id, "enable", 6) == 0 || strncicmp(id, "eval", 4) == 0 || \
-	strncicmp(id, "exec", 4) == 0 || strncicmp(id, "fc", 2) == 0 || \
-	strncicmp(id, "fg", 2) == 0 || strncicmp(id, "getopts", 7) == 0 || \
-	strncicmp(id, "hash", 4) == 0 || strncicmp(id, "help", 4) == 0 || \
-	strncicmp(id, "history", 7) == 0 || strncicmp(id, "jobs", 4) == 0 || \
-	strncicmp(id, "kill", 4) == 0 || strncicmp(id, "let", 3) == 0 || \
-	strncicmp(id, "local", 5) == 0 || strncicmp(id, "logout", 6) == 0 || \
-	strncicmp(id, "mapfile", 7) == 0 || strncicmp(id, "popd", 4) == 0 || \
-	strncicmp(id, "printf", 6) == 0 || strncicmp(id, "pushd", 5) == 0 || \
-	strncicmp(id, "read", 4) == 0 || strncicmp(id, "readonly", 8) == 0 || \
-	strncicmp(id, "return", 6) == 0 || strncicmp(id, "set", 3) == 0 || \
-	strncicmp(id, "shift", 5) == 0 || strncicmp(id, "shopt", 5) == 0 || \
-	strncicmp(id, "source", 6) == 0 || strncicmp(id, "suspend", 7) == 0 || \
-	strncicmp(id, "test", 4) == 0 || strncicmp(id, "times", 5) == 0 || \
-	strncicmp(id, "trap", 4) == 0 || strncicmp(id, "type", 4) == 0 || \
-	strncicmp(id, "typeset", 7) == 0 || strncicmp(id, "ulimit", 6) == 0 || \
-	strncicmp(id, "umask", 5) == 0 || strncicmp(id, "unalias", 7) == 0 || \
-	strncicmp(id, "wait", 4) == 0 || strncicmp(id, "readarray", 9) == 0 || \
-	strncicmp(id, ":", 2) == 0 || strncicmp(id, ".", 2) == 0)
+	if (!(ft_strncmp(id, "alias", 6)) || ft_strncmp(id, "bg", 3) == 0 || \
+	ft_strncmp(id, "bind", 5) == 0 || ft_strncmp(id, "break", 6) == 0 || \
+	ft_strncmp(id, "builtin", 8) == 0 || ft_strncmp(id, "caller", 6) == 0 || \
+	ft_strncmp(id, "command", 7) == 0 || ft_strncmp(id, "compgen", 7) == 0 || \
+	ft_strncmp(id, ".", 2) == 0 || ft_strncmp(id, "complete", 9) == 0 || \
+	ft_strncmp(id, "continue", 8) == 0 || ft_strncmp(id, "declare", 7) == 0 || \
+	ft_strncmp(id, "dirs", 4) == 0 || ft_strncmp(id, "disown", 6) == 0 || \
+	ft_strncmp(id, "enable", 6) == 0 || ft_strncmp(id, "eval", 4) == 0 || \
+	ft_strncmp(id, "exec", 4) == 0 || ft_strncmp(id, "fc", 2) == 0 || \
+	ft_strncmp(id, "fg", 2) == 0 || ft_strncmp(id, "getopts", 7) == 0 || \
+	ft_strncmp(id, "hash", 4) == 0 || ft_strncmp(id, "help", 4) == 0 || \
+	ft_strncmp(id, "history", 7) == 0 || ft_strncmp(id, "jobs", 4) == 0 || \
+	ft_strncmp(id, "kill", 4) == 0 || ft_strncmp(id, "let", 3) == 0 || \
+	ft_strncmp(id, "local", 5) == 0 || ft_strncmp(id, "logout", 6) == 0 || \
+	ft_strncmp(id, "mapfile", 7) == 0 || ft_strncmp(id, "popd", 4) == 0 || \
+	ft_strncmp(id, "printf", 6) == 0 || ft_strncmp(id, "pushd", 5) == 0 || \
+	ft_strncmp(id, "read", 4) == 0 || ft_strncmp(id, "readonly", 8) == 0 || \
+	ft_strncmp(id, "return", 6) == 0 || ft_strncmp(id, "set", 3) == 0 || \
+	ft_strncmp(id, "shift", 5) == 0 || ft_strncmp(id, "shopt", 5) == 0 || \
+	ft_strncmp(id, "source", 6) == 0 || ft_strncmp(id, "suspend", 7) == 0 || \
+	ft_strncmp(id, "test", 4) == 0 || ft_strncmp(id, "times", 5) == 0 || \
+	ft_strncmp(id, "trap", 4) == 0 || ft_strncmp(id, "type", 4) == 0 || \
+	ft_strncmp(id, "typeset", 7) == 0 || ft_strncmp(id, "ulimit", 6) == 0 || \
+	ft_strncmp(id, "umask", 5) == 0 || ft_strncmp(id, "unalias", 7) == 0 || \
+	ft_strncmp(id, "wait", 4) == 0 || ft_strncmp(id, "readarray", 9) == 0 || \
+	ft_strncmp(id, ":", 2) == 0 || ft_strncmp(id, ".", 2) == 0)
 	as BUILTINS
 */
 const char* test_scanner_builtins_all_not_impl() {
