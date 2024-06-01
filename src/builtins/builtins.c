@@ -29,41 +29,41 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	if (!tokenlist)
 		return (EXIT_FAILURE);
 	status = 0;
-	if (ft_strncicmp(get_token_lexeme(tokenlist), "echo", 5) == 0)
+	if (ft_strncmp(get_token_lexeme(tokenlist), "echo", 5) == 0)
 		status = execute_echo_builtin(tokenlist);
-	else if (ft_strncicmp(get_token_lexeme(tokenlist), "cd", 3) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "cd", 3) == 0)
 		status = execute_cd_builtin(data, tokenlist);
-	else if (ft_strncicmp(get_token_lexeme(tokenlist), "pwd", 4) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "pwd", 4) == 0)
 		status = execute_pwd_builtin();
-	else if (ft_strncicmp(get_token_lexeme(tokenlist), "export", 7) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "export", 7) == 0)
 		status = execute_export_builtin(data, tokenlist);
-	else if (ft_strncicmp(get_token_lexeme(tokenlist), "unset", 6) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "unset", 6) == 0)
 	{
 		debug("unset builtin");
 	}
-	else if (ft_strncicmp(get_token_lexeme(tokenlist), "env", 4) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
 		status = execute_env_builtin(data);
-	else if (ft_strncicmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
 	{
 		debug("exit builtin");
 	}
-	else if (ft_strncicmp(get_token_lexeme(tokenlist), "true", 5) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "true", 5) == 0)
 	{
 		status = 0;
 		debug("true builtin");
 	}
-	else if (ft_strncicmp(get_token_lexeme(tokenlist), "false", 6) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "false", 6) == 0)
 	{
 		status = 1;
 		debug("false builtin");
 	}
-	else if (ft_strncicmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
+	else if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
 	{
 		// debug("clearing history\n");
 		clear_hist_file();
 		rl_clear_history();
 	}
-	else if (ft_strncicmp(data->input, "history", 7) == 0)
+	else if (ft_strncmp(data->input, "history", 7) == 0)
 		print_history(); //we need exit status of history command ! (after all) ;)
 	else
 	{

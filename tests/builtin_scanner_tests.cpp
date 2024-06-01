@@ -279,32 +279,32 @@ const char* test_scanner_builtins_dot() {
 
 /*
 make a test for all those
-	if (!(ft_strncicmp(id, "alias", 6)) || ft_strncicmp(id, "bg", 3) == 0 || \
-	ft_strncicmp(id, "bind", 5) == 0 || ft_strncicmp(id, "break", 6) == 0 || \
-	ft_strncicmp(id, "builtin", 8) == 0 || ft_strncicmp(id, "caller", 6) == 0 || \
-	ft_strncicmp(id, "command", 7) == 0 || ft_strncicmp(id, "compgen", 7) == 0 || \
-	ft_strncicmp(id, ".", 2) == 0 || ft_strncicmp(id, "complete", 9) == 0 || \
-	ft_strncicmp(id, "continue", 8) == 0 || ft_strncicmp(id, "declare", 7) == 0 || \
-	ft_strncicmp(id, "dirs", 4) == 0 || ft_strncicmp(id, "disown", 6) == 0 || \
-	ft_strncicmp(id, "enable", 6) == 0 || ft_strncicmp(id, "eval", 4) == 0 || \
-	ft_strncicmp(id, "exec", 4) == 0 || ft_strncicmp(id, "fc", 2) == 0 || \
-	ft_strncicmp(id, "fg", 2) == 0 || ft_strncicmp(id, "getopts", 7) == 0 || \
-	ft_strncicmp(id, "hash", 4) == 0 || ft_strncicmp(id, "help", 4) == 0 || \
-	ft_strncicmp(id, "history", 7) == 0 || ft_strncicmp(id, "jobs", 4) == 0 || \
-	ft_strncicmp(id, "kill", 4) == 0 || ft_strncicmp(id, "let", 3) == 0 || \
-	ft_strncicmp(id, "local", 5) == 0 || ft_strncicmp(id, "logout", 6) == 0 || \
-	ft_strncicmp(id, "mapfile", 7) == 0 || ft_strncicmp(id, "popd", 4) == 0 || \
-	ft_strncicmp(id, "printf", 6) == 0 || ft_strncicmp(id, "pushd", 5) == 0 || \
-	ft_strncicmp(id, "read", 4) == 0 || ft_strncicmp(id, "readonly", 8) == 0 || \
-	ft_strncicmp(id, "return", 6) == 0 || ft_strncicmp(id, "set", 3) == 0 || \
-	ft_strncicmp(id, "shift", 5) == 0 || ft_strncicmp(id, "shopt", 5) == 0 || \
-	ft_strncicmp(id, "source", 6) == 0 || ft_strncicmp(id, "suspend", 7) == 0 || \
-	ft_strncicmp(id, "test", 4) == 0 || ft_strncicmp(id, "times", 5) == 0 || \
-	ft_strncicmp(id, "trap", 4) == 0 || ft_strncicmp(id, "type", 4) == 0 || \
-	ft_strncicmp(id, "typeset", 7) == 0 || ft_strncicmp(id, "ulimit", 6) == 0 || \
-	ft_strncicmp(id, "umask", 5) == 0 || ft_strncicmp(id, "unalias", 7) == 0 || \
-	ft_strncicmp(id, "wait", 4) == 0 || ft_strncicmp(id, "readarray", 9) == 0 || \
-	ft_strncicmp(id, ":", 2) == 0 || ft_strncicmp(id, ".", 2) == 0)
+	if (!(ft_strncmp(id, "alias", 6)) || ft_strncmp(id, "bg", 3) == 0 || \
+	ft_strncmp(id, "bind", 5) == 0 || ft_strncmp(id, "break", 6) == 0 || \
+	ft_strncmp(id, "builtin", 8) == 0 || ft_strncmp(id, "caller", 6) == 0 || \
+	ft_strncmp(id, "command", 7) == 0 || ft_strncmp(id, "compgen", 7) == 0 || \
+	ft_strncmp(id, ".", 2) == 0 || ft_strncmp(id, "complete", 9) == 0 || \
+	ft_strncmp(id, "continue", 8) == 0 || ft_strncmp(id, "declare", 7) == 0 || \
+	ft_strncmp(id, "dirs", 4) == 0 || ft_strncmp(id, "disown", 6) == 0 || \
+	ft_strncmp(id, "enable", 6) == 0 || ft_strncmp(id, "eval", 4) == 0 || \
+	ft_strncmp(id, "exec", 4) == 0 || ft_strncmp(id, "fc", 2) == 0 || \
+	ft_strncmp(id, "fg", 2) == 0 || ft_strncmp(id, "getopts", 7) == 0 || \
+	ft_strncmp(id, "hash", 4) == 0 || ft_strncmp(id, "help", 4) == 0 || \
+	ft_strncmp(id, "history", 7) == 0 || ft_strncmp(id, "jobs", 4) == 0 || \
+	ft_strncmp(id, "kill", 4) == 0 || ft_strncmp(id, "let", 3) == 0 || \
+	ft_strncmp(id, "local", 5) == 0 || ft_strncmp(id, "logout", 6) == 0 || \
+	ft_strncmp(id, "mapfile", 7) == 0 || ft_strncmp(id, "popd", 4) == 0 || \
+	ft_strncmp(id, "printf", 6) == 0 || ft_strncmp(id, "pushd", 5) == 0 || \
+	ft_strncmp(id, "read", 4) == 0 || ft_strncmp(id, "readonly", 8) == 0 || \
+	ft_strncmp(id, "return", 6) == 0 || ft_strncmp(id, "set", 3) == 0 || \
+	ft_strncmp(id, "shift", 5) == 0 || ft_strncmp(id, "shopt", 5) == 0 || \
+	ft_strncmp(id, "source", 6) == 0 || ft_strncmp(id, "suspend", 7) == 0 || \
+	ft_strncmp(id, "test", 4) == 0 || ft_strncmp(id, "times", 5) == 0 || \
+	ft_strncmp(id, "trap", 4) == 0 || ft_strncmp(id, "type", 4) == 0 || \
+	ft_strncmp(id, "typeset", 7) == 0 || ft_strncmp(id, "ulimit", 6) == 0 || \
+	ft_strncmp(id, "umask", 5) == 0 || ft_strncmp(id, "unalias", 7) == 0 || \
+	ft_strncmp(id, "wait", 4) == 0 || ft_strncmp(id, "readarray", 9) == 0 || \
+	ft_strncmp(id, ":", 2) == 0 || ft_strncmp(id, ".", 2) == 0)
 	as BUILTINS
 */
 const char* test_scanner_builtins_all_not_impl() {
