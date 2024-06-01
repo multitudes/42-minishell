@@ -1138,8 +1138,27 @@ int main() {
 ```
 
 ## We are allowed to use a global variable
-With this global we can track the error codes in our program.
-It is necessary to have a global because of the forks and because when we handle a signal we cannot access or pass data parameters. 
+In the subject of the project, it is mentioned that we can use a global variable to track the signals received by the program.   
+This is useful because signal handlers cannot take arguments, so we need a way to communicate the signal number to the rest of the program.  However there is a way to get the exit signal of the childrem processes with the waitpid function.
+Ex:
+```
+int status;
+int	exit_status;
+
+exit_status = 0;
+waitpid(pid, &status, 0);
+if (WIFEXITED(status)) /* child exited normally */
+	exit_status = WEXITSTATUS(status);
+else if (WIFSIGNALED(status)) /* child exited on a signal */
+	exit_status = WTERMSIG(status) + 128; /* 128 is the offset for signals */
+else
+	status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
+
+... // do something with exit_status
+```
+
+So if the child process exited normally, the exit status will be the return value of the child process. If the child process exited on a signal, the exit status will be the signal number plus 128. Taking SIGINT as example (signal number 2), the exit status will be 130. 
+
 
 ## Error handling and error codes
 
@@ -1430,3 +1449,5 @@ https://web.mit.edu/gnu/doc/html/rlman_2.html
 coding style git:  
 https://www.conventionalcommits.org/en/v1.0.0/#summary
 
+More about pipes and redirections:  
+https://www.rozmichelle.com/pipes-forks-dups/
