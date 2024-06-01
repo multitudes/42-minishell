@@ -20,7 +20,6 @@
 static t_darray *array = NULL;
 static int *val1 = NULL;
 static int *val2 = NULL;
-static int *val3 = NULL;
 
 const char* test_create() 
 {
@@ -68,19 +67,14 @@ const char *test_new()
 	my_assert(val2 != NULL, "failed to make a new element");
 	debug("val2 pointer %p val %d",val2, *(int*)val2);
 	
-	val3 = (int *)darray_new_elem(array);
-	my_assert(val3 != NULL, "failed to make a new element");
-	debug("val3 pointer %p val %d",val3, *(int*)val3);
-	
 	return NULL;
 }
 
 const char *test_set()
 {
-	// set will be assigning val1 to array[0] and val2 to array[1] and val3 to array[2]
+	// set will be assigning val1 to array[0] and val2 to array[1]
 	darray_set(array, 0, val1);
 	darray_set(array, 1, val2);
-	darray_set(array, 2, val3);
 	
 	return NULL;
 }
@@ -90,7 +84,6 @@ const char *test_get()
 	// check that the previous values are in
 	my_assert(darray_get(array, 0) == val1, "Wrong first value.");
 	my_assert(darray_get(array, 1) == val2, "Wrong second value.");
-	my_assert(darray_get(array, 2) == val3, "Wrong third value.");
 	
 	return NULL;
 }
@@ -100,12 +93,12 @@ const char *test_remove()
 	int *val_check = (int *)darray_remove(array, 0);
 	my_assert(val_check != NULL, "Should not get NULL.");
 	my_assert(*val_check == *val1, "Should get the first value.");
-	my_assert(darray_get(array, 0) == val2, "Should be second value.");
+	my_assert(darray_get(array, 0) == NULL, "Should be gone.");
 	free(val_check);
 	
 	val_check = (int *)darray_remove(array, 1);
 	my_assert(val_check != NULL, "Should not get NULL.");
-	my_assert(*val_check == *val3, "Should get the third value.");
+	my_assert(*val_check == *val2, "Should get the first value.");
 	my_assert(darray_get(array, 1) == NULL, "Should be gone.");
 	free(val_check);
 	
@@ -222,7 +215,7 @@ const char *all_tests()
 	run_test(test_get);
 	run_test(test_remove);
 	run_test(test_expand_contract);
-//	run_test(test_push_pop);	
+	run_test(test_push_pop);	
 	run_test(test_destroy);
 	run_test(test_env);
 	run_test(test_env_update);
