@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 15:39:41 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/31 12:42:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int		resolve_command_path(char **argv, t_data *data);
 int		count_tokens(t_list *tokenlist);
 int		get_status_of_children(pid_t pid1, pid_t pid2);
 int 	free_array(char **envpaths);
+int		get_wait_status(int status);
 
 #  ifdef __cplusplus
 

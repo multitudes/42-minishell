@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 19:08:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/01 14:48:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 /*
 it checks if the terminal ast node is a builtin or a command
 but this could be already done in the parser 🧐🤨
+This function is probably just for debug purposes
+need to check that the parser interprets the tokens correctly
 */
 void	which_ast_node(t_ast_node *ast)
 {
@@ -28,7 +30,7 @@ void	which_ast_node(t_ast_node *ast)
 		return ;
 	token = (t_token *)tokenlist->content;
 	debug("which_ast_node");
-	if (token->type == BUILTIN || token->type == TILDE)
+	if (token->type == BUILTIN)
 	{
 		ast->type = NODE_BUILTIN;
 		debug("NODE_BUILTIN");
@@ -141,9 +143,10 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	if (ast == NULL)
 		return ;
 	debug("analyse expand");
-	debug("Received token type: %d ast node type: %d lexeme: %s", ((t_token *)token_list->content)->type, ast->type, ((t_token *)token_list->content)->lexeme);
 	// assignng a ast node type to the node
 	which_ast_node(ast);
+	debug("Received token type: %d ast node type: %d lexeme: %s", ((t_token *)token_list->content)->type, ast->type, ((t_token *)token_list->content)->lexeme);
+	
 	while (token_list)
 	{
 		token = token_list->content;

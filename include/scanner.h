@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 14:24:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/01 11:34:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ typedef enum e_tokentype {
 	TILDE,
 	EOF_TOK,
 	COMMAND,
+	GLOBBING,
 	NULL_TOKEN
 } t_tokentype;
 
@@ -177,7 +178,7 @@ t_list	*string_tokenizer(const char *input);
 bool	peek(const char *input, const char *identifier, bool end_space);
 void	advance(int *i);
 bool	is_space(const char c);
-int		strncicmp(char const *a, char const *b, int n);
+int		ft_strncicmp(char const *a, char const *b, int n);
 bool	cmp_char_case_insensitive(const char a, const char b);
 bool	is_delimiter(const char ch);
 bool	is_not_delimiter(const char ch);
@@ -227,6 +228,7 @@ bool	is_a_dollar_exp(t_mini_data *data, int *i);
 bool	is_a_flag(t_mini_data *data, int *i);
 bool	is_a_string_thing(t_mini_data *data, int *i);
 bool	is_a_redirection(t_mini_data *data, int *i);
+bool	is_a_globbing(t_mini_data *data, const char *tmp, int *start);
 
 #  ifdef __cplusplus
 

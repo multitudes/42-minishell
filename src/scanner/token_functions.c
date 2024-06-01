@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/23 09:28:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/01 16:51:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
 
 	i = 0;
 	n = ft_strlen(identifier);
-	while (i < n && cmp_char_case_insensitive(input[i], identifier[i]))
+	while (i < n && input[i] == identifier[i])
 		i++;
 	if (i == n && ((need_delim && is_delimiter(input[i])) || !need_delim))
 		return (true);
