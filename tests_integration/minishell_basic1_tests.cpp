@@ -181,6 +181,22 @@ const char *test_basicminishell_echo5() {
 	return NULL;
 }
 
+//echo $NonExistingVar
+
+const char *test_basicminishell_echo6() {
+	bool pass = false;
+	std::string command_to_exec = "echo $NonExistingVar\n";
+	std::string expected_output = "minishell $ echo $NonExistingVar\n\nminishell $ minishell $ exit\n";
+	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+	debug("command_to_exec: %s", command_to_exec.c_str());
+	debug("expected_output: %s", expected_output.c_str());
+	debug("status: %d and pass %s", status, pass ? "true" : "false");
+
+	return NULL;
+}
+
 
 const char *test_basicminishell3() {
 	// I want to test the following commands in bash with 
@@ -202,6 +218,7 @@ const char *all_tests()
 	run_test(test_basicminishell_echo3);
 	run_test(test_basicminishell_echo4);
 	run_test(test_basicminishell_echo5);
+	run_test(test_basicminishell_echo6);
 	run_test(test_basicminishell3);
 	
 	return NULL;
