@@ -34,41 +34,41 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 		return (1);
 	lexeme = (char *)token->lexeme;
 	status = 0;
-	if (ft_strncmp(lexeme, "echo", 5) == 0)
+	if (ft_strncicmp(lexeme, "echo", 5) == 0)
 		status = execute_echo_builtin(tokenlist);
-	else if (ft_strncmp(lexeme, "cd", 3) == 0)
+	else if (ft_strncicmp(lexeme, "cd", 3) == 0)
 		status = execute_cd_builtin(data, tokenlist);
-	else if (ft_strncmp(lexeme, "pwd", 4) == 0)
+	else if (ft_strncicmp(lexeme, "pwd", 4) == 0)
 		status = execute_pwd_builtin();
-	else if (ft_strncmp(lexeme, "export", 7) == 0)
+	else if (ft_strncicmp(lexeme, "export", 7) == 0)
 		status = execute_export_builtin(data, tokenlist);
-	else if (ft_strncmp(lexeme, "unset", 6) == 0)
+	else if (ft_strncicmp(lexeme, "unset", 6) == 0)
 	{
 		debug("unset builtin");
 	}
-	else if (ft_strncmp(lexeme, "env", 4) == 0)
+	else if (ft_strncicmp(lexeme, "env", 4) == 0)
 		status = execute_env_builtin(data);
-	else if (ft_strncmp(lexeme, "exit", 5) == 0)
+	else if (ft_strncicmp(lexeme, "exit", 5) == 0)
 	{
 		debug("exit builtin");
 	}
-	else if (ft_strncmp(lexeme, "true", 5) == 0)
+	else if (ft_strncicmp(lexeme, "true", 5) == 0)
 	{
 		status = 0;
 		debug("true builtin");
 	}
-	else if (ft_strncmp(lexeme, "false", 6) == 0)
+	else if (ft_strncicmp(lexeme, "false", 6) == 0)
 	{
 		status = 1;
 		debug("false builtin");
 	}
-	else if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
+	else if (ft_strncicmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
 	{
 		// debug("clearing history\n");
 		clear_hist_file();
 		rl_clear_history();
 	}
-	else if (ft_strncmp(data->input, "history", 7) == 0)
+	else if (ft_strncicmp(data->input, "history", 7) == 0)
 		print_history(); //we need exit status of history command ! (after all) ;)
 	else
 	{
