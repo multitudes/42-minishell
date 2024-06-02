@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 15:09:44 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 18:19:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,12 @@ int	get_files_in_directory(t_darray *files)
 			perror("getcwd");
 			return (1);
 		}
-		stat(cwd, &path_stat);
+		
+		if (stat(dir->d_name, &path_stat))
+		{
+			perror("stat");
+			return (1);
+		}
 		if (S_ISREG(path_stat.st_mode))
 			darray_push(files, ft_strdup(dir->d_name));
 		dir = readdir(dirp);
