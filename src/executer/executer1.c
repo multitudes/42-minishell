@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 18:54:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 11:03:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,14 @@ base is the command we are int count_tokens(t_list *tokenlist)
 	return (count);
 }looking for.
 */
-char	*create_path(char *base, t_data *data)
+char	*create_path(char *base, char *path_env)
 {
 	int		i;
 	char	*commandpath;
 	char	**envpaths;
 
 	i = 0;
-	envpaths = ft_split(mini_get_env(data->env_arr, "PATH"), ':');
+	envpaths = ft_split(path_env, ':');
 	while (envpaths[i])
 	{
 		commandpath = ft_strjoin3(envpaths[i], "/", base);
@@ -123,7 +123,7 @@ int	resolve_command_path(char **argv, t_data *data)
 	cmd = NULL;
 	if (ft_strchr(argv[0], '/') == NULL)
 	{
-		cmd = create_path(argv[0], data);
+		cmd = create_path(argv[0], mini_get_env(data->env_arr, "PATH"));
 		if (!cmd)
 			return (status_and_print("minishell: command not on path\n", 1));
 		argv[0] = cmd;
