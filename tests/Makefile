@@ -20,10 +20,10 @@ scanner/token_functions.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
 scanner/token_operators.c scanner/token_blocks.c scanner/history_tokens.c \
 scanner/redirection_tokens.c scanner/token_blocks2.c environment/environment.c environment/environment2.c \
 parser/parser.c parser/parser2.c parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c analyser.c utils.c	\
-error.c darray/darray.c darray/darray2.c darray/darray3.c \
+error.c darray/darray.c darray/darray2.c darray/darray3.c globbing.c \
 builtins/builtins.c executer/executer.c executer/executer1.c executer/executer2.c)
 SUT_HDRS 	= 	$(addprefix ../include/, minishell.h scanner.h environment.h \
-parser.h analyser.h executer.h error.h darray.h builtins.h) 
+parser.h analyser.h executer.h error.h darray.h builtins.h globbing.h) 
 
 # will be compiled into object files
 SUT_OBJS 	= 	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SUT_SRCS))
@@ -47,7 +47,7 @@ endif
 TEST_SRCS	=	minishell_basic1_tests.cpp minishell_scanner_tests.cpp \
 builtin_scanner_tests.cpp ident_scanner_delimiter_tests.cpp \
 subst_scanner_tests.cpp operator_scanner_tests.cpp parser_tree_tests.cpp \
-darray_env_tests.cpp lists_tests.cpp
+darray_env_tests.cpp lists_tests.cpp globbing_tests.cpp
 
 # this substitution create files without the extension
 # they will become the executables
