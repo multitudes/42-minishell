@@ -30,7 +30,7 @@
 
 # Executables
 minishell
-*_tests
+tests*/*_tests
 *.exe
 *.out
 *.app
@@ -43,7 +43,7 @@ minishell
 *.su
 *.idb
 *.pdb
-tests.log
+tests*/tests.log
 
 # Kernel Module Compile Results
 *.mod*
