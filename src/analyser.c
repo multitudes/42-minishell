@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 15:52:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 16:13:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	expand_globbing(t_token *token)
 {
 		// char	*pat;
 		t_darray	*files;
-		token;
+		// token;
 
 		if (!token)
 			return ;
