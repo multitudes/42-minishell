@@ -29,6 +29,8 @@
 *.dylib
 
 # Executables
+minishell
+*_tests
 *.exe
 *.out
 *.app
@@ -41,6 +43,7 @@
 *.su
 *.idb
 *.pdb
+tests.log
 
 # Kernel Module Compile Results
 *.mod*
