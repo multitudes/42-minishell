@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:15:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 14:50:31 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 13:54:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	darray_clear(t_darray *array)
 		{
 			if (array->contents[i] != NULL)
 				free(array->contents[i]);
+			array->contents[i] = NULL;
 			i++;
 		}
 	}
