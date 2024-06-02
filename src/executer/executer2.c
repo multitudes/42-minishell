@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 11:12:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 15:33:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 	int		status;
 	char	**argv;
 
+	status = 0;
 	argv = get_args_from_tokenlist(tokenlist);
 	if (!argv)
 		return (status_and_print("malloc argv", 1));
@@ -113,7 +114,7 @@ int	execute_list(t_ast_node *ast, t_data *data)
 int	handle_first_child_process(t_data *data, t_ast_node *ast)
 {
 	if (close(data->pipe_fd[0]) == -1)
-		return (exit_and_print_err("close 1 error", 1));
+		exit_and_print_err("close 1 error", 1);
 	if (data->pipe_fd[1] != STDOUT_FILENO)
 	{
 		if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)

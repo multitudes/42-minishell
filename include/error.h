@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:23:18 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 09:59:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 15:31:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ extern "C" {
 # endif
 
 int		status_and_print(char *msg, int status);
-int		exit_and_print_err(char *msg, int status) NORETURN;
+int		exit_and_print_err(char *msg, int status);
 int		zero_and_printerr(char *msg);
 void	*return_null_on_err(char *message);
 #  ifdef __cplusplus
