@@ -38,6 +38,7 @@ int		copy_env_darray(t_darray **new_array, t_darray *source_arr);
 int		delete_env_entry(t_darray *env_arr, char *key);
 int		get_var_index(t_darray *env_arr, const char *key);
 char	*get_var_key(const char *variable);
+char	*get_var_value(const char *variable);
 int		print_env(t_darray *env_array);
 int		print_env_export(t_darray *env_arr);
 char	*mini_get_env(t_darray *env_array, const char *key);

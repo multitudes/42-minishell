@@ -17,43 +17,20 @@
 bool update_env(t_darray *env_arr, const char *key, const char *value)
 {
 	char		*env_str;
-	char		*position;
 	char		*new_env_str;
 	int			i;
 
-	i = 0;
 	// debug("data->env_arr->end %d\n", data->env_arr->end);
-	while (i < env_arr->end - 1)
+	i = get_var_index(env_arr, key);
+	if (i < 0)
+		darray_push(env_arr, ft_strjoin3(key, "=", value));
+	else
 	{
 		env_str = darray_get(env_arr, i);
-		// debug("env_str i %d: %s\n", i, env_str);
-		position = ft_strchr(env_str, '=');
-		// debug("position of equal: %s\n", position);
-		if (!position)
-			return (false);
-		if (ft_strncmp(env_str, key, position - env_str) == 0)
-		{
-			// 	//in the environ char ** we have this format: _=/bin/ls
-			// debug("found key: %s\n", key);
-			new_env_str = ft_strjoin3(key, "=", value);
-			// debug("new_env_str: %s\n", new_env_str);
-			if (!new_env_str)
-				return (false);
-			darray_set(env_arr, i, new_env_str);
-			free(env_str);
-			return (true);
-		}
-		i++;
+		new_env_str = ft_strjoin3(key, "=", value);
+		free(env_str);
+		darray_set(env_arr, i, new_env_str);
 	}
-	//if not already in add the new key value pair to the environ
-	// new_env_str = ft_strjoin(key, "=");
-	// if (!new_env_str)
-	// 	return (false);
-	// new_env_str = ft_strjoin(new_env_str, value);
-	// if (!new_env_str)
-	// 	return (false);
-	// darray_push(env_arr, new_env_str);
-	// darray_push(env_arr, NULL);
 	return (true);
 }
 
@@ -140,6 +117,21 @@ char	*get_var_key(const char *variable)
 	char	*position;
 	char	*key;
 	position = ft_strchr(variable, '=');
-	key = ft_substr(variable, 0, position - variable);
+	if (position)
+		key = ft_substr(variable, 0, position - variable);
+	else
+		key = ft_strdup(variable);
 	return (key);
+}
+
+char	*get_var_value(const char *variable)
+{
+	char	*position;
+	char	*value;
+	position = ft_strchr(variable, '=');
+	if (position)
+		value = ft_substr(variable, position - variable + 1, ft_strlen(position + 1));
+	else
+		value = NULL;
+	return (value);
 }

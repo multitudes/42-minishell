@@ -224,6 +224,8 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 {
 	t_token	*token;
 	int		status;
+	char	*key;
+	char	*value;
 
 	debug("export builtin");
 	status = 0;
@@ -233,6 +235,17 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 	while (tokenlist)
 	{
 		token = tokenlist->content;
+		// if VAR without '=' but exists as local variable, add that variable to env array
+		// if VAR without '=' add variable (needs to be interpreted differently in buitlin "env", i.e. not being shown at all)
+		key = get_var_key(token->lexeme);
+		value = get_var_value(token->lexeme);
+		if (value != NULL)
+			update_env(data->env_arr, key, value);
+		free(key);
+		free(value);
+		// if VAR wigh '=' and nothing else, update VAR if it already exists, else add as VAR=
+		// else update value if key exists
+		//else add argument as new entry in env arr
 		tokenlist = tokenlist->next;
 	}
 	return (status);
