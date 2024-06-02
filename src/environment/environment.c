@@ -20,8 +20,9 @@ bool update_env(t_darray *env_arr, const char *key, const char *value)
 	char		*new_env_str;
 	int			i;
 
-	// debug("data->env_arr->end %d\n", data->env_arr->end);
+	debug("update_env");
 	i = get_var_index(env_arr, key);
+	debug("index with key: %i", i);
 	if (i < 0)
 		darray_push(env_arr, ft_strjoin3(key, "=", value));
 	else
@@ -44,10 +45,13 @@ int	print_env(t_darray *env_arr)
 
 	i = 0;
 	status = 0;
-	while (env_arr && env_arr->contents && env_arr->contents[i] != NULL)
+	while (env_arr && env_arr->contents && i < env_arr->end)
 	{
-		if (printf("%s\n", (char *)darray_get(env_arr, i++)) < 0)
+		if (env_arr->contents[i] == NULL)
+			;
+		else if (printf("%s\n", (char *)darray_get(env_arr, i)) < 0)
 			status = 1;
+		i++;
 	}
 	return (status);
 }
@@ -64,7 +68,7 @@ char *mini_get_env(t_darray *env_arr, const char *key)
 	int			i;
 
 	i = 0;
-	while (i < env_arr->end - 1)
+	while (key && i < env_arr->end - 1)
 	{
 		env_str = darray_get(env_arr, i);
 		position = ft_strchr(env_str, '=');
@@ -96,11 +100,13 @@ int	print_env_export(t_darray *env_arr)
 	if (copy_env_darray(&export_arr, env_arr))
 		return (1);
 //	sort_array_for_export(export_arr);
-	while (export_arr && export_arr->contents && export_arr->contents[i] != NULL)
+	while (export_arr && export_arr->contents && i < env_arr->end)
 	{
 		key = get_var_key(export_arr->contents[i++]);
 		value = mini_get_env(export_arr, key);
-		if (printf("declare -x %s=%c%s%c\n", key, '"', value, '"') < 0)
+		if (key == NULL)
+			;
+		else if (printf("declare -x %s=%c%s%c\n", key, '"', value, '"') < 0)
 			status = 1;
 		free(key);
 	}

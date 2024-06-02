@@ -86,7 +86,6 @@ this shall be equivalent to the command: cd "$OLDPWD" && pwd")
 */
 int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 {
-	t_token	*token;
 	int		cd_return;
 	int		status;
 	char	*dir;
@@ -104,8 +103,7 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 	}
 	if (tokenlist)
 	{
-		token = tokenlist->content;
-		cd_return = chdir(token->lexeme);
+		cd_return = chdir(get_token_lexeme(tokenlist));
 		if (cd_return != 0)
 			status = 1; // 1 is the exit status but prints minishell: cd (dir) : No such file or directory
 		dir = getcwd(NULL, 0);
@@ -222,7 +220,6 @@ QUESTION:
 */
 int	execute_export_builtin(t_data *data, t_list *tokenlist)
 {
-	t_token	*token;
 	int		status;
 	char	*key;
 	char	*value;
@@ -234,12 +231,12 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 		status = print_env_export(data->env_arr);
 	while (tokenlist)
 	{
-		token = tokenlist->content;
 		// if VAR without '=' but exists as local variable, add that variable to env array
 		// if VAR without '=' add variable (needs to be interpreted differently in buitlin "env", i.e. not being shown at all)
-		key = get_var_key(token->lexeme);
-		value = get_var_value(token->lexeme);
-		if (value != NULL)
+		key = get_var_key(get_token_lexeme(tokenlist));
+		value = get_var_value(get_token_lexeme(tokenlist));
+		debug("Key: %s, Value: %s", key, value);
+		if (key && value != NULL)
 			update_env(data->env_arr, key, value);
 		free(key);
 		free(value);

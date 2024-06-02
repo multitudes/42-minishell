@@ -308,7 +308,8 @@ int loop()
 				if (data->ast)
 				{
 					analyse_expand(data->ast, data);
-					update_env_exit_status_with(execute_ast(data->ast, data), data);
+					data->exit_status = execute_ast(data->ast, data);
+					debug("Exit status: %i", data->exit_status);
 					free_ast(&(data->ast));
 				}
 				else
