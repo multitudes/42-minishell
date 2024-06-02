@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 14:32:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 15:16:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,12 @@ void	which_ast_node(t_ast_node *ast)
 
 void	expand_globbing(t_token *token)
 {
-		char	*pat;
+		// char	*pat;
 		t_darray	*files;
 		(void)token;
 		// debug("expand_globbing");
 		debug("token type: %d lexeme: %s", token->type, token->lexeme);
-		pat = token->lexeme;
+		// pat = token->lexeme;
 		files = darray_create(sizeof(char *), 100);
 				debug("files count : %d", files->end);
 		if (!get_files_in_directory(files))
