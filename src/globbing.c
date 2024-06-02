@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 19:29:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 20:54:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ bool	match_files_in_directory(t_darray *files, char *pat)
 		}
 		if (S_ISREG(path_stat.st_mode))
 		{
-			debug("file added: %s -----------------> ", dir->d_name);
+			debug("file considered: %s -----------------> ", dir->d_name);
 			if (is_glob_match(pat, dir->d_name))
 				darray_push(files, ft_strdup(dir->d_name));
 		}
@@ -90,13 +90,22 @@ bool	match_files_in_directory(t_darray *files, char *pat)
 		return (false);
 	}
 
+
 	return (true);
 }
 
 bool	is_glob_match(char *pat, char *file_name)
 {
-	(void)pat;
-	(void)file_name;
+	debug("MATCHING pattern: %s file_name: %s", pat, file_name);
+    if (*pat == '\0')
+        return *file_name == '\0';
+    if (*pat == '?')
+        return *file_name != '\0' && is_glob_match(pat + 1, file_name + 1);
+    if (*pat == '*') {
+        if (is_glob_match(pat + 1, file_name))
+            return 1;
+        return *file_name != '\0' && is_glob_match(pat, file_name + 1);
+    }
+    return *pat == *file_name && is_glob_match(pat + 1, file_name + 1);
 
-	return (true);
 }
