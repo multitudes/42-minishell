@@ -2,7 +2,8 @@
 
 
 # Project: 42-minishell
->  treat your codebase like a good camper does their campsite: always try to leave it a little better than you found it.  - Bob Nystrom
+> "The number of UNIX installations has grown to 10, with more expected." (The UNIX Programmer's Manual, 2nd Edition, June, 1972.)
+
 
 This team project is about creating a simple shell.
 
@@ -160,6 +161,7 @@ The builtin command `exit`,- as the name implies -, exits the shell. The exit st
 
 # Teamwork - It's about GIT
 ## Commit style
+>  Treat your codebase like a good camper does their campsite: always try to leave it a little better than you found it.  - Bob Nystrom
 
 See https://www.conventionalcommits.org/en/v1.0.0/#summary.  
 
