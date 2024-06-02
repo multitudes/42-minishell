@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/01 12:48:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 12:06:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,29 +18,26 @@
 # include <unistd.h>
 # include <string.h>
 # include <errno.h>
+# include <fcntl.h>
+# include <signal.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <sys/stat.h>
-# include <fcntl.h>
-# include <signal.h>
+# include <sys/errno.h>
+# include <sys/ioctl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <dirent.h>
-# include <sys/errno.h>
-# include <sys/ioctl.h>
 # include <termios.h>
 # include <curses.h>
 # include <term.h>
-# include <sys/ioctl.h>
 # include <stdbool.h>
 # include <stdarg.h>
-# include <libft.h>
-# include <stdio.h>
-# include <errno.h>
-# include <string.h>
-# include <stdlib.h>
 # include <assert.h>
 # include <limits.h>
+
+# include <libft.h>
+
 # include "utils.h"
 # include "darray.h"
 # include "environment.h"
@@ -51,7 +48,7 @@
 # include "executer.h"
 # include "error.h"
 # include "builtins.h"
-
+# include "globbing.h"
 /*
 This allows us to use the debug macro to print debug messages but to 
 compile them out when NDEBUG is defined.
