@@ -2,7 +2,7 @@ NAME			=	minishell
 
 # flags
 CFLAGS 			= 	-Wall -Werror -Wextra
-CFLAGS		  	+=	-g
+CFLAGS		  	+=	-g3
 
 # NDEBUG is a macro that disables the debug prints - uncomment to disable them
 # comment out to enable them need to recompile with make re

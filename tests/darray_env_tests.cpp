@@ -44,9 +44,7 @@ darray_destroy(array) contains:
 */
 const char *test_destroy()
 {
-	// no my_assert here?
 	darray_destroy(array);
-	// how to check something been freed?
 	
 	return NULL;
 }

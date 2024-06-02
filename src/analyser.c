@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/01 14:48:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 14:32:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,28 @@ void	which_ast_node(t_ast_node *ast)
 		debug("not TERMINAL");
 }
 
-void	expand_variable(t_data *data, t_token *token)
+
+void	expand_globbing(t_token *token)
+{
+		char	*pat;
+		t_darray	*files;
+		(void)token;
+		// debug("expand_globbing");
+		debug("token type: %d lexeme: %s", token->type, token->lexeme);
+		pat = token->lexeme;
+		files = darray_create(sizeof(char *), 100);
+				debug("files count : %d", files->end);
+		if (!get_files_in_directory(files))
+			darray_clear_destroy(files);
+		
+		debug("files count : %d", files->end);
+
+			return ;
+		// }
+
+}
+
+void	expand_variable(t_darray *env_arr, t_token *token)
 {
 		char	*key;
 		char	*temp;
@@ -59,9 +80,9 @@ void	expand_variable(t_data *data, t_token *token)
 		debug("expand_variable");
 		key = token->lexeme;
 		if (token->type == TILDE)
-			temp = ft_strdup(token->lexeme = mini_get_env(data->env_arr, "HOME"));
-		else if (mini_get_env(data->env_arr, key + 1))
-			temp = ft_strdup(token->lexeme = mini_get_env(data->env_arr, key + 1));
+			temp = ft_strdup(token->lexeme = mini_get_env(env_arr, "HOME"));
+		else if (mini_get_env(env_arr, key + 1))
+			temp = ft_strdup(token->lexeme = mini_get_env(env_arr, key + 1));
 		else
 			temp = NULL;
 		free(key);
@@ -108,9 +129,9 @@ void	expand_string(t_data *data, t_token *token)
 	while (string_tokens)
 	{
 		if (((t_token *)string_tokens->content)->type == VAR_EXPANSION)
-			expand_variable(data, (t_token *)string_tokens->content);
+			expand_variable(data->env_arr, (t_token *)string_tokens->content);
 		if (((t_token *)string_tokens->content)->type == TILDE)
-			expand_variable(data, (t_token *)string_tokens->content);
+			expand_variable(data->env_arr, (t_token *)string_tokens->content);
 		else if (((t_token *)string_tokens->content)->type == DOLLAR_QUESTION)
 			read_exit_status(data, (t_token *)string_tokens->content);
 		temp_lexeme = token->lexeme;
@@ -136,29 +157,30 @@ and then pass it to the executor
 void analyse_expand(t_ast_node *ast, t_data *data)
 {
 	t_list	*token_list;
-	t_token	*token;
 
-	//(void)data;
+	// (void)data;
 	token_list = ast->token_list;
 	if (ast == NULL)
 		return ;
 	debug("analyse expand");
 	// assignng a ast node type to the node
 	which_ast_node(ast);
-	debug("Received token type: %d ast node type: %d lexeme: %s", ((t_token *)token_list->content)->type, ast->type, ((t_token *)token_list->content)->lexeme);
+	debug("Received token type: %d ast node type: %d lexeme: %s", get_token_type(token_list), ast->type, get_token_lexeme(token_list));
 	
 	while (token_list)
 	{
-		token = token_list->content;
-		if (token->type == VAR_EXPANSION || token->type == TILDE)
-			expand_variable(data, token);
-		else if (token->type == DOLLAR_QUESTION)
-			read_exit_status(data, token);
-		else if (token->type == S_QUOTED_STRING)
-			extract_string(token);
-		else if (token->type == QUOTED_STRING)
-			expand_string(data, token);
-		debug("Expanded token type: %d ast node type: %d lexeme: %s", token->type, ast->type, token->lexeme);
+		if (get_token_type(token_list) == VAR_EXPANSION || get_token_type(token_list) == TILDE)
+			expand_variable(data->env_arr, get_curr_token(token_list));
+		else if (get_token_type(token_list)  == DOLLAR_QUESTION)
+			read_exit_status(data, get_curr_token(token_list));
+		else if (get_token_type(token_list)  == S_QUOTED_STRING)
+			extract_string(get_curr_token(token_list));
+		else if (get_token_type(token_list)  == QUOTED_STRING)
+			expand_string(data, get_curr_token(token_list));
+		else if (get_token_type(token_list) == GLOBBING)
+			expand_globbing(get_curr_token(token_list));
+		else
+			debug("Expanded token type: %d ast node type: %d lexeme: %s", get_token_type(token_list), ast->type, get_token_lexeme(token_list));
 		token_list = token_list->next;
 	}
 	debug("---------left -----------");
