@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:38:03 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 14:00:31 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 20:16:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ extern "C" {
 
 void	analyse_expand(t_ast_node *ast, t_data *data);
 void	expand_variable(t_darray *env_arr, t_token *token);
-void	expand_globbing(t_token *token);
+void	expand_globbing(t_list *tokenlist);
 void	read_exit_status(t_data *data, t_token *token);
 void	extract_string(t_token *token);
 void	expand_string(t_data *data, t_token *token);
