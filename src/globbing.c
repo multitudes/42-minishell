@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 14:20:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 15:09:44 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	get_files_in_directory(t_darray *files)
 	dir = readdir(dirp);
 	while ((dir != NULL) && (errno == 0))
 	{
-		printf("%s\n", dir->d_name);
+		debug("%s\n", dir->d_name);
 		if (getcwd(cwd, sizeof(cwd)) == NULL)
 		{
 			perror("getcwd");
