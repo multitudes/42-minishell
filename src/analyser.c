@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 18:16:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 19:30:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,25 +54,24 @@ void	which_ast_node(t_ast_node *ast)
 
 void	expand_globbing(t_token *token)
 {
-		// char	*pat;
-		t_darray	*files;
-		// token;
+	char	*pat;
+	t_darray	*files;
+	
+	if (!token)
+		return ;
+	// debug("expand_globbing");
+	debug("token type: %d lexeme: %s", token->type, token->lexeme);
+	pat = token->lexeme;
+	files = darray_create(sizeof(char *), 100);
+	if (!match_files_in_directory(files, pat))
+		darray_clear_destroy(files);
+	
+	debug("files count : %d", files->end);
+	for (int i = 0; i < files->end; i++)
+		debug("file: -%s-", (char *)darray_get(files, i));
 
-		if (!token)
-			return ;
-		// debug("expand_globbing");
-		debug("token type: %d lexeme: %s", token->type, token->lexeme);
-		// pat = token->lexeme;
-		files = darray_create(sizeof(char *), 100);
-		debug("files count : %d", files->end);
-		if (!get_files_in_directory(files))
-			darray_clear_destroy(files);
-		
-		debug("files count : %d", files->end);
 
-			return ;
-		// }
-
+	return ;
 }
 
 void	expand_variable(t_darray *env_arr, t_token *token)
