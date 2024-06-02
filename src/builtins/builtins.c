@@ -38,9 +38,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "export", 7) == 0)
 		status = execute_export_builtin(data, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "unset", 6) == 0)
-	{
-		debug("unset builtin");
-	}
+		status = execute_unset_builtin(data, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
 		status = execute_env_builtin(data);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
@@ -222,6 +220,7 @@ but echo on the variable will actually execute the newlines
 - it is possible to assign multiple value to a variable `export VAR=1:2:3:"string" (in this case the quotes are not shown (neither with env nor with export))
 - it can also end with a ':'
 - export `VAR=2=3` gets added to the environment as `VAR='2=3'` (env would display this variable as `VAR=2=3`)
+- export `VAR=` should assign an empty string as value to VAR
 QUESTION:
 - where do we want to store our local variables?
 */
@@ -272,13 +271,33 @@ int	execute_pwd_builtin(void)
 read-only environment variables cannot be unset. How do we manage this?
 Do we only work with our local environmental variables or also those of the system?
 */
-/*
-int	execute_unset_builtin(t_data *data, t_list tokenlist)
+int	execute_unset_builtin(t_data *data, t_list *tokenlist)
 {
 	t_token *token;
 
+	debug("unset builtin");
 	token = tokenlist->content;
-//	if (mini_get_env(data, token->lexeme))
-		//delete variable from environment
-		//build delete function for darray/environment
-}*/
+	if (ft_strncmp(token->lexeme, "unset", 6) == 0)
+	{
+		debug("lexeme: %s (Not printed)", token->lexeme);
+		tokenlist = tokenlist->next;
+	}
+	if (!tokenlist)
+		return (0);
+	while (tokenlist)
+	{
+		token = tokenlist->content;
+		if (token->lexeme != NULL && ft_strlen(token->lexeme) != 0)
+			delete_env_entry(data->env_arr, token->lexeme);
+	// if (restricted_variable(token->lexeme))
+	// {
+	// 	//consider returning error message in restricted_variable() function, also consider other possible restricted variables.
+	// 	write(2, "minishell: unset: ", 18);
+	// 	write(2, &token->lexeme, ft_strlen(token->lexeme));
+	// 	write(2, ":cannot unset: readonly variable", 32);
+	// 	return (1);
+	// }
+		tokenlist = tokenlist->next;
+	}
+	return (0);
+}

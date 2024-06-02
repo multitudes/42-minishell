@@ -53,6 +53,7 @@ int			darray_push(t_darray *array, void *el);
 void		*darray_pop(t_darray *array);
 int			darray_clear_destroy(t_darray *array);
 void		*darray_remove(t_darray *array, int i);
+void		*darray_remove_and_prune(t_darray *array, int i);
 void		*darray_new_elem(t_darray *array);
 void		darray_set(t_darray *array, int i, void *el);
 void		*darray_get(t_darray *array, int i);
