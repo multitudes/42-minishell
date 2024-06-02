@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 20:46:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 21:27:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ void	expand_globbing(t_list *tokenlist)
 	t_list *next = tokenlist->next;
 	t_list *head = tokenlist->prev;
 	head->next = NULL;
-	// tokenlist->next = NULL;
-	// tokenlist->prev = NULL;
+	tokenlist->next = NULL;
+	tokenlist->prev = NULL;
 	debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(next));
 	// create a new linked list of tokens with the file names
 	int i = 0;
@@ -91,8 +91,10 @@ void	expand_globbing(t_list *tokenlist)
 	if (next)
 		next->prev = last;
 	// free the old list
+	// ft_lstclear(&tokenlist, free_token);
 	// ft_lstdelone(tokenlist, free_token);
-	// darray_clear_destroy(files);
+	// free the darray
+	darray_clear_destroy(files);
 
 
 
