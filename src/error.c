@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/29 11:13:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 09:59:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	status_and_print(char *msg, int status)
 /*
 will exit the program with an error message
 */
-int	null_and_print_err(char *msg, int status)
+int	exit_and_print_err(char *msg, int status)
 {
 	perror(msg);
 	exit(status);
