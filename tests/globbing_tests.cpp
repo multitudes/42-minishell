@@ -13,10 +13,10 @@ const char *test_globbing_get_files()
 {
 	// int result = 0;
 	// char **files = NULL;
-	// result = get_files_in_directory(files);
+	// result = match_files_in_directory(files);
 	// debug("result: %d", result);
 	// debug("files: %s", *files); 
-	// my_assert(result == 0, "get_files_in_directory failed");
+	// my_assert(result == 0, "match_files_in_directory failed");
 	return NULL;
 }
 

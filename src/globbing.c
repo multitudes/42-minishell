@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 18:19:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 19:29:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@
 
 /*
 I need to read the files in my directory and check if they match the pattern
-this function will return a list of files in my directory
+this function will push a list of files in my darray and return true if it was successful
 */
 
-int	get_files_in_directory(t_darray *files) 
+bool	match_files_in_directory(t_darray *files, char *pat) 
 {
     DIR *dirp;
-	char cwd[1024];
+	char cwd[PATH_MAX];
     struct dirent *dir;
 	struct stat path_stat;
 
@@ -36,26 +36,42 @@ int	get_files_in_directory(t_darray *files)
     if (!dirp)
 	{
 		perror("opendir");
-		return (1);
+		return (false);
 	} 
 	errno = 0;
 	dir = readdir(dirp);
+	if (getcwd(cwd, PATH_MAX) == NULL)
+	{
+		perror("getcwd");
+		return (false);
+	}
+	debug("current working directory: %s\n", cwd);
 	while ((dir != NULL) && (errno == 0))
 	{
-		debug("%s\n", dir->d_name);
-		if (getcwd(cwd, sizeof(cwd)) == NULL)
+		debug("number of files in directory: %d\n", files->end);
+		debug("-%s-", dir->d_name);
+		char *full_path = ft_strjoin3(cwd, "/", dir->d_name);
+		if (!full_path)
 		{
-			perror("getcwd");
-			return (1);
+			perror("ft_strjoin3");
+			return (false);
 		}
+		// free
+		debug("full path: %s\n", full_path);
+
 		
-		if (stat(dir->d_name, &path_stat))
+		if (stat(full_path, &path_stat))
 		{
 			perror("stat");
-			return (1);
+			return (false);
 		}
 		if (S_ISREG(path_stat.st_mode))
-			darray_push(files, ft_strdup(dir->d_name));
+		{
+			debug("file added: %s -----------------> ", dir->d_name);
+			if (is_glob_match(pat, dir->d_name))
+				darray_push(files, ft_strdup(dir->d_name));
+		}
+		free(full_path);
 		dir = readdir(dirp);
 	}
 	if (errno)
@@ -64,14 +80,23 @@ int	get_files_in_directory(t_darray *files)
 		if (closedir(dirp))
 		{
 			perror("closedir");
-			return (1);
+			return (false);
 		}
-		return (1);
+		return (false);
 	}
 	if (closedir(dirp))
 	{
 		perror("closedir");
-		return (1);
+		return (false);
 	}
-	return (0);
+
+	return (true);
+}
+
+bool	is_glob_match(char *pat, char *file_name)
+{
+	(void)pat;
+	(void)file_name;
+
+	return (true);
 }
