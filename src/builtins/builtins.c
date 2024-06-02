@@ -92,17 +92,12 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 	char	*dir;
 
 	debug("cd builtin");
-	token = tokenlist->content;
-	if (ft_strncmp(token->lexeme, "cd", 3) == 0)
-	{
-		debug("lexeme: %s (Not printed)", token->lexeme);
-		tokenlist = tokenlist->next;
-	}
+	tokenlist = tokenlist->next;
 	dir = getcwd(NULL, 0);
 	if (!update_env(data->env_arr, "OLDPWD", dir))
 		status = 1;
 	free(dir);
-	if (tokenlist && tokenlist->next)
+	if (tokenlist->next)
 	{
 		write(2, "minishell: cd: too many arguments\n", 34);
 		return (1);
@@ -232,18 +227,12 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 
 	debug("export builtin");
 	status = 0;
-	token = tokenlist->content;
-	if (ft_strncmp(token->lexeme, "export", 7) == 0)
-	{
-		debug("lexeme: %s (Not printed)", token->lexeme);
-		tokenlist = tokenlist->next;
-	}
+	tokenlist = tokenlist->next;
 	if (!tokenlist)
 		status = print_env_export(data->env_arr);
 	while (tokenlist)
 	{
-
-		debug("Parse arguments for export builtin.");
+		token = tokenlist->content;
 		tokenlist = tokenlist->next;
 	}
 	return (status);
@@ -263,7 +252,7 @@ int	execute_pwd_builtin(void)
 	current_directory = getcwd(NULL, 0);
 	if (!current_directory)
 	{
-		debug("Buffer for reading current directory too small");
+		debug("Error reading current directory with getcwd()");
 	}
 	status = printf("%s\n", current_directory);
 	free(current_directory);
@@ -281,12 +270,7 @@ int	execute_unset_builtin(t_data *data, t_list *tokenlist)
 	t_token *token;
 
 	debug("unset builtin");
-	token = tokenlist->content;
-	if (ft_strncmp(token->lexeme, "unset", 6) == 0)
-	{
-		debug("lexeme: %s (Not printed)", token->lexeme);
-		tokenlist = tokenlist->next;
-	}
+	tokenlist = tokenlist->next;
 	if (!tokenlist)
 		return (0);
 	while (tokenlist)
