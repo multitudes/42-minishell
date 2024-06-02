@@ -64,14 +64,14 @@ const char* test_scanner_ident_space() {
 
 const char* test_scanner_ident_allrandom() {
 	
-	std::string str = "w-+*}[]=w{~or^%ld";
+	std::string str = "w-+}[]=w{~or^%ld";
 	const char* input = str.c_str();
 	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "w-+*}[]=w{~or^%ld", WORD);
+	result = process_token(&current, &i, "w-+}[]=w{~or^%ld", WORD);
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);

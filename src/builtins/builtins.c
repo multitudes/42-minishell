@@ -24,40 +24,33 @@ Returns exit status of executed builtin.
 */
 int    execute_builtin(t_list *tokenlist, t_data *data)
 {
-	t_token *token;
-	char 	*lexeme;
 	int		status;
 
-	if (tokenlist)
-		token = (t_token *)tokenlist->content;
-	else
-		return (1);
-	lexeme = (char *)token->lexeme;
+	if (!tokenlist)
+		return (EXIT_FAILURE);
 	status = 0;
-	if (ft_strncmp(lexeme, "echo", 5) == 0)
+	if (ft_strncmp(get_token_lexeme(tokenlist), "echo", 5) == 0)
 		status = execute_echo_builtin(tokenlist);
-	else if (ft_strncmp(lexeme, "cd", 3) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "cd", 3) == 0)
 		status = execute_cd_builtin(data, tokenlist);
-	else if (ft_strncmp(lexeme, "pwd", 4) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "pwd", 4) == 0)
 		status = execute_pwd_builtin();
-	else if (ft_strncmp(lexeme, "export", 7) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "export", 7) == 0)
 		status = execute_export_builtin(data, tokenlist);
-	else if (ft_strncmp(lexeme, "unset", 6) == 0)
-	{
-		debug("unset builtin");
-	}
-	else if (ft_strncmp(lexeme, "env", 4) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "unset", 6) == 0)
+		status = execute_unset_builtin(data, tokenlist);
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
 		status = execute_env_builtin(data);
-	else if (ft_strncmp(lexeme, "exit", 5) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
 	{
 		debug("exit builtin");
 	}
-	else if (ft_strncmp(lexeme, "true", 5) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "true", 5) == 0)
 	{
 		status = 0;
 		debug("true builtin");
 	}
-	else if (ft_strncmp(lexeme, "false", 6) == 0)
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "false", 6) == 0)
 	{
 		status = 1;
 		debug("false builtin");
@@ -155,53 +148,60 @@ int	execute_env_builtin(t_data *data)
 	return (status);
 }
 
+bool	write_data(int fd, const void *str, int *status) 
+{
+    ssize_t result; 
+	
+	result = write(fd, str, ft_strlen(str));
+    if (result == -1 || result != (ssize_t)ft_strlen(str)) 
+	{
+        perror("write");
+		*status = EXIT_FAILURE;
+		return (false);
+    }
+	return (true);
+}
+
+bool	allowed_flags(const char *flag_lexem, const char *allowed_flags)
+{
+	flag_lexem++;
+	while (*flag_lexem)
+	{
+		if (!ft_strchr(allowed_flags, *flag_lexem))
+			return (false);
+		flag_lexem++;
+	}
+	return (true);
+}
+
 /*
-Executes builtin "echo" function with and without '-n' option.
-TO CHECK:
-When suppressing the newline at the end, does echo actually introduce a carriage return or similar?
+Executes builtin "echo" function with and without '-n' option
+which suppresses the trailing newline.
 */
 int	execute_echo_builtin(t_list *tokenlist)
 {
 	int		status;
-	t_token	*token;
 	int		new_line;
-	int		printf_return;
 
 	debug("echo builtin");
 	status = 0;
 	new_line = 1;
-	printf_return = 0;
-	token = tokenlist->content;
-	if (ft_strncmp(token->lexeme, "echo", 5) == 0)
-	{
-		debug("lexeme: %s (Not printed)", token->lexeme);
-		tokenlist = tokenlist->next;
-	}
-	else
-	{
-		debug("echo builtin falsely called");
-		return (1);
-	}
-	if (tokenlist && ft_strncmp(((t_token *)tokenlist->content)->lexeme, "-n", 3) == 0)
-	{
-		token = tokenlist->content;
-		new_line = 0;
-		debug("lexeme: %s (newline at end to be suppressed)", token->lexeme);
-		tokenlist = tokenlist->next;
-	}
+	tokenlist = tokenlist->next;
 	while (tokenlist)
 	{
-		token = tokenlist->content;
-		if (tokenlist->next)
-			printf_return = printf("%s ", token->lexeme);
+		debug("lexeme: %s", get_token_lexeme(tokenlist));
+		if (get_token_type(tokenlist) == FLAGS && allowed_flags(get_token_lexeme(tokenlist), "n"))
+				new_line = 0;
 		else
-			printf_return = printf("%s", token->lexeme);
+		{
+			write_data(1, get_token_lexeme(tokenlist), &status);
+			if (tokenlist->next != NULL)
+				write_data(1, " ", &status);
+		}
 		tokenlist = tokenlist->next;
-		if (printf_return < 0)
-			status = 1;
 	}
-	if (new_line == 1)
-			printf_return = printf("\n");
+	if (new_line)
+		write_data(1, "\n", &status);		
 	return (status);
 }
 
@@ -225,7 +225,6 @@ but echo on the variable will actually execute the newlines
 QUESTION:
 - where do we want to store our local variables?
 */
-
 int	execute_export_builtin(t_data *data, t_list *tokenlist)
 {
 	t_token	*token;
@@ -277,13 +276,33 @@ int	execute_pwd_builtin(void)
 read-only environment variables cannot be unset. How do we manage this?
 Do we only work with our local environmental variables or also those of the system?
 */
-/*
-int	execute_unset_builtin(t_data *data, t_list tokenlist)
+int	execute_unset_builtin(t_data *data, t_list *tokenlist)
 {
 	t_token *token;
 
+	debug("unset builtin");
 	token = tokenlist->content;
-//	if (mini_get_env(data, token->lexeme))
-		//delete variable from environment
-		//build delete function for darray/environment
-}*/
+	if (ft_strncmp(token->lexeme, "unset", 6) == 0)
+	{
+		debug("lexeme: %s (Not printed)", token->lexeme);
+		tokenlist = tokenlist->next;
+	}
+	if (!tokenlist)
+		return (0);
+	while (tokenlist)
+	{
+		token = tokenlist->content;
+		if (token->lexeme != NULL && ft_strlen(token->lexeme) != 0)
+			delete_env_entry(data->env_arr, token->lexeme);
+	// if (restricted_variable(token->lexeme))
+	// {
+	// 	//consider returning error message in restricted_variable() function, also consider other possible restricted variables.
+	// 	write(2, "minishell: unset: ", 18);
+	// 	write(2, &token->lexeme, ft_strlen(token->lexeme));
+	// 	write(2, ":cannot unset: readonly variable", 32);
+	// 	return (1);
+	// }
+		tokenlist = tokenlist->next;
+	}
+	return (0);
+}

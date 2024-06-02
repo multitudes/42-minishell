@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 14:37:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/31 16:06:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,8 @@ bool	is_a_string_thing(t_mini_data *data, int *i)
 		add_token(data, &start, tmp, IO_NUMBER);
 	else if (!is_reserved(data, tmp, &start) && !is_builtin(data, \
 	tmp, &start) && !is_true_false(data, tmp, &start) && \
-	!is_a_pathname_or_num(data, tmp, &start))
+	!is_a_pathname_or_num(data, tmp, &start) && \
+	!is_a_globbing(data, tmp, &start))
 		add_token(data, &start, tmp, WORD);
 	free(tmp);
 	return (true);

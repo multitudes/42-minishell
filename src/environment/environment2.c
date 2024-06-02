@@ -37,29 +37,45 @@ int	copy_env_darray(t_darray **new_array, t_darray *source_arr)
 	return (0);
 }
 
-/*
-int	add_quotes_env_values(t_darray *env_arr)
+int	delete_env_entry(t_darray *env_arr, char *key)
 {
 	int		i;
-	int		position;
-	char	*new_env_str;
-	char	*substr_1;
-	char	*substr_2;
-	char	*new_value;
-	char	*key;
+	void	*var;
 
-	i = 0;
-	if (env_arr == NULL)
-		return (1);
-	while (env_arr[i])
+	debug("delete env entry");
+	i = get_var_index(env_arr, key);
+	if (i < 0)
+		return (0);
+	else
 	{
-		temp = ;
-		position = ft_strchr(darray_get(env_arr, i), '=');
-		key = ft_substr(darray_get(env_arr, i), 0, position - env_arr[i])
-		update_env(env_arr, key)
-
-		new_env_str = ft_strjoin3("declare -x ", "substr_1", "substr_2");
+		var = darray_remove_and_prune(env_arr, i);
+		free(var);
 	}
-}*/
+	return (0);
+}
+
+/*
+return index of an environment (string) variable
+with name `key` in an environment array.
+If variable does not exist, function returns -1.
+*/
+int		get_var_index(t_darray *env_arr, const char *key)
+{
+	int		i;
+	char	*var;
+
+	debug("get var index");
+	debug("used key: %s and key length: %i", key, (int)ft_strlen(key));
+	i = 0;
+	while (i < env_arr->end && env_arr->contents[i])
+	{
+		var = env_arr->contents[i];
+		debug("current index and variable: %i %s\n", i, var);
+		if (!ft_strncmp(var, key, ft_strlen(key)) && (var[ft_strlen(key)] == '='))
+			return (i);
+		i++;
+	}
+	return (-1);
+}
 
 //	sort_array_for_export(export_arr);

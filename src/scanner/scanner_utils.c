@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:48:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/20 15:10:09 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/01 11:34:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ bool	is_space(const char c)
 /*
 string n compare but case insensitive
 */
-int	strncicmp(char const *a, char const *b, int n)
+int	ft_strncicmp(char const *a, char const *b, int n)
 {
 	int	d;
 

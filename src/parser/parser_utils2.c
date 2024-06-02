@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/30 09:49:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/05/31 16:24:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #include "parser.h"
 
 /*
-This function is used to consume a token from the input_tokens list but also
-needs to break the list before the node 
+returns the next token but also breaks the list before the node 
+performing the necessary checks
 */
 t_token	*consume_token(t_list **input_tokens)
 {
