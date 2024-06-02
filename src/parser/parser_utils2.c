@@ -55,8 +55,8 @@ char	*get_token_lexeme(t_list *input_tokens)
 	if (input_tokens == NULL)
 		return (NULL);
 	token = (t_token *)input_tokens->content;
-//	if (!token)
-//		return (NULL);
+	if (!token)
+		return (NULL);
 	return (token->lexeme);
 }
 
