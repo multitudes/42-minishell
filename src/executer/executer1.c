@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 11:03:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 11:13:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,14 +116,14 @@ resolve_command_path will check if the command is in the PATH
 or if it is an absolute path. 
 if it cannot be resolved it will return 1
 */
-int	resolve_command_path(char **argv, t_data *data)
+int	resolve_command_path(char **argv, char *path_env)
 {
 	char	*cmd;
 
 	cmd = NULL;
 	if (ft_strchr(argv[0], '/') == NULL)
 	{
-		cmd = create_path(argv[0], mini_get_env(data->env_arr, "PATH"));
+		cmd = create_path(argv[0], path_env);
 		if (!cmd)
 			return (status_and_print("minishell: command not on path\n", 1));
 		argv[0] = cmd;

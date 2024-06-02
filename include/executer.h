@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 11:04:17 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/02 11:13:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int		handle_first_child_process(t_data *data, t_ast_node *ast);
 int		handle_second_child_process(t_data *data, t_ast_node *ast);
 char	*create_path(char *base, char *path_env);
 char 	**get_args_from_tokenlist(t_list *tokenlist);
-int		resolve_command_path(char **argv, t_data *data);
+int		resolve_command_path(char **argv, char *path_env);
 int		count_tokens(t_list *tokenlist);
 int		get_status_of_children(pid_t pid1, pid_t pid2);
 int 	free_array(char **envpaths);
