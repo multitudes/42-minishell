@@ -44,7 +44,7 @@ endif
 
 # my test files - each one has a main and will 
 # be compiled into an executable
-TEST_SRCS	=	minishell_builtin_tests.cpp
+TEST_SRCS	=	minishell_builtin_echo_tests.cpp minishell_builtin_cat_tests.cpp
 
 # this substitution create files without the extension
 # they will become the executables
