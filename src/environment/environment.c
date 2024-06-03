@@ -36,7 +36,8 @@ bool update_env(t_darray *env_arr, const char *key, const char *value)
 }
 
 /*
-this function will print the environment variables
+function prints the environment variables
+stored in environment array
 */
 int	print_env(t_darray *env_arr)
 {
@@ -50,7 +51,7 @@ int	print_env(t_darray *env_arr)
 		if (env_arr->contents[i] == NULL)
 			;
 		else if (printf("%s\n", (char *)darray_get(env_arr, i)) < 0)
-			status = 1;
+			status = status_and_print("printf environment", 1);
 		i++;
 	}
 	return (status);
