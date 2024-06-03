@@ -239,7 +239,7 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 		key = get_var_key(get_token_lexeme(tokenlist));
 		value = get_var_value(get_token_lexeme(tokenlist));
 		debug("Key: %s, Value: %s", key, value);
-		if (key && value != NULL)
+		if (key && value)
 			update_env(data->env_arr, key, value);
 		free(key);
 		free(value);
