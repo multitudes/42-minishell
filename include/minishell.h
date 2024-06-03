@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 12:06:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 11:14:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ typedef struct s_data t_data;
 int		loop();
 bool	init_data(t_data **data);
 bool    init_data2(t_data **data);
+bool	init_env_darray(t_darray **env_array);
 void	free_data(t_data **data);
 void	update_env_exit_status_with(int exit_status, t_data *data);
 
