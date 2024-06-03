@@ -99,12 +99,12 @@ int	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 	if (tokenlist)
 	{
 		if (!chdir(get_token_lexeme(tokenlist)))
-			return (status_and_print("chdir", 1));
+			return (status_and_perror("chdir", 1));
 	}
 	else
 	{
 		if (!chdir(mini_get_env(env_arr, "HOME")))
-			return (status_and_print("chdir", 1));
+			return (status_and_perror("chdir", 1));
 	}
 	if (!getcwd(dir, PATH_MAX))
 		perror("get new cwd");
@@ -250,9 +250,9 @@ int	execute_pwd_builtin(void)
 
 	debug("pwd builtin");
 	if (!getcwd(cur_dir, PATH_MAX))
-		return (status_and_print("getcwd()", 1));
+		return (status_and_perror("getcwd()", 1));
 	if (printf("%s\n", cur_dir) < 0)
-		return (status_and_print("printf working directory", 1));
+		return (status_and_perror("printf working directory", 1));
 	return (0);
 }
 

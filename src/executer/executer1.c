@@ -125,13 +125,13 @@ int	resolve_command_path(char **argv, char *path_env)
 	{
 		cmd = create_path(argv[0], path_env);
 		if (!cmd)
-			return (status_and_print("minishell: command not on path\n", 1));
+			return (status_and_perror("minishell: command not on path\n", 1));
 		argv[0] = cmd;
 	}
 	else
 	{
 		if (access(argv[0], X_OK) == -1)
-			return (status_and_print("minishell: command not found\n", 1));
+			return (status_and_perror("minishell: command not found\n", 1));
 	}
 	return (0);
 }

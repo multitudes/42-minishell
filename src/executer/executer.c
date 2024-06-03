@@ -24,21 +24,21 @@ int	execute_pipeline(t_ast_node *ast, t_data *data)
 	pid_t	pid2;
 
 	if (pipe(data->pipe_fd) == -1)
-		return (status_and_print("pipe error", 1));
+		return (status_and_perror("pipe error", 1));
 	pid1 = fork();
 	if (pid1 == -1)
-		return (status_and_print("fork 1 error", 1));
+		return (status_and_perror("fork 1 error", 1));
 	else if (pid1 == 0)
 		handle_first_child_process(data, ast);
 	pid2 = fork();
 	if (pid2 == -1)
-		return (status_and_print("fork 2 failed", 1));
+		return (status_and_perror("fork 2 failed", 1));
 	else if (pid2 == 0)
 		handle_second_child_process(data, ast);
 	if (close(data->pipe_fd[0]) == -1)
-		return (status_and_print("close fd 5", 1));
+		return (status_and_perror("close fd 5", 1));
 	if (close(data->pipe_fd[1]) == -1)
-		return (status_and_print("close fd 6", 1));
+		return (status_and_perror("close fd 6", 1));
 	return (get_status_of_children(pid1, pid2));
 }
 
