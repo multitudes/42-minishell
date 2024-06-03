@@ -200,13 +200,12 @@ int	execute_echo_builtin(t_list *tokenlist)
 
 /*
 Executes 'export' builtin. No options interpreted.
-- No arguments should give a sorted list of the environment variables (lower case variables come after all upper case variables) with `declare -x ` prepended,
-variable values are in double quotes and apparently the last command (i.e. `export`) is not included
+
 - when a string with newline characters is assigned to a variable in BASH
 (e.g. VAR="first\nsecond\nthird" - single or double quotes give the same result),
 and export, then `export` and `env` list the variable with displayed \n-characters, in env case without quotes, in export case with quotes
 but echo on the variable will actually execute the newlines
-- it should be possible to export several variables at once, while also giving a value or not.
+
 - If no value is provided export does not assigne a value to `name` and simply displays it as `name` unless the variable already exists, then it is left unchanged
 - if export is executed without values but with `export name=` then `export` displays this variable as `name='' (i.e. assigns an empty string)
 - while env without arguments does not display the variable at all
@@ -214,7 +213,11 @@ but echo on the variable will actually execute the newlines
 - it can also end with a ':'
 - export `VAR=2=3` gets added to the environment as `VAR='2=3'` (env would display this variable as `VAR=2=3`)
 - export `VAR=` gets added as `VAR=""` (empty string)
-- export `VAR==2` gets added as `VAR="=2"`
+- export `VAR==2` gets added as `VAR="=2"
+- export VAR="$HOME", VAR=$HOME do not work at the moment (no value assigned at all)
+- export VAR="string", VAR="string=string" do not work, the latter assigns a variable with name string and value string
+- export var13= "detached string" should return error: bash: export: `detached string': not a valid identifier
+- export "var14"=value would assign value to var14
 QUESTION:
 - where do we want to store our local variables?
 */
