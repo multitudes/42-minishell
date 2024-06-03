@@ -32,7 +32,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	if (ft_strncmp(get_token_lexeme(tokenlist), "echo", 5) == 0)
 		status = execute_echo_builtin(tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "cd", 3) == 0)
-		status = execute_cd_builtin(data, tokenlist);
+		status = execute_cd_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "pwd", 4) == 0)
 		status = execute_pwd_builtin();
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "export", 7) == 0)
@@ -84,22 +84,16 @@ TODOs:
 this shall be equivalent to the command: cd "$OLDPWD" && pwd")
 -- when $HOME is undefined just performing `cd` is implementation defined (How is this handled in BASH?)
 */
-int	execute_cd_builtin(t_data *data, t_list *tokenlist)
+int	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	int		cd_return;
 	int		status;
 	char	dir[PATH_MAX];
 	char	old_dir[PATH_MAX];
+
 	debug("cd builtin");
 	tokenlist = tokenlist->next;
-	
 	if (tokenlist && tokenlist->next)
-	{
-		
-		write(2, "minishell: cd: too many arguments\n", 34);
-		return (1);
-	}
-	
+		return (print_error_status("minishell: cd: too many arguments\n", 1));
 	if (!getcwd(old_dir, PATH_MAX))
 		perror("get old cwd");
 	if (tokenlist)
@@ -109,15 +103,15 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 	}
 	else
 	{
-		if (!chdir(mini_get_env(data->env_arr, "HOME"))
-			return (status_and_print("chdir"), 1);
+		if (!chdir(mini_get_env(env_arr, "HOME")))
+			return (status_and_print("chdir", 1));
 	}
 	if (!getcwd(dir, PATH_MAX))
 		perror("get new cwd");
-	if (update_env(data->env_arr, "OLDPWD", old_dir))
-		status = 1;
-	if (!update_env(data->env_arr, "PWD", dir))
-		status = 1;
+	if (update_env(env_arr, "OLDPWD", old_dir))
+		status = print_error_status("Update of OLDPWD failed\n", 1);
+	if (!update_env(env_arr, "PWD", dir))
+		status = print_error_status("Update of PWD failed\n", 1);
 	return (status);
 }
 

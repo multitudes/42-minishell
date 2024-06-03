@@ -55,3 +55,16 @@ void	*return_null_on_err(char *message)
 	perror(message);
 	return (NULL);
 }
+
+/*
+Print error to standard error and return passed status.
+*/
+int	print_error_status(char *message, int status)
+{
+	write(2, message, ft_strlen(message));
+	return (status);
+}
+
+/*
+Print error and 
+*/
