@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   environment2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 15:59:50 by rpriess           #+#    #+#             */
-/*   Updated: 2024/05/30 16:00:55 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/06/03 11:41:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
 #include "environment.h"
 #include "darray.h"
 
@@ -48,7 +48,7 @@ int	delete_env_entry(t_darray *env_arr, char *key)
 		return (0);
 	else
 	{
-		var = darray_remove_and_prune(env_arr, i);
+		var = darray_remove_and_shift(env_arr, i);
 		free(var);
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 13:40:09 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 14:43:54 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 11:41:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ removing the element at index, moving the subsequent elements up
 and returning the element that was removed (to free).
 add call to contract_array ?
 */
-void	*darray_remove_and_prune(t_darray *array, int i)
+void	*darray_remove_and_shift(t_darray *array, int i)
 {
 	void	*el;
 
-	debug("darray_remove_and_prune");
+	debug("darray_remove_and_shift");
 	el = darray_remove(array, i);
 	while (i < array->end)
 	{
