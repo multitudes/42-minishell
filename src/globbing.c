@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 12:21:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 16:50:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,86 +29,71 @@ bool	match_files_in_directory(t_darray *files, char *pat)
 {
     DIR *dirp;
 	char cwd[PATH_MAX];
-    struct dirent *dir;
+    struct dirent *dir_entry;
 	struct stat path_stat;
+	char *full_path;
 
     dirp = opendir(".");
     if (!dirp)
-	{
-		perror("opendir");
-		return (false);
-	} 
+		return (false_and_perr("opendir"));
 	errno = 0;
-	dir = readdir(dirp);
+	dir_entry = readdir(dirp);
 	if (getcwd(cwd, PATH_MAX) == NULL)
 	{
 		perror("getcwd");
-		free(dir);
 		if (closedir(dirp))
 			perror("closedir");
 		return (false);
 	}
 	debug("current working directory: %s\n", cwd);
-	while ((dir != NULL) && (errno == 0))
+	while (dir_entry && !errno)
 	{
 		debug("number of files in directory: %d\n", files->end);
-		debug("-%s-", dir->d_name);
-		char *full_path = ft_strjoin3(cwd, "/", dir->d_name);
+		debug("-%s-", dir_entry->d_name);
+		full_path = ft_strjoin3(cwd, "/", dir_entry->d_name);
 		if (!full_path)
-		{
-			perror("ft_strjoin3");
 			return (false);
-		}
 		// free
 		debug("full path: %s\n", full_path);
 
 		
-		if (stat(full_path, &path_stat))
+		if (stat(full_path, &path_stat) == 0)
 		{
+			if (S_ISREG(path_stat.st_mode))
+			{
+				// debug("file considered: %s -----------------> ", dir->d_name);
+				if (is_glob_match(pat, dir_entry->d_name))
+					darray_push(files, ft_strdup(dir_entry->d_name));
+			}
+		}
+		else
 			perror("stat");
-			return (false);
-		}
-		if (S_ISREG(path_stat.st_mode))
-		{
-			// debug("file considered: %s -----------------> ", dir->d_name);
-			if (is_glob_match(pat, dir->d_name))
-				darray_push(files, ft_strdup(dir->d_name));
-		}
+
 		free(full_path);
-		dir = readdir(dirp);
+		errno = 0;
+		dir_entry = readdir(dirp);
 	}
 	if (errno)
-	{
 		perror("readdir");
-		if (closedir(dirp))
-		{
-			perror("closedir");
-			return (false);
-		}
-		return (false);
-	}
 	if (closedir(dirp))
-	{
-		perror("closedir");
-		return (false);
-	}
-
-
+		false_and_perr("closedir");
 	return (true);
 }
 
 bool	is_glob_match(char *pat, char *file_name)
 {
-	// debug("MATCHING pattern: %s file_name: %s", pat, file_name);
+	debug("MATCHING pattern: %s file_name: %s", pat, file_name);
     if (*pat == '\0')
-        return *file_name == '\0';
+        return (*file_name == '\0');
     if (*pat == '?')
-        return *file_name != '\0' && is_glob_match(pat + 1, file_name + 1);
-    if (*pat == '*') {
+        return (*file_name != '\0' && is_glob_match(pat + 1, file_name + 1));
+    if (*pat == '*') 
+	{
         if (is_glob_match(pat + 1, file_name))
-            return 1;
-        return *file_name != '\0' && is_glob_match(pat, file_name + 1);
+		{
+			return 1;
+		}
+        return (*file_name != '\0' && is_glob_match(pat, file_name + 1));
     }
-    return *pat == *file_name && is_glob_match(pat + 1, file_name + 1);
-
+    return (*pat == *file_name && is_glob_match(pat + 1, file_name + 1));
 }

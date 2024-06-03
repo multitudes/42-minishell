@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 21:27:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 15:49:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,41 +61,41 @@ void	expand_globbing(t_list *tokenlist)
 	debug("token type: %d lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
 	pat = get_token_lexeme(tokenlist);
 	files = darray_create(sizeof(char *), 100);
-	if (!match_files_in_directory(files, pat))
-		darray_clear_destroy(files);
-	
-	debug("files count : %d", files->end);
-	
-	t_list *next = tokenlist->next;
-	t_list *head = tokenlist->prev;
-	head->next = NULL;
-	tokenlist->next = NULL;
-	tokenlist->prev = NULL;
-	debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(next));
-	// create a new linked list of tokens with the file names
-	int i = 0;
-	int start = 0;
-	while (i < files->end)
+	if (match_files_in_directory(files, pat))
 	{
-		char *file = darray_get(files, i);
-		debug("file: %s", file);
-		t_list *new_node = create_token(WORD, file, &start);
-		debug("new node: %s", get_token_lexeme(new_node));
-		ft_lstadd_back(&head, new_node);
-		i++;
+		debug("files count : %d", files->end);
+		
+		t_list *next = tokenlist->next;
+		t_list *head = tokenlist->prev;
+		head->next = NULL;
+		tokenlist->next = NULL;
+		tokenlist->prev = NULL;
+		debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(next));
+		// create a new linked list of tokens with the file names
+		int i = 0;
+		int start = 0;
+		while (i < files->end)
+		{
+			char *file = darray_get(files, i);
+			debug("file: %s", file);
+			t_list *new_node = create_token(WORD, file, &start);
+			debug("new node: %s", get_token_lexeme(new_node));
+			ft_lstadd_back(&head, new_node);
+			i++;
+		}
+		debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(head->next));
+		t_list *last = ft_lstlast(head);
+		last->next = next;
+		debug("last still: %s and next %s", get_token_lexeme(last), get_token_lexeme(next));
+		if (next)
+			next->prev = last;
+		// free the old list
+		// ft_lstclear(&tokenlist, free_token);
+		// ft_lstdelone(tokenlist, free_token);
+		// free the darray
 	}
-	debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(head->next));
-	t_list *last = ft_lstlast(head);
-	last->next = next;
-	debug("last still: %s and next %s", get_token_lexeme(last), get_token_lexeme(next));
-	if (next)
-		next->prev = last;
-	// free the old list
-	// ft_lstclear(&tokenlist, free_token);
-	// ft_lstdelone(tokenlist, free_token);
-	// free the darray
 	darray_clear_destroy(files);
-
+		
 
 
 	return ;

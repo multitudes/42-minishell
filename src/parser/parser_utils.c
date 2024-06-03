@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:28:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/30 09:51:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 16:10:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_list *token_list)
 		return (NULL);
 	node = malloc(sizeof(t_ast_node));
 	if (node == NULL)
-		return (return_null_on_err("malloc failed in new_node"));
+		return (null_on_err("malloc failed in new_node"));
 	node->type = type;
 	node->parent = NULL;
 	node->left = left;

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 09:59:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 16:10:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,18 @@ int zero_and_printerr(char *msg)
 }
 
 /*
+I need this to print on stderr and return 0
+*/
+bool false_and_perr(char *msg)
+{
+	perror(msg);
+	return (false);
+}
+
+/*
 I sometimes need to return NULL on error
 */
-void	*return_null_on_err(char *message)
+void	*null_on_err(char *message)
 {
 	perror(message);
 	return (NULL);

@@ -6,11 +6,10 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:37:46 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 16:30:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 16:52:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include <stdlib.h>
-#include "libft.h"
+
 #include "minishell.h"
 
 /*
@@ -72,7 +71,7 @@ char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 	total_length = strlen(s1) + strlen(s2) + strlen(s3) + 1;
 	result = malloc(total_length);
 	if (!result)
-		return (NULL);
+		return (null_on_err("malloc ft_strjoin3"));
 	ft_strlcpy(result, s1, total_length);
 	ft_strlcat(result, s2, total_length);
 	ft_strlcat(result, s3, total_length);
