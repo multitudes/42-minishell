@@ -23,6 +23,7 @@ extern "C" {
 
 int		status_and_print(char *msg, int status);
 int		exit_and_print_err(char *msg, int status);
+int     print_error_status(char *message, int status);
 int		zero_and_printerr(char *msg);
 void	*return_null_on_err(char *message);
 
