@@ -20,16 +20,16 @@ int	copy_env_darray(t_darray **new_array, t_darray *source_arr)
 
 	debug("copy env darray");
 	i = 0;
+	if (!source_arr || !source_arr->contents)
+		return (1);
 	*new_array = darray_create(sizeof(char *), source_arr->max);
 	if (*new_array == NULL)
 		return (1);
-	while (source_arr && source_arr->contents && i < source_arr->end)
+	while (i < source_arr->end - 1)
 	{ 
 		env = ft_strdup(source_arr->contents[i++]);
-		if (!ft_strncmp(env, "_=", 2))
+		if (!ft_strncmp(env, "_=", 2) || env == NULL)
 			continue ;
-		else if (env == NULL && darray_clear_destroy(*new_array))
-			return (1);
 		else if (darray_push(*new_array, env) == -1 && darray_clear_destroy(*new_array))
 			return (1);
 	}
