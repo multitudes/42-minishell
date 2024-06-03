@@ -61,7 +61,11 @@ Print error to standard error and return passed status.
 */
 int	print_error_status(char *message, int status)
 {
-	write(2, message, ft_strlen(message));
+	ssize_t	result;
+
+	result = write(2, message, ft_strlen(message));
+	if (result == -1 || result != (ssize_t)ft_strlen(message)) 
+		status = status_and_print("write", 1);
 	return (status);
 }
 

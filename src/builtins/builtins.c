@@ -36,11 +36,11 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "pwd", 4) == 0)
 		status = execute_pwd_builtin();
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "export", 7) == 0)
-		status = execute_export_builtin(data, tokenlist);
+		status = execute_export_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "unset", 6) == 0)
-		status = execute_unset_builtin(data, tokenlist);
+		status = execute_unset_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
-		status = execute_env_builtin(data);
+		status = execute_env_builtin(data->env_arr);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
 	{
 		debug("exit builtin");
@@ -122,14 +122,10 @@ TODO:
 - adding extra arguments after env on the command line changes behavior significantly in BASH
 -- e.g. env $HOME, env echo $HOME (mostly 'env' gets ignored in these cases)
 */
-int	execute_env_builtin(t_data *data)
+int	execute_env_builtin(t_darray *env_arr)
 {
-	int	status;
-
 	debug("env builtin");
-	status = 0;
-	status = print_env(data->env_arr);
-	return (status);
+	return (print_env(env_arr));
 }
 
 bool	write_data(int fd, const void *str, int *status) 
@@ -209,10 +205,11 @@ but echo on the variable will actually execute the newlines
 - export VAR="string", VAR="string=string" do not work, the latter assigns a variable with name string and value string
 - export var13= "detached string" should return error: bash: export: `detached string': not a valid identifier
 - export "var14"=value would assign value to var14
+- export "VAR=rew"u=iqorye
 QUESTION:
 - where do we want to store our local variables?
 */
-int	execute_export_builtin(t_data *data, t_list *tokenlist)
+int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	int		status;
 	char	*key;
@@ -222,7 +219,7 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 	status = 0;
 	tokenlist = tokenlist->next;
 	if (!tokenlist)
-		status = print_env_export(data->env_arr);
+		return (print_env_export(env_arr));
 	while (tokenlist)
 	{
 		// if VAR without '=' but exists as local variable, add that variable to env array
@@ -231,7 +228,7 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 		value = get_var_value(get_token_lexeme(tokenlist));
 		debug("Key: %s, Value: %s", key, value);
 		if (key && value)
-			update_env(data->env_arr, key, value);
+			update_env(env_arr, key, value);
 		free(key);
 		free(value);
 		// if VAR wigh '=' and nothing else, update VAR if it already exists, else add as VAR=
@@ -249,19 +246,13 @@ TODO:
 */
 int	execute_pwd_builtin(void)
 {
-	int		status;
-	char	*current_directory;
+	char	cur_dir[PATH_MAX];
 
 	debug("pwd builtin");
-	current_directory = getcwd(NULL, 0);
-	if (!current_directory)
-	{
-		debug("Error reading current directory with getcwd()");
-	}
-	status = printf("%s\n", current_directory);
-	free(current_directory);
-	if (status < 0)
-		return (1);
+	if (!getcwd(cur_dir, PATH_MAX))
+		return (status_and_print("getcwd()", 1));
+	if (printf("%s\n", cur_dir) < 0)
+		return (status_and_print("printf working directory", 1));
 	return (0);
 }
 
@@ -269,19 +260,21 @@ int	execute_pwd_builtin(void)
 read-only environment variables cannot be unset. How do we manage this?
 Do we only work with our local environmental variables or also those of the system?
 */
-int	execute_unset_builtin(t_data *data, t_list *tokenlist)
+int	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	t_token *token;
+	int	status;
 
+	status = 0;
 	debug("unset builtin");
 	tokenlist = tokenlist->next;
 	if (!tokenlist)
 		return (0);
 	while (tokenlist)
 	{
-		token = tokenlist->content;
-		if (token->lexeme != NULL && ft_strlen(token->lexeme) != 0)
-			delete_env_entry(data->env_arr, token->lexeme);
+		if (get_token_lexeme(tokenlist) != NULL && ft_strlen(get_token_lexeme(tokenlist)) != 0)
+			status = delete_env_entry(env_arr, get_token_lexeme(tokenlist));
+		else
+			status = print_error_status("Unset unsuccessful", 1);
 	// if (restricted_variable(token->lexeme))
 	// {
 	// 	//consider returning error message in restricted_variable() function, also consider other possible restricted variables.
@@ -292,5 +285,5 @@ int	execute_unset_builtin(t_data *data, t_list *tokenlist)
 	// }
 		tokenlist = tokenlist->next;
 	}
-	return (0);
+	return (status);
 }
