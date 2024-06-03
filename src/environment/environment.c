@@ -46,12 +46,12 @@ int	print_env(t_darray *env_arr)
 
 	i = 0;
 	status = 0;
-	while (env_arr && env_arr->contents && i < env_arr->end)
+	while (env_arr && env_arr->contents && i < env_arr->end - 1)
 	{
 		if (env_arr->contents[i] == NULL)
 			;
 		else if (printf("%s\n", (char *)darray_get(env_arr, i)) < 0)
-			status = status_and_print("printf environment", 1);
+			status = status_and_perror("printf environment", 1);
 		i++;
 	}
 	return (status);
@@ -101,7 +101,7 @@ int	print_env_export(t_darray *env_arr)
 	if (copy_env_darray(&export_arr, env_arr))
 		return (1);
 //	sort_array_for_export(export_arr);
-	while (export_arr && export_arr->contents && i < env_arr->end)
+	while (export_arr && export_arr->contents && i < env_arr->end - 1)
 	{
 		key = get_var_key(export_arr->contents[i++]);
 		value = mini_get_env(export_arr, key);
