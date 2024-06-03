@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 11:13:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 17:12:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,10 +179,8 @@ initialiser for data
 */
 bool	init_data(t_data **data)
 {
-	size_t		i;
 	t_darray	*env_array;
 
-	i = 0;
 	if (!init_env_darray(&env_array))
 		return (false); 
 	*data = malloc(sizeof(t_data));

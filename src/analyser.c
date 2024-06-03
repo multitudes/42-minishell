@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 15:49:18 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 17:08:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,12 +90,13 @@ void	expand_globbing(t_list *tokenlist)
 		if (next)
 			next->prev = last;
 		// free the old list
+		debug("tokenlist %s and next %s", get_token_lexeme(tokenlist), get_token_lexeme(tokenlist));
 		// ft_lstclear(&tokenlist, free_token);
 		// ft_lstdelone(tokenlist, free_token);
 		// free the darray
 	}
-	darray_clear_destroy(files);
-		
+		darray_clear_destroy(files);
+	
 
 
 	return ;
