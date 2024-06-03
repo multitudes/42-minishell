@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 21:21:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 12:21:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ bool	match_files_in_directory(t_darray *files, char *pat)
 	if (getcwd(cwd, PATH_MAX) == NULL)
 	{
 		perror("getcwd");
+		free(dir);
+		if (closedir(dirp))
+			perror("closedir");
 		return (false);
 	}
 	debug("current working directory: %s\n", cwd);
