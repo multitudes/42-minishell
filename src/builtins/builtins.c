@@ -88,39 +88,36 @@ int	execute_cd_builtin(t_data *data, t_list *tokenlist)
 {
 	int		cd_return;
 	int		status;
-	char	*dir;
-
+	char	dir[PATH_MAX];
+	char	old_dir[PATH_MAX];
 	debug("cd builtin");
 	tokenlist = tokenlist->next;
-	dir = getcwd(NULL, 0);
-	if (!update_env(data->env_arr, "OLDPWD", dir))
-		status = 1;
-	free(dir);
-	if (tokenlist->next)
+	
+	if (tokenlist && tokenlist->next)
 	{
+		
 		write(2, "minishell: cd: too many arguments\n", 34);
 		return (1);
 	}
+	
+	if (!getcwd(old_dir, PATH_MAX))
+		perror("get old cwd");
 	if (tokenlist)
 	{
-		cd_return = chdir(get_token_lexeme(tokenlist));
-		if (cd_return != 0)
-			status = 1; // 1 is the exit status but prints minishell: cd (dir) : No such file or directory
-		dir = getcwd(NULL, 0);
-		if (!update_env(data->env_arr, "PWD", dir))
-			status = 1;
-		free(dir);
+		if (!chdir(get_token_lexeme(tokenlist)))
+			return (status_and_print("chdir", 1));
 	}
 	else
 	{
-		cd_return = chdir(mini_get_env(data->env_arr, "HOME"));
-		if (cd_return != 0)
-			status = 1;
-		dir = getcwd(NULL, 0);
-		if (!update_env(data->env_arr, "PWD", dir))
-			status = 1;
-		free(dir);
-	}		
+		if (!chdir(mini_get_env(data->env_arr, "HOME"))
+			return (status_and_print("chdir"), 1);
+	}
+	if (!getcwd(dir, PATH_MAX))
+		perror("get new cwd");
+	if (update_env(data->env_arr, "OLDPWD", old_dir))
+		status = 1;
+	if (!update_env(data->env_arr, "PWD", dir))
+		status = 1;
 	return (status);
 }
 
