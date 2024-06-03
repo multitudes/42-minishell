@@ -78,6 +78,7 @@ fclean: clean
 	rm -f $(NAME)
 	# $(MAKE) -C $(LIBFTDIR) fclean
 	$(MAKE) -C tests fclean
+	$(MAKE) -C tests_integration fclean
 
 re: fclean all
 

@@ -36,9 +36,9 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "pwd", 4) == 0)
 		status = execute_pwd_builtin();
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "export", 7) == 0)
-		status = execute_export_builtin(data, tokenlist);
+		status = execute_export_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "unset", 6) == 0)
-		status = execute_unset_builtin(data, tokenlist);
+		status = execute_unset_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
 		status = execute_env_builtin(data);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
@@ -225,7 +225,7 @@ but echo on the variable will actually execute the newlines
 QUESTION:
 - where do we want to store our local variables?
 */
-int	execute_export_builtin(t_data *data, t_list *tokenlist)
+int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	t_token	*token;
 	int		status;
@@ -239,7 +239,7 @@ int	execute_export_builtin(t_data *data, t_list *tokenlist)
 		tokenlist = tokenlist->next;
 	}
 	if (!tokenlist)
-		status = print_env_export(data->env_arr);
+		status = print_env_export(env_arr);
 	while (tokenlist)
 	{
 
@@ -276,7 +276,7 @@ int	execute_pwd_builtin(void)
 read-only environment variables cannot be unset. How do we manage this?
 Do we only work with our local environmental variables or also those of the system?
 */
-int	execute_unset_builtin(t_data *data, t_list *tokenlist)
+int	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	t_token *token;
 
@@ -293,7 +293,7 @@ int	execute_unset_builtin(t_data *data, t_list *tokenlist)
 	{
 		token = tokenlist->content;
 		if (token->lexeme != NULL && ft_strlen(token->lexeme) != 0)
-			delete_env_entry(data->env_arr, token->lexeme);
+			delete_env_entry(env_arr, token->lexeme);
 	// if (restricted_variable(token->lexeme))
 	// {
 	// 	//consider returning error message in restricted_variable() function, also consider other possible restricted variables.
