@@ -33,7 +33,7 @@ int	get_wait_status(int status)
 	else if (WIFSIGNALED(status))
 		return (WTERMSIG(status) + 128);
 	else
-		return (status_and_print("child did not exit normally\n", 1));
+		return (status_and_perror("child did not exit normally\n", 1));
 }
 
 
@@ -53,7 +53,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 	status = 0;
 	argv = get_args_from_tokenlist(tokenlist);
 	if (!argv)
-		return (status_and_print("malloc argv", 1));
+		return (status_and_perror("malloc argv", 1));
 	if (resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	pid = fork();
@@ -63,7 +63,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 		exit_and_print_err(NULL, 127);
 	}
 	else if (pid == -1)
-		return (status_and_print("minishell: fork failed\n", EXIT_FAILURE));
+		return (status_and_perror("minishell: fork failed\n", EXIT_FAILURE));
 	else
 		waitpid(pid, &status, 0);
 	return (get_wait_status(status));
@@ -80,10 +80,10 @@ int	get_status_of_children(pid_t pid1, pid_t pid2)
 	
 	finalstatus = -1;
 	if (waitpid(pid1, &status, 0) == -1)
-		finalstatus = status_and_print("waitpid 1", 1);
+		finalstatus = status_and_perror("waitpid 1", 1);
 	finalstatus = get_wait_status(status);
 	if (waitpid(pid2, &status, 0) == -1)
-		finalstatus = status_and_print("waitpid 2", 1);
+		finalstatus = status_and_perror("waitpid 2", 1);
 	finalstatus = get_wait_status(status);
 	debug("status of my children %d", finalstatus);
 	return (finalstatus);

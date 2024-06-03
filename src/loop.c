@@ -245,7 +245,7 @@ whichy is added to 128 and gives 130, the exit code for ctrl-c
 int	set_up_signals(void)
 {
 	if (isatty(STDIN_FILENO) == -1)
-		return (status_and_print("is atty failed\n", 1));
+		return (status_and_perror("is atty failed\n", 1));
 	else if (isatty(STDIN_FILENO))
 	{
 		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
@@ -262,7 +262,7 @@ int	set_up_signals(void)
 			(signal(SIGTTIN, SIG_IGN) == SIG_ERR) || \
 			(signal(SIGTTOU, SIG_IGN) == SIG_ERR) || \
 			(signal(SIGXCPU, exit_handler) == SIG_ERR))
-		return (status_and_print("SIG_ERR signal failed\n", 1));
+		return (status_and_perror("SIG_ERR signal failed\n", 1));
 	}
 	// TODO still not sure if needed!
 	rl_catch_signals = 0;
@@ -318,7 +318,8 @@ int loop()
 				if (data->ast)
 				{
 					analyse_expand(data->ast, data);
-					update_env_exit_status_with(execute_ast(data->ast, data), data);
+					data->exit_status = execute_ast(data->ast, data);
+					debug("Exit status: %i", data->exit_status);
 					free_ast(&(data->ast));
 				}
 				else

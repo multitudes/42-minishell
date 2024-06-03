@@ -20,7 +20,7 @@ process, any updates will be lost upon return. Therefore, I will
 keep it simple and just pass the message and the status.
 Updating the global makes sense when I am in the parent process.  
 */
-int	status_and_print(char *msg, int status)
+int	status_and_perror(char *msg, int status)
 {
 	if (msg)
 		perror(msg);
@@ -55,3 +55,20 @@ void	*return_null_on_err(char *message)
 	perror(message);
 	return (NULL);
 }
+
+/*
+Print error to standard error and return passed status.
+*/
+int	print_error_status(char *message, int status)
+{
+	ssize_t	result;
+
+	result = write(2, message, ft_strlen(message));
+	if (result == -1 || result != (ssize_t)ft_strlen(message)) 
+		status = status_and_perror("write", 1);
+	return (status);
+}
+
+/*
+Print error and 
+*/

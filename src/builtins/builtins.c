@@ -32,7 +32,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	if (ft_strncmp(get_token_lexeme(tokenlist), "echo", 5) == 0)
 		status = execute_echo_builtin(tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "cd", 3) == 0)
-		status = execute_cd_builtin(data, tokenlist);
+		status = execute_cd_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "pwd", 4) == 0)
 		status = execute_pwd_builtin();
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "export", 7) == 0)
@@ -40,7 +40,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "unset", 6) == 0)
 		status = execute_unset_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
-		status = execute_env_builtin(data);
+		status = execute_env_builtin(data->env_arr);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
 	{
 		debug("exit builtin");
@@ -84,50 +84,34 @@ TODOs:
 this shall be equivalent to the command: cd "$OLDPWD" && pwd")
 -- when $HOME is undefined just performing `cd` is implementation defined (How is this handled in BASH?)
 */
-int	execute_cd_builtin(t_data *data, t_list *tokenlist)
+int	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	t_token	*token;
-	int		cd_return;
 	int		status;
-	char	*dir;
+	char	dir[PATH_MAX];
+	char	old_dir[PATH_MAX];
 
 	debug("cd builtin");
-	token = tokenlist->content;
-	if (ft_strncmp(token->lexeme, "cd", 3) == 0)
-	{
-		debug("lexeme: %s (Not printed)", token->lexeme);
-		tokenlist = tokenlist->next;
-	}
-	dir = getcwd(NULL, 0);
-	if (!update_env(data->env_arr, "OLDPWD", dir))
-		status = 1;
-	free(dir);
+	tokenlist = tokenlist->next;
 	if (tokenlist && tokenlist->next)
-	{
-		write(2, "minishell: cd: too many arguments\n", 34);
-		return (1);
-	}
+		return (print_error_status("minishell: cd: too many arguments\n", 1));
+	if (!getcwd(old_dir, PATH_MAX))
+		perror("get old cwd");
 	if (tokenlist)
 	{
-		token = tokenlist->content;
-		cd_return = chdir(token->lexeme);
-		if (cd_return != 0)
-			status = 1; // 1 is the exit status but prints minishell: cd (dir) : No such file or directory
-		dir = getcwd(NULL, 0);
-		if (!update_env(data->env_arr, "PWD", dir))
-			status = 1;
-		free(dir);
+		if (!chdir(get_token_lexeme(tokenlist)))
+			return (status_and_perror("chdir", 1));
 	}
 	else
 	{
-		cd_return = chdir(mini_get_env(data->env_arr, "HOME"));
-		if (cd_return != 0)
-			status = 1;
-		dir = getcwd(NULL, 0);
-		if (!update_env(data->env_arr, "PWD", dir))
-			status = 1;
-		free(dir);
-	}		
+		if (!chdir(mini_get_env(env_arr, "HOME")))
+			return (status_and_perror("chdir", 1));
+	}
+	if (!getcwd(dir, PATH_MAX))
+		perror("get new cwd");
+	if (update_env(env_arr, "OLDPWD", old_dir))
+		status = print_error_status("Update of OLDPWD failed\n", 1);
+	if (!update_env(env_arr, "PWD", dir))
+		status = print_error_status("Update of PWD failed\n", 1);
 	return (status);
 }
 
@@ -138,14 +122,10 @@ TODO:
 - adding extra arguments after env on the command line changes behavior significantly in BASH
 -- e.g. env $HOME, env echo $HOME (mostly 'env' gets ignored in these cases)
 */
-int	execute_env_builtin(t_data *data)
+int	execute_env_builtin(t_darray *env_arr)
 {
-	int	status;
-
 	debug("env builtin");
-	status = 0;
-	status = print_env(data->env_arr);
-	return (status);
+	return (print_env(env_arr));
 }
 
 bool	write_data(int fd, const void *str, int *status) 
@@ -207,13 +187,12 @@ int	execute_echo_builtin(t_list *tokenlist)
 
 /*
 Executes 'export' builtin. No options interpreted.
-- No arguments should give a sorted list of the environment variables (lower case variables come after all upper case variables) with `declare -x ` prepended,
-variable values are in double quotes and apparently the last command (i.e. `export`) is not included
+
 - when a string with newline characters is assigned to a variable in BASH
 (e.g. VAR="first\nsecond\nthird" - single or double quotes give the same result),
 and export, then `export` and `env` list the variable with displayed \n-characters, in env case without quotes, in export case with quotes
 but echo on the variable will actually execute the newlines
-- it should be possible to export several variables at once, while also giving a value or not.
+
 - If no value is provided export does not assigne a value to `name` and simply displays it as `name` unless the variable already exists, then it is left unchanged
 - if export is executed without values but with `export name=` then `export` displays this variable as `name='' (i.e. assigns an empty string)
 - while env without arguments does not display the variable at all
@@ -221,29 +200,40 @@ but echo on the variable will actually execute the newlines
 - it can also end with a ':'
 - export `VAR=2=3` gets added to the environment as `VAR='2=3'` (env would display this variable as `VAR=2=3`)
 - export `VAR=` gets added as `VAR=""` (empty string)
-- export `VAR==2` gets added as `VAR="=2"`
+- export `VAR==2` gets added as `VAR="=2"
+- export VAR="$HOME", VAR=$HOME do not work at the moment (no value assigned at all)
+- export VAR="string", VAR="string=string" do not work, the latter assigns a variable with name string and value string
+- export var13= "detached string" should return error: bash: export: `detached string': not a valid identifier
+- export "var14"=value would assign value to var14
+- export "VAR=rew"u=iqorye
 QUESTION:
 - where do we want to store our local variables?
 */
 int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	t_token	*token;
 	int		status;
+	char	*key;
+	char	*value;
 
 	debug("export builtin");
 	status = 0;
-	token = tokenlist->content;
-	if (ft_strncmp(token->lexeme, "export", 7) == 0)
-	{
-		debug("lexeme: %s (Not printed)", token->lexeme);
-		tokenlist = tokenlist->next;
-	}
+	tokenlist = tokenlist->next;
 	if (!tokenlist)
-		status = print_env_export(env_arr);
+		return (print_env_export(env_arr));
 	while (tokenlist)
 	{
-
-		debug("Parse arguments for export builtin.");
+		// if VAR without '=' but exists as local variable, add that variable to env array
+		// if VAR without '=' add variable (needs to be interpreted differently in buitlin "env", i.e. not being shown at all)
+		key = get_var_key(get_token_lexeme(tokenlist));
+		value = get_var_value(get_token_lexeme(tokenlist));
+		debug("Key: %s, Value: %s", key, value);
+		if (key && value)
+			update_env(env_arr, key, value);
+		free(key);
+		free(value);
+		// if VAR wigh '=' and nothing else, update VAR if it already exists, else add as VAR=
+		// else update value if key exists
+		//else add argument as new entry in env arr
 		tokenlist = tokenlist->next;
 	}
 	return (status);
@@ -256,19 +246,13 @@ TODO:
 */
 int	execute_pwd_builtin(void)
 {
-	int		status;
-	char	*current_directory;
+	char	cur_dir[PATH_MAX];
 
 	debug("pwd builtin");
-	current_directory = getcwd(NULL, 0);
-	if (!current_directory)
-	{
-		debug("Buffer for reading current directory too small");
-	}
-	status = printf("%s\n", current_directory);
-	free(current_directory);
-	if (status < 0)
-		return (1);
+	if (!getcwd(cur_dir, PATH_MAX))
+		return (status_and_perror("getcwd()", 1));
+	if (printf("%s\n", cur_dir) < 0)
+		return (status_and_perror("printf working directory", 1));
 	return (0);
 }
 
@@ -278,22 +262,19 @@ Do we only work with our local environmental variables or also those of the syst
 */
 int	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	t_token *token;
+	int	status;
 
+	status = 0;
 	debug("unset builtin");
-	token = tokenlist->content;
-	if (ft_strncmp(token->lexeme, "unset", 6) == 0)
-	{
-		debug("lexeme: %s (Not printed)", token->lexeme);
-		tokenlist = tokenlist->next;
-	}
+	tokenlist = tokenlist->next;
 	if (!tokenlist)
 		return (0);
 	while (tokenlist)
 	{
-		token = tokenlist->content;
-		if (token->lexeme != NULL && ft_strlen(token->lexeme) != 0)
-			delete_env_entry(env_arr, token->lexeme);
+		if (get_token_lexeme(tokenlist) != NULL && ft_strlen(get_token_lexeme(tokenlist)) != 0)
+			status = delete_env_entry(env_arr, get_token_lexeme(tokenlist));
+		else
+			status = print_error_status("Unset unsuccessful", 1);
 	// if (restricted_variable(token->lexeme))
 	// {
 	// 	//consider returning error message in restricted_variable() function, also consider other possible restricted variables.
@@ -304,5 +285,5 @@ int	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 	// }
 		tokenlist = tokenlist->next;
 	}
-	return (0);
+	return (status);
 }
