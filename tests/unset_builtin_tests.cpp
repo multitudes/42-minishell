@@ -8,13 +8,27 @@
 #include "../include/minishell.h"
 #include "../include/globbing.h"
 
+extern char **environ;
 
 const char *test_unset()
 {
-	//int		execute_unset_builtin(t_data *data, t_list *tokenlist);
-	// int result = 0;
-	
-	// result = execute_unset_builtin(
+	t_darray *env_arr = NULL;
+	int result = 0;
+	t_list *tokenlist;
+	char* position = NULL;
+	if (!init_env_darray(&env_arr))
+		return "error in init env array";
+
+	position = mini_get_env(env_arr, "PWD");
+	my_assert(position != NULL, "PWD not set");
+
+	tokenlist = tokenizer("unset PWD");
+	result = execute_unset_builtin(env_arr, tokenlist);
+	my_assert(result == 0, "unset PWD fail");
+	position = mini_get_env(env_arr, "PWD");
+	my_assert(position == NULL, "PWD not unset")
+	debug("result %d", result);
+
 	return NULL;
 }
 
