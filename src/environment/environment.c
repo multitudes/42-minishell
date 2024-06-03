@@ -105,10 +105,8 @@ int	print_env_export(t_darray *env_arr)
 	{
 		key = get_var_key(export_arr->contents[i++]);
 		value = mini_get_env(export_arr, key);
-		if (key == NULL)
-			;
-		else if (printf("declare -x %s=%c%s%c\n", key, '"', value, '"') < 0)
-			status = 1;
+		if (key && (printf("declare -x %s=%c%s%c\n", key, '"', value, '"') < 0))
+			status = status_and_perror("printf", 1);
 		free(key);
 	}
 	darray_clear_destroy(export_arr);
