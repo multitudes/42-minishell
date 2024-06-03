@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 11:51:41 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 15:51:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 11:50:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define HISTORY_H
 
 # include "minishell.h"
+
+typedef struct s_data t_data;	
 
 bool	handle_history(t_data *data);
 bool	add_to_hist_file(const char *input);

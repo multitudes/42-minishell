@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 11:14:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/03 11:45:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ extern int g_signal;
 extern "C" {
 # endif
 
-typedef struct s_darray 	t_darray;
 
 /*
 env_arr = enviroment variables array
@@ -105,6 +104,8 @@ struct s_data
 	int 		pipe_fd[2];
 };
 typedef struct s_data t_data;
+
+typedef struct s_darray 	t_darray;
 
 int		loop();
 bool	init_data(t_data **data);
