@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 08:29:17 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 08:31:04 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ t_ast_node	*parse_pipeline(t_list **token_list)
 /*
 Parsing sequence of pipelines separated by operators "&&", "||"
 */
-t_ast_node	*parse_list(t_list **input_tokens)
+t_ast_node	*parse_list(t_list **token_list)
 {
 	t_token		*token;
 	t_ast_node	*a;
@@ -100,32 +100,32 @@ t_ast_node	*parse_list(t_list **input_tokens)
 	a = NULL;
 	b = NULL;
 	token = NULL;
-	if (input_tokens == NULL || *input_tokens == NULL)
+	if (token_list == NULL || *token_list == NULL)
 		return (NULL);
-	a = parse_pipeline(input_tokens);
+	a = parse_pipeline(token_list);
 	if (a == NULL)
 		return (NULL);
-	while (*input_tokens)
+	while (*token_list)
 	{
-		token = get_curr_token(*input_tokens);
+		token = get_curr_token(*token_list);
 		if (token->type == AND_IF || token->type == OR_IF || \
 		token->type == EXPRESSION)
 		{
-			if (token->type != EXPRESSION && consume_token(input_tokens) == NULL)
+			if (token->type != EXPRESSION && consume_token(token_list) == NULL)
 				return (NULL);
-			b = parse_pipeline(input_tokens);
+			b = parse_pipeline(token_list);
 			if (b == NULL)
 				return (free_ast(&a));
 			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
 			if (a == NULL)
 				return (free_ast(&a));
 		}
-		else if (*input_tokens)
+		else if (*token_list)
 		{
 			debug("extraneus tken: %d, %s", \
-			((t_token *)(*input_tokens)->content)->type, \
-			((t_token *)(*input_tokens)->content)->lexeme);
-			*input_tokens = (*input_tokens)->next;
+			((t_token *)(*token_list)->content)->type, \
+			((t_token *)(*token_list)->content)->lexeme);
+			*token_list = (*token_list)->next;
 		}
 	}
 	return (a);
