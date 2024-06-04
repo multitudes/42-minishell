@@ -81,7 +81,6 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
         close(pipefd_in[0]);
         dup2(pipefd_out[1], STDOUT_FILENO);
         close(pipefd_out[1]);
-
 		// close the other ends of the pipes - child writes to pipefd_out[1]
 		// which is now his stdout, so I could close pipefd_out[0]
 		// but this gives me an error. I think this has to be closed by the process that 
@@ -100,7 +99,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		// The parent will write to pipefd_in[1] and read from pipefd_out[0]
         close(pipefd_out[1]);
         close(pipefd_in[0]);
-
+		usleep(3000);
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
 
