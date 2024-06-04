@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 16:36:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 16:48:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ bool	init_env_darray(t_darray **env_array)
 			return (zero_and_printerr("darray_push"));
 	}
 	darray_push(*env_array, NULL);
-	return (1);
+	return (true);
 }
 
 /*
@@ -338,9 +338,8 @@ int single_command(const char *input)
 
 	data = NULL;
 	if (!init_data(&data))
-		return (1);
+		return (EXIT_FAILURE);
 	debug("init_data done");
-	// load_history();
 	set_up_signals();		
 	data->input = ft_strdup(input);
 	if (data->input && ft_strncmp(data->input, "", 1))
@@ -365,6 +364,7 @@ int single_command(const char *input)
 	}
 	status = data->exit_status;
 	free((char *)(data->input));
+	darray_clear_destroy(data->env_arr);
 	free_data(&data);
 	debug("exit_minishell");
 	return (status); 
