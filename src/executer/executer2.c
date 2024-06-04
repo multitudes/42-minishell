@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 15:33:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 16:27:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,14 @@ int	execute_command(t_list *tokenlist, t_data *data)
 	char	**argv;
 
 	status = 0;
-	argv = get_args_from_tokenlist(tokenlist);
-	if (!argv)
-		return (status_and_perror("malloc argv", 1));
-	if (resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")) == EXIT_FAILURE)
-		return (EXIT_FAILURE);
 	pid = fork();
 	if (pid == 0)
 	{
+		argv = get_argv_from_tokenlist(tokenlist);
+		if (!argv)
+			return (status_and_perror("malloc argv", 1));
+		if (resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
 		execve(argv[0], argv, (char **)data->env_arr->contents);
 		exit_and_print_err(NULL, 127);
 	}

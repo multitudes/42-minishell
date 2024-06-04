@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 11:13:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 16:25:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	count_tokens(t_list *tokenlist)
 Since until now we store the token as linked list
 we convert it to a char array for the execve function
 */ 
-char	**get_args_from_tokenlist(t_list *tokenlist)
+char	**get_argv_from_tokenlist(t_list *tokenlist)
 {
 	int		i;
 	int		count;

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 09:41:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 16:36:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,3 +326,47 @@ int loop()
 	exit_minishell(data);
 	return (0); 
 }
+
+/*
+invoqued using the -c flag
+
+*/
+int single_command(const char *input)
+{
+	int		status;	
+	t_data *data;
+
+	data = NULL;
+	if (!init_data(&data))
+		return (1);
+	debug("init_data done");
+	// load_history();
+	set_up_signals();		
+	data->input = ft_strdup(input);
+	if (data->input && ft_strncmp(data->input, "", 1))
+	{
+		// handle_history(data);
+		sanitize_input(data->input);
+		data->token_list = tokenizer(data->input);
+		if (data->token_list != NULL)
+		{
+			data->ast = create_ast(data->token_list);
+			if (data->ast)
+			{
+				analyse_expand(data->ast, data);
+				data->exit_status = execute_ast(data->ast, data);
+				debug("Exit status: %i", data->exit_status);
+				// ft_lstclear(&(data->token_list), free_tokennode);
+				free_ast(&(data->ast));
+			}
+			else
+				debug("syntax parse error");
+		}
+	}
+	status = data->exit_status;
+	free((char *)(data->input));
+	free_data(&data);
+	debug("exit_minishell");
+	return (status); 
+}
+
