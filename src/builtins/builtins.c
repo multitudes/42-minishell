@@ -98,17 +98,17 @@ int	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 		perror("get old cwd");
 	if (tokenlist)
 	{
-		if (!chdir(get_token_lexeme(tokenlist)))
+		if (chdir(get_token_lexeme(tokenlist)))
 			return (status_and_perror("chdir", 1));
 	}
 	else
 	{
-		if (!chdir(mini_get_env(env_arr, "HOME")))
+		if (chdir(mini_get_env(env_arr, "HOME")))
 			return (status_and_perror("chdir", 1));
 	}
 	if (!getcwd(dir, PATH_MAX))
 		perror("get new cwd");
-	if (update_env(env_arr, "OLDPWD", old_dir))
+	if (!update_env(env_arr, "OLDPWD", old_dir))
 		status = print_error_status("Update of OLDPWD failed\n", 1);
 	if (!update_env(env_arr, "PWD", dir))
 		status = print_error_status("Update of PWD failed\n", 1);
