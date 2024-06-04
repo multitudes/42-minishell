@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 08:27:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 08:29:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ bool	is_pipe_token(t_list *input_tokens)
 	return (false);
 }
 
-t_ast_node	*parse_pipeline(t_list **input_tokens)
+t_ast_node	*parse_pipeline(t_list **token_list)
 {
 	t_ast_node	*a;
 	t_token		*token;
@@ -68,17 +68,17 @@ t_ast_node	*parse_pipeline(t_list **input_tokens)
 
 	a = NULL;
 	token = NULL;
-	if (input_tokens == NULL || *input_tokens == NULL)
+	if (token_list == NULL || *token_list == NULL)
 		return (NULL);
-	a = parse_terminal(input_tokens);
+	a = parse_terminal(token_list);
 	if (a == NULL)
 		return (NULL);
-	while (is_pipe_token(*input_tokens))
+	while (is_pipe_token(*token_list))
 	{
-		token = get_curr_token(*input_tokens);
-		if (consume_token(input_tokens) == NULL)
+		token = get_curr_token(*token_list);
+		if (consume_token(token_list) == NULL)
 			return (NULL);
-		b = parse_terminal(input_tokens);
+		b = parse_terminal(token_list);
 		if (b == NULL)
 			return (free_ast(&a));
 		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
