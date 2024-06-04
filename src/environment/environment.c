@@ -24,7 +24,10 @@ bool update_env(t_darray *env_arr, const char *key, const char *value)
 	i = get_var_index(env_arr, key);
 	debug("index with key: %i", i);
 	if (i < 0)
-		darray_push(env_arr, ft_strjoin3(key, "=", value));
+	{
+		darray_set(env_arr, env_arr->end - 1, ft_strjoin3(key, "=", value));
+		darray_push(env_arr, NULL);
+	}
 	else
 	{
 		env_str = darray_get(env_arr, i);
@@ -72,6 +75,7 @@ char *mini_get_env(t_darray *env_arr, const char *key)
 	while (key && i < env_arr->end - 1)
 	{
 		env_str = darray_get(env_arr, i);
+		debug("darray line %s", env_str);
 		position = ft_strchr(env_str, '=');
 		if (!position)
 			return (NULL);
