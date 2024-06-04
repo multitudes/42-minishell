@@ -56,3 +56,7 @@ dkms.conf
 .vscode/settings.json
 src/scrap.c
 tests_integration/minishell_basic1_tests (copy).cpp
+tests/tmp/.shellignore
+tests/tmp/hello.txt
+tests/tmp/miniclam
+tests/tmp/world.c
