@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 08:23:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 09:41:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	free_data(t_data **data)
 	debug("freeing env darray");
 	darray_clear_destroy((*data)->env_arr);
 	debug("freeing ast");
-	free_ast(&(*data)->ast);
+	// free_ast(&(*data)->ast);
 	free(*data);
 	debug("data freed");
 	*data = NULL;
@@ -242,43 +242,21 @@ whichy is added to 128 and gives 130, the exit code for ctrl-c
 */
 int	set_up_signals(void)
 {
-	if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
-		(signal(SIGQUIT, SIG_IGN) == SIG_ERR) || \
-			(signal(SIGBUS, exit_handler) == SIG_ERR) || \
-			(signal(SIGFPE, exit_handler) == SIG_ERR) || \
-			(signal(SIGHUP, exit_handler) == SIG_ERR) || \
-			(signal(SIGILL, exit_handler) == SIG_ERR) || \
-			(signal(SIGSYS, exit_handler) == SIG_ERR) || \
-			(signal(SIGPIPE, exit_handler) == SIG_ERR) || \
-			(signal(SIGSEGV, exit_handler) == SIG_ERR) || \
-			(signal(SIGTERM, exit_handler) == SIG_ERR) || \
-			(signal(SIGTSTP, SIG_IGN) == SIG_ERR) || \
-			(signal(SIGTTIN, SIG_IGN) == SIG_ERR) || \
-			(signal(SIGTTOU, SIG_IGN) == SIG_ERR) || \
-			(signal(SIGXCPU, exit_handler) == SIG_ERR) || \
-			(signal(SIGCHLD, SIG_IGN) == SIG_ERR))
+	
+	if (isatty(STDIN_FILENO) == -1)
+		return (status_and_perror("is atty failed\n", 1));
+	else if (isatty(STDIN_FILENO))
+	{
+		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
+		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
 		return (status_and_perror("SIG_ERR signal failed\n", 1));
-	// if (isatty(STDIN_FILENO) == -1)
-	// 	return (status_and_perror("is atty failed\n", 1));
-	// else if (isatty(STDIN_FILENO))
-	// {
-	// 	if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
-	// 	(signal(SIGQUIT, SIG_IGN) == SIG_ERR) || \
-	// 		(signal(SIGBUS, exit_handler) == SIG_ERR) || \
-	// 		(signal(SIGFPE, exit_handler) == SIG_ERR) || \
-	// 		(signal(SIGHUP, exit_handler) == SIG_ERR) || \
-	// 		(signal(SIGILL, exit_handler) == SIG_ERR) || \
-	// 		(signal(SIGSYS, exit_handler) == SIG_ERR) || \
-	// 		(signal(SIGPIPE, exit_handler) == SIG_ERR) || \
-	// 		(signal(SIGSEGV, exit_handler) == SIG_ERR) || \
-	// 		(signal(SIGTERM, exit_handler) == SIG_ERR) || \
-	// 		(signal(SIGTSTP, SIG_IGN) == SIG_ERR) || \
-	// 		(signal(SIGTTIN, SIG_IGN) == SIG_ERR) || \
-	// 		(signal(SIGTTOU, SIG_IGN) == SIG_ERR) || \
-	// 		(signal(SIGXCPU, exit_handler) == SIG_ERR) || \
-	// 		(signal(SIGCHLD, SIG_IGN) == SIG_ERR))
-	// 	return (status_and_perror("SIG_ERR signal failed\n", 1));
-	// }
+	}
+	else 
+	{
+		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
+		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
+		return (status_and_perror("SIG_ERR signal failed\n", 1));
+	}
 	// TODO still not sure if needed!
 	// rl_catch_signals = 0;
 	return (0);
@@ -335,7 +313,7 @@ int loop()
 					analyse_expand(data->ast, data);
 					data->exit_status = execute_ast(data->ast, data);
 					debug("Exit status: %i", data->exit_status);
-					ft_lstclear(&(data->token_list), free_tokennode);
+					// ft_lstclear(&(data->token_list), free_tokennode);
 					free_ast(&(data->ast));
 				}
 				else
