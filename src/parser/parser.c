@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 07:46:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 08:24:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,23 @@ introducing a new node type for the tree, t_ast_node.
 The tree will be composed of nodes, each node will have a type,
 a left and a right node, and a list of tokens as a t_list.
 */
-t_ast_node	*create_ast(t_list *input_tokens)
+t_ast_node	*create_ast(t_list *token_list)
 {
 	t_ast_node	*a;
 	t_list		*tmp;
 
 	a = NULL;
-	tmp = input_tokens;
-	if (input_tokens == NULL)
+	tmp = token_list;
+	if (token_list == NULL)
 		return (NULL);
 	while (tmp)
 	{
 		a = parse_list(&tmp);
 		if (!a)
+		{
+			ft_lstclear(&token_list, free_tokennode);
 			return (NULL);
+		}
 	}
 	return (a);
 }
