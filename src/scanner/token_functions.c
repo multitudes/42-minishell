@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 21:14:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 07:46:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
 creates a simple t_list node - the token is in the content of the node
 in form of a string that will need to be freed
 */
-t_list	*create_token(t_tokentype type, const char *lexeme, int *i)
+t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i)
 {
 	t_token	*token;
 	t_list	*new_node;
@@ -56,7 +56,7 @@ t_list	*create_token(t_tokentype type, const char *lexeme, int *i)
 	new_node = ft_lstnew(token);
 	if (new_node == NULL)
 	{
-		free_token(token);
+		free_tokennode(token);
 		return (NULL);
 	}
 	return (new_node);
@@ -80,11 +80,11 @@ bool	add_token(t_mini_data *data, int *i, const char *lexem, int type)
 		scanner_error(data, "error: empty lexem in token creation");
 	else
 	{
-		token = create_token(type, lexem, i);
+		token = new_toknode(type, lexem, i);
 		if (token)
 			ft_lstadd_back(&data->token_list, token);
 		else
-			scanner_error(data, "error: malloc in create_token failed");
+			scanner_error(data, "error: malloc in new_toknode failed");
 	}
 	return (true);
 }

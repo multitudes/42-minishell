@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/30 10:04:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 07:46:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ Still I need to free it somewhere and since it will not
 be needed later I free it here. Also the input_tokens list 
 is split in pieces in the tree so it would not be possible
 to traverse the list and free it later.
-I use free_token as a function to free because the token list 
+I use free_tokennode as a function to free because the token list 
 contents are of type (void*)content and I need to cast it to
 t_token* to free the lexeme string and the token itself. 
 */
@@ -60,7 +60,7 @@ void	*free_ast(t_ast_node **ast)
 		free_ast(&((*ast)->left));
 	if ((*ast)->right)
 		free_ast(&((*ast)->right));
-	ft_lstclear(&((*ast)->token_list), free_token);
+	ft_lstclear(&((*ast)->token_list), free_tokennode);
 	free(*ast);
 	*ast = NULL;
 	return (NULL);

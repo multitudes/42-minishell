@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 17:08:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 07:46:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	expand_globbing(t_list *tokenlist)
 		{
 			char *file = darray_get(files, i);
 			debug("file: %s", file);
-			t_list *new_node = create_token(WORD, file, &start);
+			t_list *new_node = new_toknode(WORD, file, &start);
 			debug("new node: %s", get_token_lexeme(new_node));
 			ft_lstadd_back(&head, new_node);
 			i++;
@@ -91,8 +91,8 @@ void	expand_globbing(t_list *tokenlist)
 			next->prev = last;
 		// free the old list
 		debug("tokenlist %s and next %s", get_token_lexeme(tokenlist), get_token_lexeme(tokenlist));
-		// ft_lstclear(&tokenlist, free_token);
-		// ft_lstdelone(tokenlist, free_token);
+		// ft_lstclear(&tokenlist, free_tokennode);
+		// ft_lstdelone(tokenlist, free_tokennode);
 		// free the darray
 	}
 		darray_clear_destroy(files);
@@ -169,7 +169,7 @@ void	expand_string(t_data *data, t_token *token)
 		free(temp_lexeme);
 		string_tokens = string_tokens->next;
 	}
-	ft_lstclear(&ptr_to_list, free_token); //free_token function is from scanner.h
+	ft_lstclear(&ptr_to_list, free_tokennode); //free_tokennode function is from scanner.h
 	token->type = WORD;
 }
 

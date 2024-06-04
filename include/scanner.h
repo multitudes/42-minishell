@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/01 11:34:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 07:46:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ typedef struct s_token		t_token;
 
 int		init_scanner_data(t_mini_data **data, const char *input);
 t_list	*free_scanner_data(t_mini_data **data);
-t_list	*create_token(t_tokentype type, const char *lexeme, int *start);
+t_list	*new_toknode(t_tokentype type, const char *lexeme, int *start);
 t_list	*tokenizer(const char *input);
 t_list	*string_tokenizer(const char *input);
 bool	peek(const char *input, const char *identifier, bool end_space);
@@ -194,14 +194,14 @@ bool	is_true_false(t_mini_data *data, char *str, int *start);
 bool	is_builtin(t_mini_data *data, char *identifier, int *start);
 bool	add_token(t_mini_data *data, int *i, const char *lxm, int type);
 void	print_token_list(t_list *token_list);
-t_list	*create_token(t_tokentype type, const char *lexeme, int *i);
+t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i);
 bool	is_io_number(const char *identifier);
 bool	str_is_number(const char *identifier);
 bool	str_is_alphanum(const char *identifier);
 bool	filename_delimiter(const char ch);
 int		isprint_no_space(const char *identifier);
 bool	not_implemented_builtin(const char *identifier);
-void	free_token(void *content);
+void	free_tokennode(void *content);
 bool	scanner_error(t_mini_data *data, char *err_str);
 bool	got_tokens(t_mini_data *data, int *i);
 bool	is_a_dollar_exp(t_mini_data *data, int *i);
