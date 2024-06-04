@@ -8,6 +8,10 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 
+void	ft_lstdelone(t_list *lst, void (*del)(void*));
+void	ft_lstclear(t_list **lst, void (*del)(void*));
+
+
 /*
 I am still looking for a way to make this function common to all tests files
 but it is complicated by the fact that it is a mix of C and C++ code
@@ -59,6 +63,7 @@ const char* test_scanner_identifiers() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -78,6 +83,7 @@ const char* test_scanner_identifiers2() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);	
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -95,6 +101,7 @@ const char* test_scanner_identifiers3() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);	
 	
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -114,6 +121,8 @@ const char* test_scanner_identifiers4() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
+	ft_lstclear(&lexemes, free_tokennode);
+
 	return result;
 }
 /*
@@ -158,6 +167,7 @@ const char *test_scanner_identifiers5() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -192,6 +202,7 @@ const char *test_scanner_identifiers6()
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -226,6 +237,7 @@ const char *test_scanner_identifiers7()
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -243,6 +255,7 @@ const char *test_scanner_true_false()
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -262,6 +275,7 @@ const char *test_scanner_true_false2()
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -289,6 +303,7 @@ const char* test_all_tokens() {
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
     return result;
 }
 
@@ -346,6 +361,7 @@ const char* test_all_tokens2() {
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
     return result;
 }
 
@@ -380,6 +396,7 @@ const char* test_all_tokens3() {
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
     return result;
 }
 
@@ -426,6 +443,7 @@ const char* test_all_tokens4() {
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
     return result;
 }
 
@@ -471,12 +489,11 @@ const char* test_all_tokens5() {
 	result = process_token(&current, &i, "ha]", WORD);
 	result = process_token(&current, &i, "ha{", WORD);
 	result = process_token(&current, &i, "ha}", WORD);
-
-
-
 	
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
+
+	ft_lstclear(&lexemes, free_tokennode);
 
     return result;
 }
@@ -509,6 +526,7 @@ const char *test_all_tokens6() {
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -540,3 +558,33 @@ const char *all_tests()
 
 // works as a main
 RUN_TESTS(all_tests);
+
+
+
+//avoiding adding the whole libft only for this
+void	ft_lstdelone(t_list *lst, void (*del)(void*))
+{
+	if (lst == NULL)
+		return ;
+	del(lst->content);
+	free(lst);
+}
+
+void	ft_lstclear(t_list **lst, void (*del)(void*))
+{
+	t_list	**l;
+	t_list	*temp;
+
+	if (lst == NULL || *lst == NULL)
+		return ;
+	l = lst;
+	temp = *lst;
+	while ((*lst)->next)
+	{
+		*lst = (*lst)->next;
+		ft_lstdelone(temp, del);
+		temp = *lst;
+	}
+	ft_lstdelone(temp, del);
+	*l = NULL;
+}

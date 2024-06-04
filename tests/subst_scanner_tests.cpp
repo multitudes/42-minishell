@@ -8,6 +8,9 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 
+void	ft_lstdelone(t_list *lst, void (*del)(void*));
+void	ft_lstclear(t_list **lst, void (*del)(void*));
+
 /*
 testing for     
     DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the exit status of the last command.
@@ -85,6 +88,7 @@ const char* test_scanner_dollar() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -122,6 +126,7 @@ const char* test_scanner_subst_dollar() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -171,6 +176,8 @@ const char* test_scanner_subst_dollar_digit() {
 
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
+
 	return result;
 }
 
@@ -200,6 +207,8 @@ const char* test_scanner_history_exp() {
 
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
+	
 	return result;
 }
 
@@ -220,3 +229,32 @@ const char *all_tests()
 
 // works as a main
 RUN_TESTS(all_tests);
+
+
+//avoiding adding the whole libft only for this
+void	ft_lstdelone(t_list *lst, void (*del)(void*))
+{
+	if (lst == NULL)
+		return ;
+	del(lst->content);
+	free(lst);
+}
+
+void	ft_lstclear(t_list **lst, void (*del)(void*))
+{
+	t_list	**l;
+	t_list	*temp;
+
+	if (lst == NULL || *lst == NULL)
+		return ;
+	l = lst;
+	temp = *lst;
+	while ((*lst)->next)
+	{
+		*lst = (*lst)->next;
+		ft_lstdelone(temp, del);
+		temp = *lst;
+	}
+	ft_lstdelone(temp, del);
+	*l = NULL;
+}

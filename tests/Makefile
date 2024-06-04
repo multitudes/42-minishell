@@ -44,7 +44,7 @@ endif
 
 # my test files - each one has a main and will 
 # be compiled into an executable
-TEST_SRCS	=	minishell_basic1_tests.cpp minishell_scanner_tests.cpp \
+TEST_SRCS	=	minishell_basic1_tests.cpp scanner_tests.cpp \
 builtin_scanner_tests.cpp ident_scanner_delimiter_tests.cpp \
 subst_scanner_tests.cpp operator_scanner_tests.cpp parser_tree_tests.cpp \
 darray_env_tests.cpp lists_tests.cpp globbing_tests.cpp unset_builtin_tests.cpp
