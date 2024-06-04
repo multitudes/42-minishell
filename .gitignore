@@ -53,3 +53,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+.vscode/settings.json
+src/scrap.c
+tests_integration/minishell_basic1_tests (copy).cpp
