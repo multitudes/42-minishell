@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 16:50:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 21:22:22 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -362,10 +362,10 @@ int single_command(const char *input)
 	}
 	status = data->exit_status;
 	free((char *)(data->input));
-	darray_clear_destroy(data->env_arr);
+	// darray_clear_destroy(data->env_arr);
 	free_data(&data);
 	debug("exit_minishell");
-	debug("Exit status: %i", data->exit_status);
+	// debug("Exit status: %i", data->exit_status);
 	return (status); 
 }
 
