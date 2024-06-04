@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/31 16:24:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 17:11:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,25 @@
 /*
 returns the next token but also breaks the list before the node 
 performing the necessary checks
+TODO check for leaks
 */
-t_token	*consume_token(t_list **input_tokens)
+bool	consume_token(t_list **input_tokens)
 {
 	t_token	*token;
+	t_list	*tofree;
 
+	tofree = *input_tokens;
 	if (*input_tokens == NULL)
-		return (NULL);
-	token = (t_token *)(*input_tokens)->content;
+		return (false);
+	token = get_curr_token(*input_tokens);
+	// free(token->lexeme);
+	// free(token);
 	*input_tokens = (*input_tokens)->next;
 	break_list(input_tokens);
+	free(tofree);
 	if (!input_tokens || !*input_tokens)
-		return (NULL);
-	return (token);
+		return (false);
+	return (true);
 }
 
 /*

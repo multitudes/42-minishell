@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/30 09:40:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 17:07:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct			s_ast_node {
 t_ast_node	*create_ast(t_list *token_list);
 t_ast_node	*new_node(t_nodetype type, t_ast_node *left, t_ast_node *right, \
 			t_list *expr_token_list);
-t_token		*consume_token(t_list **input_tokens);
+bool		consume_token(t_list **input_tokens);
 t_ast_node	*parse_list(t_list **input_tokens);
 t_ast_node	*parse_pipeline(t_list **input_tokens);
 t_ast_node	*parse_terminal(t_list **input_tokens);
