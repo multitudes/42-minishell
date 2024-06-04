@@ -6,23 +6,22 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:15:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 14:13:56 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 16:44:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
+Returns a new darray with the given element size and initial max size
+otherwise returns NULL
 The darray is a dynamic array that can store any type of data
-element size isto make it more generic but it is not used maybe?
-could be refactored later, but usually because of memory alignment
-we need to know the size of the elements we store to calculate the
-memory needed for the array...
 when it is full I create a new array adding DEFAULT_EXPAND_RATE 
 to the max size
-element_size is for ex the size of an int? depending which 
+element_size is for ex the size of an int or depending which 
 element I store in my array
-
+If adding ints they need to be preallocated with darray_new
+strings can be malloced and added with darray_push
 */
 t_darray	*darray_create(size_t element_size, size_t initial_max)
 {
