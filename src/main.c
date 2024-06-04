@@ -6,11 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 09:40:56 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 15:49:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 16:31:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 
 /*
 main is first of all a loop that runs the shell taking inputs from the user
@@ -22,7 +23,8 @@ debug("argc: %d", argc);
 */
 int	main(int argc, char **argv)
 {
-	(void)argc;
-	(void)argv;
-	return (loop());
+	if (argc == 3 && strcmp(argv[1], "-c") == 0)	
+		return (single_command(argv[2]));
+	else
+		return (loop());
 }

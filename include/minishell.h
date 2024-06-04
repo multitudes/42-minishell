@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 11:45:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 16:19:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ bool    init_data2(t_data **data);
 bool	init_env_darray(t_darray **env_array);
 void	free_data(t_data **data);
 void	update_env_exit_status_with(int exit_status, t_data *data);
+int		single_command(const char *input);
+int		set_up_signals(void);
 
 #  ifdef __cplusplus
 
