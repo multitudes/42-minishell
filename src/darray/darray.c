@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:15:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 13:54:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 14:13:56 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ t_darray	*darray_create(size_t element_size, size_t initial_max)
 	return (array);
 }
 
+/*
+frees the contents of the array , set every pointer to NULL
+and sets the end to 0
+*/
 void	darray_clear(t_darray *array)
 {
 	int	i;
@@ -55,6 +59,7 @@ void	darray_clear(t_darray *array)
 			i++;
 		}
 	}
+	array->end = 0;
 }
 
 /*
