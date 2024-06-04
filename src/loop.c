@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 16:48:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 16:50:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,8 +354,6 @@ int single_command(const char *input)
 			{
 				analyse_expand(data->ast, data);
 				data->exit_status = execute_ast(data->ast, data);
-				debug("Exit status: %i", data->exit_status);
-				// ft_lstclear(&(data->token_list), free_tokennode);
 				free_ast(&(data->ast));
 			}
 			else
@@ -367,6 +365,7 @@ int single_command(const char *input)
 	darray_clear_destroy(data->env_arr);
 	free_data(&data);
 	debug("exit_minishell");
+	debug("Exit status: %i", data->exit_status);
 	return (status); 
 }
 
