@@ -62,6 +62,7 @@ void		*free_ast(t_ast_node **ast);
 void		print_token(t_list *input_token);
 t_token		*get_curr_token(t_list *input_tokens);
 char		*get_token_lexeme(t_list *input_tokens);
+bool		token_followed_by_space(t_list *input_tokens);
 t_tokentype	get_token_type(t_list *input_tokens);
 bool		token_list_has_astnode(t_list *new_token_list);
 bool		is_not_control_token(t_token *token);

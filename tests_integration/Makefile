@@ -21,7 +21,7 @@ scanner/token_operators.c scanner/token_blocks.c scanner/history_tokens.c \
 scanner/redirection_tokens.c scanner/token_blocks2.c environment/environment.c environment/environment2.c \
 parser/parser.c parser/parser2.c parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c analyser.c utils.c	\
 error.c darray/darray.c darray/darray2.c darray/darray3.c globbing.c \
-builtins/builtins.c executer/executer.c executer/executer1.c executer/executer2.c)
+builtins/builtins.c builtins/builtins2.c executer/executer.c executer/executer1.c executer/executer2.c)
 SUT_HDRS 	= 	$(addprefix ../include/, minishell.h scanner.h environment.h \
 parser.h analyser.h executer.h error.h darray.h builtins.h globbing.h )
 

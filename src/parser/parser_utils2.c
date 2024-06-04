@@ -73,3 +73,15 @@ t_tokentype	get_token_type(t_list *input_tokens)
 	token = (t_token *)input_tokens->content;
 	return (token->type);
 }
+
+bool	token_followed_by_space(t_list *input_tokens)
+{
+	t_token	*token;
+
+	if (input_tokens == NULL)
+		return (false);
+	token = input_tokens->content;
+	if (token == NULL)
+		return (false);
+	return (token->folldbyspace);
+}
