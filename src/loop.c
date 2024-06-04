@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 16:50:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 18:57:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -339,7 +339,8 @@ int single_command(const char *input)
 	data = NULL;
 	if (!init_data(&data))
 		return (EXIT_FAILURE);
-	debug("init_data done");
+	debug("single command init_data done");
+	debug("input: %s", input);
 	set_up_signals();		
 	data->input = ft_strdup(input);
 	if (data->input && ft_strncmp(data->input, "", 1))
@@ -362,10 +363,9 @@ int single_command(const char *input)
 	}
 	status = data->exit_status;
 	free((char *)(data->input));
-	darray_clear_destroy(data->env_arr);
+
 	free_data(&data);
 	debug("exit_minishell");
-	debug("Exit status: %i", data->exit_status);
 	return (status); 
 }
 
