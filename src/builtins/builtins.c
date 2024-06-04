@@ -224,6 +224,9 @@ int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 	{
 		// if VAR without '=' but exists as local variable, add that variable to env array
 		// if VAR without '=' add variable (needs to be interpreted differently in buitlin "env", i.e. not being shown at all)
+		debug("followed by space? %s", (get_curr_token(tokenlist))->folldbyspace ? "true" : "false");
+		if (tokenlist->next && !token_followed_by_space(tokenlist))
+			status = merge_tokens_for_export(tokenlist);
 		key = get_var_key(get_token_lexeme(tokenlist));
 		value = get_var_value(get_token_lexeme(tokenlist));
 		debug("Key: %s, Value: %s", key, value);
