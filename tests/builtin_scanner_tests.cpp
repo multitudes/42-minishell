@@ -8,6 +8,8 @@
 #include "../include/minishell.h"
 #include "../include/scanner.h"
 
+void	ft_lstdelone(t_list *lst, void (*del)(void*));
+void	ft_lstclear(t_list **lst, void (*del)(void*));
 
 /*
 • Your shell must implement the following builtins:
@@ -72,6 +74,7 @@ const char* test_scanner_builtins_echo() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -94,6 +97,7 @@ const char* test_scanner_builtins_echo_n() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -113,6 +117,7 @@ const char* test_scanner_builtins_cd() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -133,6 +138,7 @@ const char* test_scanner_builtins_cd_dir() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -152,6 +158,7 @@ const char* test_scanner_builtins_export() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -172,6 +179,7 @@ const char* test_scanner_builtins_export_var() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -192,6 +200,7 @@ const char* test_scanner_builtins_unset() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -213,6 +222,7 @@ const char* test_scanner_builtins_env() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -229,6 +239,7 @@ const char* test_scanner_builtins_exit() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -251,6 +262,7 @@ const char* test_scanner_builtins_pwd() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -274,6 +286,7 @@ const char* test_scanner_builtins_dot() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -370,6 +383,7 @@ const char* test_scanner_builtins_all_not_impl() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
+	ft_lstclear(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -401,3 +415,32 @@ const char *all_tests()
 
 // works as a main
 RUN_TESTS(all_tests);
+
+
+//avoiding adding the whole libft only for this
+void	ft_lstdelone(t_list *lst, void (*del)(void*))
+{
+	if (lst == NULL)
+		return ;
+	del(lst->content);
+	free(lst);
+}
+
+void	ft_lstclear(t_list **lst, void (*del)(void*))
+{
+	t_list	**l;
+	t_list	*temp;
+
+	if (lst == NULL || *lst == NULL)
+		return ;
+	l = lst;
+	temp = *lst;
+	while ((*lst)->next)
+	{
+		*lst = (*lst)->next;
+		ft_lstdelone(temp, del);
+		temp = *lst;
+	}
+	ft_lstdelone(temp, del);
+	*l = NULL;
+}

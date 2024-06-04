@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 16:50:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 14:00:42 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ I need to read the files in my directory and check if they match the pattern
 this function will push a list of files in my darray and return true if it was successful
 */
 
-bool	match_files_in_directory(t_darray *files, char *pat) 
+bool	match_files_in_directory(t_darray *files, const char *pat) 
 {
     DIR *dirp;
 	char cwd[PATH_MAX];
@@ -80,7 +80,7 @@ bool	match_files_in_directory(t_darray *files, char *pat)
 	return (true);
 }
 
-bool	is_glob_match(char *pat, char *file_name)
+bool	is_glob_match(const char *pat, const char *file_name)
 {
 	debug("MATCHING pattern: %s file_name: %s", pat, file_name);
     if (*pat == '\0')

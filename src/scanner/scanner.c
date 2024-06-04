@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 13:01:00 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 13:42:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,11 @@ t_list	*tokenizer(const char *input)
 			scanner_error(&data, "error: unrecognized token");
 		else// here I need to advance the pointer and insert a space true in the previous position
 			skip_space(data.token_list, data.input, &i);
+	}
+	if (data.scanner_error)
+	{
+		ft_lstclear(&data.token_list, free_tokennode);
+		return (NULL);
 	}
 	return (data.token_list);
 }
@@ -112,6 +117,11 @@ t_list	*string_tokenizer(const char *input)
 		}
 		else
 			i++;
+	}
+	if (data.scanner_error)
+	{
+		ft_lstclear(&data.token_list, free_tokennode);
+		return (NULL);
 	}
 	return (data.token_list);
 }
