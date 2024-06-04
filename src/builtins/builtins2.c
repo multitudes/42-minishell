@@ -29,22 +29,21 @@ int merge_tokens_for_export(t_list *tokenlist)
 {
     t_token *token_1;
     t_token *token_2;
+    t_list	*tofree;
     char    *new_lexeme;
 
     debug("Token merge");
     token_1 = get_curr_token(tokenlist);
     token_2 = get_curr_token(tokenlist->next);
+    tofree = tokenlist->next;
     new_lexeme = ft_strjoin(token_1->lexeme, token_2->lexeme);
     free(token_1->lexeme);
     free(token_2->lexeme);
-
     token_1->folldbyspace = token_2->folldbyspace;
     token_1->lexeme = new_lexeme;
-    t_list	*tofree;
-    tofree = tokenlist->next;
     tokenlist->next = tokenlist->next->next;
     if (tokenlist->next)
-            tokenlist->next->prev = tokenlist;
+        tokenlist->next->prev = tokenlist;
     free(token_2);
 	free(tofree);
     if (tokenlist->next && !token_followed_by_space(tokenlist))
