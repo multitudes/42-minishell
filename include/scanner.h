@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 07:46:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 08:04:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ struct						s_token
 };
 typedef struct s_token		t_token;
 
-int		init_scanner_data(t_mini_data **data, const char *input);
+int		init_scanner_data(t_mini_data *data, const char *input);
 t_list	*free_scanner_data(t_mini_data **data);
 t_list	*new_toknode(t_tokentype type, const char *lexeme, int *start);
 t_list	*tokenizer(const char *input);
