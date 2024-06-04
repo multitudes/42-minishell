@@ -6,11 +6,30 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 08:09:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 13:01:00 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+//peek(data.input + i, "#", false))
+int skip_space(t_list *tokenlist, const char* input, int *i)
+{
+	debug("skip_space");
+
+	t_list	*last;
+
+	t_token	*lasttok;
+ 	last = ft_lstlast(tokenlist);
+	if (*i > 0 && last)
+	{
+		lasttok = get_curr_token(last);
+		lasttok->folldbyspace = true;
+	}
+	while (is_space(input[*i]))
+		advance(i);
+	return (1);
+}
 
 /*
 scanning function
@@ -37,7 +56,7 @@ t_list	*tokenizer(const char *input)
 		else if (!is_space(data.input[i]))
 			scanner_error(&data, "error: unrecognized token");
 		else// here I need to advance the pointer and insert a space true in the previous position
-			i++;
+			skip_space(data.token_list, data.input, &i);
 	}
 	return (data.token_list);
 }

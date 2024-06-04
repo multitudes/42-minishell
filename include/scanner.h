@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 08:04:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/04 13:02:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ struct						s_token
 {
 	t_tokentype				type;
 	char					*lexeme;
+	bool					folldbyspace;
 };
 typedef struct s_token		t_token;
 
@@ -177,6 +178,7 @@ t_list	*tokenizer(const char *input);
 t_list	*string_tokenizer(const char *input);
 bool	peek(const char *input, const char *identifier, bool end_space);
 void	advance(int *i);
+int		skip_space(t_list *tokenlist, const char* input, int *i);
 bool	is_space(const char c);
 int		ft_strncicmp(char const *a, char const *b, int n);
 bool	cmp_char_case_insensitive(const char a, const char b);
