@@ -89,11 +89,11 @@ t_list	*string_tokenizer(const char *input)
 		{
 			if (i > start)
 			{
-				temp_lexeme = ft_strndup(data.input + start, i - start);//!!!! create ft_strndup function !!!!
+				temp_lexeme = ft_strndup(data.input + start, i - start);
 				if (temp_lexeme)
 					add_token(&data, &start, temp_lexeme, WORD);
 				else
-					scanner_error(&data, "error: malloc failed");//change error message?
+					scanner_error(&data, "error: malloc token creation");
 				free(temp_lexeme);
 			}
 			if (is_a_dollar_exp(&data, &i))
@@ -106,7 +106,7 @@ t_list	*string_tokenizer(const char *input)
 		{
 			if (i > start)
 			{
-				temp_lexeme = strndup(data.input + start, i - start + 1);//!!!! create ft_strndup function !!!!
+				temp_lexeme = ft_strndup(data.input + start, i - start + 1);
 				if (temp_lexeme)
 					add_token(&data, &start, temp_lexeme, WORD);
 				else

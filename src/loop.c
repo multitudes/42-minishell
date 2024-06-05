@@ -318,7 +318,6 @@ int loop()
 				}
 				else
 					debug("syntax parse error");
-				
 			}
 		}
 		free((char *)(data->input));
