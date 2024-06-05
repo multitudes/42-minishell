@@ -110,9 +110,9 @@ void	expand_variable(t_darray *env_arr, t_token *token)
 		debug("expand_variable");
 		key = token->lexeme;
 		if (token->type == TILDE)
-			temp = ft_strdup(token->lexeme = mini_get_env(env_arr, "HOME"));
+			temp = ft_strdup(mini_get_env(env_arr, "HOME"));
 		else if (mini_get_env(env_arr, key + 1))
-			temp = ft_strdup(token->lexeme = mini_get_env(env_arr, key + 1));
+			temp = ft_strdup(mini_get_env(env_arr, key + 1));
 		else
 			temp = NULL;
 		free(key);
@@ -140,36 +140,37 @@ void	extract_string(t_token *token)
 
 void	expand_string(t_data *data, t_token *token)
 {
-	char	*old_lexeme;
-	t_list	*string_tokens;
-	t_list	*ptr_to_list;
+	char	*unquoted_lexeme;
 	char	*temp_lexeme;
+	t_list	*string_tokens;
+	t_list	*ptr_token_list;
 
 	debug("expand_string");
-	old_lexeme = ft_strtrim(token->lexeme, "\"");
-	if (!ft_strchr(old_lexeme, '$'))
-	{
-		token->lexeme = old_lexeme;
-		return ;
-	}
-	string_tokens = string_tokenizer((const char *)old_lexeme);
-	ptr_to_list = string_tokens;
+	unquoted_lexeme = ft_strtrim(token->lexeme, "\"");
 	free(token->lexeme);
 	token->lexeme = NULL;
+	if (!ft_strchr(unquoted_lexeme, '$'))
+	{
+		token->lexeme = unquoted_lexeme;
+		return ;
+	}
+	string_tokens = string_tokenizer((const char *)unquoted_lexeme);
+	free(unquoted_lexeme);
+	ptr_token_list = string_tokens;
 	while (string_tokens)
 	{
-		if (((t_token *)string_tokens->content)->type == VAR_EXPANSION)
-			expand_variable(data->env_arr, (t_token *)string_tokens->content);
-		if (((t_token *)string_tokens->content)->type == TILDE)
-			expand_variable(data->env_arr, (t_token *)string_tokens->content);
-		else if (((t_token *)string_tokens->content)->type == DOLLAR_QUESTION)
-			read_exit_status(data, (t_token *)string_tokens->content);
+		if (get_token_type(string_tokens) == VAR_EXPANSION)
+			expand_variable(data->env_arr, get_curr_token(string_tokens));
+		if (get_token_type(string_tokens) == TILDE)
+			expand_variable(data->env_arr, get_curr_token(string_tokens));
+		else if (get_token_type(string_tokens) == DOLLAR_QUESTION)
+			read_exit_status(data, get_curr_token(string_tokens));
 		temp_lexeme = token->lexeme;
 		token->lexeme = ft_strjoin((const char *)temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
 		free(temp_lexeme);
 		string_tokens = string_tokens->next;
 	}
-	ft_lstclear(&ptr_to_list, free_tokennode); //free_tokennode function is from scanner.h
+	ft_lstclear(&ptr_token_list, free_tokennode); //free_tokennode function is from scanner.h
 	token->type = WORD;
 }
 
@@ -188,15 +189,12 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 {
 	t_list	*token_list;
 
-	// (void)data;
-	token_list = ast->token_list;
 	if (ast == NULL)
 		return ;
+	token_list = ast->token_list;
 	debug("analyse expand");
-	// assignng a ast node type to the node
 	which_ast_node(ast);
 	debug("Received token type: %d ast node type: %d lexeme: %s", get_token_type(token_list), ast->type, get_token_lexeme(token_list));
-	
 	while (token_list)
 	{
 		if (get_token_type(token_list) == VAR_EXPANSION || get_token_type(token_list) == TILDE)
@@ -210,7 +208,7 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 		else if (get_token_type(token_list) == GLOBBING)
 			expand_globbing(token_list);
 		else
-			debug("Expanded token type: %d ast node type: %d lexeme: %s", get_token_type(token_list), ast->type, get_token_lexeme(token_list));
+			debug("Token type not expanded: %d ast node type: %d lexeme: %s", get_token_type(token_list), ast->type, get_token_lexeme(token_list));
 		token_list = token_list->next;
 	}
 	debug("---------left -----------");

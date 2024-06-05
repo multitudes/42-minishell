@@ -40,9 +40,9 @@ t_token	*get_curr_token(t_list *input_tokens)
 {
 	t_token	*token;
 
-	if (input_tokens == NULL)
+	if (!input_tokens)
 		return (NULL);
-	token = (t_token *)input_tokens->content;
+	token = input_tokens->content;
 	return (token);
 }
 
@@ -53,11 +53,9 @@ char	*get_token_lexeme(t_list *input_tokens)
 {
 	t_token	*token;
 
-	if (input_tokens == NULL)
+	if (!input_tokens || !input_tokens->content)
 		return (NULL);
-	token = (t_token *)input_tokens->content;
-	if (!token)
-		return (NULL);
+	token = input_tokens->content;
 	return (token->lexeme);
 }
 
@@ -68,9 +66,9 @@ t_tokentype	get_token_type(t_list *input_tokens)
 {
 	t_token	*token;
 
-	if (input_tokens == NULL)
+	if (!input_tokens || !input_tokens->content)
 		return (0);
-	token = (t_token *)input_tokens->content;
+	token = input_tokens->content;
 	return (token->type);
 }
 
@@ -78,10 +76,8 @@ bool	token_followed_by_space(t_list *input_tokens)
 {
 	t_token	*token;
 
-	if (input_tokens == NULL)
+	if (!input_tokens || !input_tokens->content)
 		return (false);
 	token = input_tokens->content;
-	if (token == NULL)
-		return (false);
 	return (token->folldbyspace);
 }
