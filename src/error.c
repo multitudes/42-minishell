@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 16:10:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/06 10:12:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,3 @@ int	print_error_status(char *message, int status)
 	return (status);
 }
 
-/*
-Print error and 
-*/

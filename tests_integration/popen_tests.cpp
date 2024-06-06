@@ -51,8 +51,8 @@ const char* test_popen() {
 	if (!run_command_and_check_output(arg, result)) {
 		return "test_popen failed";
 	}
-    debug("result: %s\n", result.str().c_str());
-	my_assert(result.str() == "dhello\n", "output is not hello\n");
+    debug("result: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "hello\n", "output is not hello\n");
 	return NULL;
 }
 

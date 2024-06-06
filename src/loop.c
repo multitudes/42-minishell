@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/06 08:12:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/06 10:33:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,9 @@ void	free_data(t_data **data)
 		return ;
 	debug("freeing env darray");
 	darray_clear_destroy((*data)->env_arr);
-	debug("freeing ast");
-	// free_ast(&(*data)->ast);
 	free(*data);
-	debug("data freed");
 	*data = NULL;
+	debug("data freed");
 }
 
 
@@ -146,7 +144,7 @@ char *add_newline(char *input)
 
 bool init_data2(t_data **data)
 {
-	(*data)->input = "";
+	(*data)->input = "no input";
 	(*data)->token_list = NULL;
 	(*data)->ast = NULL;
 	(*data)->exit_status = 0;
@@ -275,7 +273,17 @@ void	exit_minishell(t_data *data)
 
 void	update_env_exit_status_with(int exit_status, t_data *data)
 {
-	update_env(data->env_arr, "?", ft_itoa(exit_status));
+	if (!update_env(data->env_arr, "?", ft_itoa(exit_status)))
+		print_error_status("update_env", 1);
+	
+}
+
+bool exit_condition(const char *input)
+{
+	if (!input || (ft_strncmp(input, "exit", 4) == 0))
+		return true;
+
+	return false;
 }
 
 /*
@@ -297,11 +305,12 @@ int loop()
 		return (1);
 	debug("init_data done");
 	load_history();
-	set_up_signals();		
-	while (data->input != NULL)
+	set_up_signals();
+	debug("data input: %s", data->input);		
+	while (!exit_condition(data->input))
 	{
 		data->input = readline("minishell $ ");
-		if (data->input && ft_strncmp(data->input, "", 1))
+		if (!exit_condition(data->input) && ft_strncmp(data->input, "", 1))
 		{
 			handle_history(data);
 			data->token_list = tokenizer(data->input);
@@ -313,7 +322,6 @@ int loop()
 					analyse_expand(data->ast, data);
 					data->exit_status = execute_ast(data->ast, data);
 					debug("Exit status: %i", data->exit_status);
-					// ft_lstclear(&(data->token_list), free_tokennode);
 					free_ast(&(data->ast));
 				}
 				else
