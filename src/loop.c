@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/06 17:38:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/06 17:58:00 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,7 +383,7 @@ int single_command(const char *input)
 	free_data(&data);
 	debug("exit_minishell");
 	debug("Exit status: %i", status);
-	printf("\033[A");
+	// printf("\033[A");
 // printf("This will overwrite the line above.\n");
 	return (status); 
 }

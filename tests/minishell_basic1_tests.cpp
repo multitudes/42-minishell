@@ -100,7 +100,7 @@ const char* test_basicminishell2() {
 		// should be output a string like
 		// \nminishell $ exit\n
 		// but I often get only minishell $
-		my_assert((strcmp(buffer, "minishell $ minishell $ exit\n") == 0 \
+		my_assert((strcmp(buffer, "minishell $ exit\n") == 0 \
 		|| (strcmp(buffer, "minishell $ ") == 0  )), "Output is not as expected");
 		close(pipefd_out[0]); // Close read end of output pipe
 		close(pipefd_out[1]); // Close write end of output pipe
