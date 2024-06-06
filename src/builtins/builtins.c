@@ -41,6 +41,10 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 		status = execute_unset_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
 		status = execute_env_builtin(data->env_arr);
+	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
+	{
+		debug("exit builtin");
+	}
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "true", 5) == 0)
 	{
 		status = 0;
@@ -50,10 +54,6 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	{
 		status = 1;
 		debug("false builtin");
-	}
-	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
-	{
-		debug("exit builtin");
 	}
 	else if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
 	{
