@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 18:04:41 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/06 12:22:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ t_tokentype	get_token_type(t_list *input_tokens)
 	t_token	*token;
 
 	if (!input_tokens || !input_tokens->content)
-		return (0);
+		return (NULL_TOKEN);
 	token = input_tokens->content;
 	return (token->type);
 }

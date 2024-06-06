@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 16:10:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/06 12:12:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,15 @@ int zero_and_printerr(char *msg)
 /*
 I need this to print on stderr and return 0
 */
+bool false_and_print(char *msg)
+{
+	write(2, msg, ft_strlen(msg));
+	return (false);
+}
+
+/*
+I need this to print on stderr and return 0
+*/
 bool false_and_perr(char *msg)
 {
 	perror(msg);
@@ -78,6 +87,3 @@ int	print_error_status(char *message, int status)
 	return (status);
 }
 
-/*
-Print error and 
-*/
