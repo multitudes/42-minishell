@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/06 08:28:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/06 15:10:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,27 +87,26 @@ int	count_tokens(t_list *tokenlist)
 Since until now we store the token as linked list
 we convert it to a char array for the execve function
 */ 
-char	**get_argv_from_tokenlist(t_list *tokenlist, char **args)
+char	**get_argv_from_tokenlist(t_list *tokenlist)
 {
 	int		i;
+	char **argv;
 	int		count;
-	t_token	*token;
-
+	
 	i = 0;
-	token = (t_token *)tokenlist->content;
 	count = count_tokens(tokenlist);
 	if (!count)
 		return (NULL);
-	if (!args)
+	argv = malloc(sizeof(char *) * (count + 1));
+	if (!argv)
 		return (NULL);
 	while (tokenlist)
 	{
-		token = (t_token *)tokenlist->content;
-		args[i++] = token->lexeme;
+		argv[i++] = get_token_lexeme(tokenlist);
 		tokenlist = tokenlist->next;
 	}
-	args[i] = NULL;
-	return (args);
+	argv[i] = NULL;
+	return (argv);
 }
 
 /*
@@ -124,13 +123,13 @@ int	resolve_command_path(char **argv, char *path_env)
 	{
 		cmd = create_path(argv[0], path_env);
 		if (!cmd)
-			return (status_and_perror("minishell: command not on path\n", 1));
+			return (false_and_print("minishell: command not on path\n"));
 		argv[0] = cmd;
 	}
 	else
 	{
 		if (access(argv[0], X_OK) == -1)
-			return (status_and_perror("minishell: command not found\n", 1));
+			return (false_and_print("minishell: Permission denied\n"));
 	}
-	return (0);
+	return (true);
 }

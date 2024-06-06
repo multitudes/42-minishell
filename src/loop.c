@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/06 10:33:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/06 16:00:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,11 +278,10 @@ void	update_env_exit_status_with(int exit_status, t_data *data)
 	
 }
 
-bool exit_condition(const char *input)
+bool exit_condition(t_data *data)
 {
-	if (!input || (ft_strncmp(input, "exit", 4) == 0))
-		return true;
-
+	if (data->input == NULL )
+		return (true);
 	return false;
 }
 
@@ -299,7 +298,9 @@ so we check for that to exit the loop.
 int loop()
 {
 	t_data *data;
+	int		status;	
 
+	status = 0;
 	data = NULL;
 	if (!init_data(&data))
 		return (1);
@@ -307,31 +308,43 @@ int loop()
 	load_history();
 	set_up_signals();
 	debug("data input: %s", data->input);		
-	while (!exit_condition(data->input))
+	while (true)
 	{
 		data->input = readline("minishell $ ");
-		if (!exit_condition(data->input) && ft_strncmp(data->input, "", 1))
+		if (!exit_condition(data))
 		{
-			handle_history(data);
-			data->token_list = tokenizer(data->input);
-			if (data->token_list != NULL)
+			if (ft_strncmp(data->input, "", 1) != 0)
 			{
-				data->ast = create_ast(data->token_list);
-				if (data->ast)
+				handle_history(data);
+				data->token_list = tokenizer(data->input);
+				if (data->token_list != NULL)
 				{
-					analyse_expand(data->ast, data);
-					data->exit_status = execute_ast(data->ast, data);
-					debug("Exit status: %i", data->exit_status);
-					free_ast(&(data->ast));
+					data->ast = create_ast(data->token_list);
+					if (data->ast)
+					{
+						analyse_expand(data->ast, data);
+						data->exit_status = execute_ast(data->ast, data);
+						debug("Exit status: %i", data->exit_status);
+						free_ast(&(data->ast));
+					}
+					else
+						debug("syntax parse error");
 				}
-				else
-					debug("syntax parse error");
 			}
+			free((char *)(data->input));
+			continue ;
 		}
-		free((char *)(data->input));
+		break ;
 	}
+	free((char *)(data->input));
+	status = data->exit_status;
 	exit_minishell(data);
-	return (0); 
+	debug("exit_minishell");
+	debug("Exit status: %i", status);
+	// printf("\033[A\r\033[K"); // Move to the line above, go to the beginning of the line, and clear the line
+	printf("exit");
+		
+	return (status); 
 }
 
 /*
@@ -344,15 +357,15 @@ int single_command(const char *input)
 	t_data *data;
 
 	data = NULL;
+	status = 0;
 	if (!init_data(&data))
 		return (EXIT_FAILURE);
 	debug("single command init_data done");
 	debug("input: %s", input);
 	set_up_signals();		
 	data->input = ft_strdup(input);
-	if (data->input && ft_strncmp(data->input, "", 1))
+	if (!exit_condition(data))
 	{
-		// handle_history(data);
 		sanitize_input(data->input);
 		data->token_list = tokenizer(data->input);
 		if (data->token_list != NULL)
@@ -370,10 +383,11 @@ int single_command(const char *input)
 	}
 	status = data->exit_status;
 	free((char *)(data->input));
-	// darray_clear_destroy(data->env_arr);
 	free_data(&data);
 	debug("exit_minishell");
-	// debug("Exit status: %i", data->exit_status);
+	debug("Exit status: %i", status);
+	printf("\033[A");
+// printf("This will overwrite the line above.\n");
 	return (status); 
 }
 
