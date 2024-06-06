@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 21:22:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/06 08:12:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -338,7 +338,8 @@ int single_command(const char *input)
 	data = NULL;
 	if (!init_data(&data))
 		return (EXIT_FAILURE);
-	debug("init_data done");
+	debug("single command init_data done");
+	debug("input: %s", input);
 	set_up_signals();		
 	data->input = ft_strdup(input);
 	if (data->input && ft_strncmp(data->input, "", 1))

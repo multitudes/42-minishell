@@ -6,11 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 16:25:07 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/06 08:28:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executer.h"
+#include <limits.h>
 
 /*
 when I need to free a string array like the envpaths
@@ -86,11 +87,10 @@ int	count_tokens(t_list *tokenlist)
 Since until now we store the token as linked list
 we convert it to a char array for the execve function
 */ 
-char	**get_argv_from_tokenlist(t_list *tokenlist)
+char	**get_argv_from_tokenlist(t_list *tokenlist, char **args)
 {
 	int		i;
 	int		count;
-	char	**args;
 	t_token	*token;
 
 	i = 0;
@@ -98,7 +98,6 @@ char	**get_argv_from_tokenlist(t_list *tokenlist)
 	count = count_tokens(tokenlist);
 	if (!count)
 		return (NULL);
-	args = malloc(sizeof(char *) * (count + 1));
 	if (!args)
 		return (NULL);
 	while (tokenlist)

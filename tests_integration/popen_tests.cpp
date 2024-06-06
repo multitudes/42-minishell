@@ -15,7 +15,7 @@
 
 
 /*
-util function to read from minishell
+util function to read from minishell using the popen call and the single command mode
 */
 bool run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result) {
     debug("running test_popen\n");
@@ -33,10 +33,6 @@ bool run_command_and_check_output(const std::string& command_to_exec, std::ostri
         result << buffer.data();
     }
 
-    if (result.str() != "hello\n") {
-        fprintf(stderr, "output is not hello\n");
-        return false;
-    }
 
     pclose(fp);
     debug("result: %s\n", result.str().c_str());
@@ -56,8 +52,28 @@ const char* test_popen() {
 		return "test_popen failed";
 	}
     debug("result: %s\n", result.str().c_str());
+	my_assert(result.str() == "dhello\n", "output is not hello\n");
 	return NULL;
 }
+
+/*
+more minishell tests.
+test echo -n -nnn hello -n
+*/
+const char* test_echo() {
+
+    debug("running test_popen\n");
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "echo -n -nnn hello -n";
+	if (!run_command_and_check_output(arg, result)) {
+		return "test_popen failed";
+	}
+    debug("result: %s\n", result.str().c_str());
+	return NULL;
+}
+
 
 const char *all_tests()
 {
