@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/06 16:00:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/06 17:38:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,10 +265,6 @@ void	exit_minishell(t_data *data)
 	debug("exit_minishell");
 	debug("freeing data");
 	free_data(&data);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	write(1, "exit\n", 6);
 }
 
 void	update_env_exit_status_with(int exit_status, t_data *data)
@@ -338,11 +334,12 @@ int loop()
 	}
 	free((char *)(data->input));
 	status = data->exit_status;
-	exit_minishell(data);
+	free_data(&data);
+
 	debug("exit_minishell");
 	debug("Exit status: %i", status);
 	// printf("\033[A\r\033[K"); // Move to the line above, go to the beginning of the line, and clear the line
-	printf("exit");
+	write(1, "exit\n", 5);
 		
 	return (status); 
 }
