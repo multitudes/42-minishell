@@ -214,6 +214,7 @@ int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 	int		status;
 	char	*key;
 	char	*value;
+	char	*err_msg;
 
 	debug("export builtin");
 	status = 0;
@@ -228,6 +229,12 @@ int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		if (tokenlist->next && !token_followed_by_space(tokenlist))
 			status = merge_tokens_for_export(tokenlist);
 		key = get_var_key(get_token_lexeme(tokenlist));
+		if (ft_strchr(key, '~'))
+		{
+			err_msg = ft_strjoin3("minishell: export `", get_token_lexeme(tokenlist), "': not a valid identifier");
+			status = print_error_status(err_msg, 1);
+			free(err_msg);
+		}
 		value = get_var_value(get_token_lexeme(tokenlist));
 		debug("Key: %s, Value: %s", key, value);
 		if (key && value)
