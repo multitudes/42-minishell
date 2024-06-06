@@ -43,7 +43,10 @@ int	delete_env_entry(t_darray *env_arr, char *key)
 	void	*var;
 
 	debug("delete env entry");
+	if (ft_strchr(key, '='))
+		return (0);
 	i = get_var_index(env_arr, key);
+	debug("delete %s at index %i", key, i);
 	if (i < 0)
 		return (0);
 	else

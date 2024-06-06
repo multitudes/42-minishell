@@ -25,17 +25,30 @@ const char *test_unset()
 	int result = 0;
 	t_list *tokenlist;
 	char* position = NULL;
+
 	if (!init_env_darray(&env_arr))
 		return "error in init env array";
-
 	position = mini_get_env(env_arr, "PWD");
 	my_assert(position != NULL, "PWD not set");
-
 	tokenlist = tokenizer("unset PWD");
 	result = execute_unset_builtin(env_arr, tokenlist);
 	my_assert(result == 0, "unset PWD fail");
 	position = mini_get_env(env_arr, "PWD");
 	my_assert(position == NULL, "PWD not unset")
+	update_env(env_arr, "VAR", "=4567");
+	position = mini_get_env(env_arr, "VAR");
+	my_assert(ft_strncmp(position, "=4567", 6) == 0, "VAR==4567 not correctly added to env");
+	tokenlist = tokenizer("unset VAR=");
+	result = execute_unset_builtin(env_arr, tokenlist);
+	position = mini_get_env(env_arr, "VAR=");
+	my_assert(ft_strncmp(position, "=4567", 6) == 0, "VAR==4567 incorrectly removed from env");
+	my_assert(result == 0, "unset VAR= fail");
+	tokenlist = tokenizer("unset VAR");
+	result = execute_unset_builtin(env_arr, tokenlist);
+	position = mini_get_env(env_arr, "VAR");
+	my_assert(position == NULL, "VAR not correctly removed");
+	my_assert(result == 0, "unset VAR fail");
+	
 	debug("result %d", result);
 
 	// free tokens
@@ -89,4 +102,27 @@ void	ft_lstclear(t_list **lst, void (*del)(void*))
 	}
 	ft_lstdelone(temp, del);
 	*l = NULL;
+}
+
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	if (s1 == NULL && s2 == NULL)
+		return (0);
+	if (s1 == NULL)
+		return (-1);
+	if (s2 == NULL)
+		return (1);
+	i = 0;
+	if (n == 0)
+		return (0);
+	while ((s1[i] || s2[i]) && i < n)
+	{
+		if (s1[i] != s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
+	}
+	return (0);
 }
