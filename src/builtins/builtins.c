@@ -42,9 +42,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
 		status = execute_env_builtin(data->env_arr);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
-	{
-		debug("exit builtin");
-	}
+		execute_exit_builtin(data);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "true", 5) == 0)
 	{
 		status = 0;
@@ -289,4 +287,17 @@ int	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 		tokenlist = tokenlist->next;
 	}
 	return (status);
+}
+
+void	execute_exit_builtin(t_data *data)
+{
+	int	status;
+
+	status = data->exit_status;
+	free_ast(&(data->ast));
+	free((char *)(data->input));
+	free_data(&data);
+	free(data);
+	write(1, "exit\n", 5);
+	exit(status);
 }
