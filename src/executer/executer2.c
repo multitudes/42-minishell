@@ -6,12 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 16:27:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/06 15:17:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executer.h"
-
+#include <limits.h>
 /*
 getting the status properly involves using WIFEXITED and WEXITSTATUS
 so I this is an utility function to return the status of the child.
@@ -55,11 +55,13 @@ int	execute_command(t_list *tokenlist, t_data *data)
 	if (pid == 0)
 	{
 		argv = get_argv_from_tokenlist(tokenlist);
-		if (!argv)
-			return (status_and_perror("malloc argv", 1));
-		if (resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")) == EXIT_FAILURE)
-			return (EXIT_FAILURE);
+		if (!resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")))
+			exit (127);
+		debug("command and agrs: %s %s", argv[0], argv[1]);
 		execve(argv[0], argv, (char **)data->env_arr->contents);
+		while (*argv)
+			free(*argv++);
+		free(argv);
 		exit_and_print_err(NULL, 127);
 	}
 	else if (pid == -1)
