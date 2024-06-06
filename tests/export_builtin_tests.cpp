@@ -34,6 +34,11 @@ const char *test_export()
 	debug("VAR6 >>>>>>>>>>>>>>> -%s-", mini_get_env(env_arr, "VAR6"));
 	my_assert(mini_get_env(env_arr, "VAR6") == NULL, "'export VAR6' falsely added VAR6 to env array");
 	my_assert(status == 0, "export return status fail");
+	tokenlist = tokenizer("export ~VAR7=23");
+	status = execute_export_builtin(env_arr, tokenlist);
+	my_assert(status == 1, "export return status fail");
+	debug("VAR7 >>>>>>>>>>>>>>> -%s-", mini_get_env(env_arr, "~VAR7"));
+	my_assert(ft_strncmp(mini_get_env(env_arr, "VAR7"), "23", 3) != 0, "export ~VAR7=23 incorrectly added ~VAR7 to env");
 	return (NULL);
 }
 
