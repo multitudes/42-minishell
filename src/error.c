@@ -87,3 +87,21 @@ int	print_error_status(char *message, int status)
 	return (status);
 }
 
+/*
+Print minishell error to standard error and return status.
+*/
+int	print_minishell_error_status(char *message, int status)
+{
+	ssize_t	result;
+
+	result = write(2, "minishell: ", 12);
+	if (result == -1 || result != 12) 
+		status = status_and_perror("write", 1);
+	result = write(2, message, ft_strlen(message));
+	if (result == -1 || result != (ssize_t)ft_strlen(message)) 
+		status = status_and_perror("write", 1);
+	result = write(2, "\n", 2);
+	if (result == -1 || result != 2) 
+		status = status_and_perror("write", 1);
+	return (status);
+}
