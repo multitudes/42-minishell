@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/06 17:27:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/07 13:13:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ char *mini_get_env(t_darray *env_arr, const char *key)
 	while (key && i < env_arr->end - 1)
 	{
 		env_str = darray_get(env_arr, i);
-//		debug("darray line %s", env_str);
+		debug("darray line %s", env_str);
 		position = ft_strchr(env_str, '=');
 		if (!position)
 			return (NULL);
@@ -83,6 +83,7 @@ char *mini_get_env(t_darray *env_arr, const char *key)
 			return (position + 1);
 		i++;
 	}
+	debug("key not found");
 	return (NULL);
 }
 
