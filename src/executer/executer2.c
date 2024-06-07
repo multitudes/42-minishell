@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/06 15:17:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/07 13:38:14 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,6 @@ int	execute_command(t_list *tokenlist, t_data *data)
 			exit (127);
 		debug("command and agrs: %s %s", argv[0], argv[1]);
 		execve(argv[0], argv, (char **)data->env_arr->contents);
-		while (*argv)
-			free(*argv++);
-		free(argv);
 		exit_and_print_err(NULL, 127);
 	}
 	else if (pid == -1)
