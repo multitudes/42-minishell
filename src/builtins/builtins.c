@@ -42,7 +42,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
 		status = execute_env_builtin(data->env_arr);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
-		execute_exit_builtin(data);
+		execute_exit_builtin(data, tokenlist->next);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "true", 5) == 0)
 	{
 		status = 0;
@@ -296,15 +296,41 @@ int	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 	return (status);
 }
 
-void	execute_exit_builtin(t_data *data)
+void	execute_exit_builtin(t_data *data, t_list *tokenlist)
 {
-	int	status;
+	int		status;
+	char	*lexeme;
+	char	*message;
 
-	status = data->exit_status;
+	write(1, "exit\n", 5);
+	lexeme = get_token_lexeme(tokenlist);
+	if (lexeme && ft_isnumstring(lexeme))
+		status = ft_atoi(lexeme) % 256;
+	else if (lexeme && !ft_isnumstring(lexeme))
+	{
+		message = ft_strjoin3("exit: ", lexeme, ": numeric arguments required");
+		status = print_minishell_error_status(message, 2);
+		free(message);
+	}
+	else
+		status = data->exit_status;
 	free_ast(&(data->ast));
 	free((char *)(data->input));
 	free_data(&data);
 	free(data);
-	write(1, "exit\n", 5);
 	exit(status);
+}
+
+bool	ft_isnumstring(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str && str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (false);
+		i++;
+	}
+	return (true);
 }
