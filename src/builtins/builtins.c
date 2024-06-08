@@ -40,7 +40,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "unset", 6) == 0)
 		status = execute_unset_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
-		status = execute_env_builtin(data->env_arr);
+		status = execute_env_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
 		execute_exit_builtin(data, tokenlist->next);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "true", 5) == 0)
@@ -120,10 +120,17 @@ TODO:
 - adding extra arguments after env on the command line changes behavior significantly in BASH
 -- e.g. env $HOME, env echo $HOME (mostly 'env' gets ignored in these cases)
 */
-int	execute_env_builtin(t_darray *env_arr)
+int	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 {
+	int		status;
+
 	debug("env builtin");
-	return (print_env(env_arr));
+	status = 0;
+	if (get_token_lexeme(tokenlist->next))
+		status = print_error_status("env: too many arguments\n", 1);
+	else
+		status = print_env(env_arr);
+	return (status);
 }
 
 bool	write_data(int fd, const void *str, int *status) 
