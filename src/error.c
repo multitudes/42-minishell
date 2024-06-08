@@ -22,10 +22,21 @@ Updating the global makes sense when I am in the parent process.
 */
 int	status_and_perror(char *msg, int status)
 {
-	if (msg)
-		perror(msg);
-	else
-		perror("");
+	perror(msg);
+	return (status);
+}
+
+/*
+Joins two consecutive messages and passes the new message to perror,
+frees the joined string, and return the status
+*/
+int status_and_strjoin_perror(char *msg_1, char *msg_2, int status)
+{
+	char	*perror_msg;
+
+	perror_msg = ft_strjoin(msg_1, msg_2);
+	perror(perror_msg);
+	free(perror_msg);
 	return (status);
 }
 
@@ -43,7 +54,15 @@ I need this to print on stderr and return 0
 */
 int zero_and_printerr(char *msg)
 {
-	write(2, msg, ft_strlen(msg));
+	ssize_t	result;
+
+	result = 0;
+	if (msg)
+	{
+		write(2, msg, ft_strlen(msg));
+		if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
+			perror("write");
+	}
 	return (0);
 }
 
@@ -52,7 +71,15 @@ I need this to print on stderr and return 0
 */
 bool false_and_print(char *msg)
 {
-	write(2, msg, ft_strlen(msg));
+	ssize_t	result;
+
+	result = 0;
+	if (msg)
+	{
+		result = write(2, msg, ft_strlen(msg));
+		if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
+			perror("write");
+	}
 	return (false);
 }
 
@@ -81,6 +108,7 @@ int	print_error_status(char *message, int status)
 {
 	ssize_t	result;
 
+	result = 0;
 	result = write(2, message, ft_strlen(message));
 	if (result == -1 || result != (ssize_t)ft_strlen(message)) 
 		status = status_and_perror("write", 1);
@@ -94,12 +122,22 @@ int	print_minishell_error_status(char *message, int status)
 {
 	ssize_t	result;
 
-	result = write(2, "minishell: ", 12);
-	if (result == -1 || result != 12) 
-		status = status_and_perror("write", 1);
-	result = write(2, message, ft_strlen(message));
-	if (result == -1 || result != (ssize_t)ft_strlen(message)) 
-		status = status_and_perror("write", 1);
+	result = 0;
+	if (message)
+	{
+		result = write(2, "minishell: ", 12);
+		if (result == -1 || result != 12) 
+			status = status_and_perror("write", 1);
+		result = write(2, message, ft_strlen(message));
+		if (result == -1 || result != (ssize_t)ft_strlen(message)) 
+			status = status_and_perror("write", 1);
+	}
+	else
+	{
+		result = write(2, "minishell", 10);
+		if (result == -1 || result != 10) 
+			status = status_and_perror("write", 1);
+	}
 	result = write(2, "\n", 2);
 	if (result == -1 || result != 2) 
 		status = status_and_perror("write", 1);

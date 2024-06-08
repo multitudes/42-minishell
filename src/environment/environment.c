@@ -75,7 +75,7 @@ char *mini_get_env(t_darray *env_arr, const char *key)
 	while (key && i < env_arr->end - 1)
 	{
 		env_str = darray_get(env_arr, i);
-		debug("darray line %s", env_str);
+//		debug("darray line %s", env_str);
 		position = ft_strchr(env_str, '=');
 		if (!position)
 			return (NULL);

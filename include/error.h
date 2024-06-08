@@ -22,6 +22,7 @@ extern "C" {
 # include "minishell.h"
 
 int		status_and_perror(char *msg, int status);
+int     status_and_strjoin_perror(char *msg_1, char *msg_2, int status);
 int		exit_and_print_err(char *msg, int status);
 int     print_error_status(char *message, int status);
 int	    print_minishell_error_status(char *message, int status);

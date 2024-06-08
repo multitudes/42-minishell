@@ -18,6 +18,45 @@
 #include "history.h"
 #include <unistd.h>
 
+char *execute_getcwd(char old_dir[], size_t size, char *message)
+{
+    char    *retval;
+
+    retval = NULL;
+    retval = getcwd(old_dir, size);
+    if (!retval)
+		perror(message);
+    return (retval);
+}
+
+int execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
+{
+	if (tokenlist && get_token_lexeme(tokenlist))
+	{
+		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0)
+		{
+			if (!mini_get_env(env_arr, "OLDPWD"))
+				return (print_minishell_error_status("cd: OLDPWD not set", 1));
+			else
+			{
+				if (chdir(mini_get_env(env_arr, "OLDPWD")))
+					return (status_and_perror("minishell: cd", 1));
+				execute_pwd_builtin();
+			}
+		}
+		else if (chdir(get_token_lexeme(tokenlist)))
+            return (status_and_strjoin_perror("minishell: cd: ", get_token_lexeme(tokenlist), 1));
+    }
+    else
+	{
+		if (!mini_get_env(env_arr, "HOME"))
+			return (print_minishell_error_status("cd: HOME not set", 1));
+		else if (chdir(mini_get_env(env_arr, "HOME")))
+			return (status_and_perror("minishell: cd", 1));
+	}
+    return (0);
+}
+
 /*
 Function merges the current and next token in a tokenlist:
 - type of the first token gets preserved

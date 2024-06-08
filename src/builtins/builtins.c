@@ -76,40 +76,34 @@ TODOs:
 - interpret errors from called getcwd system function.
 - Implement additional functionality:
 -- if invalid name is given output is "bash: cd: ARGUMENT_GIVEN: No such file or directory" with exit code 1
--- If directory is '-', it is converted to $OLDPWD before attempting directory change.
 (from The Open Group Base Specifications Issue 7, 2018 edition:
 "When a <hyphen-minus> is used as the operand,
 this shall be equivalent to the command: cd "$OLDPWD" && pwd")
--- when $HOME is undefined just performing `cd` is implementation defined (How is this handled in BASH?)
 */
 int	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	int		status;
 	char	dir[PATH_MAX];
 	char	old_dir[PATH_MAX];
+	char	*getoldcwd;
+	char	*getcwd;
 
 	debug("cd builtin");
+	status = 0;
+	getoldcwd = NULL;
+	getcwd = NULL;
 	tokenlist = tokenlist->next;
 	if (tokenlist && tokenlist->next)
 		return (print_error_status("minishell: cd: too many arguments\n", 1));
-	if (!getcwd(old_dir, PATH_MAX))
-		perror("get old cwd");
-	if (tokenlist)
-	{
-		if (chdir(get_token_lexeme(tokenlist)))
-			return (status_and_perror("chdir", 1));
-	}
-	else
-	{
-		if (chdir(mini_get_env(env_arr, "HOME")))
-			return (status_and_perror("chdir", 1));
-	}
-	if (!getcwd(dir, PATH_MAX))
-		perror("get new cwd");
-	if (!update_env(env_arr, "OLDPWD", old_dir))
-		status = print_error_status("Update of OLDPWD failed\n", 1);
-	if (!update_env(env_arr, "PWD", dir))
-		status = print_error_status("Update of PWD failed\n", 1);
+	getoldcwd = execute_getcwd(old_dir, PATH_MAX, "minishell: cd: get old cwd");
+	status = execute_cd_tokenlist(env_arr, tokenlist);
+	if (status == 1)
+		return (status);
+	getcwd = execute_getcwd(dir, PATH_MAX, "minishell: cd: get new cwd");
+	if (!getoldcwd || !update_env(env_arr, "OLDPWD", old_dir))
+		print_error_status("minishell: cd: update of OLDPWD failed\n", 0);
+	if (!getcwd || !update_env(env_arr, "PWD", dir))
+		print_error_status("minishell: cd: update of PWD failed\n", 0);
 	return (status);
 }
 
@@ -221,8 +215,6 @@ int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		return (print_env_export(env_arr));
 	while (tokenlist)
 	{
-		// if VAR without '=' but exists as local variable, add that variable to env array
-		// if VAR without '=' add variable (needs to be interpreted differently in buitlin "env", i.e. not being shown at all)
 		debug("followed by space? %s", (get_curr_token(tokenlist))->folldbyspace ? "true" : "false");
 		if (tokenlist->next && !token_followed_by_space(tokenlist))
 			status = merge_tokens_for_export(tokenlist);
