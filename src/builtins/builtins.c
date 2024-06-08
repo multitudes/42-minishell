@@ -263,8 +263,6 @@ int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 
 /*
 Executes builtin 'pwd' command.
-TODO:
-- interpret possible errors from system function `getcwd()`
 */
 int	execute_pwd_builtin(void)
 {
@@ -272,9 +270,9 @@ int	execute_pwd_builtin(void)
 
 	debug("pwd builtin");
 	if (!getcwd(cur_dir, PATH_MAX))
-		return (status_and_perror("getcwd()", 1));
+		return (status_and_perror("minishell: pwd", 1));
 	if (printf("%s\n", cur_dir) < 0)
-		return (status_and_perror("printf working directory", 1));
+		return (status_and_perror("minishell: pwd: printf", 1));
 	return (0);
 }
 
@@ -284,27 +282,31 @@ Do we only work with our local environmental variables or also those of the syst
 */
 int	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	int	status;
+	int		status;
+	char	*err_msg;
+	char	*lexeme;
 
 	status = 0;
+	err_msg = NULL;
 	debug("unset builtin");
 	tokenlist = tokenlist->next;
 	if (!tokenlist)
 		return (0);
 	while (tokenlist)
 	{
-		if (get_token_lexeme(tokenlist) != NULL && ft_strlen(get_token_lexeme(tokenlist)) != 0)
-			status = delete_env_entry(env_arr, get_token_lexeme(tokenlist));
+		lexeme = get_token_lexeme(tokenlist);
+		if (ft_strchr(lexeme, '='))
+			;
+		else if (read_only_variable(lexeme))
+		{
+			err_msg = ft_strjoin3("minishell: unset: ", lexeme, ": cannot unset: readonly variable\n");
+			status = print_error_status(err_msg, 1);
+			free(err_msg);
+		}
+		else if (lexeme != NULL && ft_strlen(lexeme) != 0)
+			status = delete_env_entry(env_arr, lexeme);
 		else
-			status = print_error_status("Unset unsuccessful", 1);
-	// if (restricted_variable(token->lexeme))
-	// {
-	// 	//consider returning error message in restricted_variable() function, also consider other possible restricted variables.
-	// 	write(2, "minishell: unset: ", 18);
-	// 	write(2, &token->lexeme, ft_strlen(token->lexeme));
-	// 	write(2, ":cannot unset: readonly variable", 32);
-	// 	return (1);
-	// }
+			status = print_error_status("minishell: unset: error", 1);
 		tokenlist = tokenlist->next;
 	}
 	return (status);
