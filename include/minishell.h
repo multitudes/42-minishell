@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/08 15:09:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/08 16:14:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,6 @@ including the macro below which is not allowed by norminette.
 // global.h
 extern int g_signal;
 
-// for the history - can override with 
-// -DMINIHISTFILE='"new relative path"' -DHISTSIZE=1000
-// look at cat $HOME/.minishell_history
-#define MINIHISTFILEPATH ".minishell_history"
-#define MINIHISTFILESIZE  1000
 
 // needed for the tests - leave it here - norminette allows it I think 
 # ifdef __cplusplus
@@ -79,6 +74,17 @@ extern int g_signal;
 extern "C" {
 # endif
 
+// for the history - can override with 
+// -DMINIHISTFILE='"new relative path"' -DHISTSIZE=1000
+// look at cat $HOME/.minishell_history
+// if not defined, the default is:
+#ifndef MINIHISTFILEPATH
+# define MINIHISTFILEPATH "/.minishell_history"
+#endif
+
+#ifndef MINIHISTFILESIZE
+# define MINIHISTFILESIZE  1000
+#endif
 
 /*
 env_arr = enviroment variables array

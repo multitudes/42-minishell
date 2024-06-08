@@ -3,6 +3,7 @@ NAME			=	minishell
 # flags
 CFLAGS 			= 	-Wall -Werror -Wextra
 CFLAGS		  	+=	-g3
+# CFLAGS 	+= 	-DMINIHISTFILEPATH="\"/.minishell_test_history\""
 
 # NDEBUG is a macro that disables the debug prints - uncomment to disable them
 # comment out to enable them need to recompile with make re
