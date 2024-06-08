@@ -121,7 +121,7 @@ int	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 	debug("env builtin");
 	status = 0;
 	if (get_token_lexeme(tokenlist->next))
-		status = print_error_status("env: too many arguments\n", 1);
+		status = print_minishell_error_status("env: too many arguments", 1);
 	else
 		status = print_env(env_arr);
 	return (status);
@@ -222,20 +222,35 @@ int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		return (print_env_export(env_arr));
 	while (tokenlist)
 	{
+		key = NULL;
+		value = NULL;
 		debug("followed by space? %s", (get_curr_token(tokenlist))->folldbyspace ? "true" : "false");
 		if (tokenlist->next && !token_followed_by_space(tokenlist))
 			status = merge_tokens_for_export(tokenlist);
 		key = get_var_key(get_token_lexeme(tokenlist));
+		value = get_var_value(get_token_lexeme(tokenlist));
+		debug("Key: %s, Value: %s", key, value);
 		if (ft_strchr(key, '~'))
 		{
-			err_msg = ft_strjoin3("minishell: export `", get_token_lexeme(tokenlist), "': not a valid identifier");
+			err_msg = ft_strjoin3("minishell: export `", get_token_lexeme(tokenlist), "': not a valid identifier\n");
 			status = print_error_status(err_msg, 1);
 			free(err_msg);
 		}
-		value = get_var_value(get_token_lexeme(tokenlist));
-		debug("Key: %s, Value: %s", key, value);
-		if (key && value)
-			update_env(env_arr, key, value);
+		else if (read_only_variable(key))
+		{
+			err_msg = ft_strjoin3("minishell: export: ", key, ": readonly variable\n");
+			status = print_error_status(err_msg, 1);
+			free(err_msg);
+		}
+		else if (key && value)
+		{
+			if (!update_env(env_arr, key, value))
+			{
+				err_msg = ft_strjoin3("minishell: export: ", value, ": adding to environment failed\n");
+				print_error_status(err_msg, 0);
+				free(err_msg);
+			}
+		}
 		free(key);
 		free(value);
 		// if VAR wigh '=' and nothing else, update VAR if it already exists, else add as VAR=
@@ -322,7 +337,7 @@ int	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	exit(status);
 }
 
-bool	ft_isnumstring(char *str)
+bool	ft_isnumstring(const char *str)
 {
 	int	i;
 

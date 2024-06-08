@@ -89,3 +89,15 @@ int merge_tokens_for_export(t_list *tokenlist)
         merge_tokens_for_export(tokenlist);
     return (0);
 }
+
+bool    read_only_variable(const char *key)
+{
+    if (ft_strncmp(key, "PPID", 5) == 0)
+        return (true);
+    else if (ft_strncmp(key, "EUID", 5) == 0)
+        return (true);
+    else if (ft_strncmp(key, "UID", 4) == 0)
+        return (true);
+    else
+        return (false);
+}

@@ -40,7 +40,8 @@ int     execute_unset_builtin(t_darray *env_arr, t_list *tokenlist);
 int     merge_tokens_for_export(t_list *tokenlist);
 bool	allowed_flags(const char *flag_lexem, const char *allowed_flags);
 bool	write_data(int fd, const void *str, int *status);
-bool	ft_isnumstring(char *str);
+bool	ft_isnumstring(const char *str);
+bool    read_only_variable(const char *key);
 
 #  ifdef __cplusplus
 

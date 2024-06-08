@@ -20,7 +20,7 @@ process, any updates will be lost upon return. Therefore, I will
 keep it simple and just pass the message and the status.
 Updating the global makes sense when I am in the parent process.  
 */
-int	status_and_perror(char *msg, int status)
+int	status_and_perror(const char *msg, int status)
 {
 	perror(msg);
 	return (status);
@@ -30,7 +30,7 @@ int	status_and_perror(char *msg, int status)
 Joins two consecutive messages and passes the new message to perror,
 frees the joined string, and return the status
 */
-int status_and_strjoin_perror(char *msg_1, char *msg_2, int status)
+int status_and_strjoin_perror(const char *msg_1, const char *msg_2, int status)
 {
 	char	*perror_msg;
 
@@ -43,7 +43,7 @@ int status_and_strjoin_perror(char *msg_1, char *msg_2, int status)
 /*
 will exit the program with an error message
 */
-int	exit_and_print_err(char *msg, int status)
+int	exit_and_print_err(const char *msg, int status)
 {
 	perror(msg);
 	exit(status);
@@ -52,7 +52,7 @@ int	exit_and_print_err(char *msg, int status)
 /*
 I need this to print on stderr and return 0
 */
-int zero_and_printerr(char *msg)
+int zero_and_printerr(const char *msg)
 {
 	ssize_t	result;
 
@@ -69,7 +69,7 @@ int zero_and_printerr(char *msg)
 /*
 I need this to print on stderr and return 0
 */
-bool false_and_print(char *msg)
+bool false_and_print(const char *msg)
 {
 	ssize_t	result;
 
@@ -86,7 +86,7 @@ bool false_and_print(char *msg)
 /*
 I need this to print on stderr and return 0
 */
-bool false_and_perr(char *msg)
+bool false_and_perr(const char *msg)
 {
 	perror(msg);
 	return (false);
@@ -95,7 +95,7 @@ bool false_and_perr(char *msg)
 /*
 I sometimes need to return NULL on error
 */
-void	*null_on_err(char *message)
+void	*null_on_err(const char *message)
 {
 	perror(message);
 	return (NULL);
@@ -104,7 +104,7 @@ void	*null_on_err(char *message)
 /*
 Print error to standard error and return passed status.
 */
-int	print_error_status(char *message, int status)
+int	print_error_status(const char *message, int status)
 {
 	ssize_t	result;
 
@@ -118,7 +118,7 @@ int	print_error_status(char *message, int status)
 /*
 Print minishell error to standard error and return status.
 */
-int	print_minishell_error_status(char *message, int status)
+int	print_minishell_error_status(const char *message, int status)
 {
 	ssize_t	result;
 
