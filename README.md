@@ -153,7 +153,12 @@ To clarify: should we actually treat the removal/unsetting of functions? How do 
 
 ### Builtin: `env` (without options or arguments)
 `env` is not described as a builtin in the BASH manual. The variable $ENV is described related to POSIX variant of invoking shell.
-Presumably env prints the current environment, i.e. the inherited environment plus any modifications through `export` and `unset`.
+Presumably env prints the current environment, i.e. the inherited environment plus any modifications through `export` and `unset`. 
+From bash there is a way to start the minishell without any environment variables doing:  
+```
+env -i ./minishell
+```
+We check for this eventuality too. the env will have only the PWD PATH _ and SHLVL variables.
 
 ### Builtin: `exit [n]` (without options)
 (_original Bourne Shell builtin_)
