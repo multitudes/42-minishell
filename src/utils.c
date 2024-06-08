@@ -68,7 +68,7 @@ char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 	char	*result;
 	size_t	total_length;
 
-	total_length = strlen(s1) + strlen(s2) + strlen(s3) + 1;
+	total_length = ft_strlen(s1) + ft_strlen(s2) + ft_strlen(s3) + 1;
 	result = malloc(total_length);
 	if (!result)
 		return (null_on_err("malloc ft_strjoin3"));
