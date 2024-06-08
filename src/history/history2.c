@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 15:44:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/08 15:10:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	print_history(void)
 	i = 0;
 	path = get_history_file_path();
 	fd = open(path, O_RDONLY);
-	free(path);
+	// free(path);
 	if (fd == -1)
 	{
 		perror("open");

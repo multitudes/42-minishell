@@ -83,8 +83,12 @@ const char* test_echo2() {
 
     debug("running test_popen\n");
     fflush(stdout);
-	    // get the value of the HOME environment variable
-    const char* home = getenv("HOME");
+	// get the value of the HOME environment variable
+	// I dont need to check if HOME is not set
+	if (getenv("HOME") == NULL) {
+		return NULL;
+	}
+	const char* home = getenv("HOME");
 	debug("home: -%s-", home);
     if (home == NULL) {
         perror("getenv");
