@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:32:51 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:38:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/08 17:40:32 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ bool	is_simple_dollar_exp(t_mini_data *data, int *i)
 		return (add_token(data, i, "$!", DOLLAR_BANG));
 	else if (peek(data->input + *i, "$-", false))
 		return (add_token(data, i, "$-", DOLLAR_HYPHEN));
+	else if (peek(data->input + *i, "$~", false))
+		return (add_token(data, i, "$~", DOLLAR_TILDE));
 	else
 		return (false);
 }

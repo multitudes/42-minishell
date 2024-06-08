@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/06 08:04:41 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/08 17:40:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,7 @@ typedef enum e_tokentype {
 	DOLLAR_HASH,
 	DOLLAR_BANG,
 	DOLLAR_HYPHEN,
+	DOLLAR_TILDE,
 	DOLLAR_DIGIT,
 	DOLLAR,
 	DIGIT,
