@@ -6,7 +6,7 @@
 
 CXXFLAGS 	= 	-Wall -Wextra -Werror -std=c++98
 CXXFLAGS 	+= 	-g
-CXXFLAGS 	+= 	-DMINIHISTFILEPATH=\"/.minishell_test_history\"
+CFLAGS 	+= 	-DMINIHISTFILEPATH=\"/.minishell_test_history\"
 CXX = c++
 
 # directories
