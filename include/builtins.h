@@ -33,7 +33,7 @@ int     execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist);
 char    *execute_getcwd(char old_dir[], size_t size, char *message);
 int	    execute_echo_builtin(t_list *tokenlist);
 int	    execute_env_builtin(t_darray *env_arr, t_list *tokenlist);
-void	execute_exit_builtin(t_data *data, t_list *tokenlist);
+int	    execute_exit_builtin(t_data *data, t_list *tokenlist);
 int	    execute_export_builtin(t_darray *env_arr, t_list *tokenlist);
 int	    execute_pwd_builtin(void);
 int     execute_unset_builtin(t_darray *env_arr, t_list *tokenlist);
