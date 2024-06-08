@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 16:19:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/08 15:09:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ extern int g_signal;
 // for the history - can override with 
 // -DMINIHISTFILE='"new relative path"' -DHISTSIZE=1000
 // look at cat $HOME/.minishell_history
-#define MINIHISTFILEPATH "/.minishell_history"
+#define MINIHISTFILEPATH ".minishell_history"
 #define MINIHISTFILESIZE  1000
 
 // needed for the tests - leave it here - norminette allows it I think 
