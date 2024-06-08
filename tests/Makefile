@@ -6,6 +6,7 @@
 
 CXXFLAGS 	= 	-Wall -Wextra -Werror -std=c++98
 CXXFLAGS 	+= 	-g
+CFLAGS 	+= 	-DMINIHISTFILEPATH=\"/.minishell_test_history\"
 CXX = c++
 
 # directories
@@ -55,7 +56,7 @@ export_builtin_tests.cpp
 TESTS		=	$(patsubst %.cpp,%,$(TEST_SRCS))
 
 %.o: %.c
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 # the target build
 all: tests
@@ -63,7 +64,7 @@ all: tests
 tests: $(TESTS) runtests
 
 $(TESTS): $(SUT_OBJS) $(TEST_SRCS) $(SUT_HDRS)
-	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(SUT_OBJS) $@.cpp $(LDLIBS) -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(INCLUDES) $(SUT_OBJS) $@.cpp $(LDLIBS) -o $@
 
 runtests:
 	sh ./runtests.sh

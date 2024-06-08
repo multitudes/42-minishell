@@ -3,9 +3,12 @@
 # can use also like ./minishell 2>> error_log.txt to print stderror to a file and have 
 # all debug messages together
 # CFLAGS 		+= 	-DNDEBUG
+# CFLAGS 	+= 	-DMINIHISTFILEPATH=\"/.minishell_test_history\"
 
 CXXFLAGS 	= 	-Wall -Wextra -Werror -std=c++11
 CXXFLAGS 	+= 	-g
+CFLAGS 	+= 	-DMINIHISTFILEPATH=\"/.minishell_test_history\"
+
 CXX = c++
 
 # directories
@@ -51,7 +54,7 @@ TEST_SRCS	=	builtin_echo_tests.cpp builtin_cat_tests.cpp popen_tests.cpp
 TESTS		=	$(patsubst %.cpp,%,$(TEST_SRCS))
 
 %.o: %.c
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 # the target build
 all: tests
@@ -59,7 +62,7 @@ all: tests
 tests: $(TESTS) runtests
 
 $(TESTS): $(SUT_OBJS) $(TEST_SRCS) $(SUT_HDRS)
-	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(SUT_OBJS) $@.cpp $(LDLIBS) -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(INCLUDES) $(SUT_OBJS) $@.cpp $(LDLIBS) -o $@
 
 runtests:
 	sh ./runtests.sh

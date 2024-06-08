@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 11:50:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/08 16:01:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,7 @@ void	load_history(void)
 	fd = open(path, O_CREAT, 0644);
 	free(path);
 	if (fd == -1)
-	{
-		perror("open ----------- ");
 		return ;
-	}
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
@@ -51,11 +48,10 @@ char	*get_history_file_path(void)
 
 	home = getenv("HOME");
 	if (home == NULL || home[0] == '\0')
-	{
-		write(2, "HOME not set\n", 13);
 		return (NULL);
-	}
+	debug("home: %s\n", home);
 	path = ft_strjoin(home, MINIHISTFILEPATH);
+	debug("path: %s\n", path);
 	if (path == NULL)
 		path = ft_strdup("~/.minishell_history");
 	return (path);
@@ -99,14 +95,10 @@ bool	add_to_hist_file(const char *input)
 	fd = open(path, O_CREAT | O_APPEND | O_WRONLY, 0644);
 	free(path);
 	if (fd == -1)
-	{
-		perror("open");
 		return (false);
-	}
 	if (write(fd, input, ft_strlen(input)) == -1 || write(fd, "\n", 1) == -1)
 	{
 		close(fd);
-		perror("write");
 		return (false);
 	}
 	close(fd);
