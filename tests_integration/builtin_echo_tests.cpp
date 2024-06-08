@@ -143,8 +143,7 @@ const char *test_basicminishell_echo8() {
 	{
 		bool pass = false;
 		std::string command_to_exec = "echo $HOMe\n";
-		std::string my_home = getenv("HOME");
-		std::string expected_output = "minishell $ echo $HOMe\n" + my_home + "\nminishell $ exit\n";
+		std::string expected_output = "minishell $ echo $HOMe\n\nminishell $ exit\n";
 		int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
 		my_assert(status == 0, "Minishell exited with non-zero status");
 		my_assert(pass, "Output is not as expected");
