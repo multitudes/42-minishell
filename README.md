@@ -157,7 +157,8 @@ Presumably env prints the current environment, i.e. the inherited environment pl
 
 ### Builtin: `exit [n]` (without options)
 (_original Bourne Shell builtin_)
-The builtin command `exit`,- as the name implies -, exits the shell. The exit status shall be set to that of the last executed command. The BASH builtin allows soptionally to set the exit status as an argument ([n]).
+The builtin command `exit`,- as the name implies -, exits the shell. The exit status is of type uint8_t and shall be set to that of the last executed command.  
+The BASH builtin allows optionally to set the exit status as an argument ([n]) which will be cast to the uint8_t type..
 
 # Teamwork - It's about GIT
 ## Commit style
@@ -184,7 +185,7 @@ footers other than BREAKING CHANGE: <description> may be provided and follow a c
 Additional types are not mandated by the Conventional Commits specification, and have no implicit effect in Semantic Versioning (unless they include a BREAKING CHANGE). A scope may be provided to a commit’s type, to provide additional contextual information and is contained within parenthesis, e.g., feat(parser): add ability to parse arrays.  
 
 ## Git pull --rebase
-It is preferred to Git Pull because if the command succeeds the history will be linear.
+It depends of the team's preference but using this command will avoid doing a merge.
 ```
 git pull --rebase
 ```
