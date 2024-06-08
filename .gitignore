@@ -60,3 +60,4 @@ tests/tmp/.shellignore
 tests/tmp/hello.txt
 tests/tmp/miniclam
 tests/tmp/world.c
+.cache/
