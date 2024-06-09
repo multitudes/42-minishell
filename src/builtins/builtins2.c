@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 22:50:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/05/28 22:51:10 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/06/09 11:00:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@
 #include "history.h"
 #include <unistd.h>
 
-char *execute_getcwd(char old_dir[], size_t size, char *message)
+char *execute_getcwd(char old_dir[], char *message)
 {
     char    *retval;
 
     retval = NULL;
-    retval = getcwd(old_dir, size);
+    retval = getcwd(old_dir, PATH_MAX);
     if (!retval)
 		perror(message);
     return (retval);

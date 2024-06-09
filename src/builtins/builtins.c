@@ -95,11 +95,11 @@ int	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 	tokenlist = tokenlist->next;
 	if (tokenlist && tokenlist->next)
 		return (print_error_status("minishell: cd: too many arguments\n", 1));
-	getoldcwd = execute_getcwd(old_dir, PATH_MAX, "minishell: cd: get old cwd");
+	getoldcwd = execute_getcwd(old_dir, "minishell: cd: get old cwd");
 	status = execute_cd_tokenlist(env_arr, tokenlist);
 	if (status == 1)
 		return (status);
-	getcwd = execute_getcwd(dir, PATH_MAX, "minishell: cd: get new cwd");
+	getcwd = execute_getcwd(dir, "minishell: cd: get new cwd");
 	if (!getoldcwd || !update_env(env_arr, "OLDPWD", old_dir))
 		print_error_status("minishell: cd: update of OLDPWD failed\n", 0);
 	if (!getcwd || !update_env(env_arr, "PWD", dir))
