@@ -22,9 +22,9 @@
 Function to call to execute minishell builtin functions + history, true, false.
 Returns exit status of executed builtin.
 */
-int    execute_builtin(t_list *tokenlist, t_data *data)
+uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 {
-	int		status;
+	uint8_t	status;
 
 	if (!tokenlist)
 		return (EXIT_FAILURE);
@@ -80,9 +80,9 @@ TODOs:
 "When a <hyphen-minus> is used as the operand,
 this shall be equivalent to the command: cd "$OLDPWD" && pwd")
 */
-int	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
+uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	int		status;
+	uint8_t	status;
 	char	dir[PATH_MAX];
 	char	old_dir[PATH_MAX];
 	char	*getoldcwd;
@@ -114,9 +114,9 @@ TODO:
 - adding extra arguments after env on the command line changes behavior significantly in BASH
 -- e.g. env $HOME, env echo $HOME (mostly 'env' gets ignored in these cases)
 */
-int	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
+uint8_t	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	int		status;
+	uint8_t	status;
 
 	debug("env builtin");
 	status = 0;
@@ -125,20 +125,6 @@ int	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 	else
 		status = print_env(env_arr);
 	return (status);
-}
-
-bool	write_data(int fd, const void *str, int *status) 
-{
-    ssize_t result; 
-	
-	result = write(fd, str, ft_strlen(str));
-    if (result == -1 || result != (ssize_t)ft_strlen(str)) 
-	{
-        perror("write");
-		*status = EXIT_FAILURE;
-		return (false);
-    }
-	return (true);
 }
 
 bool	allowed_flags(const char *flag_lexem, const char *allowed_flags)
@@ -157,9 +143,9 @@ bool	allowed_flags(const char *flag_lexem, const char *allowed_flags)
 Executes builtin "echo" function with and without '-n' option
 which suppresses the trailing newline.
 */
-int	execute_echo_builtin(t_list *tokenlist)
+uint8_t	execute_echo_builtin(t_list *tokenlist)
 {
-	int		status;
+	uint8_t	status;
 	int		new_line;
 
 	debug("echo builtin");
@@ -208,9 +194,9 @@ but echo on the variable will actually execute the newlines
 QUESTION:
 - where do we want to store our local variables?
 */
-int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
+uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	int		status;
+	uint8_t	status;
 	char	*key;
 	char	*value;
 	char	*err_msg;
@@ -265,7 +251,7 @@ int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 /*
 Executes builtin 'pwd' command.
 */
-int	execute_pwd_builtin(void)
+uint8_t	execute_pwd_builtin(void)
 {
 	char	cur_dir[PATH_MAX];
 
@@ -281,9 +267,9 @@ int	execute_pwd_builtin(void)
 read-only environment variables cannot be unset. How do we manage this?
 Do we only work with our local environmental variables or also those of the system?
 */
-int	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
+uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	int		status;
+	uint8_t		status;
 	char	*err_msg;
 	char	*lexeme;
 

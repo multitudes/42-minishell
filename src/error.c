@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/09 12:19:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 14:36:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ process, any updates will be lost upon return. Therefore, I will
 keep it simple and just pass the message and the status.
 Updating the global makes sense when I am in the parent process.  
 */
-int	status_and_perror(const char *msg, int status)
+uint8_t	status_and_perror(const char *msg, uint8_t status)
 {
 	perror(msg);
 	return (status);
@@ -31,7 +31,7 @@ Joins two consecutive messages and passes the new message to perror,
 frees the joined string, and return the status
 TODO change a variadic function
 */
-int status_and_detailed_perror(const char *msg_1, const char *msg_2, int status)
+uint8_t status_and_detailed_perror(const char *msg_1, const char *msg_2, uint8_t status)
 {
 	ssize_t	result;
 	
@@ -57,7 +57,7 @@ int status_and_detailed_perror(const char *msg_1, const char *msg_2, int status)
 /*
 will exit the program with an error message
 */
-int	exit_and_print_err(const char *msg, int status)
+uint8_t	exit_and_print_err(const char *msg, uint8_t status)
 {
 	perror(msg);
 	exit(status);
@@ -66,7 +66,7 @@ int	exit_and_print_err(const char *msg, int status)
 /*
 I need this to print on stderr and return 0
 */
-int zero_and_printerr(const char *msg)
+uint8_t zero_and_printerr(const char *msg)
 {
 	ssize_t	result;
 
@@ -118,7 +118,7 @@ void	*null_on_err(const char *message)
 /*
 Print error to standard error and return passed status.
 */
-int	print_error_status(const char *message, int status)
+uint8_t	print_error_status(const char *message, uint8_t status)
 {
 	ssize_t	result;
 
@@ -131,7 +131,7 @@ int	print_error_status(const char *message, int status)
 /*
 Print minishell error to standard error and return status.
 */
-int	print_minishell_error_status(const char *message, int status)
+uint8_t	print_minishell_error_status(const char *message, uint8_t status)
 {
 	ssize_t	result;
 
@@ -155,4 +155,18 @@ int	print_minishell_error_status(const char *message, int status)
 	if (result == -1 || result != 2) 
 		status = status_and_perror("write", 1);
 	return (status);
+}
+
+bool	write_data(int fd, const void *str, uint8_t *status) 
+{
+    ssize_t result; 
+	
+	result = write(fd, str, ft_strlen(str));
+    if (result == -1 || result != (ssize_t)ft_strlen(str)) 
+	{
+        perror("write");
+		*status = EXIT_FAILURE;
+		return (false);
+    }
+	return (true);
 }
