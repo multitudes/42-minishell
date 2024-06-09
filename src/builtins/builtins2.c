@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 22:50:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/06/09 11:00:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 11:26:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 			}
 		}
 		else if (chdir(get_token_lexeme(tokenlist)))
-            return (status_and_strjoin_perror("minishell: cd: ", get_token_lexeme(tokenlist), 1));
+            return (status_and_detailed_perror("minishell: cd: ", get_token_lexeme(tokenlist), 1));
     }
     else
 	{

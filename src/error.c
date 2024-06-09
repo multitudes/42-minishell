@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/06 12:12:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 11:26:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,16 @@ int	status_and_perror(const char *msg, int status)
 /*
 Joins two consecutive messages and passes the new message to perror,
 frees the joined string, and return the status
+TODO change a variadic function
 */
-int status_and_strjoin_perror(const char *msg_1, const char *msg_2, int status)
+int status_and_detailed_perror(const char *msg_1, const char *msg_2, int status)
 {
-	char	*perror_msg;
-
-	perror_msg = ft_strjoin(msg_1, msg_2);
-	perror(perror_msg);
-	free(perror_msg);
+	if (msg_1)
+		write(2, msg_1, ft_strlen(msg_1));
+	if (msg_2)
+		write(2, msg_2, ft_strlen(msg_2));
+	write(2, ": ", 3);
+	perror("");
 	return (status);
 }
 

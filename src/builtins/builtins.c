@@ -97,7 +97,7 @@ int	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 		return (print_error_status("minishell: cd: too many arguments\n", 1));
 	getoldcwd = execute_getcwd(old_dir, "minishell: cd: get old cwd");
 	status = execute_cd_tokenlist(env_arr, tokenlist);
-	if (status == 1)
+	if (!status)
 		return (status);
 	getcwd = execute_getcwd(dir, "minishell: cd: get new cwd");
 	if (!getoldcwd || !update_env(env_arr, "OLDPWD", old_dir))
