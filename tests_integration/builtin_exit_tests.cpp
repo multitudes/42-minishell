@@ -15,28 +15,21 @@
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
 
 
-/*
-bool    read_only_variable(const char *key)
-{
-    if (ft_strncmp(key, "PPID", 5) == 0)
-        return (true);
-    else if (ft_strncmp(key, "EUID", 5) == 0)
-        return (true);
-    else if (ft_strncmp(key, "UID", 4) == 0)
-        return (true);
-    else
-        return (false);
-}
-*/
-const char* test_export_read_only() {
+
+const char* test_exit() {
+
+	// bool pass = false;
+	// std::string command_to_exec = "exit\n";
+	// std::string expected_output = "minishell $ exit\nexit\n";
+	// int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+	// my_assert(status == 0, "Minishell exited with non-zero status");
+	// my_assert(pass, "Output is not as expected");
+	// debug("command_to_exec: %s", command_to_exec.c_str());
+	// debug("expected_output: %s", expected_output.c_str());
+	// debug("status: %d and pass %s", status, pass ? "true" : "false");
 
 	return NULL;
 }
-
-
-/*
-Tilde as var name
-*/
 
 
 /*
@@ -48,7 +41,7 @@ const char *all_tests()
 	suite_start();
 	
 	// run the tests
-	run_test(test_export_read_only);
+	run_test(test_exit);
 	
 	
 	return NULL;

@@ -28,7 +28,7 @@ bool    read_only_variable(const char *key)
         return (false);
 }
 */
-const char* test_export_read_only() {
+const char* test_cd() {
 
 	return NULL;
 }
@@ -48,7 +48,7 @@ const char *all_tests()
 	suite_start();
 	
 	// run the tests
-	run_test(test_export_read_only);
+	run_test(test_cd);
 	
 	
 	return NULL;
