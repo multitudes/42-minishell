@@ -45,7 +45,7 @@ const char* test_pwd_on_startup() {
 const char* test_pwd_after_unset() {
     bool pass = false;
 	uint8_t	exit_status;
-	std::string output = "minishell $ unset PWD\nminishell $ echo $PWD\nminishell $ exit\n";
+	std::string output = "minishell $ unset PWD\nminishell $ \necho $PWD\n\nminishell $ exit\n";
     exit_status = run_command_and_check_output("unset PWD\n\necho $PWD", output, &pass);
 	my_assert(exit_status == 0, "Minishell exited with non-zero status");
 	my_assert(pass, "Output is not as expected");
