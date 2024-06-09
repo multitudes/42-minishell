@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:57:41 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/02 21:09:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/08 18:37:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@ bool	str_is_pathname(const char *str)
 {
 	if ((ft_strchr(str, '/') || peek(str, ".", false) || peek(str, "./", \
 	false) || peek(str, "../", false) || peek(str, "~/", false) || \
-	peek(str, "~+", false)) && !ft_strchr(str, '*'))
+	peek(str, "~+/", false) || peek(str, "~+", true) || peek(str, "~-/", false) || peek(str, "~-", true)) && !ft_strchr(str, '*'))
 	{
+		if (peek(str, "~+", true) && 
 		while (*str)
 		{
 			if (!is_in_pathname(*str))
