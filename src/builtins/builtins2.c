@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 22:50:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/06/09 11:26:30 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 14:37:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char *execute_getcwd(char old_dir[], char *message)
     return (retval);
 }
 
-int execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
+uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 {
 	if (tokenlist && get_token_lexeme(tokenlist))
 	{
