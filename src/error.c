@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/09 11:33:32 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 12:19:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,6 @@ int	print_error_status(const char *message, int status)
 {
 	ssize_t	result;
 
-	result = 0;
 	result = write(2, message, ft_strlen(message));
 	if (result == -1 || result != (ssize_t)ft_strlen(message)) 
 		status = status_and_perror("write", 1);

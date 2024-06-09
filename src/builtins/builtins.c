@@ -42,7 +42,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
 		status = execute_env_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
-		status = execute_exit_builtin(data, tokenlist->next);
+		status = (int)execute_exit_builtin(data, tokenlist->next);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "true", 5) == 0)
 	{
 		status = 0;
@@ -313,9 +313,9 @@ int	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 	return (status);
 }
 
-int	execute_exit_builtin(t_data *data, t_list *tokenlist)
+uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 {
-	int		status;
+	uint8_t	status;
 	char	*lexeme;
 	char	*message;
 
@@ -324,7 +324,7 @@ int	execute_exit_builtin(t_data *data, t_list *tokenlist)
 		return (print_minishell_error_status("exit: too many arguments", 1));
 	write(1, "exit\n", 5);
 	if (lexeme && ft_isnumstring(lexeme))
-		status = (uint8_t)ft_atoi(lexeme);
+		status = ft_atoi(lexeme);
 	else if (lexeme && !ft_isnumstring(lexeme))
 	{
 		message = ft_strjoin3("exit: ", lexeme, ": numeric arguments required");
