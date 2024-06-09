@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:57:41 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/09 09:23:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 13:05:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ if contains a slash or starts with a dot or starts with a ./ ../ ~/ ~+
 */
 bool	str_is_pathname(const char *str)
 {
-	if ((ft_strchr(str, '/') || peek(str, ".", false) || peek(str, "./", \
+	if (((ft_strchr(str, '/') && (!ft_strchr(str, '~'))) || peek(str, ".", false) || peek(str, "./", \
 	false) || peek(str, "../", false) || peek(str, "~/", false) || \
 	peek(str, "~+/", false) || peek(str, "~+", true) || peek(str, "~-/", false) || peek(str, "~-", true)) && !ft_strchr(str, '*'))
 	{

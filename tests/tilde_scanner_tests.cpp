@@ -80,8 +80,8 @@ const char* test_tilde_tokens2() {
 	result = process_token(&current, &i, "~-/", PATHNAME);
 	result = process_token(&current, &i, "~-/notadirectory", PATHNAME);
 	result = process_token(&current, &i, "~-qwerty", WORD);
-	result = process_token(&current, &i, "~-qwerty/", PATHNAME);
-	result = process_token(&current, &i, "~-qwerty/123", PATHNAME);
+	result = process_token(&current, &i, "~-qwerty/", WORD);
+	result = process_token(&current, &i, "~-qwerty/123", WORD);
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
@@ -106,13 +106,13 @@ const char * test_tilde_tokens3() {
 	int i = 0;
 
 	result = process_token(&current, &i, "~+", PATHNAME);
-	result = process_token(&current, &i, "~+~/", PATHNAME);
+	result = process_token(&current, &i, "~+~/", WORD);
 	result = process_token(&current, &i, "~+/home/username", PATHNAME);
 	result = process_token(&current, &i, "~+/Documents", PATHNAME);
 	result = process_token(&current, &i, "~+/Desktop", PATHNAME);
 	result = process_token(&current, &i, "~+qwerty", WORD);
-	result = process_token(&current, &i, "~+qwerty/", PATHNAME);
-	result = process_token(&current, &i, "~+qwerty/123", PATHNAME);
+	result = process_token(&current, &i, "~+qwerty/", WORD);
+	result = process_token(&current, &i, "~+qwerty/123", WORD);
 	
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
