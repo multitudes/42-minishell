@@ -142,9 +142,9 @@ const char* test_echo3() {
 	}
 	std::string output = result.str();
     // remove the trailing newline from the output
-    if (!output.empty() && output.back() == '\n') {
-        output.pop_back();
-    }
+    // if (!output.empty() && output.back() == '\n') {
+    //     output.pop_back();
+    // }
     debug("output: -%s-", output.c_str());
 	my_assert(output == "hello\n", "output is not as expected\n");
 	return NULL;
