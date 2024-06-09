@@ -232,6 +232,7 @@ int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		debug("Key: %s, Value: %s", key, value);
 		if (ft_strchr(key, '~'))
 		{
+			// TODO instead the str3join do maybe a variadic func?
 			err_msg = ft_strjoin3("minishell: export `", get_token_lexeme(tokenlist), "': not a valid identifier\n");
 			status = print_error_status(err_msg, 1);
 			free(err_msg);

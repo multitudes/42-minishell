@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/09 11:26:30 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 11:33:32 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,23 @@ TODO change a variadic function
 */
 int status_and_detailed_perror(const char *msg_1, const char *msg_2, int status)
 {
+	ssize_t	result;
+	
 	if (msg_1)
-		write(2, msg_1, ft_strlen(msg_1));
+	{
+		result = write(2, msg_1, ft_strlen(msg_1));
+		if (result == -1 || result != (ssize_t)ft_strlen(msg_1))
+			perror("write");
+	}
 	if (msg_2)
-		write(2, msg_2, ft_strlen(msg_2));
-	write(2, ": ", 3);
+	{
+		result = write(2, msg_2, ft_strlen(msg_2));
+		if (result == -1 || result != (ssize_t)ft_strlen(msg_2))
+			perror("write");
+	}
+	result = write(2, ": ", 3);
+	if (result == -1 || result != 3)
+		perror("write");
 	perror("");
 	return (status);
 }

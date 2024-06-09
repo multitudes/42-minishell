@@ -47,7 +47,7 @@ endif
 
 # my test files - each one has a main and will 
 # be compiled into an executable
-TEST_SRCS	=	builtin_echo_tests.cpp builtin_cat_tests.cpp popen_tests.cpp
+TEST_SRCS	=	builtin_echo_tests.cpp builtin_cat_tests.cpp popen_tests.cpp builtin_export_tests.cpp
 
 # this substitution create files without the extension
 # they will become the executables
