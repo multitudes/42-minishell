@@ -1,3 +1,4 @@
+#include <sys/stat.h>
 #include "razorclam_tests.h"
 #include <iostream>
 #include <string>
@@ -14,6 +15,7 @@
 // forward declaration
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
 
+bool make_directory_read_only(const std::string& path);
 
 /*
 bool    read_only_variable(const char *key)
@@ -28,16 +30,43 @@ bool    read_only_variable(const char *key)
         return (false);
 }
 */
-const char* test_export_read_only() {
+const char* test_unset_read_only() {
+	make_directory_read_only(".non_read_test_dir");
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset PPID=123\n", "", &pass);
+	assert(pass);
+	assert(exit_status == 0);
 
 	return NULL;
 }
 
 
-/*
-Tilde as var name
-*/
 
+const char* test_unset_read_only_EUID() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset EUID=123\n", \
+	"minishell $ unset EUID=123\nminishell $ exit\n", &pass);
+	assert(pass);
+	assert(exit_status == 1);
+	
+	return NULL;
+}
+
+const char* test_unset_read_only_UID() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset UID=123\n", \
+	"minishell $ unset UID=123\nminishell $ exit\n", &pass);
+	assert(pass);
+	assert(exit_status == 1);
+	
+	return NULL;
+}
 
 /*
 access righhts on files
@@ -48,7 +77,9 @@ const char *all_tests()
 	suite_start();
 	
 	// run the tests
-	run_test(test_export_read_only);
+	run_test(test_unset_read_only);
+	run_test(test_unset_read_only_EUID);
+	run_test(test_unset_read_only_UID);
 	
 	
 	return NULL;
@@ -138,4 +169,26 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 			exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
 		return exit_status;
 	}
+}
+
+
+bool make_directory_read_only(const std::string& path) {
+    // Check if directory already exists
+    if (access(path.c_str(), F_OK) == -1) {
+        // If not, create it
+        if (mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1) {
+            // handle error, for example print the error message to stderr
+            perror("mkdir");
+            return false;
+        }
+    }
+
+    // Change permissions to read-only
+    if (chmod(path.c_str(), S_IRUSR | S_IRGRP | S_IROTH) == -1) {
+        // handle error, for example print the error message to stderr
+        perror("chmod");
+        return false;
+    }
+
+    return true;
 }
