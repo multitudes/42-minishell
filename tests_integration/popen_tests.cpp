@@ -17,7 +17,7 @@
 /*
 util function to read from minishell using the popen call and the single command mode
 */
-bool run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result) {
+uint8_t run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result) {
     debug("running test_popen\n");
     fflush(stdout);
 
@@ -34,10 +34,20 @@ bool run_command_and_check_output(const std::string& command_to_exec, std::ostri
     }
 
 
-    pclose(fp);
-    debug("result: -%s-", result.str().c_str());
+	int status = pclose(fp);
+	if (status == -1) {
+		perror("pclose");
+		return 1;
+	} else {
+		if (WIFEXITED(status)) {
+			printf("Exit status: %d\n", WEXITSTATUS(status));
+		} else {
+			printf("Command did not terminate normally\n");
+		}
+	}
+    debug("result: -%s- status %d", result.str().c_str(), status);
 
-    return true;
+    return 0;
 }
 
 
@@ -48,11 +58,11 @@ const char* test_popen() {
 
     std::ostringstream result;
 	std::string arg = "echo hello";
-	if (!run_command_and_check_output(arg, result)) {
-		return "test_popen failed";
-	}
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
     debug("result: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "hello\n", "output is not hello\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
 
@@ -67,11 +77,10 @@ const char* test_echo() {
 
     std::ostringstream result;
 	std::string arg = "echo -n -nnn hello -n";
-	if (!run_command_and_check_output(arg, result)) {
-		return "test_popen failed";
-	}
+	uint8_t exit_status = run_command_and_check_output(arg, result);
     debug("result: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "hello ", "output is not hello\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
 
@@ -94,22 +103,17 @@ const char* test_echo2() {
         perror("getenv");
         return "getenv failed";
     }
-	// set the current dit to minishell
-	if(setenv("VAR", home, 1) == -1) {
-	    perror("setenv");
-        return "setenv failed";
-    }
+
     std::ostringstream result;
 	std::string arg = "echo $HOME";
-	if (!run_command_and_check_output(arg, result)) {
-		return "test_popen failed";
-	}
+	uint8_t exit_status = run_command_and_check_output(arg, result);
 	std::string output = result.str();
     // remove the trailing newline from the output
     if (!output.empty() && output.back() == '\n') {
         output.pop_back();
     }
     debug("output: -%s-", output.c_str());
+	my_assert(exit_status == 0, "exit status is not 0\n");
 	debug("home: -%s-", home);
 	my_assert(output == home, "output is not as expected\n");
 	return NULL;
