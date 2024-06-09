@@ -42,6 +42,15 @@ const char* test_pwd_on_startup() {
     return NULL;
 }
 
+const char* test_pwd_after_unset() {
+    bool pass = false;
+	uint8_t	exit_status;
+	std::string output = "minishell $ unset PWD\nminishell $ echo $PWD\nminishell $ exit\n";
+    exit_status = run_command_and_check_output("unset PWD\n\necho $PWD", output, &pass);
+	my_assert(exit_status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
+    return NULL;
+}
 // const char* test_pwd_after_cd() {
 //     bool pass = false;
 //     run_command_and_check_output("cd /path/to/new/directory; echo $PWD", "/path/to/new/directory", &pass);
@@ -69,6 +78,7 @@ const char* test_pwd_on_startup() {
 const char *all_tests() {
     suite_start();
     run_test(test_pwd_on_startup);
+	run_test(test_pwd_after_unset);
     // run_test(test_pwd_after_cd);
     // run_test(test_pwd_after_non_cd_command);
     // run_test(test_pwd_after_relative_cd);
