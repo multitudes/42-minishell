@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 12:38:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 09:41:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,10 @@ bool	add_token(t_mini_data *data, int *i, const char *lexem, int type)
 }
 
 /*
-condition is a pointer to a function that will be used to check the
-character in the wjile loop. I might need is_digit for numbers or
+cnd - condition, is a pointer to a function that will be used to check the
+character in the while loop. I might need is_digit for numbers or
 is_alnum for identifiers etc
-Thgis works for easy tokens.
+This works for easy tokens.
 */
 bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 {

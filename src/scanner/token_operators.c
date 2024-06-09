@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:43:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:59:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 12:42:42 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ bool	is_simple_operator(t_mini_data *data, int *i)
 		return (add_token(data, i, "^", CARET));
 	else if (peek(data->input + *i, "%", false))
 		return (add_token(data, i, "%", PERCENT));
-	else if (peek(data->input + *i, "~", false))
+	else if (peek(data->input + *i, "~", true))
 		return (add_token(data, i, "~", TILDE));
 	else if (peek(data->input + *i, "$", false))
 		return (add_token(data, i, "$", DOLLAR));
