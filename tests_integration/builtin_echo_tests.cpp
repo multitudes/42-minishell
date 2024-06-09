@@ -203,17 +203,17 @@ const char *all_tests()
 	suite_start();
 	
 	// run the tests
-	// run_test(test_basicminishell_echo);
-	// run_test(test_basicminishell_echo2);
-	// run_test(test_basicminishell_echo3);
-	// run_test(test_basicminishell_echo4);
-	// run_test(test_basicminishell_echo5);
-	// run_test(test_basicminishell_echo6);
-	// run_test(test_basicminishell_echo7);
-	// run_test(test_basicminishell_echo8);
-	// run_test(test_basicminishell_echo9);
-	// run_test(test_basicminishell_echo10);
-	// run_test(test_basicminishell_echo11);
+	run_test(test_basicminishell_echo);
+	run_test(test_basicminishell_echo2);
+	run_test(test_basicminishell_echo3);
+	run_test(test_basicminishell_echo4);
+	run_test(test_basicminishell_echo5);
+	run_test(test_basicminishell_echo6);
+	run_test(test_basicminishell_echo7);
+	run_test(test_basicminishell_echo8);
+	run_test(test_basicminishell_echo9);
+	run_test(test_basicminishell_echo10);
+	run_test(test_basicminishell_echo11);
 
 	run_test(test_basicminishell3);
 	
