@@ -5,7 +5,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 	// seen from the point of you of the child process. pipefd_in is the input to the child process
 	// and pipefd_out is the output of the child process
 	int status;
-	int	exit_status;
+	uint8_t	exit_status;
 	int pipefd_in[2];
     int pipefd_out[2]; 
 

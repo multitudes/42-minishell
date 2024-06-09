@@ -1137,7 +1137,7 @@ int main() {
         return 1;
     } else {
         // Parent process
-        int status;
+        uint8_t status;
         waitpid(pid, &status, 0);
         // The child process has finished executing the command.
     }
@@ -1150,8 +1150,8 @@ In the subject of the project, it is mentioned that we can use a global variable
 This is useful because signal handlers cannot take arguments, so we need a way to communicate the signal number to the rest of the program.  However there is a way to get the exit signal of the childrem processes with the waitpid function.
 Ex:
 ```
-int status;
-int	exit_status;
+uint8_t status;
+uint8_t	exit_status;
 
 exit_status = 0;
 waitpid(pid, &status, 0);

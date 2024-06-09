@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/08 16:14:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 14:40:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ struct s_data
 	t_list		*token_list;
 	t_darray	*env_arr;
 	t_ast_node	*ast;
-	int			exit_status;
+	uint8_t		exit_status;
 	bool		scanner_error;
 	char		*scanner_err_str;
 	int 		scanner_tokens_nr;
@@ -118,7 +118,7 @@ bool	init_data(t_data **data);
 bool    init_data2(t_data **data);
 bool	init_env_darray(t_darray **env_array);
 void	free_data(t_data **data);
-void	update_env_exit_status_with(int exit_status, t_data *data);
+void	update_env_exit_status_with(uint8_t exit_status, t_data *data);
 int		single_command(const char *input);
 int		set_up_signals(void);
 
