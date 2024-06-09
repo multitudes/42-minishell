@@ -62,3 +62,4 @@ tests/tmp/miniclam
 tests/tmp/world.c
 .cache/
 compile_commands.json
+.non-read_file
