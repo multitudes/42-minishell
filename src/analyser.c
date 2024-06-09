@@ -118,6 +118,7 @@ void	expand_variable(t_darray *env_arr, t_token *token)
 		free(key);
 		token->lexeme = temp;
 		token->type = WORD;
+		debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
 void	read_exit_status(t_data *data, t_token *token)
@@ -194,9 +195,9 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	token_list = ast->token_list;
 	debug("analyse expand");
 	which_ast_node(ast);
-	debug("Received token type: %d ast node type: %d lexeme: %s", get_token_type(token_list), ast->type, get_token_lexeme(token_list));
 	while (token_list)
 	{
+		debug("Token type: %d ast node type: %d lexeme: %s", get_token_type(token_list), ast->type, get_token_lexeme(token_list));
 		if (get_token_type(token_list) == VAR_EXPANSION || get_token_type(token_list) == TILDE)
 			expand_variable(data->env_arr, get_curr_token(token_list));
 		else if (get_token_type(token_list)  == DOLLAR_QUESTION)
@@ -208,7 +209,7 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 		else if (get_token_type(token_list) == GLOBBING)
 			expand_globbing(token_list);
 		else
-			debug("Token type not expanded: %d ast node type: %d lexeme: %s", get_token_type(token_list), ast->type, get_token_lexeme(token_list));
+			debug("Token type not expanded");
 		token_list = token_list->next;
 	}
 	debug("---------left -----------");

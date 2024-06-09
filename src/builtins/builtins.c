@@ -42,7 +42,7 @@ int    execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
 		status = execute_env_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
-		execute_exit_builtin(data, tokenlist->next);
+		status = (int)execute_exit_builtin(data, tokenlist->next);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "true", 5) == 0)
 	{
 		status = 0;
@@ -76,40 +76,34 @@ TODOs:
 - interpret errors from called getcwd system function.
 - Implement additional functionality:
 -- if invalid name is given output is "bash: cd: ARGUMENT_GIVEN: No such file or directory" with exit code 1
--- If directory is '-', it is converted to $OLDPWD before attempting directory change.
 (from The Open Group Base Specifications Issue 7, 2018 edition:
 "When a <hyphen-minus> is used as the operand,
 this shall be equivalent to the command: cd "$OLDPWD" && pwd")
--- when $HOME is undefined just performing `cd` is implementation defined (How is this handled in BASH?)
 */
 int	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	int		status;
 	char	dir[PATH_MAX];
 	char	old_dir[PATH_MAX];
+	char	*getoldcwd;
+	char	*getcwd;
 
 	debug("cd builtin");
+	status = 0;
+	getoldcwd = NULL;
+	getcwd = NULL;
 	tokenlist = tokenlist->next;
 	if (tokenlist && tokenlist->next)
 		return (print_error_status("minishell: cd: too many arguments\n", 1));
-	if (!getcwd(old_dir, PATH_MAX))
-		perror("get old cwd");
-	if (tokenlist)
-	{
-		if (chdir(get_token_lexeme(tokenlist)))
-			return (status_and_perror("chdir", 1));
-	}
-	else
-	{
-		if (chdir(mini_get_env(env_arr, "HOME")))
-			return (status_and_perror("chdir", 1));
-	}
-	if (!getcwd(dir, PATH_MAX))
-		perror("get new cwd");
-	if (!update_env(env_arr, "OLDPWD", old_dir))
-		status = print_error_status("Update of OLDPWD failed\n", 1);
-	if (!update_env(env_arr, "PWD", dir))
-		status = print_error_status("Update of PWD failed\n", 1);
+	getoldcwd = execute_getcwd(old_dir, "minishell: cd: get old cwd");
+	status = execute_cd_tokenlist(env_arr, tokenlist);
+	if (!status)
+		return (status);
+	getcwd = execute_getcwd(dir, "minishell: cd: get new cwd");
+	if (!getoldcwd || !update_env(env_arr, "OLDPWD", old_dir))
+		print_error_status("minishell: cd: update of OLDPWD failed\n", 0);
+	if (!getcwd || !update_env(env_arr, "PWD", dir))
+		print_error_status("minishell: cd: update of PWD failed\n", 0);
 	return (status);
 }
 
@@ -127,7 +121,7 @@ int	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 	debug("env builtin");
 	status = 0;
 	if (get_token_lexeme(tokenlist->next))
-		status = print_error_status("env: too many arguments\n", 1);
+		status = print_minishell_error_status("env: too many arguments", 1);
 	else
 		status = print_env(env_arr);
 	return (status);
@@ -228,22 +222,36 @@ int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		return (print_env_export(env_arr));
 	while (tokenlist)
 	{
-		// if VAR without '=' but exists as local variable, add that variable to env array
-		// if VAR without '=' add variable (needs to be interpreted differently in buitlin "env", i.e. not being shown at all)
+		key = NULL;
+		value = NULL;
 		debug("followed by space? %s", (get_curr_token(tokenlist))->folldbyspace ? "true" : "false");
 		if (tokenlist->next && !token_followed_by_space(tokenlist))
 			status = merge_tokens_for_export(tokenlist);
 		key = get_var_key(get_token_lexeme(tokenlist));
+		value = get_var_value(get_token_lexeme(tokenlist));
+		debug("Key: %s, Value: %s", key, value);
 		if (ft_strchr(key, '~'))
 		{
-			err_msg = ft_strjoin3("minishell: export `", get_token_lexeme(tokenlist), "': not a valid identifier");
+			// TODO instead the str3join do maybe a variadic func?
+			err_msg = ft_strjoin3("minishell: export `", get_token_lexeme(tokenlist), "': not a valid identifier\n");
 			status = print_error_status(err_msg, 1);
 			free(err_msg);
 		}
-		value = get_var_value(get_token_lexeme(tokenlist));
-		debug("Key: %s, Value: %s", key, value);
-		if (key && value)
-			update_env(env_arr, key, value);
+		else if (read_only_variable(key))
+		{
+			err_msg = ft_strjoin3("minishell: export: ", key, ": readonly variable\n");
+			status = print_error_status(err_msg, 1);
+			free(err_msg);
+		}
+		else if (key && value)
+		{
+			if (!update_env(env_arr, key, value))
+			{
+				err_msg = ft_strjoin3("minishell: export: ", value, ": adding to environment failed\n");
+				print_error_status(err_msg, 0);
+				free(err_msg);
+			}
+		}
 		free(key);
 		free(value);
 		// if VAR wigh '=' and nothing else, update VAR if it already exists, else add as VAR=
@@ -256,8 +264,6 @@ int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 
 /*
 Executes builtin 'pwd' command.
-TODO:
-- interpret possible errors from system function `getcwd()`
 */
 int	execute_pwd_builtin(void)
 {
@@ -265,9 +271,9 @@ int	execute_pwd_builtin(void)
 
 	debug("pwd builtin");
 	if (!getcwd(cur_dir, PATH_MAX))
-		return (status_and_perror("getcwd()", 1));
+		return (status_and_perror("minishell: pwd", 1));
 	if (printf("%s\n", cur_dir) < 0)
-		return (status_and_perror("printf working directory", 1));
+		return (status_and_perror("minishell: pwd: printf", 1));
 	return (0);
 }
 
@@ -277,42 +283,48 @@ Do we only work with our local environmental variables or also those of the syst
 */
 int	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	int	status;
+	int		status;
+	char	*err_msg;
+	char	*lexeme;
 
 	status = 0;
+	err_msg = NULL;
 	debug("unset builtin");
 	tokenlist = tokenlist->next;
 	if (!tokenlist)
 		return (0);
 	while (tokenlist)
 	{
-		if (get_token_lexeme(tokenlist) != NULL && ft_strlen(get_token_lexeme(tokenlist)) != 0)
-			status = delete_env_entry(env_arr, get_token_lexeme(tokenlist));
+		lexeme = get_token_lexeme(tokenlist);
+		if (ft_strchr(lexeme, '='))
+			;
+		else if (read_only_variable(lexeme))
+		{
+			err_msg = ft_strjoin3("minishell: unset: ", lexeme, ": cannot unset: readonly variable\n");
+			status = print_error_status(err_msg, 1);
+			free(err_msg);
+		}
+		else if (lexeme != NULL && ft_strlen(lexeme) != 0)
+			status = delete_env_entry(env_arr, lexeme);
 		else
-			status = print_error_status("Unset unsuccessful", 1);
-	// if (restricted_variable(token->lexeme))
-	// {
-	// 	//consider returning error message in restricted_variable() function, also consider other possible restricted variables.
-	// 	write(2, "minishell: unset: ", 18);
-	// 	write(2, &token->lexeme, ft_strlen(token->lexeme));
-	// 	write(2, ":cannot unset: readonly variable", 32);
-	// 	return (1);
-	// }
+			status = print_error_status("minishell: unset: error", 1);
 		tokenlist = tokenlist->next;
 	}
 	return (status);
 }
 
-void	execute_exit_builtin(t_data *data, t_list *tokenlist)
+uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 {
-	int		status;
+	uint8_t	status;
 	char	*lexeme;
 	char	*message;
 
-	write(1, "exit\n", 5);
 	lexeme = get_token_lexeme(tokenlist);
+	if (lexeme && ft_isnumstring(lexeme) && tokenlist->next)
+		return (print_minishell_error_status("exit: too many arguments", 1));
+	write(1, "exit\n", 5);
 	if (lexeme && ft_isnumstring(lexeme))
-		status = ft_atoi(lexeme) % 256;
+		status = ft_atoi(lexeme);
 	else if (lexeme && !ft_isnumstring(lexeme))
 	{
 		message = ft_strjoin3("exit: ", lexeme, ": numeric arguments required");
@@ -328,7 +340,7 @@ void	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	exit(status);
 }
 
-bool	ft_isnumstring(char *str)
+bool	ft_isnumstring(const char *str)
 {
 	int	i;
 

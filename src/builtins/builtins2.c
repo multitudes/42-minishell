@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 22:50:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/05/28 22:51:10 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/06/09 11:26:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,45 @@
 #include "environment.h"
 #include "history.h"
 #include <unistd.h>
+
+char *execute_getcwd(char old_dir[], char *message)
+{
+    char    *retval;
+
+    retval = NULL;
+    retval = getcwd(old_dir, PATH_MAX);
+    if (!retval)
+		perror(message);
+    return (retval);
+}
+
+int execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
+{
+	if (tokenlist && get_token_lexeme(tokenlist))
+	{
+		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0)
+		{
+			if (!mini_get_env(env_arr, "OLDPWD"))
+				return (print_minishell_error_status("cd: OLDPWD not set", 1));
+			else
+			{
+				if (chdir(mini_get_env(env_arr, "OLDPWD")))
+					return (status_and_perror("minishell: cd", 1));
+				execute_pwd_builtin();
+			}
+		}
+		else if (chdir(get_token_lexeme(tokenlist)))
+            return (status_and_detailed_perror("minishell: cd: ", get_token_lexeme(tokenlist), 1));
+    }
+    else
+	{
+		if (!mini_get_env(env_arr, "HOME"))
+			return (print_minishell_error_status("cd: HOME not set", 1));
+		else if (chdir(mini_get_env(env_arr, "HOME")))
+			return (status_and_perror("minishell: cd", 1));
+	}
+    return (0);
+}
 
 /*
 Function merges the current and next token in a tokenlist:
@@ -49,4 +88,16 @@ int merge_tokens_for_export(t_list *tokenlist)
     if (tokenlist->next && !token_followed_by_space(tokenlist))
         merge_tokens_for_export(tokenlist);
     return (0);
+}
+
+bool    read_only_variable(const char *key)
+{
+    if (ft_strncmp(key, "PPID", 5) == 0)
+        return (true);
+    else if (ft_strncmp(key, "EUID", 5) == 0)
+        return (true);
+    else if (ft_strncmp(key, "UID", 4) == 0)
+        return (true);
+    else
+        return (false);
 }

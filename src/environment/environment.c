@@ -21,17 +21,19 @@ bool update_env(t_darray *env_arr, const char *key, const char *value)
 	int			i;
 
 	debug("update_env");
+	new_env_str = ft_strjoin3(key, "=", value);
+	if (!new_env_str)
+		return (false);
 	i = get_var_index(env_arr, key);
 	debug("index with key: %i", i);
 	if (i < 0)
 	{
-		darray_set(env_arr, env_arr->end - 1, ft_strjoin3(key, "=", value));
+		darray_set(env_arr, env_arr->end - 1, new_env_str);
 		darray_push(env_arr, NULL);
 	}
 	else
 	{
 		env_str = darray_get(env_arr, i);
-		new_env_str = ft_strjoin3(key, "=", value);
 		free(env_str);
 		darray_set(env_arr, i, new_env_str);
 	}
