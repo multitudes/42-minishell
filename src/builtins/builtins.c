@@ -269,7 +269,7 @@ Do we only work with our local environmental variables or also those of the syst
 */
 uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 {
-	uint8_t		status;
+	uint8_t	status;
 	char	*err_msg;
 	char	*lexeme;
 

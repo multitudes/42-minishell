@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/06 17:58:00 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 14:44:22 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,7 +267,7 @@ void	exit_minishell(t_data *data)
 	free_data(&data);
 }
 
-void	update_env_exit_status_with(int exit_status, t_data *data)
+void	update_env_exit_status_with(uint8_t exit_status, t_data *data)
 {
 	if (!update_env(data->env_arr, "?", ft_itoa(exit_status)))
 		print_error_status("update_env", 1);
@@ -293,8 +293,8 @@ so we check for that to exit the loop.
 */
 int loop()
 {
-	t_data *data;
-	int		status;	
+	t_data	*data;
+	uint8_t	status;	
 
 	status = 0;
 	data = NULL;
@@ -350,8 +350,8 @@ invoqued using the -c flag
 */
 int single_command(const char *input)
 {
-	int		status;	
-	t_data *data;
+	uint8_t	status;	
+	t_data	*data;
 
 	data = NULL;
 	status = 0;

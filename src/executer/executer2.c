@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/07 13:38:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/09 14:43:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ be the signal number that caused the child to stop plus 128.
 WIFCONTINUED is a status that is returned when the child is resumed by
 a SIGCONT signal. The status will be 0.
 */
-int	get_wait_status(int status)
+uint8_t	get_wait_status(uint8_t status)
 {
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
