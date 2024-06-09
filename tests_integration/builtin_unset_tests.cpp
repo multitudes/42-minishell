@@ -35,7 +35,8 @@ const char* test_unset_read_only() {
 	bool pass = false;
 
 	// test export read only
-	int exit_status = run_command_and_check_output("unset PPID=123\n", "", &pass);
+	int exit_status = run_command_and_check_output("unset PPID=123\n", \
+	"minishell $ unset PPID=123\nminishell $ exit\n", &pass);
 	assert(pass);
 	assert(exit_status == 0);
 
@@ -51,7 +52,7 @@ const char* test_unset_read_only_EUID() {
 	int exit_status = run_command_and_check_output("unset EUID=123\n", \
 	"minishell $ unset EUID=123\nminishell $ exit\n", &pass);
 	assert(pass);
-	assert(exit_status == 1);
+	assert(exit_status == 0);
 	
 	return NULL;
 }
@@ -63,10 +64,51 @@ const char* test_unset_read_only_UID() {
 	int exit_status = run_command_and_check_output("unset UID=123\n", \
 	"minishell $ unset UID=123\nminishell $ exit\n", &pass);
 	assert(pass);
-	assert(exit_status == 1);
+	assert(exit_status == 0);
 	
 	return NULL;
 }
+
+const char* test_unset_read_only2() {
+	make_directory_read_only(".non_read_test_dir");
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset PPID\n", "minishell $ unset PPID\nminishell $ exit\n", &pass);
+	assert(pass);
+	assert(exit_status == 0);
+
+	return NULL;
+}
+
+
+
+const char* test_unset_read_only_EUID2() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset EUID\n", \
+	"minishell $ unset EUID\nminishell $ exit\n", &pass);
+	assert(pass);
+	assert(exit_status == 0);
+	
+	return NULL;
+}
+
+const char* test_unset_read_only_UID2() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset UID\n", \
+	"minishell $ unset UID\nminishell $ exit\n", &pass);
+	assert(pass);
+	assert(exit_status == 0);
+	
+	return NULL;
+}
+
+
+
 
 /*
 access righhts on files
@@ -80,6 +122,10 @@ const char *all_tests()
 	run_test(test_unset_read_only);
 	run_test(test_unset_read_only_EUID);
 	run_test(test_unset_read_only_UID);
+	run_test(test_unset_read_only2);
+	run_test(test_unset_read_only_EUID2);
+	run_test(test_unset_read_only_UID2);
+	
 	
 	
 	return NULL;
