@@ -34,7 +34,14 @@ const char* test_export_read_only() {
 }
 
 
+/*
+Tilde as var name
+*/
 
+
+/*
+access righhts on files
+*/
 const char *all_tests()
 {
 	// necessary to start the test suite
