@@ -29,6 +29,7 @@ bool    read_only_variable(const char *key)
     else
         return (false);
 }
+tests will be exit 0 because bash doesnt care for a var named "PPID=123"!
 */
 const char* test_unset_read_only() {
 	make_directory_read_only(".non_read_test_dir");
@@ -69,6 +70,11 @@ const char* test_unset_read_only_UID() {
 	return NULL;
 }
 
+
+/*
+these tests will pass but exit with status 1 because the variable is read only
+
+*/
 const char* test_unset_read_only2() {
 	make_directory_read_only(".non_read_test_dir");
 	bool pass = false;
@@ -76,7 +82,7 @@ const char* test_unset_read_only2() {
 	// test export read only
 	int exit_status = run_command_and_check_output("unset PPID\n", "minishell $ unset PPID\nminishell $ exit\n", &pass);
 	assert(pass);
-	assert(exit_status == 0);
+	assert(exit_status == 1);
 
 	return NULL;
 }
@@ -90,7 +96,7 @@ const char* test_unset_read_only_EUID2() {
 	int exit_status = run_command_and_check_output("unset EUID\n", \
 	"minishell $ unset EUID\nminishell $ exit\n", &pass);
 	assert(pass);
-	assert(exit_status == 0);
+	assert(exit_status == 1);
 	
 	return NULL;
 }
@@ -102,7 +108,7 @@ const char* test_unset_read_only_UID2() {
 	int exit_status = run_command_and_check_output("unset UID\n", \
 	"minishell $ unset UID\nminishell $ exit\n", &pass);
 	assert(pass);
-	assert(exit_status == 0);
+	assert(exit_status == 1);
 	
 	return NULL;
 }
@@ -125,7 +131,7 @@ const char *all_tests()
 	run_test(test_unset_read_only2);
 	run_test(test_unset_read_only_EUID2);
 	run_test(test_unset_read_only_UID2);
-	
+
 	
 	
 	return NULL;
