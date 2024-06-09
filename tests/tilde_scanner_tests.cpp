@@ -44,7 +44,7 @@ const char* test_tilde_tokens() {
 	// i want to check the output of the call to the function in scanner.c file
 	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
-	std::string str = "~ ~~ /home/username ~/Documents ~/Desktop ";
+	std::string str = "~ ~~ /home/username ~/Documents ~/Desktop ~//Desktop/";
 	const char* input = str.c_str();
 	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
@@ -56,6 +56,7 @@ const char* test_tilde_tokens() {
 	result = process_token(&current, &i, "/home/username", PATHNAME);
 	result = process_token(&current, &i, "~/Documents", PATHNAME);
 	result = process_token(&current, &i, "~/Desktop", PATHNAME);
+	result = process_token(&current, &i, "~//Desktop/", PATHNAME);
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
