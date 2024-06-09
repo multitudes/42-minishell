@@ -130,6 +130,8 @@ const char* test_echo3() {
     debug("running test_popen\n");
     fflush(stdout);
 
+	uint8_t exit_status;
+
 	// set the current dit to minishell
 	if(setenv("VAR", "hello", 1) == -1) {
 	    perror("setenv");
@@ -137,9 +139,8 @@ const char* test_echo3() {
     }
     std::ostringstream result;
 	std::string arg = "echo $VAR";
-	if (!run_command_and_check_output(arg, result)) {
-		return "test_popen failed";
-	}
+	exit_status = run_command_and_check_output(arg, result);
+	
 	std::string output = result.str();
     // remove the trailing newline from the output
     // if (!output.empty() && output.back() == '\n') {
@@ -147,6 +148,7 @@ const char* test_echo3() {
     // }
     debug("output: -%s-", output.c_str());
 	my_assert(output == "hello\n", "output is not as expected\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
 
