@@ -18,22 +18,16 @@ bool isRunningOnGitHubActions();
 /*
 check for cat -u
 input 123 then 123 followed by EOF and then EOF again
-
 */
 const char* test_basicminishell_cat() 
 {
-
-	// I commented this out because I need to rethink it. it actually fails
-	// to do what I expected. Now that I a debugging the exit status better I can
-	// see that the minishell is exiting with a non-zero status. 
-	// We might not be able to pass those characters to the minishell?
 
 	bool pass = false;
 	std::string command_to_exec = "cat -u\n123\n123\x04\n\x04\n";
 	std::string expected_output = "minishell $ cat -u\n123\n123\x04\n\x04\nminishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-	// my_assert(status == 0, "Minishell exited with non-zero status");
-	// my_assert(pass, "Output is not as expected");
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
 	debug("command_to_exec: %s", command_to_exec.c_str());
 	debug("expected_output: %s", expected_output.c_str());
 	debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -65,7 +59,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 	// seen from the point of you of the child process. pipefd_in is the input to the child process
 	// and pipefd_out is the output of the child process
 	int status;
-	int	exit_status;
+	uint8_t	exit_status;
 	int pipefd_in[2];
     int pipefd_out[2]; 
 
@@ -110,8 +104,8 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
         close(pipefd_out[1]);
         close(pipefd_in[0]);
 
-		// if (!isRunningOnGitHubActions())
-			usleep(3000);
+		if (!isRunningOnGitHubActions())
+			usleep(5000);
 
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
@@ -119,8 +113,8 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
 
-		// if (!isRunningOnGitHubActions())
-			usleep(3000);
+		if (!isRunningOnGitHubActions())
+			usleep(5000);
 
         char buffer[1024];
         int n = read(pipefd_out[0], buffer, sizeof(buffer));

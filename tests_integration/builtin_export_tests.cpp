@@ -29,45 +29,38 @@ bool    read_only_variable(const char *key)
 }
 */
 const char* test_export_read_only() {
-	/*
 	bool pass = false;
 
 	// test export read only
 	int exit_status = run_command_and_check_output("export PPID=123\n", \
 	"minishell $ export PPID=123\nminishell $ exit\n", &pass);
 	my_assert(pass, "pass is not as expected");
-	my_assert(exit_status == 2, "exit status is not as expected");
-	*/
+	debug("exit_status: %d", exit_status);
+	my_assert(exit_status == 1, "exit status is not as expected");
 	
 	return NULL;
 }
 
-const char* test_export_read_only_EUID() 
-{
-/*
+const char* test_export_read_only_EUID() {
 	bool pass = false;
 
 	// test export read only
 	int exit_status = run_command_and_check_output("export EUID=123\n", \
 	"minishell $ export EUID=123\nminishell $ exit\n", &pass);
 	my_assert(pass, "pass is not as expected");
-	my_assert(exit_status == 2, "exit status is not as expected");
-*/
+	my_assert(exit_status == 1, "exit status is not as expected");
 	
 	return NULL;
 }
 
-const char* test_export_read_only_UID() 
-{
-	/*
+const char* test_export_read_only_UID() {
 	bool pass = false;
 
 	// test export read only
 	int exit_status = run_command_and_check_output("export UID=123\n", \
 	"minishell $ export UID=123\nminishell $ exit\n", &pass);
 	my_assert(pass, "pass is not as expected");
-	my_assert(exit_status == 2, "exit status is not as expected");
-	*/
+	my_assert(exit_status == 1, "exit status is not as expected");
 	
 	return NULL;
 }

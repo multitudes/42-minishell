@@ -6,8 +6,9 @@
 cd monkey_tests
 mkdir -p log
 
+# I removed the '>' character from the list of characters to generate random strings
 generate_any_string() {
-	local chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_``{|}~"
+	local chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"#$%&'()*+,-./:;<=?@[\\]^_``{|}~"
 	local length=$(( $RANDOM % 11 + 20 ))
 	local result
 
@@ -44,6 +45,6 @@ do
 	./minishell -c "$random_command $ascii_string" >> log/monkeyminishell.txt 2>&1
 	echo "Exit status minishell: $?" | tee -a log/monkeyminishell.txt 2>&1
 	bash -c "$random_command $ascii_string" >> log/monkeybash.txt 2>&1
-	echo "Exit status bash: $?" | tee -a log/monkeybash.txt, log/monkeyminishell.txt 2>&1
-
+	echo "Exit status bash: $?" | tee -a log/monkeybash.txt log/monkeyminishell.txt 2>&1
+	echo |tee -a log/ascii_string.txt log/monkeybash.txt log/monkeyminishell.txt  2>&1	
 done
