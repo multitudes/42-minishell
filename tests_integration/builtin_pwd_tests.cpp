@@ -183,3 +183,8 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		return exit_status;
 	}
 }
+
+bool isRunningOnGitHubActions() {
+	const char* github_actions = std::getenv("GITHUB_ACTIONS");
+	return github_actions != NULL && strcmp(github_actions, "true") == 0;
+}
