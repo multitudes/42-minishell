@@ -13,7 +13,7 @@ do
         else
             echo "ERROR in test $i: here's tests.log"
             echo "------"
-            tail tests.log
+			tail -n 15 tests.log
             exit 1
         fi
     fi
