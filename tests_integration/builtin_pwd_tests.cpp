@@ -36,11 +36,10 @@ const char* test_pwd_on_startup()
 {
     bool pass = false;
 	uint8_t	exit_status;
-	std::string output = "minishell $ echo $PWD\n" + get_current_directory() + "\n";
+	std::string output = "minishell $ echo $PWD\n" + get_current_directory() + "\nminishell $ exit\n";
     exit_status = run_command_and_check_output("echo $PWD", output, &pass);
-	// my_assert(exit_status == 0, "Minishell exited with non-zero status");
+	my_assert(exit_status == 0, "Minishell exited with non-zero status");
 	my_assert(pass, "Output is not as expected");
-	debug("output: %d", exit_status);
     return NULL;
 }
 

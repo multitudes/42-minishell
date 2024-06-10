@@ -11,9 +11,6 @@
 #include <string>
 #include <cstring>
 
-// I need to investigate more about the exit status of the child process...
-// for now I commented it out because it is failing the test sometimes.
-
 // forward declaration
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
 bool isRunningOnGitHubActions(); 
@@ -24,8 +21,8 @@ const char *test_basicminishell_echo() {
 	std::string command_to_exec = "echo\n";
 	std::string expected_output = "minishell $ echo\n\nminishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-	// my_assert(status == 0, "Minishell exited with non-zero status");
-	// my_assert(pass, "Output is not as expected");
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
 	debug("command_to_exec: %s", command_to_exec.c_str());
 	debug("expected_output: %s", expected_output.c_str());
 	debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -39,8 +36,8 @@ const char *test_basicminishell_echo2() {
 	std::string command_to_exec = "echo -n\n";
 	std::string expected_output = "minishell $ echo -n\nminishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-	// my_assert(status == 0, "Minishell exited with non-zero status");
-	// my_assert(pass, "Output is not as expected");
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
 	debug("command_to_exec: %s", command_to_exec.c_str());
 	debug("expected_output: %s", expected_output.c_str());
 	debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -54,8 +51,8 @@ const char *test_basicminishell_echo3() {
 	std::string command_to_exec = "echo -nnn -nn\n";
 	std::string expected_output = "minishell $ echo -nnn -nn\nminishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-	// my_assert(status == 0, "Minishell exited with non-zero status");
-	// my_assert(pass, "Output is not as expected");
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
 	debug("command_to_exec: %s", command_to_exec.c_str());
 	debug("expected_output: %s", expected_output.c_str());
 	debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -69,8 +66,8 @@ const char *test_basicminishell_echo4() {
 	std::string command_to_exec = "echo -nnn -nn -mnnn hello\n";
 	std::string expected_output = "minishell $ echo -nnn -nn -mnnn hello\n-mnnn hellominishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-	// my_assert(status == 0, "Minishell exited with non-zero status");
-	// my_assert(pass, "Output is not as expected");
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
 	debug("command_to_exec: %s", command_to_exec.c_str());
 	debug("expected_output: %s", expected_output.c_str());
 	debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -84,8 +81,8 @@ const char *test_basicminishell_echo5() {
 	std::string command_to_exec = "echo -mnnn hello\n";
 	std::string expected_output = "minishell $ echo -mnnn hello\n-mnnn hello\nminishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-	// my_assert(status == 0, "Minishell exited with non-zero status");
-	// my_assert(pass, "Output is not as expected");
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
 	debug("command_to_exec: %s", command_to_exec.c_str());
 	debug("expected_output: %s", expected_output.c_str());
 	debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -99,8 +96,8 @@ const char *test_basicminishell_echo6() {
 	std::string command_to_exec = "echo $NonExistingVar\n";
 	std::string expected_output = "minishell $ echo $NonExistingVar\n\nminishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-	// my_assert(status == 0, "Minishell exited with non-zero status");
-	// my_assert(pass, "Output is not as expected");
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
 	debug("command_to_exec: %s", command_to_exec.c_str());
 	debug("expected_output: %s", expected_output.c_str());
 	debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -117,8 +114,8 @@ const char *test_basicminishell_echo7() {
 		std::string my_home = getenv("HOME");
 		std::string expected_output = "minishell $ echo $HOME\n" + my_home + "\nminishell $ exit\n";
 		int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-		// my_assert(status == 0, "Minishell exited with non-zero status");
-		// my_assert(pass, "Output is not as expected");
+		my_assert(status == 0, "Minishell exited with non-zero status");
+		my_assert(pass, "Output is not as expected");
 		debug("command_to_exec: %s", command_to_exec.c_str());
 		debug("expected_output: %s", expected_output.c_str());
 		debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -133,8 +130,8 @@ const char *test_basicminishell_echo8() {
 		std::string command_to_exec = "echo $HOMe\n";
 		std::string expected_output = "minishell $ echo $HOMe\n\nminishell $ exit\n";
 		int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-		// my_assert(status == 0, "Minishell exited with non-zero status");
-		// my_assert(pass, "Output is not as expected");
+		my_assert(status == 0, "Minishell exited with non-zero status");
+		my_assert(pass, "Output is not as expected");
 		debug("command_to_exec: %s", command_to_exec.c_str());
 		debug("expected_output: %s", expected_output.c_str());
 		debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -153,8 +150,8 @@ const char *test_basicminishell_echo9() {
 		std::string my_home = getenv("HOME");
 		std::string expected_output = "minishell $ echo ~\n" + my_home + "\nminishell $ exit\n";
 		int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-		// my_assert(status == 0, "Minishell exited with non-zero status");
-		// my_assert(pass, "Output is not as expected");
+		my_assert(status == 0, "Minishell exited with non-zero status");
+		my_assert(pass, "Output is not as expected");
 		debug("command_to_exec: %s", command_to_exec.c_str());
 		debug("expected_output: %s", expected_output.c_str());
 		debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -169,8 +166,8 @@ const char *test_basicminishell_echo10() {
 	std::string my_path = getenv("PATH");
 	std::string expected_output = "minishell $ echo $PATH\n" + my_path + "\nminishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-	// my_assert(status == 0, "Minishell exited with non-zero status");
-	// my_assert(pass, "Output is not as expected");
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
 	debug("command_to_exec: %s", command_to_exec.c_str());
 	debug("expected_output: %s", expected_output.c_str());
 	debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -183,8 +180,8 @@ const char *test_basicminishell_echo11() {
 	std::string command_to_exec = "echo -n hello\n";
 	std::string expected_output = "minishell $ echo -n hello\nhellominishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-	// my_assert(status == 0, "Minishell exited with non-zero status");
-	// my_assert(pass, "Output is not as expected");
+	my_assert(status == 0, "Minishell exited with non-zero status");
+	my_assert(pass, "Output is not as expected");
 	debug("command_to_exec: %s", command_to_exec.c_str());
 	debug("expected_output: %s", expected_output.c_str());
 	debug("status: %d and pass %s", status, pass ? "true" : "false");
@@ -276,7 +273,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
         close(pipefd_out[1]);
         close(pipefd_in[0]);
 		
-		// if (!isRunningOnGitHubActions())
+		if (!isRunningOnGitHubActions())
 			usleep(3000);
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
@@ -284,7 +281,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
 		
-		// if (!isRunningOnGitHubActions())
+		if (!isRunningOnGitHubActions())
 			usleep(3000);
 
         char buffer[1024];

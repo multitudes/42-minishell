@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 07:51:00 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/10 18:36:59 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ bool	add_parenthesisblock(t_mini_data *data, int *i, char delim, int t_type)
 		advance(i);
 	}
 	if (count != 0)
-		return (scanner_error(data, "error: unclosed expression"));
+		return (scanner_error(data, "minishell: syntax error: unexpected end of file"));
 	if (is_empty_parenthesis(data->input, *i, start))
-		return (scanner_error(data, "error: empty expression"));
+		return (scanner_error(data, "minishell: syntax error near unexpected token ')'"));
 	tmp = ft_substr(data->input, start, *i - start);
 	add_token(data, &start, tmp, t_type);
 	*i = start;
