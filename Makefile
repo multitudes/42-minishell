@@ -89,6 +89,9 @@ tests:
 tests_integration:
 	$(MAKE) -C tests_integration
 
+monkey:
+	sh monkey_tests/monkey.sh
+
 .PHONY: all clean fclean re tests tests_integration
 
 # This regex has been created by the maintainer of a http server 

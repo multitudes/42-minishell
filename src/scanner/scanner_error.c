@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:07:56 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 08:00:41 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/10 15:25:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ bool	scanner_error(t_mini_data *data, char *err_str)
 {
 	write(2, err_str, ft_strlen(err_str));
 	data->scanner_err_str = err_str;
-	data->scanner_error = 1;
+	data->scanner_error = 2;
 	return (true);
 }
 
