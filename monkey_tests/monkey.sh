@@ -16,34 +16,34 @@ generate_any_string() {
 	echo "$result"
 }
 
-echo "Test with random ASCII string" >>monkey_tests/ascii_string.txt 2>&1
-echo  >>monkey_tests/ascii_string.txt 2>&1
+echo "Test with random ASCII string" | tee -a monkey_tests/ascii_string.txt monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt >/dev/null 2>&1
+echo | tee -a monkey_tests/ascii_string.txt monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt 2>&1
 
 for i in {1..10}
 do
 	ascii_string=$(generate_any_string) 
-	echo "Testing: >>>>>>>>>>>>>>>>>>>>>>>>>\n " \
-	$ascii_string >>monkey_tests/ascii_string.txt monkey_tests/monkeyminishell.txt 2>&1
+	echo "Testing: >>>>>>>>>>>>>>>>>>>>>>>>> " 	$ascii_string | tee -a monkey_tests/ascii_string.txt monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt >/dev/null 2>&1
 
 	./minishell -c "$ascii_string" >>monkey_tests/monkeyminishell.txt 2>&1
 	echo "Exit status minishell: $?" >>monkey_tests/monkeyminishell.txt 2>&1
-	echo >>monkey_tests/monkeyminishell.txt 2>&1
-	./bash -c "$ascii_string" >>monkey_tests/monkeybash.txt 2>&1
-	echo "Exit status bash: $?" >>monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt 2>&1
+	echo  >>monkey_tests/monkeyminishell.txt 2>&1
+	bash -c "$ascii_string" >>monkey_tests/monkeybash.txt 2>&1
+	echo "Exit status bash: $?" | tee -a monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt 2>&1
 done
 
-echo "Test with command prepended" >>monkey_tests/monkeybash.txt, monkey_tests/monkeyminishell.txt 2>&1
+echo "Test with command prepended" | tee -a  monkey_tests/ascii_string.txt monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt 2>&1
 for i in {1..10}
 do
 	random_command="cat"
-	echo $random_command >>monkey_tests/monkeyminishell.txt 2>&1
-	echo "/n" >>monkey_tests/monkeyminishell.txt 2>&1
+	echo "Command: " $random_command | tee -a monkey_tests/monkeybash.txt  monkey_tests/monkeyminishell.txt 2>&1
+	echo "/n" |tee -a monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt >:w
+    2>&1
 	random_command=$(generate_any_string) 
-	echo $ascii_string >>monkey_tests/ascii_string.txt, monkey_tests/monkeyminishell.txt 2>&1
+	echo $ascii_string | tee -a monkey_tests/ascii_string.txt monkey_tests/monkeyminishell.txt 2>&1
 
 	./minishell -c "$random_command $any_string" >>monkey_tests/monkeyminishell.txt 2>&1
 	echo "Exit status minishell: $?" >>monkey_tests/monkeyminishell.txt 2>&1
-	./bash -c "$random_command $any_string" >>monkey_tests/monkeybash.txt, monkey_tests/monkeyminishell.txt 2>&1
-	echo "Exit status bash: $?" >>monkey_tests/monkeybash.txt, monkey_tests/monkeyminishell.txt 2>&1
+	bash -c "$random_command $any_string" monkey_tests/monkeybash.txt 2>&1
+	echo "Exit status bash: $?" | tee -a monkey_tests/monkeybash.txt, monkey_tests/monkeyminishell.txt 2>&1
 
 done
