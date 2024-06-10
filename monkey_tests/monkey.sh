@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # call from the root folder of minishell ex : ./monkey_tests/monkey.sh
+# created with help of copilot 🤷🏻‍♂️🤷🏻‍♂️
+
 
 generate_any_string() {
 	local chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_``{|}~"
@@ -14,44 +16,34 @@ generate_any_string() {
 	echo "$result"
 }
 
+echo "Test with random ASCII string" >>monkey_tests/ascii_string.txt 2>&1
+echo  >>monkey_tests/ascii_string.txt 2>&1
 
-# Test with random ASCII string
 for i in {1..10}
 do
-	ascii_string=$(generate_any_string) 2>monkey_tests/ascii_string.txt
-	echo "String: $ascii_string"
+	ascii_string=$(generate_any_string) 
+	echo "Testing: >>>>>>>>>>>>>>>>>>>>>>>>>\n " \
+	$ascii_string >>monkey_tests/ascii_string.txt monkey_tests/monkeyminishell.txt 2>&1
 
-	./minishell -c "$ascii_string"
-	echo "Exit status minishell: $?"
-	./bash -c "$ascii_string" 2>monkey_tests/bash_ascii_string.txt
-	echo "Exit status bash: $?"
+	./minishell -c "$ascii_string" >>monkey_tests/monkeyminishell.txt 2>&1
+	echo "Exit status minishell: $?" >>monkey_tests/monkeyminishell.txt 2>&1
+	echo >>monkey_tests/monkeyminishell.txt 2>&1
+	./bash -c "$ascii_string" >>monkey_tests/monkeybash.txt 2>&1
+	echo "Exit status bash: $?" >>monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt 2>&1
 done
 
-echo ""
-
-# Test with any kind of characters
-for i in {1..10}
-do
-	any_string=$(generate_any_string)
-	./minishell -c "$any_string" 2>monkey_tests/any_string.txt
-
-	echo "String test: $any_string"
-	echo "Exit status minishell: $?"
-	bash -c "$any_string" 2>monkey_tests/bashany_string.txt
-	echo "Exit status bash: $?"
-done
-
-echo ""
-
-# Test with random command prepended
+echo "Test with command prepended" >>monkey_tests/monkeybash.txt, monkey_tests/monkeyminishell.txt 2>&1
 for i in {1..10}
 do
 	random_command="cat"
-	any_string=$(generate_any_string)
-	echo "String: $random_command $any_string"
+	echo $random_command >>monkey_tests/monkeyminishell.txt 2>&1
+	echo "/n" >>monkey_tests/monkeyminishell.txt 2>&1
+	random_command=$(generate_any_string) 
+	echo $ascii_string >>monkey_tests/ascii_string.txt, monkey_tests/monkeyminishell.txt 2>&1
 
-	./minishell -c "$random_command $any_string" 2>monkey_tests/minishell_random_command.txt
-	echo "Exit status minishell: $?"
-	bash -c "$random_command $any_string" 2>monkey_tests/random_command.txt
-	echo "Exit status bash: $?"
+	./minishell -c "$random_command $any_string" >>monkey_tests/monkeyminishell.txt 2>&1
+	echo "Exit status minishell: $?" >>monkey_tests/monkeyminishell.txt 2>&1
+	./bash -c "$random_command $any_string" >>monkey_tests/monkeybash.txt, monkey_tests/monkeyminishell.txt 2>&1
+	echo "Exit status bash: $?" >>monkey_tests/monkeybash.txt, monkey_tests/monkeyminishell.txt 2>&1
+
 done

@@ -118,8 +118,6 @@ const char* test_unset_read_only_UID2() {
 }
 
 
-
-
 /*
 access righhts on files
 */
