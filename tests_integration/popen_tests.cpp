@@ -13,11 +13,14 @@
 #include <array>
 #include <sstream>
 
+// forward declaration
+bool isRunningOnGitHubActions();
 
 /*
 util function to read from minishell using the popen call and the single command mode
 */
-uint8_t run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result) {
+uint8_t run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result) 
+{
     debug("running test_popen\n");
     fflush(stdout);
 
@@ -51,7 +54,8 @@ uint8_t run_command_and_check_output(const std::string& command_to_exec, std::os
 }
 
 
-const char* test_popen() {
+const char* test_popen() 
+{
 
     debug("running test_popen\n");
     fflush(stdout);
@@ -70,7 +74,8 @@ const char* test_popen() {
 more minishell tests.
 test echo -n -nnn hello -n
 */
-const char* test_echo() {
+const char* test_echo() 
+{
 
     debug("running test_popen\n");
     fflush(stdout);
@@ -89,8 +94,8 @@ const char* test_echo() {
 print the value of the HOME environment variable
 
 */
-const char* test_echo2() {
-
+const char* test_echo2() 
+{
     debug("running test_popen\n");
     fflush(stdout);
 	// get the value of the HOME environment variable
@@ -125,7 +130,8 @@ const char* test_echo2() {
 print the value of the HOME environment variable
 
 */
-const char* test_echo3() {
+const char* test_echo3() 
+{
 
     debug("running test_popen\n");
     fflush(stdout);
@@ -163,8 +169,13 @@ const char *all_tests()
 	run_test(test_echo2);
 	run_test(test_echo3);
 
-
 	return NULL;
 }
 
 RUN_TESTS(all_tests);
+
+bool isRunningOnGitHubActions() 
+{
+	const char* github_actions = std::getenv("GITHUB_ACTIONS");
+	return github_actions != NULL && strcmp(github_actions, "true") == 0;
+}

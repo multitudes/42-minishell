@@ -13,7 +13,7 @@
 
 // forward declaration
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
-
+bool isRunningOnGitHubActions();
 
 /*
 bool    read_only_variable(const char *key)
@@ -60,7 +60,8 @@ RUN_TESTS(all_tests);
 
 
 
-int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass) {
+int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass) 
+{
 	// seen from the point of you of the child process. pipefd_in is the input to the child process
 	// and pipefd_out is the output of the child process
 	int status;
@@ -102,18 +103,23 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 
         execl("../minishell", "minishell", (char*) NULL);
         exit(EXIT_FAILURE);
-    } else {
+    }
+	else
+	{
 		// The parent will write to pipefd_in[1] and read from pipefd_out[0]
         close(pipefd_out[1]);
         close(pipefd_in[0]);
-		usleep(3000);
-        write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
+
+		if (!isRunningOnGitHubActions())
+			usleep(3000);
+		
+		write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
 
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
-		usleep(3000);
-
+		if (!isRunningOnGitHubActions())
+			usleep(3000);
         char buffer[1024];
         int n = read(pipefd_out[0], buffer, sizeof(buffer));
         buffer[n] = '\0';
@@ -138,4 +144,11 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 			exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
 		return exit_status;
 	}
+}
+
+
+bool isRunningOnGitHubActions() 
+{
+    const char* githubActions = std::getenv("GITHUB_ACTIONS");
+    return githubActions != nullptr && githubActions == std::string("true");
 }

@@ -13,8 +13,7 @@
 
 // forward declaration
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
-
-
+bool isRunningOnGitHubActions(); 
 
 
 const char *test_basicminishell_echo() {
@@ -30,6 +29,7 @@ const char *test_basicminishell_echo() {
 
 	return NULL;
 }
+
 
 const char *test_basicminishell_echo2() {
 	bool pass = false;
@@ -90,7 +90,6 @@ const char *test_basicminishell_echo5() {
 	return NULL;
 }
 
-//echo $NonExistingVar
 
 const char *test_basicminishell_echo6() {
 	bool pass = false;
@@ -105,6 +104,7 @@ const char *test_basicminishell_echo6() {
 
 	return NULL;
 }
+
 
 const char *test_basicminishell_echo7() {
 	if (getenv("HOME") != NULL)
@@ -272,13 +272,17 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		// The parent will write to pipefd_in[1] and read from pipefd_out[0]
         close(pipefd_out[1]);
         close(pipefd_in[0]);
-		usleep(3000);
+		
+		if (!isRunningOnGitHubActions())
+			usleep(3000);
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
 
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
-		usleep(3000);
+		
+		if (!isRunningOnGitHubActions())
+			usleep(3000);
 
         char buffer[1024];
         int n = read(pipefd_out[0], buffer, sizeof(buffer));
@@ -304,4 +308,11 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 			exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
 		return exit_status;
 	}
+}
+
+
+bool isRunningOnGitHubActions() 
+{
+    const char* githubActions = std::getenv("GITHUB_ACTIONS");
+    return githubActions != nullptr && githubActions == std::string("true");
 }

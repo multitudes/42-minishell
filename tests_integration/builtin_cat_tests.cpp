@@ -11,15 +11,16 @@
 #include <string>
 #include <cstring>
 
-// forward declaration
+// forward declarations
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
-
+bool isRunningOnGitHubActions();
 
 /*
 check for cat -u
 input 123 then 123 followed by EOF and then EOF again
 */
-const char* test_basicminishell_cat() {
+const char* test_basicminishell_cat() 
+{
 
 	bool pass = false;
 	std::string command_to_exec = "cat -u\n123\n123\x04\n\x04\n";
@@ -73,7 +74,8 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
     if (pid == -1)
 		return (-1);
     
-    else if (pid == 0) {
+    else if (pid == 0) 
+	{
 		// The child will read from pipefd_in[0] and write to pipefd_out[1]
 
 		// I need to duplicate the file descriptors to the standard input and output
@@ -95,17 +97,24 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 
         execl("../minishell", "minishell", (char*) NULL);
         exit(EXIT_FAILURE);
-    } else {
+    } 
+	else 
+	{
 		// The parent will write to pipefd_in[1] and read from pipefd_out[0]
         close(pipefd_out[1]);
         close(pipefd_in[0]);
-		usleep(3000);
+
+		if (!isRunningOnGitHubActions())
+			usleep(3000);
+
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
 
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
-		usleep(3000);
+
+		if (!isRunningOnGitHubActions())
+			usleep(3000);
 
         char buffer[1024];
         int n = read(pipefd_out[0], buffer, sizeof(buffer));
@@ -131,4 +140,10 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 			exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
 		return exit_status;
 	}
+}
+
+bool isRunningOnGitHubActions() 
+{
+    const char* githubActions = std::getenv("GITHUB_ACTIONS");
+    return githubActions != nullptr && githubActions == std::string("true");
 }

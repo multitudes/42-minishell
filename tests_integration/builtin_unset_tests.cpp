@@ -244,3 +244,9 @@ bool make_directory_read_only(const std::string& path) {
 
     return true;
 }
+
+bool isRunningOnGitHubActions() 
+{
+	const char* github_actions = std::getenv("GITHUB_ACTIONS");
+	return github_actions != NULL && strcmp(github_actions, "true") == 0;
+}
