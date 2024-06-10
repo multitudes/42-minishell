@@ -110,7 +110,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
         close(pipefd_out[1]);
         close(pipefd_in[0]);
 
-		if (!isRunningOnGitHubActions())
+		// if (!isRunningOnGitHubActions())
 			usleep(3000);
 
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
@@ -119,7 +119,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
 
-		if (!isRunningOnGitHubActions())
+		// if (!isRunningOnGitHubActions())
 			usleep(3000);
 
         char buffer[1024];
