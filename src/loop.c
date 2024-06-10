@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/10 15:28:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/10 18:22:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -379,6 +379,12 @@ int single_command(const char *input)
 			}
 			else
 				debug("syntax parse error");
+		}
+		else
+		{
+			free((char *)(data->input));
+			free_data(&data);
+			exit(2);
 		}
 	}
 	status = data->exit_status;
