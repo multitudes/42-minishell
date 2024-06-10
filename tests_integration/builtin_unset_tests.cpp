@@ -1,43 +1,254 @@
-#!/bin/bash
-# call from the root folder of minishell ex : ./monkey_tests/monkey.sh
-# created with help of copilot 🤷🏻‍♂️🤷🏻‍♂️
-generate_any_string() {
-    local chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_``{|}~"
-    local length=$(( $RANDOM % 11 + 20 ))
-    local result
-    for (( i=0; i<$length; i++ )); do
-        result="${result:+$result}${chars:$(( $RANDOM % ${#chars} )):1}"
-    done
-    
-    echo "$result"
+#include <sys/stat.h>
+#include "razorclam_tests.h"
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <cassert>
+#include <unistd.h>
+#include <sys/wait.h>
+#include "../include/minishell.h"
+#include <fstream>
+
+#include <string>
+#include <cstring>
+
+// forward declaration
+int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
+
+bool make_directory_read_only(const std::string& path);
+
+/*
+bool    read_only_variable(const char *key)
+{
+    if (ft_strncmp(key, "PPID", 5) == 0)
+        return (true);
+    else if (ft_strncmp(key, "EUID", 5) == 0)
+        return (true);
+    else if (ft_strncmp(key, "UID", 4) == 0)
+        return (true);
+    else
+        return (false);
+}
+tests will be exit 0 because bash doesnt care for a var named "PPID=123"!
+*/
+const char* test_unset_read_only() {
+	make_directory_read_only(".non_read_test_dir");
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset PPID=123\n", \
+	"minishell $ unset PPID=123\n", &pass);
+	debug("exit_status: %d", exit_status);
+	my_assert(pass, "pass is not as expected");
+	// assert(exit_status == 0);
+
+	return NULL;
 }
 
-echo "Test with random ASCII string" | tee -a monkey_tests/ascii_string.txt monkey_tests/monkeyminishell.txt >/dev/null 2>&1
-echo  | tee -a monkey_tests/ascii_string.txt monkey_tests/monkeyminishell.txt >/dev/null 2>&1
 
-for i in {1..10}
-do
-    ascii_string=$(generate_any_string) 
-    echo -e "Testing: >>>>>>>>>>>>>>>>>>>>>>>>>\n $ascii_string" | tee -a monkey_tests/ascii_string.txt monkey_tests/monkeyminishell.txt >/dev/null 2>&1
 
-    ./minishell -c "$ascii_string" >>monkey_tests/monkeyminishell.txt 2>&1
-    echo "Exit status minishell: $?" >>monkey_tests/monkeyminishell.txt 2>&1
-    echo | tee -a monkey_tests/monkeyminishell.txt >/dev/null 2>&1
-    ./bash -c "$ascii_string" >>monkey_tests/monkeybash.txt 2>&1
-    echo "Exit status bash: $?" | tee -a monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt >/dev/null 2>&1
-done
+const char* test_unset_read_only_EUID() {
+	bool pass = false;
 
-echo "Test with command prepended" | tee -a monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt >/dev/null 2>&1
+	// test export read only
+	int exit_status = run_command_and_check_output("unset EUID=123\n", \
+	"minishell $ unset EUID=123\n", &pass);
+	my_assert(pass, "pass is not as expected");
+	debug("exit_status: %d", exit_status);	
+	// assert(exit_status == 0);
+	
+	return NULL;
+}
 
-for i in {1..10}
-do
-    random_command="cat"
-    echo $random_command >>monkey_tests/monkeyminishell.txt 2>&1
-    echo -e "\n" >>monkey_tests/monkeyminishell.txt 2>&1
-    random_command=$(generate_any_string)
-    echo $ascii_string | tee -a monkey_tests/ascii_string.txt monkey_tests/monkeyminishell.txt >/dev/null 2>&1
-    ./minishell -c "$random_command $any_string" >>monkey_tests/monkeyminishell.txt 2>&1
-    echo "Exit status minishell: $?" >>monkey_tests/monkeyminishell.txt 2>&1
-    ./bash -c "$random_command $any_string" | tee -a monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt >/dev/null 2>&1
-    echo "Exit status bash: $?" | tee -a monkey_tests/monkeybash.txt monkey_tests/monkeyminishell.txt >/dev/null 2>&1
-done
+const char* test_unset_read_only_UID() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset UID=123\n", \
+	"minishell $ unset UID=123\n", &pass);
+	debug("exit_status: %d", exit_status);
+	my_assert(pass, "pass is not as expected");
+	// assert(exit_status == 0);
+
+	return NULL;
+}
+
+
+/*
+these tests will pass but exit with status 1 because the variable is read only
+
+*/
+const char* test_unset_read_only2() {
+	make_directory_read_only(".non_read_test_dir");
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset PPID\n", "minishell $ unset PPID\n", &pass);
+	debug("exit_status: %d", exit_status);
+	my_assert(pass, "pass is not as expected");
+	// assert(exit_status == 1);
+
+	return NULL;
+}
+
+
+
+const char* test_unset_read_only_EUID2() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset EUID\n", \
+	"minishell $ unset EUID\n", &pass);
+	debug("exit_status: %d", exit_status);	
+	my_assert(pass, "pass is not as expected");
+	// assert(exit_status == 1);
+	return NULL;
+}
+
+const char* test_unset_read_only_UID2() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset UID\n", \
+	"minishell $ unset UID\n", &pass);
+	debug("exit_status: %d", exit_status);																																
+	my_assert(pass, "pass is not as expected");
+	// assert(exit_status == 1);
+	return NULL;
+}
+
+
+/*
+access righhts on files
+*/
+const char *all_tests()
+{
+	// necessary to start the test suite
+	suite_start();
+	
+	// run the tests
+	run_test(test_unset_read_only);
+	run_test(test_unset_read_only_EUID);
+	run_test(test_unset_read_only_UID);
+	run_test(test_unset_read_only2);
+	run_test(test_unset_read_only_EUID2);
+	run_test(test_unset_read_only_UID2);
+
+	
+	
+	return NULL;
+}
+
+// works as a main
+RUN_TESTS(all_tests);
+
+
+
+
+int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass) {
+	// seen from the point of you of the child process. pipefd_in is the input to the child process
+	// and pipefd_out is the output of the child process
+	int status;
+	uint8_t	exit_status;
+	int pipefd_in[2];
+    int pipefd_out[2]; 
+
+	// create the pipes
+    if (pipe(pipefd_in) == -1)
+        return -1;
+    if (pipe(pipefd_out) == -1)
+        return (-1);
+
+	// create a child process	
+    pid_t pid = fork();
+    if (pid == -1)
+		return (-1);
+    
+    else if (pid == 0) {
+		// The child will read from pipefd_in[0] and write to pipefd_out[1]
+
+		// I need to duplicate the file descriptors to the standard input and output
+        dup2(pipefd_in[0], STDIN_FILENO); 
+        close(pipefd_in[0]);
+        dup2(pipefd_out[1], STDOUT_FILENO);
+        close(pipefd_out[1]);
+
+		// close the other ends of the pipes - child writes to pipefd_out[1]
+		// which is now his stdout, so I could close pipefd_out[0]
+		// but this gives me an error. I think this has to be closed by the process that 
+		// is exiting... because if I write to a pipe that has no reader, the process will
+		// receive a SIGPIPE signal and be killed. Race condition. the reader in the parent is not
+		// ready to receive the child output? 
+		// close(pipefd_out[0]);
+
+		// close the other ends of the pipes - child reads from pipefd_in[0]
+		// so I close pipefd_in[1] 
+		close(pipefd_in[1]);
+
+        execl("../minishell", "minishell", (char*) NULL);
+        exit(EXIT_FAILURE);
+    } else {
+		// The parent will write to pipefd_in[1] and read from pipefd_out[0]
+        close(pipefd_out[1]);
+        close(pipefd_in[0]);
+		usleep(3000);
+        write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
+        // write(pipefd_in[1], "\x04", 1);
+
+		// close pipefd_in after use to send the eof
+		close(pipefd_in[1]);
+		usleep(3000);
+
+        char buffer[1024];
+        int n = read(pipefd_out[0], buffer, sizeof(buffer));
+        buffer[n] = '\0';
+       	debug("output: -%s-", buffer);
+        
+
+        if (strcmp(buffer, expected_output.c_str()) == 0)
+			*pass = true;
+		debug("pass: %s", *pass ? "true" : "false");
+		
+		// clean up closing the file descriptors that I used
+		close(pipefd_out[0]);
+		
+		// this is the proper way to get the exit status of the child process
+		exit_status = 0;
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status)) /* child exited normally */
+			exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status)) /* child exited on a signal */
+			exit_status = WTERMSIG(status) + 128; /* 128 is the offset for signals */
+		else
+			exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
+		return exit_status;
+	}
+}
+
+
+bool make_directory_read_only(const std::string& path) {
+    // Check if directory already exists
+    if (access(path.c_str(), F_OK) == -1) {
+        // If not, create it
+        if (mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1) {
+            // handle error, for example print the error message to stderr
+            perror("mkdir");
+            return false;
+        }
+    }
+
+    // Change permissions to read-only
+    if (chmod(path.c_str(), S_IRUSR | S_IRGRP | S_IROTH) == -1) {
+        // handle error, for example print the error message to stderr
+        perror("chmod");
+        return false;
+    }
+
+    return true;
+}
+
+bool isRunningOnGitHubActions() 
+{
+	const char* github_actions = std::getenv("GITHUB_ACTIONS");
+	return github_actions != NULL && strcmp(github_actions, "true") == 0;
+}
