@@ -1,12 +1,9 @@
 #include "razorclam_tests.h"
-#include <iostream>
 #include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../include/minishell.h"
-#include <fstream>
 
 #include <string>
 #include <cstring>
@@ -66,11 +63,11 @@ const char *test_basicminishell_echo4() {
 	std::string command_to_exec = "echo -nnn -nn -mnnn hello\n";
 	std::string expected_output = "minishell $ echo -nnn -nn -mnnn hello\n-mnnn hellominishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+    debug("expected_output: %s", expected_output.c_str());
+    debug("command_to_exec: %s", command_to_exec.c_str());
+    debug("status: %d and pass %s", status, pass ? "true" : "false");
 	my_assert(status == 0, "Minishell exited with non-zero status");
 	my_assert(pass, "Output is not as expected");
-	debug("command_to_exec: %s", command_to_exec.c_str());
-	debug("expected_output: %s", expected_output.c_str());
-	debug("status: %d and pass %s", status, pass ? "true" : "false");
 
 	return NULL;
 }
@@ -274,16 +271,20 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
         close(pipefd_in[0]);
 		
 		if (!isRunningOnGitHubActions())
-			usleep(3000);
+			usleep(5000);
+        else 
+            usleep(2000);
+
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
 
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
 		
-		if (!isRunningOnGitHubActions())
-			usleep(3000);
-
+        if (!isRunningOnGitHubActions())
+            usleep(5000);
+        else 
+            usleep(2000);
         char buffer[1024];
         int n = read(pipefd_out[0], buffer, sizeof(buffer));
         buffer[n] = '\0';

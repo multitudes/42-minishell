@@ -1,13 +1,10 @@
 #include <sys/stat.h>
 #include "razorclam_tests.h"
-#include <iostream>
 #include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../include/minishell.h"
-#include <fstream>
 
 #include <string>
 #include <cstring>
@@ -53,8 +50,8 @@ const char* test_unset_read_only_EUID() {
 	// test export read only
 	int exit_status = run_command_and_check_output("unset EUID=123\n", \
 	"minishell $ unset EUID=123\nminishell $ exit\n", &pass);
+    debug("exit_status: %d", exit_status);
 	my_assert(pass, "pass is not as expected");
-	debug("exit_status: %d", exit_status);	
 	// assert(exit_status == 0);
 	
 	return NULL;
@@ -193,13 +190,13 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		// The parent will write to pipefd_in[1] and read from pipefd_out[0]
         close(pipefd_out[1]);
         close(pipefd_in[0]);
-		usleep(3000);
+		usleep(5000);
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
 
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
-		usleep(3000);
+		usleep(5000);
 
         char buffer[1024];
         int n = read(pipefd_out[0], buffer, sizeof(buffer));

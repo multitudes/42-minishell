@@ -1,13 +1,10 @@
 #include "razorclam_tests.h"
-#include <iostream>
 #include <string>
 #include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../include/minishell.h"
-#include <fstream>
-
 #include <string>
 #include <cstring>
 #include <array>
@@ -35,7 +32,6 @@ uint8_t run_command_and_check_output(const std::string& command_to_exec, std::os
     while (fgets(buffer.data(), buffer.size(), fp) != NULL) {
         result << buffer.data();
     }
-
 
 	int status = pclose(fp);
 	if (status == -1) {
