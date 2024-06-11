@@ -218,7 +218,7 @@ int	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 	debug("export builtin");
 	status = 0;
 	tokenlist = tokenlist->next;
-	if (!tokenlist)
+	if (!tokenlist || !get_token_lexeme(tokenlist))
 		return (print_env_export(env_arr));
 	while (tokenlist)
 	{
