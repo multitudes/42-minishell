@@ -1,12 +1,9 @@
 #include "razorclam_tests.h"
-#include <iostream>
 #include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../include/minishell.h"
-#include <fstream>
 
 #include <string>
 #include <cstring>
@@ -28,7 +25,8 @@ bool    read_only_variable(const char *key)
         return (false);
 }
 */
-const char* test_export_read_only() {
+const char* test_export_read_only() 
+{
 	bool pass = false;
 
 	// test export read only
@@ -85,7 +83,8 @@ const char *all_tests()
 RUN_TESTS(all_tests);
 
 
-int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass) {
+int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass)
+{
 	// seen from the point of you of the child process. pipefd_in is the input to the child process
 	// and pipefd_out is the output of the child process
 	int status;
@@ -103,8 +102,8 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
     pid_t pid = fork();
     if (pid == -1)
 		return (-1);
-    
-    else if (pid == 0) {
+    else if (pid == 0)
+    {
 		// The child will read from pipefd_in[0] and write to pipefd_out[1]
 
 		// I need to duplicate the file descriptors to the standard input and output
@@ -131,7 +130,9 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 
         execl("../minishell", "minishell", (char*) NULL);
         exit(EXIT_FAILURE);
-    } else {
+    }
+    else 
+    {
 		// The parent will write to pipefd_in[1] and read from pipefd_out[0]
         close(pipefd_out[1]);
         close(pipefd_in[0]);

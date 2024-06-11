@@ -1,12 +1,9 @@
 #include "razorclam_tests.h"
-#include <iostream>
 #include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../include/minishell.h"
-#include <fstream>
 
 #include <string>
 #include <cstring>
@@ -79,8 +76,8 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
     pid_t pid = fork();
     if (pid == -1)
 		return (-1);
-    
-    else if (pid == 0) {
+    else if (pid == 0)
+    {
 		// The child will read from pipefd_in[0] and write to pipefd_out[1]
 
 		// I need to duplicate the file descriptors to the standard input and output
@@ -112,15 +109,22 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 
 		if (!isRunningOnGitHubActions())
 			usleep(3000);
-		
+        else
+            usleep(2000);     	
+    
 		write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
 
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
+
 		if (!isRunningOnGitHubActions())
 			usleep(3000);
+        else
+            usleep(2000);     	
+
         char buffer[1024];
+
         int n = read(pipefd_out[0], buffer, sizeof(buffer));
         buffer[n] = '\0';
        	debug("output: -%s-", buffer);
