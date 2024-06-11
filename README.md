@@ -339,6 +339,43 @@ typedef enum e_tokentype {
 	...
 } t_tokentype;
 ```
+
+## Variable names
+Variables names have stricter rules than command or file names. 
+
+They match like in C the regex pattern:
+`[_a-zA-Z][[_0-9a-zA-Z]]*`
+ 
+ex `export [_a-zA-Z][[_0-9a-zA-Z]]*=....`
+so the var name should match the pattern `[_a-zA-Z][[_0-9a-zA-Z]]*` which means, start with letter or underscore and continue with same but allowing digits.
+
+This is also mentioned in the book [crafting interpreters](https://craftinginterpreters.com/scanning.html) chapter 4.3
+
+Therefore this is not possible:
+
+```
+export 234fsd=fjskld
+```
+
+And then we have an illustrative special case below. The expansion mostly happens in bash before the parsing in the tree (if any in bash).  
+- var becomes HOME
+- then when we unset $var because $var was previously expanded we get `unset HOME`
+- when I do `export $var=home/rpriess` it is really `export HOME=home/rpriess` 
+
+```
+lbrusa@c3a4c7:/home/lbrusa/DEV/minishell$ export var=HOME        
+lbrusa@c3a4c7:/home/lbrusa/DEV/minishell$ unset $var             
+lbrusa@c3a4c7:/home/lbrusa/DEV/minishell$ export $var=home/rpriess
+lbrusa@c3a4c7:/home/lbrusa/DEV/minishell$ env                     
+PWD=/home/lbrusa/DEV/minishell
+HOME=home/rpriess
+var=HOME
+SHLVL=1
+PATH=/local/bin:/local/bin:/local/bin:/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+_=/usr/bin/env
+lbrusa@c3a4c7:/home/lbrusa/DEV/minishell$ 
+```
+
 ## Tokens
 ### Metacharacters
 A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
