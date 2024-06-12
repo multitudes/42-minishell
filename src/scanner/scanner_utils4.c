@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:03:58 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:43:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:52:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ bool	is_true_false(t_mini_data *data, char *str, int *start)
 	else if (peek(str, "false", true))
 		add_token(data, start, "false", FALSETOK);
 	else
-		return (false);
+		return (FUZZY);
 	return (true);
 }
 
@@ -54,12 +54,12 @@ cannot start with a 0
 bool	is_io_number(const char *str)
 {
 	if (*str == '0' && is_digit(*(str + 1)))
-		return (false);
+		return (FUZZY);
 	while (is_digit(*str))
 		str++;
 	if (*str == '\0')
 		return (true);
-	return (false);
+	return (FUZZY);
 }
 
 /*
@@ -78,11 +78,11 @@ bool	str_is_number(const char *str)
 		if (*str == '.')
 		{
 			if (dot_seen)
-				return (false);
+				return (FUZZY);
 			dot_seen = 1;
 		}
 		else if (!is_digit(*str))
-			return (false);
+			return (FUZZY);
 		str++;
 	}
 	return (true);
