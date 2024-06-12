@@ -115,46 +115,77 @@ int	count_chars_in_str(char *str, char c)
 	return (count);
 }
 
+int	peek_is_valid_path(char c)
+{
+	if (ft_strchr("\\", c) || c == '\0')
+		return (1);
+	return (0);
+}
+
+int	valid_tilde_separator(char sep, int	equal_valid)
+{
+	if (ft_strchr(":", sep))
+		return (1);
+	else if (sep == '=' && equal_valid == 1)
+		return (1);
+	return (0);
+}
+
 char	*replace_tilde_in_str(char *str, char *home)
 {
+	char	*new_str;
 	int		i;
-	int		j;
-	int		k;
-	char	*exp_str;
-	int		tilde_count;
+	int		equal_sep;
+	char	*pos;
+	char	*front;
+	char	*back;
+	char	*temp;
 
-
+//tilde before '=' will not get replaced.
+//tilde after '=' or when no '=' in string will get replaced, if at first position and valid path char at next position ("/") or end of string
+// or after ":" if also after '=' if valid path char at next position ("/", ":") or end of string
 	i = 0;
-	j = 0;
-	k = 0;
-	exp_str = NULL;
-	tilde_count = count_chars_in_str(str, '~');e
-	debug("replace tilde in str, counted '~': %i", tilde_count);
-	exp_str = ft_calloc(ft_strlen(str) + tilde_count * ft_strlen(home) - tilde_count + 1, sizeof(char));
-	if (!exp_str)
-		return (null_on_err("malloc"));
-	while (str && str[i])
+	equal_sep = 1;
+	new_str = ft_strdup(str);
+	pos = ft_strchr(str, '=');
+	if (!pos)
 	{
-		if (str[i] == '~')
-		{
-			while (home && home[j])
-			{
-				exp_str[k + j] = home[j];
-				j++;
-			}
-			k = k + j - 1;
-			j = 0;
-		}
-		else
-			exp_str[k] = str[i];
-		i++;
-		k++;
+		pos = str;
+		equal_sep = 0;
 	}
-	return (exp_str);
+	else
+		i = pos - str + 1;
+	while (new_str && new_str[i])
+	{
+		if (new_str[i] == '~' && i == 0 && peek_is_valid_path(new_str[i + 1]))
+		{
+			back = ft_strdup(new_str + 1);
+			temp = new_str;
+			new_str = ft_strjoin(home, back);
+			free(back);
+			free(temp);
+			i = ft_strlen(home) - 1;
+		}
+		else if (new_str[i] == '~' && peek_is_valid_path(new_str[i + 1]) && i != 0 && valid_tilde_separator(new_str[i - 1], equal_sep))
+		{
+			front = ft_strndup(new_str, i);
+			back = ft_strdup(new_str + i + 1);
+			equal_sep = 0;
+			temp = new_str;
+			new_str = ft_strjoin3(front, home, back);
+			free(front);
+			free(back);
+			free(temp);
+			i = i + ft_strlen(home) - 1;
+		}
+		i++;
+	}
+	return (new_str);
 }
 
 /*
-Get home from environment or if HOME is unset,
+Get home from environment
+TODO (tbc) in the future: if HOME is unset,
 get HOME through system configuration entries.
 */
 char	*get_home(t_darray *env_arr)
@@ -170,48 +201,113 @@ Expands "~" in pathnames
 */
 void	expand_path(t_darray *env_arr, t_token *token)
 {
-		char	*lexeme;
-		char	*temp;
-		char	*home;
+	char	*lexeme;
+	char	*home;
 
-		debug("expand_path");
-		lexeme = NULL;
-		if (token)
-			lexeme = token->lexeme;
-		home = get_home(env_arr);
-		if (token && token->type == TILDE)
-			temp = home;
-		else if (token && token->type == PATHNAME)
-			temp = replace_tilde_in_str(lexeme, home);
-		else
-			temp = NULL;
-		free(lexeme);
-		token->lexeme = temp;
-		token->type = WORD;
-		debug("Expanded token: %s, type: %i", token->lexeme, token->type);
+	debug("expand_path");
+	if (!token)
+		return ;
+	home = get_home(env_arr);
+	if (token->type == TILDE)
+		lexeme = home;
+	else if (token->type == PATHNAME)
+	{
+		lexeme = replace_tilde_in_str(token->lexeme, home);
+		free(home);
+	}
+	else
+		return ;
+	token->type = WORD;
+	free(token->lexeme);
+	token->lexeme = lexeme;
+	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
+}
+
+/*
+Looks at next char in str. If it is a $,
+then the potential key/var-name is returned.
+'$' followed by invalid var-syntax, returns an empty string.
+Returned key-string needs to be freed.
+*/
+char	*peek_and_get_key(char *str)
+{
+	char	*end;
+
+	if (!str)
+		return (NULL);
+	if (str && *(str + 1) != '$')
+		return (NULL);
+	end = str + 2;
+	if (*end && ft_strchr("_a-zA-Z", *end))
+		end++;
+	else
+		return (ft_strdup(""));
+	while (*end && ft_strchr("_0-9a-zA-Z", *end))
+		end++;
+	return (ft_strndup(str + 2, (size_t)(end - (str + 2))));
+}
+
+/*
+In a token lexeme replaces all $-indicated variables
+with their respective values
+or with empty string if not existing.
+Returns the new lexeme, which must be freed.
+*/
+char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
+{
+	int		i;
+	char	*new_lexeme;
+	char	*key_value;
+	char	*key;
+	char	*temp;
+	char	*temp2;
+	char	*temp3;
+
+	i = 0;
+	new_lexeme = ft_strdup(lexeme);
+	key = NULL;
+	while (new_lexeme && new_lexeme[i])
+	{
+		key = peek_and_get_key(new_lexeme + i);
+		if (key != NULL)
+		{
+			if (ft_strlen(key) == 0)
+				key_value = NULL;
+			else
+				key_value = mini_get_env(env_arr, key + 1);
+			temp = ft_strndup(new_lexeme, i + 1);
+			temp2 = ft_strdup(new_lexeme + i + ft_strlen(key) + 2);
+			temp3 = new_lexeme;
+			new_lexeme = ft_strjoin3(temp, key_value, temp2);
+			i = i + ft_strlen(key_value);
+			free(temp);
+			free(temp2);
+			free(temp3);
+			free(key);
+		}
+		i++;
+	}
+	return (new_lexeme);
 }
 
 /*
 Used to expand variables, indicated by "$".
 */
-void	expand_variable(t_darray *env_arr, t_token *token)
+void	expand_dollar(t_darray *env_arr, t_token *token)
 {
-		char	*var;
-		char	*temp;
+	char	*var;
 
-		debug("expand_variable");
-		if (token)
-			var = token->lexeme;
-		else
-			return ;
-		if (mini_get_env(env_arr, var + 1))
-			temp = ft_strdup(mini_get_env(env_arr, var + 1));
-		else
-			temp = NULL;
-		free(var);
-		token->lexeme = temp;
-		token->type = WORD;
-		debug("Expanded token: %s, type: %i", token->lexeme, token->type);
+	debug("expand_dollar");
+	if (!token)
+		return ;
+	token->type = WORD;
+	if (token->lexeme && ft_strchr(token->lexeme, '$'))
+	{
+		var = replace_dollar_vars(env_arr, token->lexeme);
+		free(token->lexeme);
+		token->lexeme = var;
+	}
+	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
 void	read_exit_status(t_data *data, t_token *token)
@@ -230,12 +326,17 @@ void	read_exit_status(t_data *data, t_token *token)
 
 void	extract_string(t_token *token)
 {
+	char	*lexeme;
+
 	debug("extract_string");
 	if (token)
 	{
-		ft_strlcpy(token->lexeme, (const char *)token->lexeme + 1, ft_strlen(token->lexeme) - 1);
+		lexeme = ft_strtrim(token->lexeme, "'"); 
+		free(token->lexeme);
+		token->lexeme = lexeme;
 		token->type = WORD;
 	}
+	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
 void	expand_string(t_data *data, t_token *token)
@@ -249,7 +350,7 @@ void	expand_string(t_data *data, t_token *token)
 	unquoted_lexeme = NULL;
 	if (!token)
 		return ;
-	unquoted_lexeme = ft_strtrim(token->lexeme, "\""); // check, is this behaves well, when we have strings like "\"djklfjsdl\"" or ""dkldfj";
+	unquoted_lexeme = ft_strtrim(token->lexeme, "\""); // this does not behave well, when we have strings like "\"djklfjsdl\"" or ""dkldfj" as escape characters and unclosed quotes are not handled ;
 	free(token->lexeme);
 	token->lexeme = NULL;
 	if (!ft_strchr(unquoted_lexeme, '$'))
@@ -263,9 +364,7 @@ void	expand_string(t_data *data, t_token *token)
 	while (string_tokens)
 	{
 		if (get_token_type(string_tokens) == VAR_EXPANSION)
-			expand_variable(data->env_arr, get_curr_token(string_tokens));
-//		if (get_token_type(string_tokens) == TILDE)
-//			expand_variable(data->env_arr, get_curr_token(string_tokens));
+			expand_dollar(data->env_arr, get_curr_token(string_tokens));
 		else if (get_token_type(string_tokens) == DOLLAR_QUESTION)
 			read_exit_status(data, get_curr_token(string_tokens));
 		temp_lexeme = token->lexeme;
@@ -275,6 +374,7 @@ void	expand_string(t_data *data, t_token *token)
 	}
 	ft_lstclear(&ptr_token_list, free_tokennode); //free_tokennode function is from scanner.h
 	token->type = WORD;
+	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
 /*
@@ -300,16 +400,18 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	while (tokenlist)
 	{
 		debug("Token type: %d ast node type: %d lexeme: %s", get_token_type(tokenlist), ast->type, get_token_lexeme(tokenlist));
-		if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
+		// if export do ~ expansion according to rules (expansion after '=' and ':' if valid path) for all tokens in tokenlist
+		// if echo do ~ expansion if valid path
+		if (get_token_type(tokenlist) == S_QUOTED_STRING)
+			extract_string(get_curr_token(tokenlist));
+		else if (get_token_type(tokenlist) == QUOTED_STRING)
+			expand_string(data, get_curr_token(tokenlist));
+		else if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
 			expand_path(data->env_arr, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == VAR_EXPANSION)
-			expand_variable(data->env_arr, get_curr_token(tokenlist));
+			expand_dollar(data->env_arr, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist)  == DOLLAR_QUESTION)
 			read_exit_status(data, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist)  == S_QUOTED_STRING)
-			extract_string(get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist)  == QUOTED_STRING)
-			expand_string(data, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == GLOBBING)
 			expand_globbing(tokenlist);
 		else
