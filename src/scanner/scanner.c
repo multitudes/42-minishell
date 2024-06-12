@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:28:18 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 15:19:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "debug.h"
 #include "utils.h"
 
-//peek(data.input + i, "#", false))
+//peek(data.input + i, "#", FUZZY))
 int skip_space(t_list *tokenlist, const char* input, int *i)
 {
 	debug("skip_space");
@@ -51,7 +51,7 @@ t_list	*tokenizer(const char *input)
 		return (NULL);
 	while (i < (int)ft_strlen(data.input) && !data.scanner_error)
 	{
-		if (peek(data.input + i, "#", false))
+		if (peek(data.input + i, "#", FUZZY))
 			break ;
 		else if (got_tokens(&data, &i))
 			continue ;
@@ -87,7 +87,7 @@ t_list	*string_tokenizer(const char *input)
 		return (NULL);
 	while (i < (int)ft_strlen(data.input) && data.scanner_error == 0)
 	{
-		if (peek(data.input + i, "$", false))
+		if (peek(data.input + i, "$", FUZZY))
 		{
 			if (i > start)
 			{
@@ -130,14 +130,14 @@ t_list	*string_tokenizer(const char *input)
 
 /*
 create a lexeme for flag in this conf -[a-zA-Z]
-else if (peek((data->input + i), "-", false) && is_alpha(data->input[i + 1]))
+else if (peek((data->input + i), "-", FUZZY) && is_alpha(data->input[i + 1]))
 */
 bool	is_a_flag(t_mini_data *data, int *i)
 {
 	int		start;
 	char	*tmp;
 
-	if (peek(data->input + *i, "-", false) && is_alpha(data->input[*i + 1]))
+	if (peek(data->input + *i, "-", FUZZY) && is_alpha(data->input[*i + 1]))
 	{
 		start = (*i)++;
 		while (data->input[*i] && is_alpha(data->input[*i]))
@@ -153,13 +153,13 @@ bool	is_a_flag(t_mini_data *data, int *i)
 
 bool	is_some_semicolons(t_mini_data *data, int *i)
 {
-	if (peek(data->input + *i, ";;&", false))
+	if (peek(data->input + *i, ";;&", FUZZY))
 		return (add_token(data, i, ";;&", DSEMI_AND));
-	else if (peek(data->input + *i, ";;", false))
+	else if (peek(data->input + *i, ";;", FUZZY))
 		return (add_token(data, i, ";;", DSEMI));
-	else if (peek(data->input + *i, ";", false))
+	else if (peek(data->input + *i, ";", FUZZY))
 		return (add_token(data, i, ";", SEMI));
-	else if (peek(data->input + *i, "!", true))
+	else if (peek(data->input + *i, "!", EXACT))
 		return (add_token(data, i, "!", BANG));
 	else
 		return (false);
