@@ -6,11 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/10 15:24:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:28:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
+#include "debug.h"
+#include "utils.h"
 
 //peek(data.input + i, "#", false))
 int skip_space(t_list *tokenlist, const char* input, int *i)

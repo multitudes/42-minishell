@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 13:23:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:28:25 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 
 extern "C" {
 # endif
+
+#include <stdbool.h>
+#include <libft.h>
 
 /*
 to make the code more clear I add these two defines 
