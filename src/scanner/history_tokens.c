@@ -6,11 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:56:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:58:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:47:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
 
 /*
 History expansion - (not implemented)!

@@ -6,11 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:07:56 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/10 15:25:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:46:41 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
 
 /*
 why returning true. I want to tell the scanner that the 
