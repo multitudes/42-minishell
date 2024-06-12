@@ -6,11 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/10 18:36:59 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:42:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
 
 	// check for empty string in parenthesis
 bool is_empty_parenthesis(const char *str, int i, int start)	

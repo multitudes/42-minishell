@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:28:25 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:45:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,7 +214,6 @@ bool	is_io_number(const char *identifier);
 bool	str_is_number(const char *identifier);
 bool	str_is_alphanum(const char *identifier);
 bool	filename_delimiter(const char ch);
-int		isprint_no_space(const char *identifier);
 bool	not_implemented_builtin(const char *identifier);
 void	free_tokennode(void *content);
 bool	scanner_error(t_mini_data *data, char *err_str);

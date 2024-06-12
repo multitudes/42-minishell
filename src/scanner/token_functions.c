@@ -6,11 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/09 09:41:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:43:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
+#include "debug.h"
 
 /*
 peek wil look ahead to see if my string is beginning with sequence of chars
