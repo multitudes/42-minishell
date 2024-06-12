@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/08 17:40:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 13:18:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 extern "C" {
 # endif
-# include "minishell.h"
 
 /*
 > This operator redirects the output of a command to a file. 
