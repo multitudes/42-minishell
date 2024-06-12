@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:47:55 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:46:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 15:18:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,25 +34,25 @@ bool	add_here_and_delim(t_mini_data *data, int *i)
 
 bool	is_a_simple_redirection(t_mini_data *data, int *i)
 {
-	if (peek(data->input + *i, ">|", false))
+	if (peek(data->input + *i, ">|", FUZZY))
 		return (add_token(data, i, ">|", CLOBBER));
-	else if (peek(data->input + *i, ">>&", false))
+	else if (peek(data->input + *i, ">>&", FUZZY))
 		return (add_token(data, i, ">>&", REDIRECT_BOTH_APP));
-	else if (peek(data->input + *i, "<<-", false))
+	else if (peek(data->input + *i, "<<-", FUZZY))
 		return (add_token(data, i, "<<-", DLESSDASH));
-	else if (peek(data->input + *i, "&>>", false))
+	else if (peek(data->input + *i, "&>>", FUZZY))
 		return (add_token(data, i, "&>>", REDIRECT_OUT_APP));
-	else if (peek(data->input + *i, ">&>", false))
+	else if (peek(data->input + *i, ">&>", FUZZY))
 		return (add_token(data, i, ">&>", GREATER_AND_GREATER));
-	else if (peek(data->input + *i, "&>", false))
+	else if (peek(data->input + *i, "&>", FUZZY))
 		return (add_token(data, i, "&>", REDIRECT_BOTH));
-	else if (peek(data->input + *i, "<&", false))
+	else if (peek(data->input + *i, "<&", FUZZY))
 		return (add_token(data, i, "<&", LESSAND));
-	else if (peek(data->input + *i, ">&", false))
+	else if (peek(data->input + *i, ">&", FUZZY))
 		return (add_token(data, i, ">&", GREATAND));
-	else if (peek(data->input + *i, "<>", false))
+	else if (peek(data->input + *i, "<>", FUZZY))
 		return (add_token(data, i, "<>", LESSGREAT));
-	else if (peek(data->input + *i, ">>", false))
+	else if (peek(data->input + *i, ">>", FUZZY))
 		return (add_token(data, i, ">>", DGREAT));
 	else
 		return (false);
@@ -61,25 +61,25 @@ bool	is_a_simple_redirection(t_mini_data *data, int *i)
 
 bool	is_a_aggregate_redirection(t_mini_data *data, int *i)
 {
-	if (peek(data->input + *i, "<<", false))
+	if (peek(data->input + *i, "<<", FUZZY))
 		return (add_here_and_delim(data, i));
-	else if (peek(data->input + *i, ">=", false))
+	else if (peek(data->input + *i, ">=", FUZZY))
 		return (add_token(data, i, ">=", GREATER_EQUAL));
-	else if (peek(data->input + *i, "<=", false))
+	else if (peek(data->input + *i, "<=", FUZZY))
 		return (add_token(data, i, "<=", LESS_EQUAL));
-	else if (peek(data->input + *i, "!=", false))
+	else if (peek(data->input + *i, "!=", FUZZY))
 		return (add_token(data, i, "!=", BANG_EQUAL));
-	else if (peek(data->input + *i, ">", false))
+	else if (peek(data->input + *i, ">", FUZZY))
 		return (add_token(data, i, ">", REDIRECT_OUT));
-	else if (peek(data->input + *i, "<", false))
+	else if (peek(data->input + *i, "<", FUZZY))
 		return (add_token(data, i, "<", REDIRECT_IN));
-	else if (peek(data->input + *i, "==", false))
+	else if (peek(data->input + *i, "==", FUZZY))
 		return (add_token(data, i, "==", EQUAL_EQUAL));
-	else if (peek(data->input + *i, ",", false))
+	else if (peek(data->input + *i, ",", FUZZY))
 		return (add_token(data, i, ",", COMMA));
-	else if (peek(data->input + *i, "-", true))
+	else if (peek(data->input + *i, "-", EXACT))
 		return (add_token(data, i, "-", MINUS));
-	else if (peek(data->input + *i, "+", false))
+	else if (peek(data->input + *i, "+", FUZZY))
 		return (add_token(data, i, "+", PLUS));
 	else
 		return (false);

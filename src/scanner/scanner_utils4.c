@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:03:58 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:52:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 15:12:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ bool	not_a_delimiting_char(const char c)
  */
 bool	is_true_false(t_mini_data *data, char *str, int *start)
 {
-	if (peek(str, "true", true))
+	if (peek(str, "true", EXACT))
 		add_token(data, start, "true", TRUETOK);
-	else if (peek(str, "false", true))
+	else if (peek(str, "false", EXACT))
 		add_token(data, start, "false", FALSETOK);
 	else
-		return (FUZZY);
+		return (false);
 	return (true);
 }
 
@@ -54,12 +54,12 @@ cannot start with a 0
 bool	is_io_number(const char *str)
 {
 	if (*str == '0' && is_digit(*(str + 1)))
-		return (FUZZY);
+		return (false);
 	while (is_digit(*str))
 		str++;
 	if (*str == '\0')
 		return (true);
-	return (FUZZY);
+	return (false);
 }
 
 /*
@@ -78,11 +78,11 @@ bool	str_is_number(const char *str)
 		if (*str == '.')
 		{
 			if (dot_seen)
-				return (FUZZY);
+				return (false);
 			dot_seen = 1;
 		}
 		else if (!is_digit(*str))
-			return (FUZZY);
+			return (false);
 		str++;
 	}
 	return (true);

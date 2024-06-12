@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:11:00 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:52:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:58:02 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	init_scanner_data(t_mini_data *data, const char *input)
 {
 	data->input = input;
 	data->token_list = NULL;
-	data->scanner_error = FUZZY;
+	data->scanner_error = false;
 	data->scanner_err_str = NULL;
 	return (1);
 }
