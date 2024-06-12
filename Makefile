@@ -50,7 +50,7 @@ else ifeq ($(UNAME), Darwin)
 endif
 
 # target
-all: $(LIBFT) $(NAME) #tests tests_integration
+all: $(LIBFT) $(NAME) tests tests_integration
 
 # Static pattern rule for compilation - adding the .o files in the obj folder 
 # with includes for the libft that will allow the <libft.h> notation 
