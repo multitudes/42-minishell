@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 13:18:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 13:23:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,17 @@
 
 extern "C" {
 # endif
+
+/*
+to make the code more clear I add these two defines 
+intended to be used with the peek function
+so EXACT it means I will look for the exact match
+and FUZZY it means I will look for the match with anything after it 
+*/
+
+# define EXACT true
+# define FUZZY false
+
 
 /*
 > This operator redirects the output of a command to a file. 

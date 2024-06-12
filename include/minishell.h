@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 13:19:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 13:21:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@
 
 // global.h
 extern int g_signal;
-
 
 // needed for the tests - leave it here - norminette allows it I think 
 # ifdef __cplusplus
