@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 17:07:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/13 08:27:00 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,17 @@
 extern "C" {
 # endif
 
-# include "minishell.h"
+# include <libft.h>
+# include <stdbool.h>
+# include "scanner.h"
+# include "debug.h"
 
+// forwards declarations
+typedef struct s_token		t_token;
+typedef enum e_tokentype 	t_tokentype;
 /*
 I am creating a ast tree for my context free grammar with these structs...
 */
-
 typedef enum	e_nodetype 
 {
 	NODE_NULL,
