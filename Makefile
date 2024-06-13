@@ -34,7 +34,7 @@ error.c darray/darray.c darray/darray2.c darray/darray3.c \
 builtins/builtins.c builtins/builtins2.c executer/executer.c executer/executer1.c executer/executer2.c)
 OBJS 			=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 HDRS 			=	$(addprefix include/, minishell.h scanner.h environment.h \
-parser.h analyser.h executer.h error.h darray.h builtins.h globbing.h) 
+parser.h analyser.h executer.h error.h darray.h builtins.h globbing.h debug.h) 
 
 # linker flags and libraries
 LIBFT 			=	$(LIBFTDIR)/libft.a
@@ -88,6 +88,9 @@ tests:
 
 tests_integration:
 	$(MAKE) -C tests_integration
+
+monkey:
+	sh monkey_tests/monkey.sh
 
 .PHONY: all clean fclean re tests tests_integration
 

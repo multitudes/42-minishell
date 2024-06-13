@@ -1,19 +1,16 @@
 #include "razorclam_tests.h"
-#include <iostream>
 #include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../include/minishell.h"
-#include <fstream>
 
 #include <string>
 #include <cstring>
 
 // forward declaration
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
-
+bool isRunningOnGitHubActions();
 
 /*
 bool    read_only_variable(const char *key)
@@ -28,16 +25,43 @@ bool    read_only_variable(const char *key)
         return (false);
 }
 */
-const char* test_export_read_only() {
+const char* test_export_read_only() 
+{
+	bool pass = false;
 
+	// test export read only
+	int exit_status = run_command_and_check_output("export PPID=123\n", \
+	"minishell $ export PPID=123\nminishell $ exit\n", &pass);
+	my_assert(pass, "pass is not as expected");
+	debug("exit_status: %d", exit_status);
+	my_assert(exit_status == 1, "exit status is not as expected");
+	
 	return NULL;
 }
 
+const char* test_export_read_only_EUID() {
+	bool pass = false;
 
-/*
-Tilde as var name
-*/
+	// test export read only
+	int exit_status = run_command_and_check_output("export EUID=123\n", \
+	"minishell $ export EUID=123\nminishell $ exit\n", &pass);
+	my_assert(pass, "pass is not as expected");
+	my_assert(exit_status == 1, "exit status is not as expected");
+	
+	return NULL;
+}
 
+const char* test_export_read_only_UID() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("export UID=123\n", \
+	"minishell $ export UID=123\nminishell $ exit\n", &pass);
+	my_assert(pass, "pass is not as expected");
+	my_assert(exit_status == 1, "exit status is not as expected");
+	
+	return NULL;
+}
 
 /*
 access righhts on files
@@ -49,7 +73,8 @@ const char *all_tests()
 	
 	// run the tests
 	run_test(test_export_read_only);
-	
+	run_test(test_export_read_only_EUID);
+	run_test(test_export_read_only_UID);
 	
 	return NULL;
 }
@@ -58,13 +83,12 @@ const char *all_tests()
 RUN_TESTS(all_tests);
 
 
-
-
-int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass) {
+int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass)
+{
 	// seen from the point of you of the child process. pipefd_in is the input to the child process
 	// and pipefd_out is the output of the child process
 	int status;
-	int	exit_status;
+	uint8_t	exit_status;
 	int pipefd_in[2];
     int pipefd_out[2]; 
 
@@ -78,8 +102,8 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
     pid_t pid = fork();
     if (pid == -1)
 		return (-1);
-    
-    else if (pid == 0) {
+    else if (pid == 0)
+    {
 		// The child will read from pipefd_in[0] and write to pipefd_out[1]
 
 		// I need to duplicate the file descriptors to the standard input and output
@@ -87,6 +111,10 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
         close(pipefd_in[0]);
         dup2(pipefd_out[1], STDOUT_FILENO);
         close(pipefd_out[1]);
+
+		//debug!
+		dup2(pipefd_out[1], STDERR_FILENO);
+
 
 		// close the other ends of the pipes - child writes to pipefd_out[1]
 		// which is now his stdout, so I could close pipefd_out[0]
@@ -102,16 +130,22 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 
         execl("../minishell", "minishell", (char*) NULL);
         exit(EXIT_FAILURE);
-    } else {
+    }
+    else 
+    {
 		// The parent will write to pipefd_in[1] and read from pipefd_out[0]
         close(pipefd_out[1]);
         close(pipefd_in[0]);
+
+		// if (!isRunningOnGitHubActions())
 		usleep(3000);
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
 
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
+
+		// if (!isRunningOnGitHubActions())
 		usleep(3000);
 
         char buffer[1024];
@@ -119,7 +153,6 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
         buffer[n] = '\0';
        	debug("output: -%s-", buffer);
         
-
         if (strcmp(buffer, expected_output.c_str()) == 0)
 			*pass = true;
 		debug("pass: %s", *pass ? "true" : "false");
@@ -130,12 +163,21 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		// this is the proper way to get the exit status of the child process
 		exit_status = 0;
 		waitpid(pid, &status, 0);
+		debug("status before transform: %d", status);
 		if (WIFEXITED(status)) /* child exited normally */
 			exit_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status)) /* child exited on a signal */
 			exit_status = WTERMSIG(status) + 128; /* 128 is the offset for signals */
 		else
 			exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
+		debug("exit status: %d", exit_status);
 		return exit_status;
 	}
+}
+
+
+bool isRunningOnGitHubActions() 
+{
+	const char* github_actions = std::getenv("GITHUB_ACTIONS");
+	return github_actions != NULL && strcmp(github_actions, "true") == 0;
 }

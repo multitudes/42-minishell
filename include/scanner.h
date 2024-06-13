@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/08 17:40:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:48:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,20 @@
 
 extern "C" {
 # endif
-# include "minishell.h"
+
+#include <stdbool.h>
+#include <libft.h>
+
+/*
+to make the code more clear I add these two defines 
+intended to be used with the peek function
+so EXACT it means I will look for the exact match
+and FUZZY it means I will look for the match with anything after it 
+*/
+
+# define EXACT true
+# define FUZZY false
+
 
 /*
 > This operator redirects the output of a command to a file. 
@@ -187,7 +200,6 @@ bool	is_not_delimiter(const char ch);
 bool	is_digit(const char c);
 bool	is_alnum(const char c);
 bool	is_alpha(const char c);
-bool	is_pathname(const char c);
 bool	is_in_pathname(const char c);
 bool	not_a_delimiting_char(const char c);
 bool	is_a_pathname_or_num(t_mini_data *data, const char *tmp, int *start);
@@ -201,7 +213,6 @@ bool	is_io_number(const char *identifier);
 bool	str_is_number(const char *identifier);
 bool	str_is_alphanum(const char *identifier);
 bool	filename_delimiter(const char ch);
-int		isprint_no_space(const char *identifier);
 bool	not_implemented_builtin(const char *identifier);
 void	free_tokennode(void *content);
 bool	scanner_error(t_mini_data *data, char *err_str);

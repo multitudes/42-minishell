@@ -47,15 +47,17 @@ endif
 
 # my test files - each one has a main and will 
 # be compiled into an executable
-TEST_SRCS	=	builtin_echo_tests.cpp builtin_cat_tests.cpp popen_tests.cpp builtin_export_tests.cpp \
-builtin_unset_tests.cpp builtin_cd_tests.cpp builtin_pwd_tests.cpp builtin_env_tests.cpp builtin_exit_tests.cpp
+TEST_SRCS	=	popen_tests.cpp builtin_export_tests.cpp \
+builtin_unset_tests.cpp builtin_cd_tests.cpp builtin_pwd_tests.cpp \
+builtin_env_tests.cpp builtin_exit_tests.cpp builtin_echo_tests.cpp \
+builtin_cat_tests.cpp
 
 # this substitution create files without the extension
 # they will become the executables
 TESTS		=	$(patsubst %.cpp,%,$(TEST_SRCS))
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 # the target build
 all: tests
@@ -63,7 +65,7 @@ all: tests
 tests: $(TESTS) runtests
 
 $(TESTS): $(SUT_OBJS) $(TEST_SRCS) $(SUT_HDRS)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(INCLUDES) $(SUT_OBJS) $@.cpp $(LDLIBS) -o $@
+	@$(CXX) $(CFLAGS) $(CXXFLAGS) $(INCLUDES) $(SUT_OBJS) $@.cpp $(LDLIBS) -o $@
 
 runtests:
 	sh ./runtests.sh

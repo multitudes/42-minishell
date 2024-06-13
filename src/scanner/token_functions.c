@@ -6,21 +6,23 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/09 09:41:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 15:16:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
+#include "debug.h"
 
 /*
-peek wil look ahead to see if my string is beginning with sequence of chars
+peek wil look ahead to see if my string is beginning with a sequence of chars
+that I want to recognize as a token.
+the parameters are:
 - input is the string to check
 - identifier is the string to check for
-- need_delim is true if the identifier must be followed by a space to be valid
-ex '||' works without spaces at the end but 'echo' is valid with space only 
-or with 
-one of the metacharacters : ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
-peek is case insensitive!
+- need_delim is true/EXACT if the identifier must be delimited by a end of word
+char to be valid, else is false/FUZZY if allows to be continued by other chars
+ex '||' is FUZZY, works with/without spaces at the end but 'echo' is EXACT, 
+works with valid with delim char.
 */
 bool	peek(const char *input, const char *identifier, bool need_delim)
 {

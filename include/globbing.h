@@ -18,7 +18,8 @@
 extern "C" {
 # endif
 
-# include "minishell.h"
+#include "darray.h"
+#include <stdbool.h>
 
 bool	match_files_in_directory(t_darray *files, const char *pat);
 bool	is_glob_match(const char *pat, const char *file_name);

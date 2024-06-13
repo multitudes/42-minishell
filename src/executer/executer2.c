@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/07 13:38:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/10 15:11:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,13 @@ be the signal number that caused the child to stop plus 128.
 WIFCONTINUED is a status that is returned when the child is resumed by
 a SIGCONT signal. The status will be 0.
 */
-int	get_wait_status(int status)
+uint8_t	get_wait_status(int status)
 {
+	debug("child exited with status %d\n", status);
 	if (WIFEXITED(status))
+	{
 		return (WEXITSTATUS(status));
+	}
 	else if (WIFSIGNALED(status))
 		return (WTERMSIG(status) + 128);
 	else
@@ -59,13 +62,16 @@ int	execute_command(t_list *tokenlist, t_data *data)
 			exit (127);
 		debug("command and agrs: %s %s", argv[0], argv[1]);
 		execve(argv[0], argv, (char **)data->env_arr->contents);
-		exit_and_print_err(NULL, 127);
+		return (exit_and_print_err(NULL, 127));
 	}
 	else if (pid == -1)
 		return (status_and_perror("minishell: fork failed\n", EXIT_FAILURE));
 	else
+	{
 		waitpid(pid, &status, 0);
-	return (get_wait_status(status));
+		debug("status of my child %d", status);
+		return (get_wait_status(status));
+	}
 }
 
 /*
@@ -90,7 +96,7 @@ int	get_status_of_children(pid_t pid1, pid_t pid2)
 
 int	execute_list(t_ast_node *ast, t_data *data)
 {
-	int			status;
+	uint8_t	status;
 	t_tokentype	tokentype;
 
 	debug("NODE_LIST || &&");

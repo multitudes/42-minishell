@@ -6,29 +6,29 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:32:51 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/08 17:40:32 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:53:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
 
 bool	is_simple_dollar_exp(t_mini_data *data, int *i)
 {
-	if (peek(data->input + *i, "$?", false))
+	if (peek(data->input + *i, "$?", FUZZY))
 		return (add_token(data, i, "$?", DOLLAR_QUESTION));
-	else if (peek(data->input + *i, "$$", false))
+	else if (peek(data->input + *i, "$$", FUZZY))
 		return (add_token(data, i, "$$", DOLLAR_DOLLAR));
-	else if (peek(data->input + *i, "$*", false))
+	else if (peek(data->input + *i, "$*", FUZZY))
 		return (add_token(data, i, "$*", DOLLAR_STAR));
-	else if (peek(data->input + *i, "$@", false))
+	else if (peek(data->input + *i, "$@", FUZZY))
 		return (add_token(data, i, "$@", DOLLAR_AT));
-	else if (peek(data->input + *i, "$#", false))
+	else if (peek(data->input + *i, "$#", FUZZY))
 		return (add_token(data, i, "$#", DOLLAR_HASH));
-	else if (peek(data->input + *i, "$!", false))
+	else if (peek(data->input + *i, "$!", FUZZY))
 		return (add_token(data, i, "$!", DOLLAR_BANG));
-	else if (peek(data->input + *i, "$-", false))
+	else if (peek(data->input + *i, "$-", FUZZY))
 		return (add_token(data, i, "$-", DOLLAR_HYPHEN));
-	else if (peek(data->input + *i, "$~", false))
+	else if (peek(data->input + *i, "$~", FUZZY))
 		return (add_token(data, i, "$~", DOLLAR_TILDE));
 	else
 		return (false);
@@ -36,18 +36,18 @@ bool	is_simple_dollar_exp(t_mini_data *data, int *i)
 
 bool	is_complex_dollar_exp(t_mini_data *data, int *i)
 {
-	if (peek(data->input + *i, "$((", false))
+	if (peek(data->input + *i, "$((", FUZZY))
 		return (add_block_dbl_paren(data, i, "))", EXPR_EXPANSION));
-	else if (peek(data->input + *i, "$", false) && \
+	else if (peek(data->input + *i, "$", FUZZY) && \
 	is_digit(*(data->input + *i + 1)))
 		return (proc_token_off_1(data, i, is_digit, \
 		DOLLAR_DIGIT));
-	else if (peek(data->input + *i, "${", false))
+	else if (peek(data->input + *i, "${", FUZZY))
 		return (add_tokenblock(data, i, '}', VAR_EXPANSION));
-	else if (peek(data->input + *i, "$", false) && is_alnum(*(data->input \
+	else if (peek(data->input + *i, "$", FUZZY) && is_alnum(*(data->input \
 	+ *i + 1)))
 		return (proc_token_off_1(data, i, is_alnum, VAR_EXPANSION));
-	else if (peek(data->input + *i, "$(", false))
+	else if (peek(data->input + *i, "$(", FUZZY))
 		return (add_tokenblock(data, i, ')', COM_EXPANSION));
 	else
 		return (false);

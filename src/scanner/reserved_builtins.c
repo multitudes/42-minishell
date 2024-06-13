@@ -6,11 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:40:02 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/01 17:04:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:56:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
 
 /*
  mh.. just checked again in the bash and maybe the function below is not 
@@ -22,21 +22,21 @@
 */
 bool	is_reserved1(t_mini_data *data, char *identifier, int *start)
 {
-	if (peek(identifier, "while", true))
+	if (peek(identifier, "while", EXACT))
 		add_token(data, start, "while", WHILE);
-	else if (peek(identifier, "until", true))
+	else if (peek(identifier, "until", EXACT))
 		add_token(data, start, "until", UNTIL);
-	else if (peek(identifier, "for", true))
+	else if (peek(identifier, "for", EXACT))
 		add_token(data, start, "for", FOR);
-	else if (peek(identifier, "case", true))
+	else if (peek(identifier, "case", EXACT))
 		add_token(data, start, "case", CASE);
-	else if (peek(identifier, "esac", true))
+	else if (peek(identifier, "esac", EXACT))
 		add_token(data, start, "esac", ESAC);
-	else if (peek(identifier, "select", true))
+	else if (peek(identifier, "select", EXACT))
 		add_token(data, start, "select", SELECT);
-	else if (peek(identifier, "function", true))
+	else if (peek(identifier, "function", EXACT))
 		add_token(data, start, "function", FUNCTION);
-	else if (peek(identifier, "in", true))
+	else if (peek(identifier, "in", EXACT))
 		add_token(data, start, "in", IN);
 	else
 		return (false);
@@ -45,19 +45,19 @@ bool	is_reserved1(t_mini_data *data, char *identifier, int *start)
 
 bool	is_reserved2(t_mini_data *data, char *identifier, int *start)
 {
-	if (peek(identifier, "if", true))
+	if (peek(identifier, "if", EXACT))
 		add_token(data, start, "if", IF);
-	else if (peek(identifier, "then", true))
+	else if (peek(identifier, "then", EXACT))
 		add_token(data, start, "then", THEN);
-	else if (peek(identifier, "else", true))
+	else if (peek(identifier, "else", EXACT))
 		add_token(data, start, "else", ELSE);
-	else if (peek(identifier, "elif", true))
+	else if (peek(identifier, "elif", EXACT))
 		add_token(data, start, "elif", ELIF);
-	else if (peek(identifier, "fi", true))
+	else if (peek(identifier, "fi", EXACT))
 		add_token(data, start, "fi", FI);
-	else if (peek(identifier, "do", true))
+	else if (peek(identifier, "do", EXACT))
 		add_token(data, start, "do", DO);
-	else if (peek(identifier, "done", true))
+	else if (peek(identifier, "done", EXACT))
 		add_token(data, start, "done", DONE);
 	else
 		return (false);
@@ -117,19 +117,19 @@ is_builtin checks if the identifier is a builtin command
 */
 bool	is_builtin(t_mini_data *data, char *identifier, int *start)
 {
-	if (peek(identifier, "echo", true))
+	if (peek(identifier, "echo", EXACT))
 		add_token(data, start, "echo", BUILTIN);
-	else if (peek(identifier, "cd", true))
+	else if (peek(identifier, "cd", EXACT))
 		add_token(data, start, "cd", BUILTIN);
-	else if (peek(identifier, "export", true))
+	else if (peek(identifier, "export", EXACT))
 		add_token(data, start, "export", BUILTIN);
-	else if (peek(identifier, "unset", true))
+	else if (peek(identifier, "unset", EXACT))
 		add_token(data, start, "unset", BUILTIN);
-	else if (peek(identifier, "env", true))
+	else if (peek(identifier, "env", EXACT))
 		add_token(data, start, "env", BUILTIN);
-	else if (peek(identifier, "exit", true))
+	else if (peek(identifier, "exit", EXACT))
 		add_token(data, start, "exit", BUILTIN);
-	else if (peek(identifier, "pwd", true))
+	else if (peek(identifier, "pwd", EXACT))
 		add_token(data, start, "pwd", BUILTIN);
 	else if (not_implemented_builtin(identifier))
 		add_token(data, start, identifier, BUILTIN);

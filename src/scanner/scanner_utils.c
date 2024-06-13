@@ -6,11 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:48:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/01 11:34:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:46:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
 
 /*
  ``\t''``\n''``\v''``\f''``\r''`` -> is space 

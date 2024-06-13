@@ -1,35 +1,16 @@
 #include "razorclam_tests.h"
-#include <iostream>
 #include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../include/minishell.h"
-#include <fstream>
 
 #include <string>
 #include <cstring>
 
 // forward declaration
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
-
-
-
-const char* test_basicminishell_exit() {
-
-	bool pass = false;
-	std::string command_to_exec = "exit\n";
-	std::string expected_output = "minishell $ exit\nexit\n";
-	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
-	my_assert(status == 0, "Minishell exited with non-zero status");
-	my_assert(pass, "Output is not as expected");
-	debug("command_to_exec: %s", command_to_exec.c_str());
-	debug("expected_output: %s", expected_output.c_str());
-	debug("status: %d and pass %s", status, pass ? "true" : "false");
-
-	return NULL;
-}
+bool isRunningOnGitHubActions(); 
 
 
 const char *test_basicminishell_echo() {
@@ -45,6 +26,7 @@ const char *test_basicminishell_echo() {
 
 	return NULL;
 }
+
 
 const char *test_basicminishell_echo2() {
 	bool pass = false;
@@ -81,11 +63,11 @@ const char *test_basicminishell_echo4() {
 	std::string command_to_exec = "echo -nnn -nn -mnnn hello\n";
 	std::string expected_output = "minishell $ echo -nnn -nn -mnnn hello\n-mnnn hellominishell $ exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
+    debug("expected_output: %s", expected_output.c_str());
+    debug("command_to_exec: %s", command_to_exec.c_str());
+    debug("status: %d and pass %s", status, pass ? "true" : "false");
 	my_assert(status == 0, "Minishell exited with non-zero status");
 	my_assert(pass, "Output is not as expected");
-	debug("command_to_exec: %s", command_to_exec.c_str());
-	debug("expected_output: %s", expected_output.c_str());
-	debug("status: %d and pass %s", status, pass ? "true" : "false");
 
 	return NULL;
 }
@@ -105,7 +87,6 @@ const char *test_basicminishell_echo5() {
 	return NULL;
 }
 
-//echo $NonExistingVar
 
 const char *test_basicminishell_echo6() {
 	bool pass = false;
@@ -120,6 +101,7 @@ const char *test_basicminishell_echo6() {
 
 	return NULL;
 }
+
 
 const char *test_basicminishell_echo7() {
 	if (getenv("HOME") != NULL)
@@ -218,7 +200,6 @@ const char *all_tests()
 	suite_start();
 	
 	// run the tests
-	run_test(test_basicminishell_exit);
 	run_test(test_basicminishell_echo);
 	run_test(test_basicminishell_echo2);
 	run_test(test_basicminishell_echo3);
@@ -288,14 +269,22 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		// The parent will write to pipefd_in[1] and read from pipefd_out[0]
         close(pipefd_out[1]);
         close(pipefd_in[0]);
-		usleep(3000);
+		
+		if (!isRunningOnGitHubActions())
+			usleep(5000);
+        else 
+            usleep(2000);
+
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
 
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
-		usleep(3000);
-
+		
+        if (!isRunningOnGitHubActions())
+            usleep(5000);
+        else 
+            usleep(2000);
         char buffer[1024];
         int n = read(pipefd_out[0], buffer, sizeof(buffer));
         buffer[n] = '\0';
@@ -320,4 +309,11 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 			exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
 		return exit_status;
 	}
+}
+
+
+bool isRunningOnGitHubActions() 
+{
+    const char* githubActions = std::getenv("GITHUB_ACTIONS");
+    return githubActions != nullptr && githubActions == std::string("true");
 }

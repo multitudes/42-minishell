@@ -6,15 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:28:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 16:10:05 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/13 09:03:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "parser.h"
+#include "error.h"
 
 /*
-
 */
 t_ast_node	*new_node(t_nodetype type, t_ast_node *left, t_ast_node *right, \
 t_list *token_list)
@@ -55,7 +54,8 @@ void	print_token(t_list *input_token)
 }
 
 /*
- count the number of nodes in the t_list
+ * count the number of nodes in the t_list
+ * TODO not currently used!
 */
 int	count_list(t_list *input_tokens)
 {
@@ -75,10 +75,8 @@ int	count_list(t_list *input_tokens)
 }
 
 /*
-Since each node in the ast has a morcel of the input tokens
-linked list I need to break the list at the node
-so that they do not interfere with each other in different part
-of the tree
+ * Since each node in the ast has a piece of the input_tokens linked list
+ * I need to break the list at this node disconnecting from the previous list
 */
 void	break_list(t_list **input_tokens)
 {

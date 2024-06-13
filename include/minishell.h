@@ -6,20 +6,15 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/08 16:14:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 13:21:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdio.h>
-# include <stdlib.h>
 # include <unistd.h>
-# include <string.h>
-# include <errno.h>
 # include <fcntl.h>
-# include <signal.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -49,24 +44,10 @@
 # include "error.h"
 # include "builtins.h"
 # include "globbing.h"
-/*
-This allows us to use the debug macro to print debug messages but to 
-compile them out when NDEBUG is defined.
-If we define NDEBUG in the makefile or as a flag -DNDEBUG, 
-the debug macro will be replaced with an empty macro.
-during submission we will remove the debug macro from the code
-including the macro below which is not allowed by norminette.
-*/
-#ifdef NDEBUG
-#define debug(M, ...)
-#else
-#define debug(M, ...) fprintf(stderr, "DEBUG %s:%s:%d: " M "\n",\
-        __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#endif
+# include "debug.h"
 
 // global.h
 extern int g_signal;
-
 
 // needed for the tests - leave it here - norminette allows it I think 
 # ifdef __cplusplus
@@ -102,7 +83,7 @@ struct s_data
 	t_list		*token_list;
 	t_darray	*env_arr;
 	t_ast_node	*ast;
-	int			exit_status;
+	uint8_t		exit_status;
 	bool		scanner_error;
 	char		*scanner_err_str;
 	int 		scanner_tokens_nr;
@@ -118,7 +99,7 @@ bool	init_data(t_data **data);
 bool    init_data2(t_data **data);
 bool	init_env_darray(t_darray **env_array);
 void	free_data(t_data **data);
-void	update_env_exit_status_with(int exit_status, t_data *data);
+void	update_env_exit_status_with(uint8_t exit_status, t_data *data);
 int		single_command(const char *input);
 int		set_up_signals(void);
 

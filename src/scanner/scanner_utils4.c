@@ -6,11 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:03:58 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/20 15:05:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 15:12:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
 
 bool	not_a_delimiting_char(const char c)
 {
@@ -23,9 +23,9 @@ bool	not_a_delimiting_char(const char c)
  */
 bool	is_true_false(t_mini_data *data, char *str, int *start)
 {
-	if (peek(str, "true", true))
+	if (peek(str, "true", EXACT))
 		add_token(data, start, "true", TRUETOK);
-	else if (peek(str, "false", true))
+	else if (peek(str, "false", EXACT))
 		add_token(data, start, "false", FALSETOK);
 	else
 		return (false);

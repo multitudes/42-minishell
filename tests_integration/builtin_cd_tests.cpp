@@ -1,12 +1,9 @@
 #include "razorclam_tests.h"
-#include <iostream>
 #include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../include/minishell.h"
-#include <fstream>
 
 #include <string>
 #include <cstring>
@@ -28,7 +25,7 @@ bool    read_only_variable(const char *key)
         return (false);
 }
 */
-const char* test_export_read_only() {
+const char* test_cd() {
 
 	return NULL;
 }
@@ -48,7 +45,7 @@ const char *all_tests()
 	suite_start();
 	
 	// run the tests
-	run_test(test_export_read_only);
+	run_test(test_cd);
 	
 	
 	return NULL;
@@ -64,7 +61,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 	// seen from the point of you of the child process. pipefd_in is the input to the child process
 	// and pipefd_out is the output of the child process
 	int status;
-	int	exit_status;
+	uint8_t	exit_status;
 	int pipefd_in[2];
     int pipefd_out[2]; 
 

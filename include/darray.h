@@ -19,11 +19,21 @@
 extern "C" {
 
 # endif
-# include "minishell.h"
+
+# include "stddef.h"
+
 # define DEFAULT_EXPAND_RATE 300
 
 typedef struct s_darray		t_darray;
 
+/*
+   A dynamic array is simply an array of void ** pointers that’s 
+   pre-allocated in one shot and that point at the data.
+   The size_t data type in C is an unsigned integer type used to 
+   represent the size of objects in bytes. It is defined in the stddef. 
+   h header and is commonly used to represent the size of arrays, 
+   memory blocks, and strings.
+   */
 typedef struct				s_darray
 {
 	int						end;
@@ -33,14 +43,6 @@ typedef struct				s_darray
 	void					**contents;
 }							t_darray;
 
-/*
- A dynamic array is simply an array of void ** pointers that’s 
- pre-allocated in one shot and that point at the data.
- The size_t data type in C is an unsigned integer type used to 
- represent the size of objects in bytes. It is defined in the stddef. 
- h header and is commonly used to represent the size of arrays, 
- memory blocks, and strings.
-*/
 
 void		*ft_realloc(void *ptr, size_t size, size_t old_size);
 t_darray	*darray_create(size_t element_size, size_t initial_max);

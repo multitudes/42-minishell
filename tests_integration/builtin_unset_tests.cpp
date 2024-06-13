@@ -1,12 +1,10 @@
+#include <sys/stat.h>
 #include "razorclam_tests.h"
-#include <iostream>
 #include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../include/minishell.h"
-#include <fstream>
 
 #include <string>
 #include <cstring>
@@ -14,6 +12,7 @@
 // forward declaration
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
 
+bool make_directory_read_only(const std::string& path);
 
 /*
 bool    read_only_variable(const char *key)
@@ -27,16 +26,95 @@ bool    read_only_variable(const char *key)
     else
         return (false);
 }
+tests will be exit 0 because bash doesnt care for a var named "PPID=123"!
 */
-const char* test_export_read_only() {
+const char* test_unset_read_only() {
+	make_directory_read_only(".non_read_test_dir");
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset PPID=123\n", \
+	"minishell $ unset PPID=123\nminishell $ exit\n", &pass);
+	my_assert(pass, "pass is not as expected");
+	debug("exit_status: %d", exit_status);
+	// assert(exit_status == 0);
+
+	return NULL;
+}
+
+
+
+const char* test_unset_read_only_EUID() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset EUID=123\n", \
+	"minishell $ unset EUID=123\nminishell $ exit\n", &pass);
+    debug("exit_status: %d", exit_status);
+	my_assert(pass, "pass is not as expected");
+	// assert(exit_status == 0);
+	
+	return NULL;
+}
+
+const char* test_unset_read_only_UID() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset UID=123\n", \
+	"minishell $ unset UID=123\nminishell $ exit\n", &pass);
+	debug("exit_status: %d", exit_status);
+	my_assert(pass, "pass is not as expected");
+	// assert(exit_status == 0);
 
 	return NULL;
 }
 
 
 /*
-Tilde as var name
+these tests will pass but exit with status 1 because the variable is read only
+
 */
+const char* test_unset_read_only2() {
+	make_directory_read_only(".non_read_test_dir");
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset PPID\n", "minishell $ unset PPID\nminishell $ exit\n", &pass);
+	debug("exit_status: %d", exit_status);
+	my_assert(pass, "pass is not as expected");
+	// assert(exit_status == 1);
+
+	return NULL;
+}
+
+
+
+const char* test_unset_read_only_EUID2() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset EUID\n", \
+	"minishell $ unset EUID\nminishell $ exit\n", &pass);
+	debug("exit_status: %d", exit_status);	
+	my_assert(pass, "pass is not as expected");
+	// assert(exit_status == 1);
+	return NULL;
+}
+
+const char* test_unset_read_only_UID2() {
+	bool pass = false;
+
+	// test export read only
+	int exit_status = run_command_and_check_output("unset UID\n", \
+	"minishell $ unset UID\nminishell $ exit\n", &pass);
+	debug("exit_status: %d", exit_status);																																
+	my_assert(pass, "pass is not as expected");
+	// assert(exit_status == 1);
+	return NULL;
+}
+
+
 
 
 /*
@@ -48,7 +126,13 @@ const char *all_tests()
 	suite_start();
 	
 	// run the tests
-	run_test(test_export_read_only);
+	run_test(test_unset_read_only);
+	run_test(test_unset_read_only_EUID);
+	run_test(test_unset_read_only_UID);
+	run_test(test_unset_read_only2);
+	run_test(test_unset_read_only_EUID2);
+	run_test(test_unset_read_only_UID2);
+
 	
 	
 	return NULL;
@@ -64,7 +148,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 	// seen from the point of you of the child process. pipefd_in is the input to the child process
 	// and pipefd_out is the output of the child process
 	int status;
-	int	exit_status;
+	uint8_t	exit_status;
 	int pipefd_in[2];
     int pipefd_out[2]; 
 
@@ -106,13 +190,13 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		// The parent will write to pipefd_in[1] and read from pipefd_out[0]
         close(pipefd_out[1]);
         close(pipefd_in[0]);
-		usleep(3000);
+		usleep(5000);
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
 
 		// close pipefd_in after use to send the eof
 		close(pipefd_in[1]);
-		usleep(3000);
+		usleep(5000);
 
         char buffer[1024];
         int n = read(pipefd_out[0], buffer, sizeof(buffer));
@@ -138,4 +222,32 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 			exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
 		return exit_status;
 	}
+}
+
+
+bool make_directory_read_only(const std::string& path) {
+    // Check if directory already exists
+    if (access(path.c_str(), F_OK) == -1) {
+        // If not, create it
+        if (mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1) {
+            // handle error, for example print the error message to stderr
+            perror("mkdir");
+            return false;
+        }
+    }
+
+    // Change permissions to read-only
+    if (chmod(path.c_str(), S_IRUSR | S_IRGRP | S_IROTH) == -1) {
+        // handle error, for example print the error message to stderr
+        perror("chmod");
+        return false;
+    }
+
+    return true;
+}
+
+bool isRunningOnGitHubActions() 
+{
+	const char* github_actions = std::getenv("GITHUB_ACTIONS");
+	return github_actions != NULL && strcmp(github_actions, "true") == 0;
 }

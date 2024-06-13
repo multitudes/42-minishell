@@ -6,11 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/21 13:52:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/12 15:08:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
 
 /*
 I define a block as the text between two delimiters like {}
@@ -26,7 +26,7 @@ bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type)
 	while (data->input[*i] && data->input[*i] != delim)
 		advance(i);
 	if (data->input[*i] == '\0')
-		return (scanner_error(data, "minishell: error: unclosed expression\n"));
+		return (scanner_error(data, "minishell: syntax error: unexpected end of file"));
 	tmp = ft_substr(data->input, start, *i - start + 1);
 	add_token(data, &start, tmp, t_type);
 	*i = start;
@@ -43,7 +43,7 @@ bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type)
 	char	*tmp;
 
 	start = (*i)++;
-	while (peek(data->input + *i, delim, false) == false)
+	while (peek(data->input + *i, delim, FUZZY) == false)
 		advance(i);
 	if (*(data->input + *i + 1) == '\0')
 		return (scanner_error(data, "minishell: error: unclosed expansion\n"));
@@ -100,13 +100,13 @@ bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 */
 bool	is_a_block(t_mini_data *data, int *i)
 {
-	if (peek(data->input + *i, "(", false))
+	if (peek(data->input + *i, "(", FUZZY))
 		return (add_parenthesisblock(data, i, ')', EXPRESSION));
-	else if (peek(data->input + *i, "\'", false))
+	else if (peek(data->input + *i, "\'", FUZZY))
 		return (add_tokenblock(data, i, '\'', S_QUOTED_STRING));
-	else if (peek(data->input + *i, "\"", false))
+	else if (peek(data->input + *i, "\"", FUZZY))
 		return (add_tokenblock(data, i, '\"', QUOTED_STRING));
-	else if (peek(data->input + *i, "`", false))
+	else if (peek(data->input + *i, "`", FUZZY))
 		return (add_tokenblock(data, i, '`', COM_EXPANSION));
 	return (false);
 }
