@@ -340,6 +340,22 @@ typedef enum e_tokentype {
 } t_tokentype;
 ```
 
+## Parentheses
+```
+cat ("hey")
+bash: syntax error near unexpected token `('
+```
+When not escaped or quoted, parentheses `(` and `)` in bash have special meanings and are treated as control operators. They cannot be used as part of an argument like a filename. Here are their main uses:
+
+Ex: Commands enclosed between `(` and `)` are executed in a subshell, which is a separate instance of the shell.
+
+```bash
+(echo "Hello"; echo "World")
+```
+Then they are used in functions or for arithmetic operations, which we do not implement. 
+
+So, when not escaped or quoted, parentheses cannot be part of an argument like a filename. They are treated as control operators and have special meanings.
+
 ## Variable names
 Variables names have stricter rules than command or file names. 
 
