@@ -11,15 +11,13 @@
 /* ************************************************************************** */
 
 #include "globbing.h"
-#include "minishell.h"
-
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <unistd.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <stdlib.h>
 #include <stdio.h>
-
-
-
+#include "error.h"
 /*
 I need to read the files in my directory and check if they match the pattern
 this function will push a list of files in my darray and return true if it was successful
