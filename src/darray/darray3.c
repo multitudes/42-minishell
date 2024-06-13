@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "darray.h"
-#include "minishell.h"
+#include "debug.h"
+#include <libft.h>
 
 /*
 get the content at index - 

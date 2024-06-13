@@ -13,6 +13,8 @@
 #ifndef DEBUG_H
 # define DEBUG_H
 
+# include <stdio.h>
+
 /*
 This allows us to use the debug macro to print debug messages but to 
 compile them out when NDEBUG is defined.

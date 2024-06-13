@@ -11,9 +11,10 @@
 /* ************************************************************************** */
 
 #include "darray.h"
-#include "minishell.h"
-
+#include <stdlib.h>
+#include "debug.h"
 /*
+ * free the internal content array and deallocate the darray struct
 */
 void	darray_destroy(t_darray *array)
 {
@@ -26,6 +27,9 @@ void	darray_destroy(t_darray *array)
 }
 
 /*
+ * clear will free the content of the pointers in the  
+ * internal content array to a zero. destroy will free the 
+ * internal content array and deallocate the darray struct
 */
 int	darray_clear_destroy(t_darray *array)
 {
