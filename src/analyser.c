@@ -249,8 +249,7 @@ char	*peek_and_get_key(char *str)
 
 /*
 In a token lexeme replaces all $-indicated variables
-with their respective values
-or with empty string if not existing.
+with their respective values or with empty string if not existing.
 Returns the new lexeme, which must be freed.
 */
 char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
@@ -259,9 +258,7 @@ char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
 	char	*new_lexeme;
 	char	*key_value;
 	char	*key;
-	char	*temp;
-	char	*temp2;
-	char	*temp3;
+	char	*temp[3];
 
 	i = 0;
 	new_lexeme = ft_strdup(lexeme);
@@ -275,14 +272,14 @@ char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
 				key_value = NULL;
 			else
 				key_value = mini_get_env(env_arr, key + 1);
-			temp = ft_strndup(new_lexeme, i + 1);
-			temp2 = ft_strdup(new_lexeme + i + ft_strlen(key) + 2);
-			temp3 = new_lexeme;
-			new_lexeme = ft_strjoin3(temp, key_value, temp2);
+			temp[0] = ft_strndup(new_lexeme, i + 1);
+			temp[1] = ft_strdup(new_lexeme + i + ft_strlen(key) + 2);
+			temp[2] = new_lexeme;
+			new_lexeme = ft_strjoin3(temp[0], key_value, temp[1]);
 			i = i + ft_strlen(key_value);
-			free(temp);
-			free(temp2);
-			free(temp3);
+			free(temp[0]);
+			free(temp[1]);
+			free(temp[2]);
 			free(key);
 		}
 		i++;
@@ -378,15 +375,10 @@ void	expand_string(t_data *data, t_token *token)
 }
 
 /*
-the function of the analyser is to walk on the tree and analyze and expand 
-the nodes that need to.
-Required is expansion of env variables (incl $PATH), of local variables and of $?
-Optional are the ~, $!, etc..)
-" " ' ' 
-Also optional appear to be $(..) ${..} $'..' $".."
-I replicate here the code for the print_ast function which is in parser.c
-and walks the tree. The idea is to walk through each node... expand
-and then pass it to the executor
+Expansion of nodes containing single quotes, double quotes, variables,
+~ / paths, Special Parameters (only $? implemented)
+Could be extended to also include other Special Parameters ($!, etc.),
+$(..) ${..} $'..' $".."
 */
 void analyse_expand(t_ast_node *ast, t_data *data)
 {
@@ -400,8 +392,6 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	while (tokenlist)
 	{
 		debug("Token type: %d ast node type: %d lexeme: %s", get_token_type(tokenlist), ast->type, get_token_lexeme(tokenlist));
-		// if export do ~ expansion according to rules (expansion after '=' and ':' if valid path) for all tokens in tokenlist
-		// if echo do ~ expansion if valid path
 		if (get_token_type(tokenlist) == S_QUOTED_STRING)
 			extract_string(get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == QUOTED_STRING)
