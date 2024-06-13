@@ -23,7 +23,7 @@ extern "C" {
 
 void	analyse_expand(t_ast_node *ast, t_data *data);
 void	expand_dollar(t_darray *env_arr, t_token *token);
-char	*peek_and_get_key(char *str);
+char	*get_key(char *str);
 char	*replace_dollar_vars(t_darray *env_arr, char *lexeme);
 void	expand_path(t_darray *env_arr, t_token *token);
 void	expand_globbing(t_list *tokenlist);

@@ -51,7 +51,6 @@ void	which_ast_node(t_ast_node *ast)
 		debug("not TERMINAL");
 }
 
-
 void	expand_globbing(t_list *tokenlist)
 {
 	char	*pat;
@@ -229,22 +228,22 @@ then the potential key/var-name is returned.
 '$' followed by invalid var-syntax, returns an empty string.
 Returned key-string needs to be freed.
 */
-char	*peek_and_get_key(char *str)
+char	*get_key(char *str)
 {
 	char	*end;
 
 	if (!str)
 		return (NULL);
-	if (str && *(str + 1) != '$')
+	if (str && (*str != '$'))
 		return (NULL);
-	end = str + 2;
-	if (*end && ft_strchr("_a-zA-Z", *end))
+	end = str + 1;
+	if (end && (ft_isalpha(*end) || *end == '_'))
 		end++;
 	else
 		return (ft_strdup(""));
-	while (*end && ft_strchr("_0-9a-zA-Z", *end))
+	while (end && (ft_isalnum(*end) || *end == '_'))
 		end++;
-	return (ft_strndup(str + 2, (size_t)(end - (str + 2))));
+	return (ft_strndup(str + 1, (size_t)(end - (str + 1))));
 }
 
 /*
@@ -260,20 +259,22 @@ char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
 	char	*key;
 	char	*temp[3];
 
+	debug("replace dollar vars");
 	i = 0;
 	new_lexeme = ft_strdup(lexeme);
 	key = NULL;
 	while (new_lexeme && new_lexeme[i])
 	{
-		key = peek_and_get_key(new_lexeme + i);
+		key = get_key(new_lexeme + i);
+		debug("Extracted key: %s", key);
 		if (key != NULL)
 		{
 			if (ft_strlen(key) == 0)
 				key_value = NULL;
 			else
-				key_value = mini_get_env(env_arr, key + 1);
-			temp[0] = ft_strndup(new_lexeme, i + 1);
-			temp[1] = ft_strdup(new_lexeme + i + ft_strlen(key) + 2);
+				key_value = mini_get_env(env_arr, key);
+			temp[0] = ft_strndup(new_lexeme, i);
+			temp[1] = ft_strdup(new_lexeme + i + ft_strlen(key) + 1);
 			temp[2] = new_lexeme;
 			new_lexeme = ft_strjoin3(temp[0], key_value, temp[1]);
 			i = i + ft_strlen(key_value);
