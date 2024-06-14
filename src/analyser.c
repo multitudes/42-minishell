@@ -283,6 +283,7 @@ char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
 			free(temp[1]);
 			free(temp[2]);
 			free(key);
+			break ;
 		}
 		i++;
 	}
