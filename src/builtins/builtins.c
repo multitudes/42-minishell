@@ -121,7 +121,7 @@ uint8_t	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 	debug("env builtin");
 	status = 0;
 	if (get_token_lexeme(tokenlist->next))
-		status = print_minishell_error_status("env: too many arguments", 1);
+		status = print_minishell_error_status("env: too many arguments", 1); // include lexeme of argument used
 	else
 		status = print_env(env_arr);
 	return (status);
