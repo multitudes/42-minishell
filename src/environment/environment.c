@@ -73,15 +73,16 @@ char *mini_get_env(t_darray *env_arr, const char *key)
 	char		*position;
 	int			i;
 
+	if (ft_strchr(key, '='))
+		return (NULL);
 	i = 0;
 	while (key && i < env_arr->end - 1)
 	{
 		env_str = darray_get(env_arr, i);
-		// debug("darray line %s", env_str);
 		position = ft_strchr(env_str, '=');
 		if (!position)
 			return (NULL);
-		if (ft_strncmp(env_str, key, position - env_str) == 0)
+		if (ft_strncmp(env_str, key, position - env_str) == 0 && (position - env_str) == (int)ft_strlen(key))
 			return (position + 1);
 		i++;
 	}
@@ -146,7 +147,8 @@ char	*get_var_value(const char *variable)
 	char	*value;
 	position = ft_strchr(variable, '=');
 	if (position)
-		value = ft_substr(variable, position - variable + 1, ft_strlen(position + 1));
+		value = ft_substr(variable, position - variable + 1, \
+				ft_strlen(position + 1));
 	else
 		value = NULL;
 	return (value);
