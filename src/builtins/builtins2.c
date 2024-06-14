@@ -101,3 +101,23 @@ bool    read_only_variable(const char *key)
     else
         return (false);
 }
+
+bool    no_valid_identifier(const char *key)
+{
+    int i;
+
+    debug("check if valid identifier");
+    i = 1;
+    if (key && (!ft_isalpha(key[0]) || key[0] == '_'))
+        return (true);
+    debug("Frist key check passed");
+    while (key[i] != '\0')
+    {
+        if (!ft_isalnum(key[i]))
+            return (true);
+        i++;
+    }
+    if (key[i] != '\0')
+        return (true);
+    return (false);
+}

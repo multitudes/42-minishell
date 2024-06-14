@@ -216,7 +216,7 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		key = get_var_key(get_token_lexeme(tokenlist));
 		value = get_var_value(get_token_lexeme(tokenlist));
 		debug("Key: %s, Value: %s", key, value);
-		if (ft_strchr(key, '~'))
+		if (no_valid_identifier(key))
 		{
 			// TODO instead the str3join do maybe a variadic func?
 			err_msg = ft_strjoin3("minishell: export `", get_token_lexeme(tokenlist), "': not a valid identifier\n");
