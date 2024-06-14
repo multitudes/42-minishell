@@ -6,15 +6,20 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 13:21:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/14 11:28:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <stdio.h>
+# include <stdlib.h>
 # include <unistd.h>
+# include <string.h>
+# include <errno.h>
 # include <fcntl.h>
+# include <signal.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -44,7 +49,6 @@
 # include "error.h"
 # include "builtins.h"
 # include "globbing.h"
-# include "debug.h"
 
 // global.h
 extern int g_signal;
