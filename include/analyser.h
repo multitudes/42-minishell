@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:38:03 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 17:07:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/14 15:46:48 by rpriess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ extern "C" {
 # include "minishell.h"
 
 void	analyse_expand(t_ast_node *ast, t_data *data);
+void	expand_tokenlist(t_data *data, t_list *tokenlist);
 void	expand_dollar(t_darray *env_arr, t_token *token);
 char	*get_key(char *str);
 char	*replace_dollar_vars(t_darray *env_arr, char *lexeme);

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 07:46:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/14 16:05:03 by rpriess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ int	count_chars_in_str(char *str, char c)
 
 int	peek_is_valid_path(char c)
 {
-	if (ft_strchr("\\", c) || c == '\0')
+	if (ft_strchr("/", c) || c == '\0')
 		return (1);
 	return (0);
 }
@@ -192,6 +192,7 @@ char	*get_home(t_darray *env_arr)
 	char	*home;
 
 	home = ft_strdup(mini_get_env(env_arr, "HOME"));
+	debug("'HOME' retrieved: %s", home);
 	return (home);
 }
 
@@ -376,6 +377,33 @@ void	expand_string(t_data *data, t_token *token)
 }
 
 /*
+Identify if and which expansion needed and call the appropriate expansion function.
+*/
+void	expand_tokenlist(t_data *data, t_list *tokenlist)
+{
+	while (tokenlist)
+	{
+		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
+		if (get_token_type(tokenlist) == S_QUOTED_STRING)
+			extract_string(get_curr_token(tokenlist));
+		else if (get_token_type(tokenlist) == QUOTED_STRING)
+			expand_string(data, get_curr_token(tokenlist));
+		else if (get_token_type(tokenlist) == TILDE \
+				|| get_token_type(tokenlist) == PATHNAME)
+			expand_path(data->env_arr, get_curr_token(tokenlist));
+		else if (get_token_type(tokenlist) == VAR_EXPANSION)
+			expand_dollar(data->env_arr, get_curr_token(tokenlist));
+		else if (get_token_type(tokenlist)  == DOLLAR_QUESTION)
+			read_exit_status(data, get_curr_token(tokenlist));
+		else if (get_token_type(tokenlist) == GLOBBING)
+			expand_globbing(tokenlist);
+		else
+			debug("Token type not expanded");
+		tokenlist = tokenlist->next;
+	}
+}
+
+/*
 Expansion of nodes containing single quotes, double quotes, variables,
 ~ / paths, Special Parameters (only $? implemented)
 Could be extended to also include other Special Parameters ($!, etc.),
@@ -390,25 +418,8 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	tokenlist = ast->token_list;
 	debug("analyse expand");
 	which_ast_node(ast);
-	while (tokenlist)
-	{
-		debug("Token type: %d ast node type: %d lexeme: %s", get_token_type(tokenlist), ast->type, get_token_lexeme(tokenlist));
-		if (get_token_type(tokenlist) == S_QUOTED_STRING)
-			extract_string(get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == QUOTED_STRING)
-			expand_string(data, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
-			expand_path(data->env_arr, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == VAR_EXPANSION)
-			expand_dollar(data->env_arr, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist)  == DOLLAR_QUESTION)
-			read_exit_status(data, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == GLOBBING)
-			expand_globbing(tokenlist);
-		else
-			debug("Token type not expanded");
-		tokenlist = tokenlist->next;
-	}
+	debug("AST type: %d", ast->type);
+	expand_tokenlist(data, tokenlist);
 	debug("---------left -----------");
 	if (ast->left)
 		analyse_expand(ast->left, data);
