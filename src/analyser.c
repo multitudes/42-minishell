@@ -363,7 +363,7 @@ void	expand_string(t_data *data, t_token *token)
 	ptr_token_list = string_tokens;
 	while (string_tokens)
 	{
-		if (get_token_type(string_tokens) == VAR_EXPANSION)
+		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR)
 			expand_dollar(data->env_arr, get_curr_token(string_tokens));
 		else if (get_token_type(string_tokens) == DOLLAR_QUESTION)
 			read_exit_status(data, get_curr_token(string_tokens));
@@ -392,7 +392,7 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 		else if (get_token_type(tokenlist) == TILDE \
 				|| get_token_type(tokenlist) == PATHNAME)
 			expand_path(data->env_arr, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == VAR_EXPANSION)
+		else if (get_token_type(tokenlist) == VAR_EXPANSION || get_token_type(tokenlist) == DOLLAR)
 			expand_dollar(data->env_arr, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist)  == DOLLAR_QUESTION)
 			read_exit_status(data, get_curr_token(tokenlist));
