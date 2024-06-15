@@ -180,7 +180,8 @@ bool	init_data(t_data **data)
 	t_darray	*env_array;
 
 	if (!init_env_darray(&env_array))
-		return (false); 
+		return (false);
+	update_env(env_array, "SHLVL", ft_itoa(ft_atoi(mini_get_env(env_array, "SHLVL")) + 1));
 	*data = malloc(sizeof(t_data));
 	if (*data == NULL && darray_clear_destroy(env_array))
 		return (zero_and_printerr("malloc data"));
