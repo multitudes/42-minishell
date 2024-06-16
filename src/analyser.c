@@ -235,7 +235,7 @@ char	*get_key(char *str)
 
 	if (!str)
 		return (NULL);
-	if (str && (*str != '$'))
+	if (*str != '$')
 		return (NULL);
 	end = str + 1;
 	if (end && (ft_isalpha(*end) || *end == '_'))
@@ -310,12 +310,15 @@ void	expand_dollar(t_darray *env_arr, t_token *token)
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
-void	read_exit_status(t_data *data, t_token *token)
+void	expand_exit_status(t_data *data, t_token *token)
 {
 	char	*temp;
 
 	debug("read_exit_status");
-	temp = ft_itoa(data->exit_status);
+	if (!data)
+		temp = ft_itoa(data->exit_status);
+	else
+		return ;
 	if (token)
 	{
 		free(token->lexeme);
@@ -329,7 +332,7 @@ void	extract_string(t_token *token)
 	char	*lexeme;
 
 	debug("extract_string");
-	if (token)
+	if (token && token->lexeme)
 	{
 		lexeme = ft_strtrim(token->lexeme, "'"); 
 		free(token->lexeme);
@@ -382,24 +385,30 @@ Identify if and which expansion needed and call the appropriate expansion functi
 */
 void	expand_tokenlist(t_data *data, t_list *tokenlist)
 {
+	
+	// flags to ensure correct expansions are done depending on other tokens in the list eg VAR=~"string"$EXP:~
 	while (tokenlist)
 	{
+		if (!get_curr_token(tokenlist))
+			print_error_status("minishell: system error: missing token\n", 1);
 		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
 		if (get_token_type(tokenlist) == S_QUOTED_STRING)
 			extract_string(get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == QUOTED_STRING)
 			expand_string(data, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == TILDE \
-				|| get_token_type(tokenlist) == PATHNAME)
-			expand_path(data->env_arr, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == VAR_EXPANSION || get_token_type(tokenlist) == DOLLAR)
 			expand_dollar(data->env_arr, get_curr_token(tokenlist));
+		if (get_token_type(tokenlist) == TILDE \ // specify conditipn
+				|| get_token_type(tokenlist) == PATHNAME)
+			expand_path(data->env_arr, get_curr_token(tokenlist));
+
 		else if (get_token_type(tokenlist)  == DOLLAR_QUESTION)
-			read_exit_status(data, get_curr_token(tokenlist));
+			expand_exit_status(data, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == GLOBBING)
 			expand_globbing(tokenlist);
 		else
 			debug("Token type not expanded");
+		// Merge tokens
 		tokenlist = tokenlist->next;
 	}
 }
