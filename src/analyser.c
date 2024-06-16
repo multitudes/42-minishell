@@ -314,7 +314,7 @@ void	expand_exit_status(t_data *data, t_token *token)
 {
 	char	*temp;
 
-	debug("read_exit_status");
+	debug("expand_exit_status");
 	if (!data)
 		temp = ft_itoa(data->exit_status);
 	else
@@ -369,7 +369,7 @@ void	expand_string(t_data *data, t_token *token)
 		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR)
 			expand_dollar(data->env_arr, get_curr_token(string_tokens));
 		else if (get_token_type(string_tokens) == DOLLAR_QUESTION)
-			read_exit_status(data, get_curr_token(string_tokens));
+			expand_exit_status(data, get_curr_token(string_tokens));
 		temp_lexeme = token->lexeme;
 		token->lexeme = ft_strjoin(temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
 		free(temp_lexeme);
@@ -398,8 +398,8 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 			expand_string(data, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == VAR_EXPANSION || get_token_type(tokenlist) == DOLLAR)
 			expand_dollar(data->env_arr, get_curr_token(tokenlist));
-		if (get_token_type(tokenlist) == TILDE \ // specify conditipn
-				|| get_token_type(tokenlist) == PATHNAME)
+		if (get_token_type(tokenlist) == TILDE \ 
+				|| get_token_type(tokenlist) == PATHNAME) // specify condition
 			expand_path(data->env_arr, get_curr_token(tokenlist));
 
 		else if (get_token_type(tokenlist)  == DOLLAR_QUESTION)
