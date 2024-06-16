@@ -401,7 +401,6 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 		if (get_token_type(tokenlist) == TILDE \
 				|| get_token_type(tokenlist) == PATHNAME) // specify condition
 			expand_path(data->env_arr, get_curr_token(tokenlist));
-
 		else if (get_token_type(tokenlist)  == DOLLAR_QUESTION)
 			expand_exit_status(data, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == GLOBBING)
