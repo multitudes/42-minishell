@@ -40,7 +40,7 @@ const char *test_unset()
 	my_assert(ft_strncmp(position, "=4567", 6) == 0, "VAR==4567 not correctly added to env");
 	tokenlist = tokenizer("unset VAR=");
 	result = execute_unset_builtin(env_arr, tokenlist);
-	position = mini_get_env(env_arr, "VAR=");
+	position = mini_get_env(env_arr, "VAR");
 	my_assert(ft_strncmp(position, "=4567", 6) == 0, "VAR==4567 incorrectly removed from env");
 	my_assert(result == 0, "unset VAR= fail");
 	tokenlist = tokenizer("unset VAR");
