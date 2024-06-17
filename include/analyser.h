@@ -21,6 +21,12 @@ extern "C" {
 # endif
 # include "minishell.h"
 
+/*
+ * properties:
+ * - pos_equal_sep is 0 default - 1 when the = is a var assignment and 
+ * 2 when I have more than one equal sign and I dont need to expand tilde
+ * - dollar_exp_front There is a dollar exp in the name of the var assignment 
+ */
 typedef struct  s_expansion_flags {
     int     pos_equal_sep;
     bool    dollar_exp_front;
