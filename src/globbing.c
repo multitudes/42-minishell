@@ -6,11 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/13 09:17:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 08:57:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "globbing.h"
+#include "utils.h"
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/stat.h>

@@ -6,12 +6,16 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/10 15:11:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 09:05:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executer.h"
 #include <limits.h>
+#include "debug.h"
+#include "parser.h"
+#include "minishell.h"
+
 /*
 getting the status properly involves using WIFEXITED and WEXITSTATUS
 so I this is an utility function to return the status of the child.

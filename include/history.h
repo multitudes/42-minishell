@@ -13,7 +13,7 @@
 #ifndef HISTORY_H
 # define HISTORY_H
 
-# include "minishell.h"
+# include <stdbool.h>
 
 typedef struct s_data t_data;	
 
