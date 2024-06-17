@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 16:05:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 16:13:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 	while (new_lexeme && new_lexeme[i])
 	{
 		debug("State of equal_status flag: %i", flags->equal_status);
-		if (new_lexeme[i] == '~' && i == 0 && peek_is_valid_path(new_lexeme[i + 1]) && flags->equal_status == 1 && valid_tilde_expansion(tokenlist, i))
+		if (new_lexeme[i] == '~' && i == 0 && peek_is_valid_path(new_lexeme[i + 1]) && (flags->equal_status == 1) && valid_tilde_expansion(tokenlist, i))
 		{
 			back = ft_strdup(new_lexeme + 1);
 			temp = new_lexeme;
