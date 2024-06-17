@@ -121,13 +121,13 @@ int	peek_is_valid_path(char c)
 	return (0);
 }
 
-int	valid_tilde_separator(char sep, int equal_valid)
+bool	valid_tilde_separator(char sep, int pos_equal_sep)
 {
 	if (ft_strchr(":", sep))
-		return (1);
-	else if (sep == '=' && equal_valid == 1)
-		return (1);
-	return (0);
+		return (true);
+	else if (sep == '=' && pos_equal_sep == 1)
+		return (true);
+	return (false);
 }
 
 char	*replace_tilde_in_str(char *str, char *home, t_exp_flags *flags)
@@ -139,9 +139,7 @@ char	*replace_tilde_in_str(char *str, char *home, t_exp_flags *flags)
 	char	*back;
 	char	*temp;
 
-//tilde before '=' will not get replaced.
-//tilde after '=' or when no '=' in string will get replaced, if at first position and valid path char at next position ("/") or end of string
-// or after ":" if also after '=' if valid path char at next position ("/", ":") or end of string
+	debug("replace_tilde_in_str");
 	i = 0;
 	new_str = ft_strdup(str);
 	if (flags->pos_equal_sep == 1)
@@ -158,6 +156,7 @@ char	*replace_tilde_in_str(char *str, char *home, t_exp_flags *flags)
 		pos = str;
 	while (new_str && new_str[i])
 	{
+		debug("State of pos_equal_sep flag: %i", flags->pos_equal_sep);
 		if (new_str[i] == '~' && i == 0 && peek_is_valid_path(new_str[i + 1]))
 		{
 			back = ft_strdup(new_str + 1);
@@ -213,13 +212,9 @@ void	expand_path(t_darray *env_arr, t_token *token, t_exp_flags *flags)
 	home = get_home(env_arr);
 	if (token->type == TILDE)
 		lexeme = home;
-	else if (token->type == PATHNAME)
-	{
-		lexeme = replace_tilde_in_str(token->lexeme, home, flags);
-		free(home);
-	}
 	else
-		return ;
+		lexeme = replace_tilde_in_str(token->lexeme, home, flags);
+	free(home);
 	token->type = WORD;
 	free(token->lexeme);
 	token->lexeme = lexeme;
@@ -390,7 +385,7 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 {
 	t_exp_flags	flags;
 
-	// flags to ensure correct expansions are done depending on other tokens in the list eg VAR=~"string"$EXP:~
+	reset_flags(&flags);
 	while (tokenlist)
 	{
 		if (!get_curr_token(tokenlist))
@@ -408,15 +403,14 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 			expand_double_quotes(data, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == VAR_EXPANSION || get_token_type(tokenlist) == DOLLAR)
 			expand_dollar(data->env_arr, get_curr_token(tokenlist));
-		if (ft_strchr(get_token_lexeme(tokenlist), '~') || get_token_type(tokenlist) == TILDE \
-				|| get_token_type(tokenlist) == PATHNAME)
+		else if (ft_strchr(get_token_lexeme(tokenlist), '~'))
 			expand_path(data->env_arr, get_curr_token(tokenlist), &flags);
-		else if (get_token_type(tokenlist)  == DOLLAR_QUESTION)
+		if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
+			expand_path(data->env_arr, get_curr_token(tokenlist), &flags);
+		if (get_token_type(tokenlist) == DOLLAR_QUESTION)
 			expand_exit_status(data, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == GLOBBING)
+		if (get_token_type(tokenlist) == GLOBBING)
 			expand_globbing(tokenlist);
-		else
-			debug("Token type not expanded");
 		if (token_followed_by_space(tokenlist))
 			reset_flags(&flags);
 		tokenlist = tokenlist->next;

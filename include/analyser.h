@@ -38,7 +38,7 @@ void	expand_single_quotes(t_token *token);
 void	expand_double_quotes(t_data *data, t_token *token);
 char	*get_home(t_darray *env_arr);
 int     peek_is_valid_path(char c);
-int	    valid_tilde_separator(char sep, int equal_sep);
+bool	    valid_tilde_separator(char sep, int pos_equal_sep);
 char	*replace_tilde_in_str(char *str, char *home, t_exp_flags *flags);
 void	which_ast_node(t_ast_node *ast);
 int	    count_chars_in_str(char *str, char c);
