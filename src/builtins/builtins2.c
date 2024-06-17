@@ -109,7 +109,7 @@ bool    no_valid_identifier(const char *key)
     debug("check if valid identifier");
     if (key && (!ft_isalpha(key[0]) || key[0] == '_'))
         return (true);
-    debug("Frist key check passed");
+    debug("First key check passed");
     i = 1;
     while (key[i] != '\0')
     {
