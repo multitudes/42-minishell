@@ -7,6 +7,7 @@
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
+#include "../include/builtins.h"
 
 int	ft_strncmp(const char *s1, const char *s2, size_t n);
 

@@ -6,12 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/28 19:00:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 09:24:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executer.h"
 #include "minishell.h"
+#include "error.h"
+#include "builtins.h"
 
 /*
 posix compliant use of the environ variable but wecan discuss this

@@ -6,13 +6,15 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/08 16:29:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 09:16:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "environment.h"
 #include "darray.h"
+#include "utils.h"
+#include "error.h"
 
 bool update_env(t_darray *env_arr, const char *key, const char *value)
 {

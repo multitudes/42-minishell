@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 22:50:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/06/09 14:37:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 09:22:56 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "environment.h"
 #include "history.h"
 #include <unistd.h>
+#include "error.h"
 
 char *execute_getcwd(char old_dir[], char *message)
 {

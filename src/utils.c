@@ -6,11 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:37:46 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 16:52:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 09:20:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "utils.h"
+#include <libft.h>
+#include "error.h"
 
 /*
  The strndup() function is similar to ft_strdup, but copies at most n bytes. 

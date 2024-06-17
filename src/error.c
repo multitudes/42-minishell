@@ -6,11 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/09 14:36:09 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 09:12:44 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "error.h"
+#include <stdint.h>
+#include <libft.h>
 
 /*
 Used to return from the program with an error message passing

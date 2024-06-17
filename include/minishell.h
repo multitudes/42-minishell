@@ -13,13 +13,9 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <string.h>
-# include <errno.h>
 # include <fcntl.h>
-# include <signal.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -38,17 +34,11 @@
 
 # include <libft.h>
 
-# include "utils.h"
 # include "darray.h"
 # include "environment.h"
-# include "scanner.h"
 # include "parser.h"
 # include "history.h"
-# include "analyser.h"
 # include "executer.h"
-# include "error.h"
-# include "builtins.h"
-# include "globbing.h"
 
 // global.h
 extern int g_signal;

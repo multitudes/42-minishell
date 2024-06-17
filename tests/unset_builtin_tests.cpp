@@ -7,6 +7,8 @@
 #include <sys/wait.h>
 #include "../include/minishell.h"
 #include "../include/globbing.h"
+#include "../include/builtins.h"
+
 
 // needed for the tests
 void	ft_lstdelone(t_list *lst, void (*del)(void*));
