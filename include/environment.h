@@ -20,8 +20,7 @@ extern "C" {
 
 # endif
 
-#include "minishell.h"
-
+# include <stdbool.h>
 /*
 forward declaration
 */

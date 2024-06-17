@@ -6,12 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 15:59:50 by rpriess           #+#    #+#             */
-/*   Updated: 2024/06/03 11:41:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 09:08:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "environment.h"
+#include "debug.h"
 #include "darray.h"
+#include <libft.h>
 
 int	copy_env_darray(t_darray **new_array, t_darray *source_arr)
 {
