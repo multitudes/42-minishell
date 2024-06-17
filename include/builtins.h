@@ -37,7 +37,7 @@ uint8_t	    execute_exit_builtin(t_data *data, t_list *tokenlist);
 uint8_t		execute_export_builtin(t_darray *env_arr, t_list *tokenlist);
 uint8_t		execute_pwd_builtin(void);
 uint8_t		execute_unset_builtin(t_darray *env_arr, t_list *tokenlist);
-int    		merge_tokens_for_export(t_list *tokenlist);
+int    		merge_tokens(t_list *tokenlist);
 bool		allowed_flags(const char *flag_lexem, const char *allowed_flags);
 bool		write_data(int fd, const void *str, uint8_t *status);
 bool		ft_isnumstring(const char *str);

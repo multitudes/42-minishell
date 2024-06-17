@@ -16,6 +16,7 @@
 #include <libft.h>
 #include "error.h"
 #include "utils.h"
+#include "builtins.h"
 
 /*
 it checks if the terminal ast node is a builtin or a command
@@ -406,7 +407,7 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	debug("AST type: %d", ast->type);
 	expand_tokenlist(data, tokenlist);
 	while (tokenlist->next && !token_followed_by_space(tokenlist))
-		merge_tokens_for_export(tokenlist);
+		merge_tokens(tokenlist);
 	// debug("---------left -----------");
 	// if (ast->left)
 	// 	analyse_expand(ast->left, data);

@@ -87,7 +87,7 @@ int merge_tokens_for_export(t_list *tokenlist)
     free(token_2);
 	free(tofree);
     if (tokenlist->next && !token_followed_by_space(tokenlist))
-        merge_tokens_for_export(tokenlist);
+        merge_tokens(tokenlist);
     return (0);
 }
 
