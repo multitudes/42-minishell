@@ -201,19 +201,32 @@ char	*get_home(t_darray *env_arr)
 	return (home);
 }
 
+bool	valid_tilde_expansion(t_list *tokenlist)
+{
+	if (!tokenlist->next)
+		return (true);
+	else if (token_followed_by_space(tokenlist))
+		return (true);
+	else if (!token_followed_by_space(tokenlist) && peek_is_valid_path(get_token_lexeme(tokenlist)[0]))
+		return (true);
+	return (false);
+}
+
 /*
 Expands "~" in pathnames
 */
-void	expand_path(t_darray *env_arr, t_token *token, t_exp_flags *flags)
+void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 {
 	char	*lexeme;
 	char	*home;
+	t_token	*token;
 
 	debug("expand_path");
+	token = get_curr_token(tokenlist);
 	if (!token)
 		return ;
 	home = get_home(env_arr);
-	if (token->type == TILDE)
+	if (token->type == TILDE && valid_tilde_expansion(tokenlist))
 		lexeme = home;
 	else
 	{
@@ -409,9 +422,9 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 		else if (get_token_type(tokenlist) == VAR_EXPANSION || get_token_type(tokenlist) == DOLLAR)
 			expand_dollar(data->env_arr, get_curr_token(tokenlist));
 		else if (ft_strchr(get_token_lexeme(tokenlist), '~'))
-			expand_path(data->env_arr, get_curr_token(tokenlist), &flags);
+			expand_path(data->env_arr, tokenlist, &flags);
 		if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
-			expand_path(data->env_arr, get_curr_token(tokenlist), &flags);
+			expand_path(data->env_arr, tokenlist, &flags);
 		if (get_token_type(tokenlist) == DOLLAR_QUESTION)
 			expand_exit_status(data, get_curr_token(tokenlist));
 		if (get_token_type(tokenlist) == GLOBBING)
