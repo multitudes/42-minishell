@@ -14,6 +14,7 @@
 #include "minishell.h"
 #include "error.h"
 #include "builtins.h"
+#include "analyser.h"
 
 /*
 posix compliant use of the environ variable but wecan discuss this
