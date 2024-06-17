@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 13:32:17 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 13:55:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,5 @@ bool	sanitize_input(const char *input)
 			*tmp++ = input[i++];
 	}
 	*tmp = '\0';
-	// parentheses check
-
 	return (true);
 }
