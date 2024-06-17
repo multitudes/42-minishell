@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:48:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 15:51:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,6 @@ typedef enum e_tokentype {
 	BANG_ALPHA,
 	BANG_QUESTION_ALPHA,
 	BANG_HASH,
-	EQUAL_EQUAL,
 	GREATER_EQUAL,
 	LESS_EQUAL,
 	MINUS_MINUS,
