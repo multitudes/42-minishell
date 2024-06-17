@@ -65,7 +65,7 @@ Function merges the current and next token in a tokenlist:
 - the folldbyspace info from the second token is preserved
 - the second token get deleted and the list node pointed to the following node in the list
 */
-int merge_tokens_for_export(t_list *tokenlist)
+int merge_tokens(t_list *tokenlist)
 {
     t_token *token_1;
     t_token *token_2;
