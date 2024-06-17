@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 15:43:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 15:47:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,11 +121,11 @@ int	peek_is_valid_path(char c)
 	return (0);
 }
 
-bool	valid_tilde_separator(char sep, int pos_equal_sep)
+bool	valid_tilde_separator(char sep, int equal_status)
 {
 	if (ft_strchr(":", sep))
 		return (true);
-	else if (sep == '=' && pos_equal_sep == 1)
+	else if (sep == '=' && equal_status == 1)
 		return (true);
 	return (false);
 }
@@ -142,13 +142,13 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *str, char *home, t_exp_flags
 	debug("replace_tilde_in_str");
 	i = 0;
 	new_str = ft_strdup(str);
-	if (flags->pos_equal_sep == 1)
+	if (flags->equal_status == 1)
 	{
 		pos = ft_strchr(str, '=');
 		if (!pos)
 		{
 			pos = str;
-			flags->pos_equal_sep = 2;
+			flags->equal_status = 2;
 		}
 		i = pos - str + 1;
 	}
@@ -156,8 +156,8 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *str, char *home, t_exp_flags
 		pos = str;
 	while (new_str && new_str[i])
 	{
-		debug("State of pos_equal_sep flag: %i", flags->pos_equal_sep);
-		if (new_str[i] == '~' && i == 0 && peek_is_valid_path(new_str[i + 1]) && flags->pos_equal_sep == 1 && valid_tilde_expansion(tokenlist, i))
+		debug("State of equal_status flag: %i", flags->equal_status);
+		if (new_str[i] == '~' && i == 0 && peek_is_valid_path(new_str[i + 1]) && flags->equal_status == 1 && valid_tilde_expansion(tokenlist, i))
 		{
 			back = ft_strdup(new_str + 1);
 			temp = new_str;
@@ -166,12 +166,12 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *str, char *home, t_exp_flags
 			free(temp);
 			i = ft_strlen(home) - 1;
 		}
-		else if (new_str[i] == '~' && peek_is_valid_path(new_str[i + 1]) && (i != 0 && valid_tilde_separator(new_str[i - 1], flags->pos_equal_sep)) && valid_tilde_expansion(tokenlist, i))
+		else if (new_str[i] == '~' && peek_is_valid_path(new_str[i + 1]) && (i != 0 && valid_tilde_separator(new_str[i - 1], flags->equal_status)) && valid_tilde_expansion(tokenlist, i))
 		{
 			front = ft_strndup(new_str, i);
 			back = ft_strdup(new_str + i + 1);
-			if (flags->pos_equal_sep == 1)
-				flags->pos_equal_sep = 2;
+			if (flags->equal_status == 1)
+				flags->equal_status = 2;
 			temp = new_str;
 			debug("front of new string: %s", front);
 			debug("middle of new string: %s", home);
@@ -182,8 +182,8 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *str, char *home, t_exp_flags
 			free(temp);
 			i = i + ft_strlen(home) - 1;
 		}
-		if (new_str[i] == '=' && flags->pos_equal_sep == 1)
-			flags->pos_equal_sep = 2;
+		if (new_str[i] == '=' && flags->equal_status == 1)
+			flags->equal_status = 2;
 		i++;
 	}
 	return (new_str);
@@ -228,7 +228,7 @@ void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 	if (!token)
 		return ;
 	home = get_home(env_arr);
-	if (token->type == TILDE && flags->pos_equal_sep == 1 && valid_tilde_expansion(tokenlist, 0))
+	if (token->type == TILDE && flags->equal_status == 1 && valid_tilde_expansion(tokenlist, 0))
 		lexeme = home;
 	else
 	{
