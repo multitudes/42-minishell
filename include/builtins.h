@@ -42,6 +42,7 @@ bool		allowed_flags(const char *flag_lexem, const char *allowed_flags);
 bool		write_data(int fd, const void *str, uint8_t *status);
 bool		ft_isnumstring(const char *str);
 bool   		read_only_variable(const char *key);
+bool        no_valid_identifier(const char *key);
 
 #  ifdef __cplusplus
 

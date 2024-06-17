@@ -26,7 +26,7 @@ bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type)
 	while (data->input[*i] && data->input[*i] != delim)
 		advance(i);
 	if (data->input[*i] == '\0')
-		return (scanner_error(data, "minishell : syntax error: unexpected end of file"));
+		return (scanner_error(data, "minishell: syntax error: unexpected end of file\n"));
 	tmp = ft_substr(data->input, start, *i - start + 1);
 	add_token(data, &start, tmp, t_type);
 	*i = start;
@@ -46,7 +46,7 @@ bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type)
 	while (peek(data->input + *i, delim, FUZZY) == false)
 		advance(i);
 	if (*(data->input + *i + 1) == '\0')
-		return (scanner_error(data, "error: unclosed expansion"));
+		return (scanner_error(data, "minishell: error: unclosed expansion\n"));
 	tmp = ft_substr(data->input, start, *i - start + 2);
 	*i = start;
 	add_token(data, i, tmp, t_type);

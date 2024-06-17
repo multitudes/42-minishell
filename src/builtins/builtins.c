@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.c                                        :+:      :+:    :+:   */
+/*   builtins.c                                        :+:       :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -123,7 +123,7 @@ uint8_t	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 	debug("env builtin");
 	status = 0;
 	if (get_token_lexeme(tokenlist->next))
-		status = print_minishell_error_status("env: too many arguments", 1);
+		status = print_minishell_error_status("env: too many arguments", 1); // include lexeme of argument used
 	else
 		status = print_env(env_arr);
 	return (status);
@@ -154,21 +154,20 @@ uint8_t	execute_echo_builtin(t_list *tokenlist)
 	status = 0;
 	new_line = 1;
 	tokenlist = tokenlist->next;
+	while (tokenlist && get_token_type(tokenlist) == FLAGS && allowed_flags(get_token_lexeme(tokenlist), "n"))
+	{
+		new_line = 0;
+		tokenlist = tokenlist->next;
+	}
 	while (tokenlist)
 	{
-		debug("lexeme: %s", get_token_lexeme(tokenlist));
-		if (get_token_type(tokenlist) == FLAGS && allowed_flags(get_token_lexeme(tokenlist), "n"))
-				new_line = 0;
-		else
-		{
-			write_data(1, get_token_lexeme(tokenlist), &status);
-			if (tokenlist->next != NULL)
-				write_data(1, " ", &status);
-		}
+		write_data(1, get_token_lexeme(tokenlist), &status);
+		if (tokenlist->next != NULL && token_followed_by_space(tokenlist))
+			write_data(1, " ", &status);
 		tokenlist = tokenlist->next;
 	}
 	if (new_line)
-		write_data(1, "\n", &status);		
+		write_data(1, "\n", &status);
 	return (status);
 }
 
@@ -206,7 +205,7 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 	debug("export builtin");
 	status = 0;
 	tokenlist = tokenlist->next;
-	if (!tokenlist)
+	if (!tokenlist) // || !get_token_lexeme(tokenlist))
 		return (print_env_export(env_arr));
 	while (tokenlist)
 	{
@@ -218,7 +217,7 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		key = get_var_key(get_token_lexeme(tokenlist));
 		value = get_var_value(get_token_lexeme(tokenlist));
 		debug("Key: %s, Value: %s", key, value);
-		if (ft_strchr(key, '~'))
+		if (no_valid_identifier(key))
 		{
 			// TODO instead the str3join do maybe a variadic func?
 			err_msg = ft_strjoin3("minishell: export `", get_token_lexeme(tokenlist), "': not a valid identifier\n");
