@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/30 09:48:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 14:08:04 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,9 +116,8 @@ bool	is_not_control_token(t_token *token)
 {
 	if (token == NULL)
 		return (false);
-	if (token->type == PIPE || token->type == PIPE_AND || token->type == \
-	AND_IF || token->type == OR_IF || token->type == SEMI || token->type \
-	== AND_TOK)
+	if (token->type == PIPE || token->type == AND_IF || \
+	token->type == OR_IF || token->type == PIPE_AND)
 		return (false);
 	return (true);
 }
