@@ -121,7 +121,7 @@ int	peek_is_valid_path(char c)
 	return (0);
 }
 
-int	valid_tilde_separator(char sep, int	equal_valid)
+int	valid_tilde_separator(char sep, int equal_valid)
 {
 	if (ft_strchr(":", sep))
 		return (1);
@@ -130,11 +130,10 @@ int	valid_tilde_separator(char sep, int	equal_valid)
 	return (0);
 }
 
-char	*replace_tilde_in_str(char *str, char *home)
+char	*replace_tilde_in_str(char *str, char *home, t_exp_flags *flags)
 {
 	char	*new_str;
 	int		i;
-	int		equal_sep;
 	char	*pos;
 	char	*front;
 	char	*back;
@@ -144,16 +143,19 @@ char	*replace_tilde_in_str(char *str, char *home)
 //tilde after '=' or when no '=' in string will get replaced, if at first position and valid path char at next position ("/") or end of string
 // or after ":" if also after '=' if valid path char at next position ("/", ":") or end of string
 	i = 0;
-	equal_sep = 1;
 	new_str = ft_strdup(str);
-	pos = ft_strchr(str, '=');
-	if (!pos)
+	if (flags->pos_equal_sep == 1)
 	{
-		pos = str;
-		equal_sep = 0;
+		pos = ft_strchr(str, '=');
+		if (!pos)
+		{
+			pos = str;
+			flags->pos_equal_sep = 2;
+		}
+		i = pos - str + 1;
 	}
 	else
-		i = pos - str + 1;
+		pos = str;
 	while (new_str && new_str[i])
 	{
 		if (new_str[i] == '~' && i == 0 && peek_is_valid_path(new_str[i + 1]))
@@ -165,11 +167,12 @@ char	*replace_tilde_in_str(char *str, char *home)
 			free(temp);
 			i = ft_strlen(home) - 1;
 		}
-		else if (new_str[i] == '~' && peek_is_valid_path(new_str[i + 1]) && i != 0 && valid_tilde_separator(new_str[i - 1], equal_sep))
+		else if (new_str[i] == '~' && peek_is_valid_path(new_str[i + 1]) && i != 0 && valid_tilde_separator(new_str[i - 1], flags->pos_equal_sep))
 		{
 			front = ft_strndup(new_str, i);
 			back = ft_strdup(new_str + i + 1);
-			equal_sep = 0;
+			if (flags->pos_equal_sep == 1)
+				flags->pos_equal_sep = 2;
 			temp = new_str;
 			new_str = ft_strjoin3(front, home, back);
 			free(front);
@@ -199,7 +202,7 @@ char	*get_home(t_darray *env_arr)
 /*
 Expands "~" in pathnames
 */
-void	expand_path(t_darray *env_arr, t_token *token)
+void	expand_path(t_darray *env_arr, t_token *token, t_exp_flags *flags)
 {
 	char	*lexeme;
 	char	*home;
@@ -212,7 +215,7 @@ void	expand_path(t_darray *env_arr, t_token *token)
 		lexeme = home;
 	else if (token->type == PATHNAME)
 	{
-		lexeme = replace_tilde_in_str(token->lexeme, home);
+		lexeme = replace_tilde_in_str(token->lexeme, home, flags);
 		free(home);
 	}
 	else
@@ -385,13 +388,20 @@ Identify if and which expansion needed and call the appropriate expansion functi
 */
 void	expand_tokenlist(t_data *data, t_list *tokenlist)
 {
-	
+	t_exp_flags	flags;
+
 	// flags to ensure correct expansions are done depending on other tokens in the list eg VAR=~"string"$EXP:~
 	while (tokenlist)
 	{
 		if (!get_curr_token(tokenlist))
 			print_error_status("minishell: system error: missing token\n", 1);
 		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
+		if (ft_strchr(get_token_lexeme(tokenlist), '=') && get_token_lexeme(tokenlist)[0] == '$')
+			flags.dollar_exp_front = true;
+		if (ft_strchr(get_token_lexeme(tokenlist), '=') && flags.pos_equal_sep == 0)
+			flags.pos_equal_sep = 1;
+		else if (ft_strchr(get_token_lexeme(tokenlist), '=') && flags.pos_equal_sep == 1)
+			flags.pos_equal_sep = 2;
 		if (get_token_type(tokenlist) == S_QUOTED_STRING)
 			expand_single_quotes(get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == QUOTED_STRING)
@@ -400,13 +410,15 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 			expand_dollar(data->env_arr, get_curr_token(tokenlist));
 		if (ft_strchr(get_token_lexeme(tokenlist), '~') || get_token_type(tokenlist) == TILDE \
 				|| get_token_type(tokenlist) == PATHNAME)
-			expand_path(data->env_arr, get_curr_token(tokenlist));
+			expand_path(data->env_arr, get_curr_token(tokenlist), &flags);
 		else if (get_token_type(tokenlist)  == DOLLAR_QUESTION)
 			expand_exit_status(data, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == GLOBBING)
 			expand_globbing(tokenlist);
 		else
 			debug("Token type not expanded");
+		if (token_followed_by_space(tokenlist))
+			reset_flags(&flags);
 		tokenlist = tokenlist->next;
 	}
 }

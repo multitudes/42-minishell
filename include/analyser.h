@@ -21,23 +21,28 @@ extern "C" {
 # endif
 # include "minishell.h"
 
+typedef struct  s_expansion_flags {
+    int     pos_equal_sep;
+    bool    dollar_exp_front;
+}   t_exp_flags;
+
 void	analyse_expand(t_ast_node *ast, t_data *data);
 void	expand_tokenlist(t_data *data, t_list *tokenlist);
 void	expand_dollar(t_darray *env_arr, t_token *token);
 char	*get_key(char *str);
 char	*replace_dollar_vars(t_darray *env_arr, char *lexeme);
-void	expand_path(t_darray *env_arr, t_token *token);
+void	expand_path(t_darray *env_arr, t_token *token, t_exp_flags *flags);
 void	expand_globbing(t_list *tokenlist);
 void	expand_exit_status(t_data *data, t_token *token);
 void	expand_single_quotes(t_token *token);
 void	expand_double_quotes(t_data *data, t_token *token);
-char	*replace_tilde_in_str(char *str, char *home);
 char	*get_home(t_darray *env_arr);
 int     peek_is_valid_path(char c);
-int	    valid_tilde_separator(char sep, int	equal_valid);
-char	*replace_tilde_in_str(char *str, char *home);
+int	    valid_tilde_separator(char sep, int equal_sep);
+char	*replace_tilde_in_str(char *str, char *home, t_exp_flags *flags);
 void	which_ast_node(t_ast_node *ast);
 int	    count_chars_in_str(char *str, char c);
+void	reset_flags(t_exp_flags *flags);
 
 #  ifdef __cplusplus
 
