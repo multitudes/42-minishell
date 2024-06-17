@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 15:47:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 16:05:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	which_ast_node(t_ast_node *ast)
 
 void	expand_globbing(t_list *tokenlist)
 {
-	char	*pat;
+	char		*pat;
 	t_darray	*files;
 	
 	// debug("expand_globbing");
@@ -98,22 +98,9 @@ void	expand_globbing(t_list *tokenlist)
 	return ;
 }
 
-int	count_chars_in_str(char *str, char c)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (str && str[i])
-	{
-		if (str[i] == c)
-			count++;
-		i++;
-	}
-	return (count);
-}
-
+/*
+We dont expand tilde if the next char after the tilde is not a valid path
+*/
 int	peek_is_valid_path(char c)
 {
 	if (ft_strchr("/:", c) || c == '\0')
@@ -121,6 +108,11 @@ int	peek_is_valid_path(char c)
 	return (0);
 }
 
+/*
+If there is a : or a first equal sign we expand.
+If we are already past the first equal sign we dont expand if 
+we have more equal signs in between.
+*/
 bool	valid_tilde_separator(char sep, int equal_status)
 {
 	if (ft_strchr(":", sep))
@@ -130,9 +122,11 @@ bool	valid_tilde_separator(char sep, int equal_status)
 	return (false);
 }
 
-char	*replace_tilde_in_str(t_list *tokenlist, char *str, char *home, t_exp_flags *flags)
+/*
+*/
+char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_flags *flags)
 {
-	char	*new_str;
+	char	*new_lexeme;
 	int		i;
 	char	*pos;
 	char	*front;
@@ -141,52 +135,52 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *str, char *home, t_exp_flags
 
 	debug("replace_tilde_in_str");
 	i = 0;
-	new_str = ft_strdup(str);
+	new_lexeme = ft_strdup(lexeme);
 	if (flags->equal_status == 1)
 	{
-		pos = ft_strchr(str, '=');
+		pos = ft_strchr(lexeme, '=');
 		if (!pos)
 		{
-			pos = str;
+			pos = lexeme;
 			flags->equal_status = 2;
 		}
-		i = pos - str + 1;
+		i = pos - lexeme + 1;
 	}
 	else
-		pos = str;
-	while (new_str && new_str[i])
+		pos = lexeme;
+	while (new_lexeme && new_lexeme[i])
 	{
 		debug("State of equal_status flag: %i", flags->equal_status);
-		if (new_str[i] == '~' && i == 0 && peek_is_valid_path(new_str[i + 1]) && flags->equal_status == 1 && valid_tilde_expansion(tokenlist, i))
+		if (new_lexeme[i] == '~' && i == 0 && peek_is_valid_path(new_lexeme[i + 1]) && flags->equal_status == 1 && valid_tilde_expansion(tokenlist, i))
 		{
-			back = ft_strdup(new_str + 1);
-			temp = new_str;
-			new_str = ft_strjoin(home, back);
+			back = ft_strdup(new_lexeme + 1);
+			temp = new_lexeme;
+			new_lexeme = ft_strjoin(home, back);
 			free(back);
 			free(temp);
 			i = ft_strlen(home) - 1;
 		}
-		else if (new_str[i] == '~' && peek_is_valid_path(new_str[i + 1]) && (i != 0 && valid_tilde_separator(new_str[i - 1], flags->equal_status)) && valid_tilde_expansion(tokenlist, i))
+		else if (new_lexeme[i] == '~' && peek_is_valid_path(new_lexeme[i + 1]) && (i != 0 && valid_tilde_separator(new_lexeme[i - 1], flags->equal_status)) && valid_tilde_expansion(tokenlist, i))
 		{
-			front = ft_strndup(new_str, i);
-			back = ft_strdup(new_str + i + 1);
+			front = ft_strndup(new_lexeme, i);
+			back = ft_strdup(new_lexeme + i + 1);
 			if (flags->equal_status == 1)
 				flags->equal_status = 2;
-			temp = new_str;
+			temp = new_lexeme;
 			debug("front of new string: %s", front);
 			debug("middle of new string: %s", home);
 			debug("back of new string: %s", back);
-			new_str = ft_strjoin3(front, home, back);
+			new_lexeme = ft_strjoin3(front, home, back);
 			free(front);
 			free(back);
 			free(temp);
 			i = i + ft_strlen(home) - 1;
 		}
-		if (new_str[i] == '=' && flags->equal_status == 1)
+		if (new_lexeme[i] == '=' && flags->equal_status == 1)
 			flags->equal_status = 2;
 		i++;
 	}
-	return (new_str);
+	return (new_lexeme);
 }
 
 /*
