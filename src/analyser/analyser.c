@@ -173,6 +173,9 @@ char	*replace_tilde_in_str(char *str, char *home, t_exp_flags *flags)
 			if (flags->pos_equal_sep == 1)
 				flags->pos_equal_sep = 2;
 			temp = new_str;
+			debug("front of new string: %s", front);
+			debug("middle of new string: %s", home);
+			debug("back of new string: %s", back);
 			new_str = ft_strjoin3(front, home, back);
 			free(front);
 			free(back);
@@ -213,8 +216,10 @@ void	expand_path(t_darray *env_arr, t_token *token, t_exp_flags *flags)
 	if (token->type == TILDE)
 		lexeme = home;
 	else
+	{
 		lexeme = replace_tilde_in_str(token->lexeme, home, flags);
-	free(home);
+		free(home);
+	}
 	token->type = WORD;
 	free(token->lexeme);
 	token->lexeme = lexeme;
