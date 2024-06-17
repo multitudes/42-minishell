@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:52:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:46:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 07:54:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ either is alnum including the _ and - or is a /
 I already accept the . and .. and ./ and ~/ and ~+  
 as a beginning of a pathname
 */
-bool	is_in_pathname(const char c)
+bool	char_is_in_pathname(const char c)
 {
 	return (is_alnum(c) || c != '.');
 }

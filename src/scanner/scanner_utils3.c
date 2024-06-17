@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:57:41 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 15:18:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 07:55:41 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ bool	str_is_pathname(const char *str)
 	{
 		while (*str)
 		{
-			if (!is_in_pathname(*str))
+			if (!char_is_in_pathname(*str))
 				return (false);
 			str++;
 		}

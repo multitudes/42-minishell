@@ -13,6 +13,10 @@
 #include "minishell.h"
 #include "analyser.h"
 #include "scanner.h"
+#include <libft.h>
+#include "error.h"
+#include "utils.h"
+#include "builtins.h"
 
 /*
 it checks if the terminal ast node is a builtin or a command
@@ -51,52 +55,6 @@ void	which_ast_node(t_ast_node *ast)
 		debug("not TERMINAL");
 }
 
-void	expand_globbing(t_list *tokenlist)
-{
-	char		*pat;
-	t_darray	*files;
-	
-	// debug("expand_globbing");
-	debug("token type: %d lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
-	pat = get_token_lexeme(tokenlist);
-	files = darray_create(sizeof(char *), 100);
-	if (match_files_in_directory(files, pat))
-	{
-		debug("files count : %d", files->end);
-		
-		t_list *next = tokenlist->next;
-		t_list *head = tokenlist->prev;
-		head->next = NULL;
-		tokenlist->next = NULL;
-		tokenlist->prev = NULL;
-		debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(next));
-		// create a new linked list of tokens with the file names
-		int i = 0;
-		int start = 0;
-		while (i < files->end)
-		{
-			char *file = darray_get(files, i);
-			debug("file: %s", file);
-			t_list *new_node = new_toknode(WORD, file, &start);
-			debug("new node: %s", get_token_lexeme(new_node));
-			ft_lstadd_back(&head, new_node);
-			i++;
-		}
-		debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(head->next));
-		t_list *last = ft_lstlast(head);
-		last->next = next;
-		debug("last still: %s and next %s", get_token_lexeme(last), get_token_lexeme(next));
-		if (next)
-			next->prev = last;
-		// free the old list
-		debug("tokenlist %s and next %s", get_token_lexeme(tokenlist), get_token_lexeme(tokenlist));
-		// ft_lstclear(&tokenlist, free_tokennode);
-		// ft_lstdelone(tokenlist, free_tokennode);
-		// free the darray
-	}
-		darray_clear_destroy(files);
-	return ;
-}
 
 /*
 We dont expand tilde if the next char after the tilde is not a valid path
@@ -449,7 +407,7 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	debug("AST type: %d", ast->type);
 	expand_tokenlist(data, tokenlist);
 	while (tokenlist->next && !token_followed_by_space(tokenlist))
-		merge_tokens_for_export(tokenlist);
+		merge_tokens(tokenlist);
 	// debug("---------left -----------");
 	// if (ast->left)
 	// 	analyse_expand(ast->left, data);

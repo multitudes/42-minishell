@@ -199,7 +199,7 @@ bool	is_not_delimiter(const char ch);
 bool	is_digit(const char c);
 bool	is_alnum(const char c);
 bool	is_alpha(const char c);
-bool	is_in_pathname(const char c);
+bool	char_is_in_pathname(const char c);
 bool	not_a_delimiting_char(const char c);
 bool	is_a_pathname_or_num(t_mini_data *data, const char *tmp, int *start);
 bool	is_reserved(t_mini_data *data, char *identifier, int *start);

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:37:49 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/22 16:02:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 08:57:54 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ extern "C" {
 
 # endif
 
-#include "minishell.h"
-
+# include <stdbool.h>
 /*
 forward declaration
 */
@@ -42,7 +41,6 @@ char	*get_var_value(const char *variable);
 int		print_env(t_darray *env_array);
 int		print_env_export(t_darray *env_arr);
 char	*mini_get_env(t_darray *env_array, const char *key);
-char	*ft_strjoin3(const char *key, const char *mid, const char *value);
 
 #  ifdef __cplusplus
 

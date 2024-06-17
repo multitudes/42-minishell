@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/10 15:12:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 08:46:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,13 @@ extern "C" {
 # endif
 
 # include <limits.h>
-# include "minishell.h"
+# include <sys/types.h>
+# include <stdint.h>
+
+// forward declarations
+typedef struct s_data t_data;
+typedef struct s_list t_list;
+typedef struct s_ast_node t_ast_node;
 
 int		execute_ast(t_ast_node *ast, t_data *data);
 int 	execute_list(t_ast_node *ast, t_data *data);

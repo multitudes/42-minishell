@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "utils.h"
+#include <libft.h>
+#include "error.h"
 
 /*
  The strndup() function is similar to ft_strdup, but copies at most n bytes. 

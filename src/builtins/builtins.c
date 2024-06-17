@@ -17,6 +17,8 @@
 #include "environment.h"
 #include "history.h"
 #include <unistd.h>
+#include "error.h"
+#include "utils.h"
 
 /*
 Function to call to execute minishell builtin functions + history, true, false.
@@ -212,7 +214,7 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		value = NULL;
 		debug("followed by space? %s", (get_curr_token(tokenlist))->folldbyspace ? "true" : "false");
 		if (tokenlist->next && !token_followed_by_space(tokenlist))
-			status = merge_tokens_for_export(tokenlist);
+			status = merge_tokens(tokenlist);
 		key = get_var_key(get_token_lexeme(tokenlist));
 		value = get_var_value(get_token_lexeme(tokenlist));
 		debug("Key: %s, Value: %s", key, value);

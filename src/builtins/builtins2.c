@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 22:50:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/06/09 14:37:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 09:22:56 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "environment.h"
 #include "history.h"
 #include <unistd.h>
+#include "error.h"
 
 char *execute_getcwd(char old_dir[], char *message)
 {
@@ -64,7 +65,7 @@ Function merges the current and next token in a tokenlist:
 - the folldbyspace info from the second token is preserved
 - the second token get deleted and the list node pointed to the following node in the list
 */
-int merge_tokens_for_export(t_list *tokenlist)
+int merge_tokens(t_list *tokenlist)
 {
     t_token *token_1;
     t_token *token_2;
@@ -86,7 +87,7 @@ int merge_tokens_for_export(t_list *tokenlist)
     free(token_2);
 	free(tofree);
     if (tokenlist->next && !token_followed_by_space(tokenlist))
-        merge_tokens_for_export(tokenlist);
+        merge_tokens(tokenlist);
     return (0);
 }
 

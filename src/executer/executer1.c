@@ -6,12 +6,16 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/06 15:10:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 09:01:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "parser.h"
 #include "executer.h"
 #include <limits.h>
+#include <libft.h>
+#include "utils.h"
+#include "error.h"
 
 /*
 when I need to free a string array like the envpaths
