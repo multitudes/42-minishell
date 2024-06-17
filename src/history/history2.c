@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/08 17:35:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 13:55:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ overwrite it- interestingly the compiler did not complain about it
 being const maybe because the pointer is const... but the contents
 can vary? 
 */
-void	sanitize_input(const char *input)
+bool	sanitize_input(const char *input)
 {
 	int		i;
 	char	*tmp;
@@ -61,4 +61,5 @@ void	sanitize_input(const char *input)
 			*tmp++ = input[i++];
 	}
 	*tmp = '\0';
+	return (true);
 }

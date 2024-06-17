@@ -6,13 +6,22 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:58:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 13:53:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 
-	// check for empty string in parenthesis
+/*
+params:
+- str: the string to check
+- i: the current index in the string
+- start: the index of the opening parenthesis
+returns true:
+- check for empty string in parenthesis
+- parentheses are not valid if they are followed or preceded 
+by characters other than && || | or spaces
+*/ 
 bool is_empty_parenthesis(const char *str, int i, int start)	
 {	
 	int j; 

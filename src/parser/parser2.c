@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 17:08:30 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 14:10:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ follows the grammar
 */
 t_ast_node	*parse_terminal(t_list **input_tokens)
 {
-	t_list		*head;
 	t_ast_node	*a;
+	t_list		*head;
 	bool		expr_has_node;
 
 	a = NULL;
@@ -122,8 +122,8 @@ t_ast_node	*parse_list(t_list **token_list)
 		else if (*token_list)
 		{
 			debug("extraneus tken: %d, %s", \
-			((t_token *)(*token_list)->content)->type, \
-			((t_token *)(*token_list)->content)->lexeme);
+			get_token_type(*token_list), \
+			get_token_lexeme(*token_list));
 			*token_list = (*token_list)->next;
 		}
 	}

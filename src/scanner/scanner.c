@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 09:00:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 13:33:04 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,8 +197,8 @@ bool	got_tokens(t_mini_data *data, int *i)
 	if (is_a_control_operator(data, i) || is_a_math_op(data, i) || \
 	is_a_hist_expansion(data, i) || is_a_dollar_exp(data, i) || \
 	is_some_semicolons(data, i) || is_a_redirection(data, i) || \
-	is_a_redirection(data, i) || is_simple_operator(data, i) || \
-	is_a_block(data, i) || is_a_flag(data, i) || is_a_string_thing(data, i))
+	is_simple_operator(data, i) || is_a_block(data, i) || \
+	is_a_flag(data, i) || is_a_string_thing(data, i))
 		return (true);
 	else
 		return (false);
