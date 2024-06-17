@@ -327,7 +327,7 @@ void	expand_exit_status(t_data *data, t_token *token)
 	}
 }
 
-void	extract_string(t_token *token)
+void	expand_single_quotes(t_token *token)
 {
 	char	*lexeme;
 
@@ -342,7 +342,7 @@ void	extract_string(t_token *token)
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
-void	expand_string(t_data *data, t_token *token)
+void	expand_double_quotes(t_data *data, t_token *token)
 {
 	char	*unquoted_lexeme;
 	char	*temp_lexeme;
@@ -393,13 +393,13 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 			print_error_status("minishell: system error: missing token\n", 1);
 		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
 		if (get_token_type(tokenlist) == S_QUOTED_STRING)
-			extract_string(get_curr_token(tokenlist));
+			expand_single_quotes(get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == QUOTED_STRING)
-			expand_string(data, get_curr_token(tokenlist));
+			expand_double_quotes(data, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist) == VAR_EXPANSION || get_token_type(tokenlist) == DOLLAR)
 			expand_dollar(data->env_arr, get_curr_token(tokenlist));
-		if (get_token_type(tokenlist) == TILDE \
-				|| get_token_type(tokenlist) == PATHNAME) // specify condition
+		if (ft_strchr(get_token_lexeme(tokenlist), '~') || get_token_type(tokenlist) == TILDE \
+				|| get_token_type(tokenlist) == PATHNAME)
 			expand_path(data->env_arr, get_curr_token(tokenlist));
 		else if (get_token_type(tokenlist)  == DOLLAR_QUESTION)
 			expand_exit_status(data, get_curr_token(tokenlist));
