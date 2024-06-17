@@ -204,6 +204,7 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 
 	debug("export builtin");
 	status = 0;
+	// print_env(env_arr);
 	tokenlist = tokenlist->next;
 	if (!tokenlist) // || !get_token_lexeme(tokenlist))
 		return (print_env_export(env_arr));

@@ -62,6 +62,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 	tokenlist = ast->token_list;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);
+	analyse_expand(ast, data);
 	astnodetype = ast->type;
 	if (astnodetype == NODE_LIST)
 		status = execute_list(ast, data);

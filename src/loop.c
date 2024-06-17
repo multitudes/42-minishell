@@ -321,7 +321,7 @@ int loop()
 					data->ast = create_ast(data->token_list);
 					if (data->ast)
 					{
-						analyse_expand(data->ast, data);
+						// analyse_expand(data->ast, data);
 						data->exit_status = execute_ast(data->ast, data);
 						debug("Exit status: %i", data->exit_status);
 						free_ast(&(data->ast));
@@ -375,7 +375,7 @@ int single_command(const char *input)
 			data->ast = create_ast(data->token_list);
 			if (data->ast)
 			{
-				analyse_expand(data->ast, data);
+				// analyse_expand(data->ast, data);
 				data->exit_status = execute_ast(data->ast, data);
 				free_ast(&(data->ast));
 			}

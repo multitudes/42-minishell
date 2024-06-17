@@ -383,7 +383,8 @@ const char* test_all_tokens3() {
 	result = process_token(&current, &i, "!a", BANG_ALPHA);
 	result = process_token(&current, &i, "!?a", BANG_QUESTION_ALPHA);
 	result = process_token(&current, &i, "!#", BANG_HASH);
-	result = process_token(&current, &i, "==", EQUAL_EQUAL);
+	result = process_token(&current, &i, "=", EQUAL);
+	result = process_token(&current, &i, "=", EQUAL);
 	result = process_token(&current, &i, ">=", GREATER_EQUAL);
 	result = process_token(&current, &i, "<=", LESS_EQUAL);
 	result = process_token(&current, &i, "--", MINUS_MINUS);
