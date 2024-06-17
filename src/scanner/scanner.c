@@ -13,6 +13,7 @@
 #include "scanner.h"
 #include "debug.h"
 #include "utils.h"
+#include "parser.h"
 
 //peek(data.input + i, "#", FUZZY))
 int skip_space(t_list *tokenlist, const char* input, int *i)

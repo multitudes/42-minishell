@@ -6,13 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 13:21:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/14 11:28:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
 # include <sys/wait.h>
@@ -33,18 +34,11 @@
 
 # include <libft.h>
 
-# include "utils.h"
 # include "darray.h"
 # include "environment.h"
-# include "scanner.h"
 # include "parser.h"
 # include "history.h"
-# include "analyser.h"
 # include "executer.h"
-# include "error.h"
-# include "builtins.h"
-# include "globbing.h"
-# include "debug.h"
 
 // global.h
 extern int g_signal;

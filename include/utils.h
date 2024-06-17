@@ -6,16 +6,18 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:38:35 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:50:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 15:58:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_H
 # define UTILS_H
 
-# include "minishell.h"
+# include <stddef.h>
 
 int     ft_isascii(const int c);
 char	*ft_strndup(const char *s, size_t n);
+char	*ft_strjoin3(const char *key, const char *mid, const char *value);
+int	    count_char_in_str(char *str, char c);
 
 #endif  // UTILS_H_

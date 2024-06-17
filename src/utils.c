@@ -6,11 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:37:46 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 16:52:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 15:58:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "utils.h"
+#include <libft.h>
+#include "error.h"
 
 /*
  The strndup() function is similar to ft_strdup, but copies at most n bytes. 
@@ -76,4 +78,21 @@ char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 	ft_strlcat(result, s2, total_length);
 	ft_strlcat(result, s3, total_length);
 	return (result);
+}
+
+
+int	count_char_in_str(char *str, char c)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (str && str[i])
+	{
+		if (str[i] == c)
+			count++;
+		i++;
+	}
+	return (count);
 }

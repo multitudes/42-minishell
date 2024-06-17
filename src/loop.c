@@ -6,12 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/10 18:40:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 09:15:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "darray.h"
+#include "error.h"
+#include "analyser.h"
 
 /*
 Allowed global variable for signals only. 
@@ -319,7 +321,7 @@ int loop()
 					data->ast = create_ast(data->token_list);
 					if (data->ast)
 					{
-						analyse_expand(data->ast, data);
+						// analyse_expand(data->ast, data);
 						data->exit_status = execute_ast(data->ast, data);
 						debug("Exit status: %i", data->exit_status);
 						free_ast(&(data->ast));
@@ -373,7 +375,7 @@ int single_command(const char *input)
 			data->ast = create_ast(data->token_list);
 			if (data->ast)
 			{
-				analyse_expand(data->ast, data);
+				// analyse_expand(data->ast, data);
 				data->exit_status = execute_ast(data->ast, data);
 				free_ast(&(data->ast));
 			}

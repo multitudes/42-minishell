@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:47:55 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 15:18:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 15:51:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,6 @@ bool	is_a_aggregate_redirection(t_mini_data *data, int *i)
 		return (add_token(data, i, ">", REDIRECT_OUT));
 	else if (peek(data->input + *i, "<", FUZZY))
 		return (add_token(data, i, "<", REDIRECT_IN));
-	else if (peek(data->input + *i, "==", FUZZY))
-		return (add_token(data, i, "==", EQUAL_EQUAL));
 	else if (peek(data->input + *i, ",", FUZZY))
 		return (add_token(data, i, ",", COMMA));
 	else if (peek(data->input + *i, "-", EXACT))

@@ -138,7 +138,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
         close(pipefd_in[0]);
 
 		// if (!isRunningOnGitHubActions())
-		usleep(3000);
+		usleep(6000);
         write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
         // write(pipefd_in[1], "\x04", 1);
 
@@ -146,7 +146,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 		close(pipefd_in[1]);
 
 		// if (!isRunningOnGitHubActions())
-		usleep(3000);
+		usleep(6000);
 
         char buffer[1024];
         int n = read(pipefd_out[0], buffer, sizeof(buffer));

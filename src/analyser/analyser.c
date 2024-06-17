@@ -6,13 +6,17 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/14 16:05:03 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/06/17 16:13:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "analyser.h"
 #include "scanner.h"
+#include <libft.h>
+#include "error.h"
+#include "utils.h"
+#include "builtins.h"
 
 /*
 it checks if the terminal ast node is a builtin or a command
@@ -51,135 +55,90 @@ void	which_ast_node(t_ast_node *ast)
 		debug("not TERMINAL");
 }
 
-void	expand_globbing(t_list *tokenlist)
-{
-	char	*pat;
-	t_darray	*files;
-	
-	// debug("expand_globbing");
-	debug("token type: %d lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
-	pat = get_token_lexeme(tokenlist);
-	files = darray_create(sizeof(char *), 100);
-	if (match_files_in_directory(files, pat))
-	{
-		debug("files count : %d", files->end);
-		
-		t_list *next = tokenlist->next;
-		t_list *head = tokenlist->prev;
-		head->next = NULL;
-		tokenlist->next = NULL;
-		tokenlist->prev = NULL;
-		debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(next));
-		// create a new linked list of tokens with the file names
-		int i = 0;
-		int start = 0;
-		while (i < files->end)
-		{
-			char *file = darray_get(files, i);
-			debug("file: %s", file);
-			t_list *new_node = new_toknode(WORD, file, &start);
-			debug("new node: %s", get_token_lexeme(new_node));
-			ft_lstadd_back(&head, new_node);
-			i++;
-		}
-		debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(head->next));
-		t_list *last = ft_lstlast(head);
-		last->next = next;
-		debug("last still: %s and next %s", get_token_lexeme(last), get_token_lexeme(next));
-		if (next)
-			next->prev = last;
-		// free the old list
-		debug("tokenlist %s and next %s", get_token_lexeme(tokenlist), get_token_lexeme(tokenlist));
-		// ft_lstclear(&tokenlist, free_tokennode);
-		// ft_lstdelone(tokenlist, free_tokennode);
-		// free the darray
-	}
-		darray_clear_destroy(files);
-	return ;
-}
 
-int	count_chars_in_str(char *str, char c)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (str && str[i])
-	{
-		if (str[i] == c)
-			count++;
-		i++;
-	}
-	return (count);
-}
-
+/*
+We dont expand tilde if the next char after the tilde is not a valid path
+*/
 int	peek_is_valid_path(char c)
 {
-	if (ft_strchr("/", c) || c == '\0')
+	if (ft_strchr("/:", c) || c == '\0')
 		return (1);
 	return (0);
 }
 
-int	valid_tilde_separator(char sep, int	equal_valid)
+/*
+If there is a : or a first equal sign we expand.
+If we are already past the first equal sign we dont expand if 
+we have more equal signs in between.
+*/
+bool	valid_tilde_separator(char sep, int equal_status)
 {
 	if (ft_strchr(":", sep))
-		return (1);
-	else if (sep == '=' && equal_valid == 1)
-		return (1);
-	return (0);
+		return (true);
+	else if (sep == '=' && equal_status == 1)
+		return (true);
+	return (false);
 }
 
-char	*replace_tilde_in_str(char *str, char *home)
+/*
+*/
+char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_flags *flags)
 {
-	char	*new_str;
+	char	*new_lexeme;
 	int		i;
-	int		equal_sep;
 	char	*pos;
 	char	*front;
 	char	*back;
 	char	*temp;
 
-//tilde before '=' will not get replaced.
-//tilde after '=' or when no '=' in string will get replaced, if at first position and valid path char at next position ("/") or end of string
-// or after ":" if also after '=' if valid path char at next position ("/", ":") or end of string
+	debug("replace_tilde_in_str");
 	i = 0;
-	equal_sep = 1;
-	new_str = ft_strdup(str);
-	pos = ft_strchr(str, '=');
-	if (!pos)
+	new_lexeme = ft_strdup(lexeme);
+	if (flags->equal_status == 1)
 	{
-		pos = str;
-		equal_sep = 0;
+		pos = ft_strchr(lexeme, '=');
+		if (!pos)
+		{
+			pos = lexeme;
+			flags->equal_status = 2;
+		}
+		i = pos - lexeme + 1;
 	}
 	else
-		i = pos - str + 1;
-	while (new_str && new_str[i])
+		pos = lexeme;
+	while (new_lexeme && new_lexeme[i])
 	{
-		if (new_str[i] == '~' && i == 0 && peek_is_valid_path(new_str[i + 1]))
+		debug("State of equal_status flag: %i", flags->equal_status);
+		if (new_lexeme[i] == '~' && i == 0 && peek_is_valid_path(new_lexeme[i + 1]) && (flags->equal_status == 1) && valid_tilde_expansion(tokenlist, i))
 		{
-			back = ft_strdup(new_str + 1);
-			temp = new_str;
-			new_str = ft_strjoin(home, back);
+			back = ft_strdup(new_lexeme + 1);
+			temp = new_lexeme;
+			new_lexeme = ft_strjoin(home, back);
 			free(back);
 			free(temp);
 			i = ft_strlen(home) - 1;
 		}
-		else if (new_str[i] == '~' && peek_is_valid_path(new_str[i + 1]) && i != 0 && valid_tilde_separator(new_str[i - 1], equal_sep))
+		else if (new_lexeme[i] == '~' && peek_is_valid_path(new_lexeme[i + 1]) && (i != 0 && valid_tilde_separator(new_lexeme[i - 1], flags->equal_status)) && valid_tilde_expansion(tokenlist, i))
 		{
-			front = ft_strndup(new_str, i);
-			back = ft_strdup(new_str + i + 1);
-			equal_sep = 0;
-			temp = new_str;
-			new_str = ft_strjoin3(front, home, back);
+			front = ft_strndup(new_lexeme, i);
+			back = ft_strdup(new_lexeme + i + 1);
+			if (flags->equal_status == 1)
+				flags->equal_status = 2;
+			temp = new_lexeme;
+			debug("front of new string: %s", front);
+			debug("middle of new string: %s", home);
+			debug("back of new string: %s", back);
+			new_lexeme = ft_strjoin3(front, home, back);
 			free(front);
 			free(back);
 			free(temp);
 			i = i + ft_strlen(home) - 1;
 		}
+		if (new_lexeme[i] == '=' && flags->equal_status == 1)
+			flags->equal_status = 2;
 		i++;
 	}
-	return (new_str);
+	return (new_lexeme);
 }
 
 /*
@@ -196,28 +155,39 @@ char	*get_home(t_darray *env_arr)
 	return (home);
 }
 
+bool	valid_tilde_expansion(t_list *tokenlist, int index)
+{
+	if (!tokenlist->next)
+		return (true);
+	else if (token_followed_by_space(tokenlist))
+		return (true);
+	else if (!token_followed_by_space(tokenlist) && peek_is_valid_path(get_token_lexeme(tokenlist)[index + 1]) && peek_is_valid_path((get_token_lexeme(tokenlist->next))[0]))
+		return (true);
+	return (false);
+}
+
 /*
 Expands "~" in pathnames
 */
-void	expand_path(t_darray *env_arr, t_token *token)
+void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 {
 	char	*lexeme;
 	char	*home;
+	t_token	*token;
 
 	debug("expand_path");
+	token = get_curr_token(tokenlist);
 	if (!token)
 		return ;
 	home = get_home(env_arr);
-	if (token->type == TILDE)
+	if (token->type == TILDE && flags->equal_status == 1 && valid_tilde_expansion(tokenlist, 0))
 		lexeme = home;
-	else if (token->type == PATHNAME)
+	else
 	{
-		lexeme = replace_tilde_in_str(token->lexeme, home);
+		lexeme = replace_tilde_in_str(tokenlist, token->lexeme, home, flags);
 		free(home);
 	}
-	else
-		return ;
-	token->type = WORD;
+//	token->type = WORD;
 	free(token->lexeme);
 	token->lexeme = lexeme;
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
@@ -300,7 +270,7 @@ void	expand_dollar(t_darray *env_arr, t_token *token)
 	debug("expand_dollar");
 	if (!token)
 		return ;
-	token->type = WORD;
+//	token->type = WORD;
 	if (token->lexeme && ft_strchr(token->lexeme, '$'))
 	{
 		var = replace_dollar_vars(env_arr, token->lexeme);
@@ -323,11 +293,11 @@ void	expand_exit_status(t_data *data, t_token *token)
 	{
 		free(token->lexeme);
 		token->lexeme = temp;
-		token->type = WORD;
+//		token->type = WORD;
 	}
 }
 
-void	extract_string(t_token *token)
+void	expand_single_quotes(t_token *token)
 {
 	char	*lexeme;
 
@@ -337,12 +307,12 @@ void	extract_string(t_token *token)
 		lexeme = ft_strtrim(token->lexeme, "'"); 
 		free(token->lexeme);
 		token->lexeme = lexeme;
-		token->type = WORD;
+//		token->type = WORD;
 	}
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
-void	expand_string(t_data *data, t_token *token)
+void	expand_double_quotes(t_data *data, t_token *token)
 {
 	char	*unquoted_lexeme;
 	char	*temp_lexeme;
@@ -376,8 +346,26 @@ void	expand_string(t_data *data, t_token *token)
 		string_tokens = string_tokens->next;
 	}
 	ft_lstclear(&ptr_token_list, free_tokennode); //free_tokennode function is from scanner.h
-	token->type = WORD;
+//	token->type = WORD;
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
+}
+
+void	execute_expansion_by_type(t_data *data, t_list *tokenlist, t_exp_flags *flags)
+{
+	if (get_token_type(tokenlist) == S_QUOTED_STRING)
+		expand_single_quotes(get_curr_token(tokenlist));
+	else if (get_token_type(tokenlist) == QUOTED_STRING)
+		expand_double_quotes(data, get_curr_token(tokenlist));
+	else if (get_token_type(tokenlist) == VAR_EXPANSION || get_token_type(tokenlist) == DOLLAR)
+		expand_dollar(data->env_arr, get_curr_token(tokenlist));
+	else if (ft_strchr(get_token_lexeme(tokenlist), '~'))
+		expand_path(data->env_arr, tokenlist, flags);
+//	else if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
+//		expand_path(data->env_arr, tokenlist, flags);
+	else if (get_token_type(tokenlist) == DOLLAR_QUESTION)
+		expand_exit_status(data, get_curr_token(tokenlist));
+	else if (get_token_type(tokenlist) == GLOBBING)
+		expand_globbing(tokenlist);
 }
 
 /*
@@ -385,29 +373,18 @@ Identify if and which expansion needed and call the appropriate expansion functi
 */
 void	expand_tokenlist(t_data *data, t_list *tokenlist)
 {
-	
-	// flags to ensure correct expansions are done depending on other tokens in the list eg VAR=~"string"$EXP:~
+	t_exp_flags	flags;
+
+	reset_flags(&flags);
 	while (tokenlist)
 	{
 		if (!get_curr_token(tokenlist))
 			print_error_status("minishell: system error: missing token\n", 1);
 		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
-		if (get_token_type(tokenlist) == S_QUOTED_STRING)
-			extract_string(get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == QUOTED_STRING)
-			expand_string(data, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == VAR_EXPANSION || get_token_type(tokenlist) == DOLLAR)
-			expand_dollar(data->env_arr, get_curr_token(tokenlist));
-		if (get_token_type(tokenlist) == TILDE \
-				|| get_token_type(tokenlist) == PATHNAME) // specify condition
-			expand_path(data->env_arr, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist)  == DOLLAR_QUESTION)
-			expand_exit_status(data, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == GLOBBING)
-			expand_globbing(tokenlist);
-		else
-			debug("Token type not expanded");
-		// Merge tokens
+		set_flags(tokenlist, &flags);
+		execute_expansion_by_type(data, tokenlist, &flags);
+		if (token_followed_by_space(tokenlist))
+			reset_flags(&flags);
 		tokenlist = tokenlist->next;
 	}
 }
@@ -429,14 +406,16 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	which_ast_node(ast);
 	debug("AST type: %d", ast->type);
 	expand_tokenlist(data, tokenlist);
-	debug("---------left -----------");
-	if (ast->left)
-		analyse_expand(ast->left, data);
-	else
-		debug("left is NULL");
-	debug("---------right -----------");
-	if (ast->right)
-		analyse_expand(ast->right, data);
-	else
-		debug("right is NULL");
+	while (tokenlist->next && !token_followed_by_space(tokenlist))
+		merge_tokens(tokenlist);
+	// debug("---------left -----------");
+	// if (ast->left)
+	// 	analyse_expand(ast->left, data);
+	// else
+	// 	debug("left is NULL");
+	// debug("---------right -----------");
+	// if (ast->right)
+	// 	analyse_expand(ast->right, data);
+	// else
+	// 	debug("right is NULL");
 }
