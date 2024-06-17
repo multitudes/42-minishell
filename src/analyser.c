@@ -407,7 +407,6 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 			expand_globbing(tokenlist);
 		else
 			debug("Token type not expanded");
-		// Merge tokens
 		tokenlist = tokenlist->next;
 	}
 }
@@ -429,14 +428,16 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	which_ast_node(ast);
 	debug("AST type: %d", ast->type);
 	expand_tokenlist(data, tokenlist);
-	debug("---------left -----------");
-	if (ast->left)
-		analyse_expand(ast->left, data);
-	else
-		debug("left is NULL");
-	debug("---------right -----------");
-	if (ast->right)
-		analyse_expand(ast->right, data);
-	else
-		debug("right is NULL");
+	while (tokenlist->next && !token_followed_by_space(tokenlist))
+		merge_tokens_for_export(tokenlist);
+	// debug("---------left -----------");
+	// if (ast->left)
+	// 	analyse_expand(ast->left, data);
+	// else
+	// 	debug("left is NULL");
+	// debug("---------right -----------");
+	// if (ast->right)
+	// 	analyse_expand(ast->right, data);
+	// else
+	// 	debug("right is NULL");
 }
