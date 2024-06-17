@@ -6,13 +6,16 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 09:38:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/17 09:41:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "analyser.h"
 #include "scanner.h"
+#include <libft.h>
+#include "error.h"
+#include "utils.h"
 
 /*
 it checks if the terminal ast node is a builtin or a command
