@@ -116,7 +116,7 @@ int	count_chars_in_str(char *str, char c)
 
 int	peek_is_valid_path(char c)
 {
-	if (ft_strchr("/", c) || c == '\0')
+	if (ft_strchr("/:", c) || c == '\0')
 		return (1);
 	return (0);
 }
@@ -406,8 +406,8 @@ void	execute_expansion_by_type(t_data *data, t_list *tokenlist, t_exp_flags *fla
 		expand_dollar(data->env_arr, get_curr_token(tokenlist));
 	else if (ft_strchr(get_token_lexeme(tokenlist), '~'))
 		expand_path(data->env_arr, tokenlist, flags);
-	else if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
-		expand_path(data->env_arr, tokenlist, flags);
+//	else if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
+//		expand_path(data->env_arr, tokenlist, flags);
 	else if (get_token_type(tokenlist) == DOLLAR_QUESTION)
 		expand_exit_status(data, get_curr_token(tokenlist));
 	else if (get_token_type(tokenlist) == GLOBBING)
