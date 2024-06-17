@@ -130,7 +130,7 @@ bool	valid_tilde_separator(char sep, int pos_equal_sep)
 	return (false);
 }
 
-char	*replace_tilde_in_str(char *str, char *home, t_exp_flags *flags)
+char	*replace_tilde_in_str(t_list *tokenlist, char *str, char *home, t_exp_flags *flags)
 {
 	char	*new_str;
 	int		i;
@@ -157,7 +157,7 @@ char	*replace_tilde_in_str(char *str, char *home, t_exp_flags *flags)
 	while (new_str && new_str[i])
 	{
 		debug("State of pos_equal_sep flag: %i", flags->pos_equal_sep);
-		if (new_str[i] == '~' && i == 0 && peek_is_valid_path(new_str[i + 1]))
+		if (new_str[i] == '~' && i == 0 && peek_is_valid_path(new_str[i + 1]) && valid_tilde_expansion(tokenlist, i))
 		{
 			back = ft_strdup(new_str + 1);
 			temp = new_str;
@@ -166,7 +166,7 @@ char	*replace_tilde_in_str(char *str, char *home, t_exp_flags *flags)
 			free(temp);
 			i = ft_strlen(home) - 1;
 		}
-		else if (new_str[i] == '~' && peek_is_valid_path(new_str[i + 1]) && i != 0 && valid_tilde_separator(new_str[i - 1], flags->pos_equal_sep))
+		else if (new_str[i] == '~' && peek_is_valid_path(new_str[i + 1]) && i != 0 && valid_tilde_separator(new_str[i - 1], flags->pos_equal_sep) && valid_tilde_expansion(tokenlist, i))
 		{
 			front = ft_strndup(new_str, i);
 			back = ft_strdup(new_str + i + 1);
@@ -201,13 +201,13 @@ char	*get_home(t_darray *env_arr)
 	return (home);
 }
 
-bool	valid_tilde_expansion(t_list *tokenlist)
+bool	valid_tilde_expansion(t_list *tokenlist, int index)
 {
 	if (!tokenlist->next)
 		return (true);
 	else if (token_followed_by_space(tokenlist))
 		return (true);
-	else if (!token_followed_by_space(tokenlist) && peek_is_valid_path(get_token_lexeme(tokenlist)[0]))
+	else if (!token_followed_by_space(tokenlist) && peek_is_valid_path(get_token_lexeme(tokenlist)[index + 1]) && peek_is_valid_path((get_token_lexeme(tokenlist->next))[0]))
 		return (true);
 	return (false);
 }
@@ -226,14 +226,14 @@ void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 	if (!token)
 		return ;
 	home = get_home(env_arr);
-	if (token->type == TILDE && valid_tilde_expansion(tokenlist))
+	if (token->type == TILDE && valid_tilde_expansion(tokenlist, 0))
 		lexeme = home;
 	else
 	{
-		lexeme = replace_tilde_in_str(token->lexeme, home, flags);
+		lexeme = replace_tilde_in_str(tokenlist, token->lexeme, home, flags);
 		free(home);
 	}
-	token->type = WORD;
+//	token->type = WORD;
 	free(token->lexeme);
 	token->lexeme = lexeme;
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
@@ -316,7 +316,7 @@ void	expand_dollar(t_darray *env_arr, t_token *token)
 	debug("expand_dollar");
 	if (!token)
 		return ;
-	token->type = WORD;
+//	token->type = WORD;
 	if (token->lexeme && ft_strchr(token->lexeme, '$'))
 	{
 		var = replace_dollar_vars(env_arr, token->lexeme);
@@ -339,7 +339,7 @@ void	expand_exit_status(t_data *data, t_token *token)
 	{
 		free(token->lexeme);
 		token->lexeme = temp;
-		token->type = WORD;
+//		token->type = WORD;
 	}
 }
 
@@ -353,7 +353,7 @@ void	expand_single_quotes(t_token *token)
 		lexeme = ft_strtrim(token->lexeme, "'"); 
 		free(token->lexeme);
 		token->lexeme = lexeme;
-		token->type = WORD;
+//		token->type = WORD;
 	}
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
@@ -392,8 +392,26 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		string_tokens = string_tokens->next;
 	}
 	ft_lstclear(&ptr_token_list, free_tokennode); //free_tokennode function is from scanner.h
-	token->type = WORD;
+//	token->type = WORD;
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
+}
+
+void	execute_expansion_by_type(t_data *data, t_list *tokenlist, t_exp_flags *flags)
+{
+	if (get_token_type(tokenlist) == S_QUOTED_STRING)
+		expand_single_quotes(get_curr_token(tokenlist));
+	else if (get_token_type(tokenlist) == QUOTED_STRING)
+		expand_double_quotes(data, get_curr_token(tokenlist));
+	else if (get_token_type(tokenlist) == VAR_EXPANSION || get_token_type(tokenlist) == DOLLAR)
+		expand_dollar(data->env_arr, get_curr_token(tokenlist));
+	else if (ft_strchr(get_token_lexeme(tokenlist), '~'))
+		expand_path(data->env_arr, tokenlist, flags);
+	else if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
+		expand_path(data->env_arr, tokenlist, flags);
+	else if (get_token_type(tokenlist) == DOLLAR_QUESTION)
+		expand_exit_status(data, get_curr_token(tokenlist));
+	else if (get_token_type(tokenlist) == GLOBBING)
+		expand_globbing(tokenlist);
 }
 
 /*
@@ -409,26 +427,8 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 		if (!get_curr_token(tokenlist))
 			print_error_status("minishell: system error: missing token\n", 1);
 		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
-		if (ft_strchr(get_token_lexeme(tokenlist), '=') && get_token_lexeme(tokenlist)[0] == '$')
-			flags.dollar_exp_front = true;
-		if (ft_strchr(get_token_lexeme(tokenlist), '=') && flags.pos_equal_sep == 0)
-			flags.pos_equal_sep = 1;
-		else if (ft_strchr(get_token_lexeme(tokenlist), '=') && flags.pos_equal_sep == 1)
-			flags.pos_equal_sep = 2;
-		if (get_token_type(tokenlist) == S_QUOTED_STRING)
-			expand_single_quotes(get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == QUOTED_STRING)
-			expand_double_quotes(data, get_curr_token(tokenlist));
-		else if (get_token_type(tokenlist) == VAR_EXPANSION || get_token_type(tokenlist) == DOLLAR)
-			expand_dollar(data->env_arr, get_curr_token(tokenlist));
-		else if (ft_strchr(get_token_lexeme(tokenlist), '~'))
-			expand_path(data->env_arr, tokenlist, &flags);
-		if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
-			expand_path(data->env_arr, tokenlist, &flags);
-		if (get_token_type(tokenlist) == DOLLAR_QUESTION)
-			expand_exit_status(data, get_curr_token(tokenlist));
-		if (get_token_type(tokenlist) == GLOBBING)
-			expand_globbing(tokenlist);
+		set_flags(tokenlist, &flags);
+		execute_expansion_by_type(data, tokenlist, &flags);
 		if (token_followed_by_space(tokenlist))
 			reset_flags(&flags);
 		tokenlist = tokenlist->next;
