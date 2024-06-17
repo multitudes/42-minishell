@@ -26,7 +26,7 @@ bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type)
 	while (data->input[*i] && data->input[*i] != delim)
 		advance(i);
 	if (data->input[*i] == '\0')
-		return (scanner_error(data, "minishell: syntax error: unexpected end of file"));
+		return (scanner_error(data, "minishell: syntax error: unexpected end of file\n"));
 	tmp = ft_substr(data->input, start, *i - start + 1);
 	add_token(data, &start, tmp, t_type);
 	*i = start;
