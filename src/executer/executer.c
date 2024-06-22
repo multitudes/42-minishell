@@ -69,6 +69,8 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 		status = execute_list(ast, data);
 	else if (astnodetype == NODE_PIPELINE)
 		status = execute_pipeline(ast, data);
+	else if (astnodetype == NODE_REDIRECTION)
+		status = execute_redirection()
 	else if (astnodetype == NODE_BUILTIN)
 		status = execute_builtin(tokenlist, data);
 	else if (astnodetype == NODE_COMMAND)

@@ -35,20 +35,7 @@ int	free_array(char **envpaths)
 }
 
 /*
-In our data struct we have the environment variables in a dynamic array
-mini_get_env will get the path variable and return it
-as a string array.
-base is the command we are int count_tokens(t_list *tokenlist) 
-{
-	int count;
 
-	count = 0;
-	while (tokenlist) {
-		count++;
-		tokenlist = tokenlist->next;
-	}
-	return (count);
-}looking for.
 */
 char	*create_path(char *base, char *path_env)
 {

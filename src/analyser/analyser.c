@@ -19,6 +19,26 @@
 #include "builtins.h"
 
 /*
+Checks if tokenlist contains a redirection token.
+*/
+static bool	contains_redirection(t_list *tokenlist)
+{
+	t_tokentype	tokentype;
+	while (tokenlist)
+	{
+		tokentype = get_token_type(tokenlist);
+		if (tokentype == REDIRECT_IN || tokentype == REDIRECT_OUT)
+			return (true);
+		else if (tokentype == REDIRECT_BOTH || tokentype == REDIRECT_BOTH_APP)
+			return (true);
+		else if (tokentype == REDIRECT_OUT_APP)
+			return (true);
+		tokenlist = tokenlist->next;
+	}
+	return (false);
+}
+
+/*
 it checks if the terminal ast node is a builtin or a command
 but this could be already done in the parser 🧐🤨
 This function is probably just for debug purposes
@@ -34,7 +54,12 @@ void	which_ast_node(t_ast_node *ast)
 		return ;
 	token = (t_token *)tokenlist->content;
 	debug("which_ast_node");
-	if (token->type == BUILTIN)
+	if (contains_redirection(tokenlist))
+	{
+		ast->type = NODE_REDIRECTION;
+		debug("NODE_REDIRECTION");
+	}
+	else if (token->type == BUILTIN)
 	{
 		ast->type = NODE_BUILTIN;
 		debug("NODE_BUILTIN");
