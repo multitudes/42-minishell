@@ -39,6 +39,7 @@ typedef enum	e_nodetype
 	NODE_COMMAND, 
 	NODE_TERMINAL,
 	NODE_BUILTIN,
+	NODE_REDIRECTION,
 } 				t_nodetype;
 
 /*
