@@ -131,6 +131,7 @@ void	expand_globbing(t_list *tokenlist)
 			t_list *new_node = new_toknode(WORD, file, &start);
 			debug("new node: %s", get_token_lexeme(new_node));
 			ft_lstadd_back(&head, new_node);
+			((t_token*)new_node->content)->type = WORD;
 			i++;
 		}
 		debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(head->next));
