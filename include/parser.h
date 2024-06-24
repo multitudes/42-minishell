@@ -57,7 +57,8 @@ typedef struct			s_ast_node {
 t_ast_node	*create_ast(t_list *token_list);
 t_ast_node	*new_node(t_nodetype type, t_ast_node *left, t_ast_node *right, \
 			t_list *expr_token_list);
-bool		consume_token(t_list **input_tokens);
+bool		consume_token_and_break(t_list **input_tokens);
+bool		consume_token_and_connect(t_list **input_tokens);
 t_ast_node	*parse_list(t_list **input_tokens);
 t_ast_node	*parse_pipeline(t_list **input_tokens);
 t_ast_node	*parse_terminal(t_list **input_tokens);

@@ -492,7 +492,7 @@ Builtin commands are special commands that are implemented by the shell itself r
 ### Support Input/Output Redirection
 
 Input/output redirection allows the user to redirect the input or output of a command to a file instead of the screen or keyboard (standard input or output). To implement I/O redirection, we can use the dup2() function to redirect input or output to a file descriptor.
-Redirection operators in Bash are used to control the input and output of commands. They allow you to manipulate where a command reads its input from and where it writes its output to. Here are some common redirection operators:
+Redirection operators in Bash allows the user to manipulate where a command reads its input from and where it writes its output to. Here are some common redirection operators:
 
 1. **`>` (Output Redirection):**
    - Redirects the output of a command to a file.
@@ -519,6 +519,19 @@ Redirection operators in Bash are used to control the input and output of comman
      EOF
      ```
      This command uses a here document to pass multiple lines to the `cat` command.
+
+From the Bash manual:
+
+> redirection operators may precede or appear anywhere within a simple command or may follow a command. Redirections are processed in the order they appear, from left to right.
+
+Redirection must be distinguished from "Process substitution", which "allows a process' input or output to be referred to using a filename" and takes the form `<(list)` or `>(list)`, i.e. no spaces between <, > and parenthesis, otherwise it would get interpreted as redirection.
+
+Effectively, the redirection symbols are followed by a filename (or word that is expanded to a file name), which is opened for writing ('>'), writing and appending ('>>') or reading ('<') and its file descriptor then duplicated to act as stdout ('>' and '>>') or stdin ('<') depending on the redirection. So in a command comprised of several tokens, containing redirection symbols, each redirection token and the token to the right of it are interpreted, opening attempted of the file specified and file descriptor(s) duplicated. The remaining token are then passed on for execution.
+A fun illustration:
+```echo hello > world here I am```
+In this case stdout is redirected to the file "world", which is created if does not exist and then the rest of the command is executed. As a result the file world contains the string "hello here I am".
+
+
 
 ### Support Pipes
 

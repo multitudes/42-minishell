@@ -32,6 +32,8 @@ int		execute_ast(t_ast_node *ast, t_data *data);
 int 	execute_list(t_ast_node *ast, t_data *data);
 int		execute_pipeline(t_ast_node *ast, t_data *data);
 int		execute_command(t_list *tokenlist, t_data *data);
+int     execute_redirection(t_ast_node *ast, t_data *data);
+int     setup_redirect_stdout(t_list **tokenlist);
 int		handle_first_child_process(t_data *data, t_ast_node *ast);
 int		handle_second_child_process(t_data *data, t_ast_node *ast);
 char	*create_path(char *base, char *path_env);

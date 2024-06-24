@@ -75,7 +75,7 @@ t_ast_node	*parse_pipeline(t_list **token_list)
 	while (is_pipe_token(*token_list))
 	{
 		token = get_curr_token(*token_list);
-		if (!consume_token(token_list))
+		if (!consume_token_and_break(token_list))
 			return (NULL);
 		b = parse_terminal(token_list);
 		if (b == NULL)
@@ -110,7 +110,7 @@ t_ast_node	*parse_list(t_list **token_list)
 		if (token->type == AND_IF || token->type == OR_IF || \
 		token->type == EXPRESSION)
 		{
-			if (token->type != EXPRESSION && !consume_token(token_list))
+			if (token->type != EXPRESSION && !consume_token_and_break(token_list))
 				return (NULL);
 			b = parse_pipeline(token_list);
 			if (b == NULL)
