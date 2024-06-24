@@ -212,7 +212,7 @@ void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 		lexeme = replace_tilde_in_str(tokenlist, token->lexeme, home, flags);
 		free(home);
 	}
-//	token->type = WORD;
+	token->type = WORD;
 	free(token->lexeme);
 	token->lexeme = lexeme;
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
@@ -295,12 +295,13 @@ void	expand_dollar(t_darray *env_arr, t_token *token)
 	debug("expand_dollar");
 	if (!token)
 		return ;
-//	token->type = WORD;
+	token->type = WORD;
 	if (token->lexeme && ft_strchr(token->lexeme, '$'))
 	{
 		var = replace_dollar_vars(env_arr, token->lexeme);
 		free(token->lexeme);
 		token->lexeme = var;
+		token->type = WORD;
 	}
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
@@ -318,7 +319,7 @@ void	expand_exit_status(t_data *data, t_token *token)
 	{
 		free(token->lexeme);
 		token->lexeme = temp;
-//		token->type = WORD;
+		token->type = WORD;
 	}
 }
 
@@ -332,7 +333,7 @@ void	expand_single_quotes(t_token *token)
 		lexeme = ft_strtrim(token->lexeme, "'"); 
 		free(token->lexeme);
 		token->lexeme = lexeme;
-//		token->type = WORD;
+		token->type = WORD;
 	}
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
@@ -371,7 +372,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		string_tokens = string_tokens->next;
 	}
 	ft_lstclear(&ptr_token_list, free_tokennode); //free_tokennode function is from scanner.h
-//	token->type = WORD;
+	token->type = WORD;
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
 

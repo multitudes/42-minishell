@@ -380,7 +380,9 @@ int single_command(const char *input)
 			if (data->ast)
 			{
 				// analyse_expand(data->ast, data);
+				data->exit_status = save_fds(data);
 				data->exit_status = execute_ast(data->ast, data);
+				data->exit_status = restore_fds(data);
 				free_ast(&(data->ast));
 			}
 			else
