@@ -14,6 +14,7 @@
 #include "darray.h"
 #include "error.h"
 #include "analyser.h"
+#include <fcntl.h>
 
 /*
 Allowed global variable for signals only. 
@@ -296,7 +297,7 @@ so we check for that to exit the loop.
 int loop()
 {
 	t_data	*data;
-	uint8_t	status;	
+	u_int8_t status;
 
 	status = 0;
 	data = NULL;
@@ -322,8 +323,10 @@ int loop()
 					if (data->ast)
 					{
 						// analyse_expand(data->ast, data);
+						data->exit_status = save_fds(data);
 						data->exit_status = execute_ast(data->ast, data);
 						debug("Exit status: %i", data->exit_status);
+						data->exit_status = restore_fds(data);
 						free_ast(&(data->ast));
 					}
 					else
@@ -333,6 +336,7 @@ int loop()
 					data->exit_status = 2;
 			}
 			free((char *)(data->input));
+			debug("Back to loop()");
 			continue ;
 		}
 		break ;
@@ -399,3 +403,25 @@ int single_command(const char *input)
 	return (status); 
 }
 
+u_int16_t	save_fds(t_data *data)
+{
+	data->original_stdout = dup(STDOUT_FILENO);
+	data->original_stdin = dup(STDIN_FILENO);
+	data->original_stderr = dup(STDERR_FILENO);
+	if (data->original_stdout < 0 || data->original_stdin < 0 || data->original_stderr)
+		return (status_and_perror("minishell: dup", 1));
+	return (0);
+}
+
+u_int16_t	restore_fds(t_data *data)
+{
+	data->original_stdout = dup2(data->original_stdout, STDOUT_FILENO);
+	data->original_stdin = dup2(data->original_stdin, STDIN_FILENO);
+	data->original_stderr = dup2(data->original_stderr, STDERR_FILENO);
+	if (data->original_stdout < 0 || data->original_stdin < 0 || data->original_stderr < 0)
+		return (status_and_perror("minishell: dup2", 1));
+	close(data->original_stdout);
+	close(data->original_stdin);
+	close(data->original_stderr);
+	return (0);
+}

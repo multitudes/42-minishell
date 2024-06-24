@@ -83,19 +83,24 @@ struct s_data
 	int 		scanner_tokens_nr;
 	bool		pipe_open;
 	int 		pipe_fd[2];
+	int			original_stdout;
+	int			original_stdin;
+	int			original_stderr;
 };
 typedef struct s_data t_data;
 
 typedef struct s_darray 	t_darray;
 
-int		loop();
-bool	init_data(t_data **data);
-bool    init_data2(t_data **data);
-bool	init_env_darray(t_darray **env_array);
-void	free_data(t_data **data);
-void	update_env_exit_status_with(uint8_t exit_status, t_data *data);
-int		single_command(const char *input);
-int		set_up_signals(void);
+int			loop();
+bool		init_data(t_data **data);
+bool    	init_data2(t_data **data);
+bool		init_env_darray(t_darray **env_array);
+void		free_data(t_data **data);
+void		update_env_exit_status_with(uint8_t exit_status, t_data *data);
+int			single_command(const char *input);
+int			set_up_signals(void);
+u_int16_t	save_fds(t_data *data);
+u_int16_t	restore_fds(t_data *data);
 
 #  ifdef __cplusplus
 

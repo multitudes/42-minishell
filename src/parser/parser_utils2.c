@@ -13,11 +13,37 @@
 #include "parser.h"
 
 /*
+returns the next token after deleting the current token
+and connecting the previous and next token
+TODO check for leaks
+*/
+bool	consume_token_and_connect(t_list **input_tokens)
+{
+	t_list	*tofree;
+
+	debug("consume token and connect");
+	tofree = *input_tokens;
+	debug("token (lexeme) to delete: %s", get_token_lexeme(*input_tokens));
+	if (*input_tokens == NULL)
+		return (false);
+	if ((*input_tokens)->prev)
+		(*input_tokens)->prev->next = (*input_tokens)->next;
+	if ((*input_tokens)->next)
+		(*input_tokens)->next->prev = (*input_tokens)->prev;
+	*input_tokens = (*input_tokens)->next;
+	debug("next token (lexeme): %s", get_token_lexeme(*input_tokens));
+	ft_lstdelone(tofree, free_tokennode);
+	if (!input_tokens || !*input_tokens)
+		return (false);
+	return (true);
+}
+
+/*
 returns the next token but also breaks the list before the node 
 performing the necessary checks
 TODO check for leaks
 */
-bool	consume_token(t_list **input_tokens)
+bool	consume_token_and_break(t_list **input_tokens)
 {
 	t_list	*tofree;
 
@@ -26,7 +52,7 @@ bool	consume_token(t_list **input_tokens)
 		return (false);
 	*input_tokens = (*input_tokens)->next;
 	break_list(input_tokens);
-	free(tofree);
+	ft_lstdelone(tofree, free_tokennode);
 	if (!input_tokens || !*input_tokens)
 		return (false);
 	return (true);
