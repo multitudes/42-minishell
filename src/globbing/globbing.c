@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 09:21:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/27 17:11:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,37 @@
 #include "error.h"
 #include "parser.h"
 
+
+typedef struct 		s_globbing
+{
+    DIR 			*dirp;
+	char 			cwd[PATH_MAX];
+    struct dirent	*dir_entry;
+	struct stat 	path_stat;
+	char 			*full_path;
+}					t_globbing;
+
+
+bool init(t_globbing *gl)
+{
+	gl->dirp = opendir(".");
+	if (!gl->dirp)
+		return (false_and_perr("opendir"));
+	gl->dir_entry = readdir(gl->dirp);
+	gl->full_path = NULL;
+	errno = 0;
+	if (getcwd(gl->cwd, PATH_MAX) == NULL)
+	{
+		perror("getcwd");
+		if (closedir(gl->dirp))
+			perror("closedir");
+		return (false);
+	}
+
+	gl->full_path = NULL;
+	return (true);
+}
+
 /*
  * I need to read the files in my directory and check if they match the pattern
  * this function will push a list of files in my darray and return true if it 
@@ -30,62 +61,46 @@
 */
 bool	match_files_in_directory(t_darray *files, const char *pat) 
 {
-    DIR *dirp;
-	char cwd[PATH_MAX];
-    struct dirent *dir_entry;
-	struct stat path_stat;
-	char *full_path;
+	t_globbing gl;
 
-    dirp = opendir(".");
-    if (!dirp)
-		return (false_and_perr("opendir"));
-	errno = 0;
-	dir_entry = readdir(dirp);
-	if (getcwd(cwd, PATH_MAX) == NULL)
+	if (!init(&gl))
+		return (false_and_perr("globbing init"));
+	while (gl.dir_entry && !errno)
 	{
-		perror("getcwd");
-		if (closedir(dirp))
-			perror("closedir");
-		return (false);
-	}
-	debug("current working directory: %s\n", cwd);
-	while (dir_entry && !errno)
-	{
-		debug("number of files in directory: %d\n", files->end);
-		debug("-%s-", dir_entry->d_name);
-		full_path = ft_strjoin3(cwd, "/", dir_entry->d_name);
-		if (!full_path)
+		gl.full_path = ft_strjoin3(gl.cwd, "/", gl.dir_entry->d_name);
+		if (!gl.full_path)
+		{
+			if (closedir(gl.dirp))
+				perror("closedir");
 			return (false);
-		// free
-		debug("full path: %s\n", full_path);
-
-		
-		if (stat(full_path, &path_stat) == 0)
+		}
+\		if (stat(full_path, &gl.path_stat) == 0)
 		{
 			if (S_ISREG(path_stat.st_mode))
 			{
-				// debug("file considered: %s -----------------> ", dir->d_name);
 				if (is_glob_match(pat, dir_entry->d_name))
 					darray_push(files, ft_strdup(dir_entry->d_name));
 			}
 		}
 		else
 			perror("stat");
-
-		free(full_path);
+		free(gl.full_path);
 		errno = 0;
-		dir_entry = readdir(dirp);
+		gl.dir_entry = readdir(gl.dirp);
 	}
 	if (errno)
 		perror("readdir");
-	if (closedir(dirp))
+	if (closedir(gl.dirp))
 		false_and_perr("closedir");
 	return (true);
 }
 
+/*
+ * This recursive function will check if the pattern matches the file name
+ * it will return true if it does
+*/
 bool	is_glob_match(const char *pat, const char *file_name)
 {
-	debug("MATCHING pattern: %s file_name: %s", pat, file_name);
     if (*pat == '\0')
         return (*file_name == '\0');
     if (*pat == '?')
@@ -104,24 +119,18 @@ bool	is_glob_match(const char *pat, const char *file_name)
 
 void	expand_globbing(t_list *tokenlist)
 {
-	char	*pat;
+	char		*pat;
 	t_darray	*files;
 	
-	// debug("expand_globbing");
-	debug("token type: %d lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
 	pat = get_token_lexeme(tokenlist);
 	files = darray_create(sizeof(char *), 100);
 	if (match_files_in_directory(files, pat))
 	{
-		debug("files count : %d", files->end);
-		
 		t_list *next = tokenlist->next;
 		t_list *head = tokenlist->prev;
 		head->next = NULL;
 		tokenlist->next = NULL;
 		tokenlist->prev = NULL;
-		debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(next));
-		// create a new linked list of tokens with the file names
 		int i = 0;
 		int start = 0;
 		while (i < files->end)
@@ -142,13 +151,12 @@ void	expand_globbing(t_list *tokenlist)
 			next->prev = last;
 		// free the old list
 		debug("tokenlist %s and next %s", get_token_lexeme(tokenlist), get_token_lexeme(tokenlist));
-		// ft_lstclear(&tokenlist, free_tokennode);
-		// ft_lstdelone(tokenlist, free_tokennode);
+
+		ft_lstdelone(tokenlist, free_tokennode);
 		// free the darray
 	}
-		darray_clear_destroy(files);
-	
-
-
+	else 
+	    return ;
+	darray_clear_destroy(files);
 	return ;
 }
