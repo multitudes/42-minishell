@@ -54,8 +54,6 @@ const char *test_globbing_get_files()
 	if (chdir(cwd) == -1)
 		perror("chdir");
 
-
-
 	return NULL;
 }
 
