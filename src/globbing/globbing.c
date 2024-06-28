@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/28 12:58:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/02 17:41:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,6 @@ void	expand_globbing(t_list *tokenlist)
 			t_list *new_node = new_toknode(WORD, file, &start);
 			debug("new node: %s", get_token_lexeme(new_node));
 			ft_lstadd_back(&head, new_node);
-			((t_token*)new_node->content)->type = WORD;
 			i++;
 		}
 		debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(head->next));
