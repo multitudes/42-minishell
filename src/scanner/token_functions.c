@@ -75,7 +75,7 @@ otherwise it would keep on looking for the token
 * defensive programming. passing a string literal to add_token will
 never fail but I still check for NULL lexemes!
 */
-bool	add_token(t_mini_data *data, int *i, const char *lexem, int type)
+bool	add_token(t_mini_data *data, int *i, const char *lexem, t_tokentype type)
 {
 	t_list	*token;
 
@@ -98,7 +98,7 @@ character in the while loop. I might need is_digit for numbers or
 is_alnum for identifiers etc
 This works for easy tokens.
 */
-bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), int type)
+bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), t_tokentype type)
 {
 	int		start;
 	char	*tmp;
