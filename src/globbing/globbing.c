@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/28 12:22:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/28 12:34:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@
 #include "error.h"
 #include "parser.h"
 
+/*
+ * This function will initialize the struct used in globbing func
+ * it will return true if it was successful
+*/
 bool init(t_globbing *gl)
 {
 	gl->dirp = opendir(".");
@@ -41,14 +45,20 @@ bool init(t_globbing *gl)
 	return (true);
 }
 
+/*
+ * This function will loop through the directory and check if the files match the pattern
+ * it will return true if it was successful and if the directory entry is not null
+*/
 bool 	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 {
-	errno = 0;
-	while (gl.dir_entry && !errno)
+	bool	result;
+	
+	result = gl.dir_entry && !errno;
+	while (result && gl.dir_entry)
 	{
 		gl.full_path = ft_strjoin3(gl.cwd, "/", gl.dir_entry->d_name);
 		if (!gl.full_path)
-			return false_and_print("strjoin3");
+			result = false_and_print("strjoin3");
 		if (stat(gl.full_path, &gl.path_stat) == 0)
 		{
 			if (S_ISREG(gl.path_stat.st_mode))
@@ -58,16 +68,14 @@ bool 	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 			}
 		}
 		else
-			perror("stat");
+			result = false_and_perr("stat";
 		free(gl.full_path);
 		errno = 0;
 		gl.dir_entry = readdir(gl.dirp);
 		if (!gl.dir_entry && errno)
-		{
-			perror("readdir");
-			break ;
-		}
+			result = false_and_perr("readdir"); 
 	}
+	return (result);
 }
 
 /*
@@ -111,7 +119,11 @@ bool	is_glob_match(const char *pat, const char *file_name)
     return (*pat == *file_name && is_glob_match(pat + 1, file_name + 1));
 }
 
-
+/*
+ * This function will expand the globbing pattern
+ * it will return nothing but will modify the tokenlist
+ * if the pattern matches the files in the directory
+*/
 void	expand_globbing(t_list *tokenlist)
 {
 	char		*pat;
