@@ -310,6 +310,7 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	lexeme = get_token_lexeme(tokenlist);
 	if (lexeme && ft_isnumstring(lexeme) && tokenlist->next)
 		return (print_minishell_error_status("exit: too many arguments", 1));
+	restore_fds(data);
 	write(1, "exit\n", 5);
 	if (lexeme && ft_isnumstring(lexeme))
 		status = ft_atoi(lexeme);
