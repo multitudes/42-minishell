@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/27 17:11:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/28 12:03:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,37 @@ bool init(t_globbing *gl)
 			perror("closedir");
 		return (false);
 	}
-
 	gl->full_path = NULL;
 	return (true);
+}
+
+bool 	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
+{
+	while (gl.dir_entry && !errno)
+	{
+		gl.full_path = ft_strjoin3(gl.cwd, "/", gl.dir_entry->d_name);
+		if (!gl.full_path)
+		{
+			if (closedir(gl.dirp))
+				perror("closedir");
+			return (false);
+		}
+		if (stat(gl.full_path, &gl.path_stat) == 0)
+		{
+			if (S_ISREG(gl.path_stat.st_mode))
+			{
+				if (is_glob_match(pat, gl.dir_entry->d_name))
+					darray_push(files, ft_strdup(gl.dir_entry->d_name));
+			}
+		}
+		else
+			perror("stat");
+		free(gl.full_path);
+		errno = 0;
+		gl.dir_entry = readdir(gl.dirp);
+	}
+	if (errno)
+		perror("readdir");
 }
 
 /*
@@ -65,31 +93,8 @@ bool	match_files_in_directory(t_darray *files, const char *pat)
 
 	if (!init(&gl))
 		return (false_and_perr("globbing init"));
-	while (gl.dir_entry && !errno)
-	{
-		gl.full_path = ft_strjoin3(gl.cwd, "/", gl.dir_entry->d_name);
-		if (!gl.full_path)
-		{
-			if (closedir(gl.dirp))
-				perror("closedir");
-			return (false);
-		}
-\		if (stat(full_path, &gl.path_stat) == 0)
-		{
-			if (S_ISREG(path_stat.st_mode))
-			{
-				if (is_glob_match(pat, dir_entry->d_name))
-					darray_push(files, ft_strdup(dir_entry->d_name));
-			}
-		}
-		else
-			perror("stat");
-		free(gl.full_path);
-		errno = 0;
-		gl.dir_entry = readdir(gl.dirp);
-	}
-	if (errno)
-		perror("readdir");
+	if (!globbing_loop(files, pat, gl))
+		return (false);
 	if (closedir(gl.dirp))
 		false_and_perr("closedir");
 	return (true);
