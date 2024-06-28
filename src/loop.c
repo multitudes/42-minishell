@@ -323,9 +323,9 @@ int loop()
 					if (data->ast)
 					{
 						// analyse_expand(data->ast, data);
-						data->exit_status = save_fds(data);
+						save_fds(data);
 						data->exit_status = execute_ast(data->ast, data);
-						data->exit_status = restore_fds(data);
+						restore_fds(data);
 						debug("Exit status: %i", data->exit_status);
 						free_ast(&(data->ast));
 					}
@@ -381,9 +381,9 @@ int single_command(const char *input)
 			if (data->ast)
 			{
 				// analyse_expand(data->ast, data);
-				data->exit_status = save_fds(data);
+				save_fds(data);
 				data->exit_status = execute_ast(data->ast, data);
-				data->exit_status = restore_fds(data);
+				restore_fds(data);
 				free_ast(&(data->ast));
 			}
 			else
@@ -406,30 +406,31 @@ int single_command(const char *input)
 	return (status); 
 }
 
-u_int8_t	save_fds(t_data *data)
+void	save_fds(t_data *data)
 {
 	debug("Save file descriptors for possible redirection");
 	data->original_stdout = dup(STDOUT_FILENO);
 	data->original_stdin = dup(STDIN_FILENO);
 	data->original_stderr = dup(STDERR_FILENO);
 	if (data->original_stdout < 0 || data->original_stdin < 0 || data->original_stderr < 0)
-		return (status_and_perror("minishell: dup", 1));
-	return (0);
+	{
+		data->exit_status = 1;
+		perror("minishell: dup");
+	}
 }
 
-u_int8_t	restore_fds(t_data *data)
+void	restore_fds(t_data *data)
 {
 	debug("Restore file descriptors");
 	data->original_stdout = dup2(data->original_stdout, STDOUT_FILENO);
 	data->original_stdin = dup2(data->original_stdin, STDIN_FILENO);
 	data->original_stderr = dup2(data->original_stderr, STDERR_FILENO);
 	if (data->original_stdout < 0 || data->original_stdin < 0 || data->original_stderr < 0)
-		return (status_and_perror("minishell: dup2", 1));
+	{
+		data->exit_status = 1;
+		perror("minishell: dup2");
+	}
 	debug("restored STDIN fd: %i", STDIN_FILENO);
 	debug("restored STDOUT fd: %i", STDOUT_FILENO);
 	debug("restored STDERR fd: %i", STDERR_FILENO);
-	// close(data->original_stdout);
-	// close(data->original_stdin);
-	// close(data->original_stderr);
-	return (0);
 }

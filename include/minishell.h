@@ -99,8 +99,8 @@ void		free_data(t_data **data);
 void		update_env_exit_status_with(uint8_t exit_status, t_data *data);
 int			single_command(const char *input);
 int			set_up_signals(void);
-u_int8_t	save_fds(t_data *data);
-u_int8_t	restore_fds(t_data *data);
+void		save_fds(t_data *data);
+void		restore_fds(t_data *data);
 
 #  ifdef __cplusplus
 

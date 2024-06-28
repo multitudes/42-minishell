@@ -335,9 +335,9 @@ const char *test_parser_tree_simple_command6() {
 	t_ast_node *ast = create_ast(lexemes);
 
 	t_token *token = (t_token *)ast->token_list->content;
-	t_tokentype token_type = token->type;
+//	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
-	debug("ast node token type: %d ", token_type);
+	debug("ast node token type: %d ", token->type);
 	debug("ast node token lexeme: %s ", token->lexeme);
 
 	// print all the nodes from the ast
