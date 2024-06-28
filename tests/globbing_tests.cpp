@@ -18,7 +18,6 @@ const char *test_globbing_get_files()
 	std::system("mkdir tmp");
     std::system("touch tmp/hello.txt tmp/world.c tmp/.shellignore tmp/miniclam");
    
-
 	// save old directory
 	char cwd[1024];
 	getcwd(cwd, sizeof(cwd));
@@ -49,6 +48,15 @@ const char *test_globbing_get_files()
 	my_assert(files->end == 3, "match_files_in_directory failed");
 	
 	darray_clear(files);
+	result = match_files_in_directory(files, "none.*");
+	debug("result: %d", result);
+	debug("number of files in directory: %d\n", files->end);
+	my_assert(files->end == 0, "match_files_in_directory failed");
+
+	darray_clear_destroy(files);
+	
+	// remove the tmp directory
+	std::system("rm -rf tmp");
 
 	// revert to previous directory
 	if (chdir(cwd) == -1)
