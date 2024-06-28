@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/28 12:03:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/28 12:05:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,6 @@
 #include <stdio.h>
 #include "error.h"
 #include "parser.h"
-
-
-typedef struct 		s_globbing
-{
-    DIR 			*dirp;
-	char 			cwd[PATH_MAX];
-    struct dirent	*dir_entry;
-	struct stat 	path_stat;
-	char 			*full_path;
-}					t_globbing;
-
 
 bool init(t_globbing *gl)
 {
