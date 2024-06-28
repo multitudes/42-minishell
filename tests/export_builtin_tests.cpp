@@ -1,9 +1,6 @@
 #include "razorclam_tests.h"
 #include "../include/minishell.h"
 #include <libft.h>
-#include <iostream>
-#include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
