@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/28 12:05:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/28 12:22:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,14 @@ bool init(t_globbing *gl)
 	gl->dirp = opendir(".");
 	if (!gl->dirp)
 		return (false_and_perr("opendir"));
-	gl->dir_entry = readdir(gl->dirp);
-	gl->full_path = NULL;
 	errno = 0;
+	gl->dir_entry = readdir(gl->dirp);
+	if (!gl->dir_entry && errno)
+		return (false_and_perr("readdir"));
+	gl->full_path = NULL;
 	if (getcwd(gl->cwd, PATH_MAX) == NULL)
 	{
-		perror("getcwd");
-		if (closedir(gl->dirp))
-			perror("closedir");
-		return (false);
+		return (false_and_perr("getcwd"));
 	}
 	gl->full_path = NULL;
 	return (true);
@@ -44,15 +43,12 @@ bool init(t_globbing *gl)
 
 bool 	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 {
+	errno = 0;
 	while (gl.dir_entry && !errno)
 	{
 		gl.full_path = ft_strjoin3(gl.cwd, "/", gl.dir_entry->d_name);
 		if (!gl.full_path)
-		{
-			if (closedir(gl.dirp))
-				perror("closedir");
-			return (false);
-		}
+			return false_and_print("strjoin3");
 		if (stat(gl.full_path, &gl.path_stat) == 0)
 		{
 			if (S_ISREG(gl.path_stat.st_mode))
@@ -66,9 +62,12 @@ bool 	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 		free(gl.full_path);
 		errno = 0;
 		gl.dir_entry = readdir(gl.dirp);
+		if (!gl.dir_entry && errno)
+		{
+			perror("readdir");
+			break ;
+		}
 	}
-	if (errno)
-		perror("readdir");
 }
 
 /*
@@ -79,14 +78,16 @@ bool 	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 bool	match_files_in_directory(t_darray *files, const char *pat) 
 {
 	t_globbing gl;
+	bool	result;
 
+	result = true;
 	if (!init(&gl))
-		return (false_and_perr("globbing init"));
-	if (!globbing_loop(files, pat, gl))
-		return (false);
+		result = false;
+	if (result == false || !globbing_loop(files, pat, gl))
+		result = false;
 	if (closedir(gl.dirp))
 		false_and_perr("closedir");
-	return (true);
+	return (result);
 }
 
 /*
