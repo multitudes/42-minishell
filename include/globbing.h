@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:37 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/28 12:43:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/28 19:17:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ extern "C" {
 #include <sys/stat.h>
 #include "darray.h"
 #include <stdbool.h>
+#include "libft.h"
 
 /*
 ** convenience struct used to read from the directory index for globbing
@@ -35,9 +36,11 @@ typedef struct 		s_globbing
 	char 			*full_path;
 }					t_globbing;
 
+bool	init(t_globbing *gl);
+bool 	globbing_loop(t_darray *files, const char *pat, t_globbing gl);
 bool	match_files_in_directory(t_darray *files, const char *pat);
 bool	is_glob_match(const char *pat, const char *file_name);
-bool 	globbing_loop(t_darray *files, const char *pat, t_globbing gl);
+t_list	*create_globbing_tokenlist(t_darray *files);
 
 #  ifdef __cplusplus
 

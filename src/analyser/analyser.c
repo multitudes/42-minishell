@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/02 17:36:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/02 17:42:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -391,6 +391,8 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 		execute_expansion_by_type(data, &tokenlist, &flags);
 		if (token_followed_by_space(tokenlist))
 			reset_flags(&flags);
+		debug("Token expanded - token type: %d ", get_token_type(tokenlist));
+		// debug("Token expanded - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
 		tokenlist = tokenlist->next;
 	}
 }

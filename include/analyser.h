@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:38:03 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 16:04:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/28 18:31:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	expand_dollar(t_darray *env_arr, t_token *token);
 char	*get_key(char *str);
 char	*replace_dollar_vars(t_darray *env_arr, char *lexeme);
 void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags);
-void	expand_globbing(t_list *tokenlist);
+void	expand_globbing(t_list **tokenlist);
 void	expand_exit_status(t_data *data, t_token *token);
 void	expand_single_quotes(t_token *token);
 void	expand_double_quotes(t_data *data, t_token *token);

@@ -6,13 +6,15 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:37:46 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 15:58:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/28 19:20:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 #include <libft.h>
 #include "error.h"
+#include "scanner.h"
+
 
 /*
  The strndup() function is similar to ft_strdup, but copies at most n bytes. 
@@ -95,4 +97,37 @@ int	count_char_in_str(char *str, char c)
 		i++;
 	}
 	return (count);
+}
+
+/*
+ * This function will replace the node with the new list
+ * it will return nothing but will modify the tokenlist
+ * params: 
+ * head - the head of the tokenlist - will be modified only if the newlist
+ * is the first node
+ * node - the node to be replaced - it will be freed also
+ * newlist - the new list to replace the node
+*/
+void	replace_node_with_newlist(t_list **node, t_list *newlist)
+{
+	t_list *prev;
+	t_list *next;
+	t_list *last;
+	t_list *tmp;
+	
+	tmp = *node;
+	prev = (*node)->prev;
+	next = (*node)->next;
+	if (prev)
+		prev->next = newlist;
+	else
+		tmp = newlist;
+	newlist->prev = prev;
+	last = ft_lstlast(newlist);
+	last->next = next;
+	if (next)
+		next->prev = last;
+	ft_lstdelone(*node, free_tokennode);
+	if (!prev)
+		*node = tmp;
 }
