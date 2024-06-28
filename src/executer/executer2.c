@@ -65,7 +65,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 		argv = get_argv_from_tokenlist(tokenlist);
 		if (!resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")))
 			exit (127);
-		debug("command and agrs: %s %s", argv[0], argv[1]);
+		debug("command and args: %s %s", argv[0], argv[1]);
 		execve(argv[0], argv, (char **)data->env_arr->contents);
 		return (exit_and_print_err(NULL, 127));
 	}

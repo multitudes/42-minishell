@@ -31,7 +31,7 @@ bool	consume_token_and_connect(t_list **input_tokens)
 	if ((*input_tokens)->next)
 		(*input_tokens)->next->prev = (*input_tokens)->prev;
 	*input_tokens = (*input_tokens)->next;
-	debug("next token (lexeme): %s", get_token_lexeme(*input_tokens));
+	debug("next token (lexeme): %s", get_token_lexeme(*input_tokens));	
 	ft_lstdelone(tofree, free_tokennode);
 	if (!input_tokens || !*input_tokens)
 		return (false);
@@ -52,7 +52,7 @@ bool	consume_token_and_break(t_list **input_tokens)
 		return (false);
 	*input_tokens = (*input_tokens)->next;
 	break_list(input_tokens);
-	ft_lstdelone(tofree, free_tokennode);
+	ft_lstdelone(tofree, free_tokennode); // this seems to introduce a problem with one of the parser tree tests
 	if (!input_tokens || !*input_tokens)
 		return (false);
 	return (true);

@@ -18,9 +18,9 @@
 
 uint8_t setup_redirect_stderrapp(t_list **tokenlist)
 {
-    char    *filename;
-    int     fd;
-    int     type;
+    char        *filename;
+    int         fd;
+    t_tokentype type;
 
     debug("setup redirect stdout");
     filename = NULL;
@@ -28,7 +28,7 @@ uint8_t setup_redirect_stderrapp(t_list **tokenlist)
     if (!(*tokenlist))
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme 'newline'
     type = get_token_type(*tokenlist);
-    if (type != 0 && type != 4) // add all types that could be expanded to a filename
+    if (type != WORD && type != PATHNAME) // add all types that could be expanded to a filename
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme
     filename = get_token_lexeme(*tokenlist);
     fd = open(filename, O_WRONLY | O_CREAT | O_APPEND);
@@ -43,9 +43,9 @@ uint8_t setup_redirect_stderrapp(t_list **tokenlist)
 
 uint8_t setup_redirect_stdouterr(t_list **tokenlist)
 {
-    char    *filename;
-    int     fd;
-    int     type;
+    char        *filename;
+    int         fd;
+    t_tokentype type;
 
     debug("setup redirect stdout");
     filename = NULL;
@@ -53,7 +53,7 @@ uint8_t setup_redirect_stdouterr(t_list **tokenlist)
     if (!(*tokenlist))
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme 'newline'
     type = get_token_type(*tokenlist);
-    if (type != 0 && type != 4) // add all types that could be expanded to a filename
+    if (type != WORD && type != PATHNAME) // add all types that could be expanded to a filename
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme
     filename = get_token_lexeme(*tokenlist);
     fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC);
@@ -70,9 +70,9 @@ uint8_t setup_redirect_stdouterr(t_list **tokenlist)
 
 uint8_t setup_redirect_stderr(t_list **tokenlist)
 {
-    char    *filename;
-    int     fd;
-    int     type;
+    char        *filename;
+    int         fd;
+    t_tokentype type;
 
     debug("setup redirect stdout");
     filename = NULL;
@@ -80,7 +80,7 @@ uint8_t setup_redirect_stderr(t_list **tokenlist)
     if (!(*tokenlist))
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme 'newline'
     type = get_token_type(*tokenlist);
-    if (type != 0 && type != 4) // add all types that could be expanded to a filename
+    if (type != WORD && type != PATHNAME) // add all types that could be expanded to a filename
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme
     filename = get_token_lexeme(*tokenlist);
     fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC);
@@ -95,9 +95,9 @@ uint8_t setup_redirect_stderr(t_list **tokenlist)
 
 uint8_t setup_redirect_stdoutapp(t_list **tokenlist)
 {
-    char    *filename;
-    int     fd;
-    int     type;
+    char        *filename;
+    int         fd;
+    t_tokentype type;
 
     debug("setup redirect stdout");
     filename = NULL;
@@ -105,7 +105,7 @@ uint8_t setup_redirect_stdoutapp(t_list **tokenlist)
     if (!(*tokenlist))
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme 'newline'
     type = get_token_type(*tokenlist);
-    if (type != 0 && type != 4) // add all types that could be expanded to a filename
+    if (type != WORD && type != PATHNAME) // add all types that could be expanded to a filename
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme
     filename = get_token_lexeme(*tokenlist);
     fd = open(filename, O_WRONLY | O_CREAT | O_APPEND);
@@ -120,9 +120,9 @@ uint8_t setup_redirect_stdoutapp(t_list **tokenlist)
 
 uint8_t setup_redirect_stdin(t_list **tokenlist)
 {
-    char    *filename;
-    int     fd;
-    int     type;
+    char        *filename;
+    int         fd;
+    t_tokentype type;
 
     debug("setup redirect stdout");
     filename = NULL;
@@ -130,10 +130,10 @@ uint8_t setup_redirect_stdin(t_list **tokenlist)
     if (!(*tokenlist))
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme 'newline'
     type = get_token_type(*tokenlist);
-    if (type != 0 && type != 4) // add all types that could be expanded to a filename
+    if (type != WORD && type != PATHNAME) // add all types that could be expanded to a filename
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme
     filename = get_token_lexeme(*tokenlist);
-    fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC);
+    fd = open(filename, O_RDONLY);
     if (fd < 0)
         return (status_and_detailed_perror("minishell: ", filename, 1));
     if (dup2(fd, STDIN_FILENO) < 0)
@@ -145,9 +145,9 @@ uint8_t setup_redirect_stdin(t_list **tokenlist)
 
 uint8_t setup_redirect_stdout(t_list **tokenlist)
 {
-    char    *filename;
-    int     fd;
-    int     type;
+    char        *filename;
+    int         fd;
+    t_tokentype type;
 
     debug("setup redirect stdout");
     filename = NULL;
@@ -155,7 +155,7 @@ uint8_t setup_redirect_stdout(t_list **tokenlist)
     if (!(*tokenlist))
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme 'newline'
     type = get_token_type(*tokenlist);
-    if (type != 0 && type != 4) // add all types that could be expanded to a filename
+    if (type != WORD && type != PATHNAME) // add all types that could be expanded to a filename
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme
     filename = get_token_lexeme(*tokenlist);
     fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC);
@@ -196,6 +196,8 @@ uint8_t	execute_redirection(t_ast_node *ast, t_data *data)
             status = setup_redirect_stdoutapp(&tokenlist);
             status = setup_redirect_stderrapp(&tokenlist);
         }
+        if (status != 0)
+            return (status);
         if (tokenlist)
             tokenlist = tokenlist->next;
     }
