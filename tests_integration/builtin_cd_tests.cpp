@@ -3,8 +3,6 @@
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
-#include "../include/minishell.h"
-
 #include <string>
 #include <cstring>
 

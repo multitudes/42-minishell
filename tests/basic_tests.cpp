@@ -1,12 +1,7 @@
 #include "razorclam_tests.h"
-#include <iostream>
-#include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
-#include "../include/minishell.h"
-
 
 /*
 This is a test function. It should return NULL if the test passes

@@ -1,8 +1,6 @@
 #ifndef __razorclam_tests_h__
 # define __razorclam_tests_h__
 
-# include <iostream>
-# include <string>
 # include <stdio.h>
 # include <errno.h>
 # include <string.h>
