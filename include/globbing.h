@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:37 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/28 12:06:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/06/28 12:43:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 extern "C" {
 # endif
 
+#include <dirent.h>
+#include <sys/stat.h>
 #include "darray.h"
 #include <stdbool.h>
 
