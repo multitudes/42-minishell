@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/02 17:41:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/02 17:41:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,21 @@ bool	is_glob_match(const char *pat, const char *file_name)
     return (*pat == *file_name && is_glob_match(pat + 1, file_name + 1));
 }
 
+t_list *create_globbing_tokenlist(t_darray *files)
+{
+	t_list *head = NULL;
+	int i = 0;
+	int start = 0;
+	while (i < files->end)
+	{
+		char *file = darray_get(files, i);
+		t_list *new_node = new_toknode(WORD, file, &start);
+		ft_lstadd_back(&head, new_node);
+		i++;
+	}
+	return (head);
+}
+
 /*
  * This function will expand the globbing pattern
  * it will return nothing but will modify the tokenlist
@@ -128,39 +143,23 @@ void	expand_globbing(t_list *tokenlist)
 	t_darray	*files;
 	
 	pat = get_token_lexeme(tokenlist);
-	debug("globbing ==============pattern: %s", pat);
 	files = darray_create(sizeof(char *), 100);
 	if (match_files_in_directory(files, pat))
 	{
-		debug("files found: %d", files->end);
 		t_list *next = tokenlist->next;
 		t_list *head = tokenlist->prev;
 		head->next = NULL;
 		tokenlist->next = NULL;
 		tokenlist->prev = NULL;
-		int i = 0;
-		int start = 0;
-		while (i < files->end)
-		{
-			char *file = darray_get(files, i);
-			debug("file: %s", file);
-			t_list *new_node = new_toknode(WORD, file, &start);
-			debug("new node: %s", get_token_lexeme(new_node));
-			ft_lstadd_back(&head, new_node);
-			i++;
-		}
-		debug("head still: %s and next %s", get_token_lexeme(head), get_token_lexeme(head->next));
+		
+		head->next = create_globbing_tokenlist(files);
+		
 		t_list *last = ft_lstlast(head);
 		last->next = next;
-		debug("last still: %s and next %s", get_token_lexeme(last), get_token_lexeme(next));
 		if (next)
 			next->prev = last;
-		// free the old list
-		debug("tokenlist lexeme %s will be freed", get_token_lexeme(tokenlist));
 		ft_lstdelone(tokenlist, free_tokennode);
-		// free the darray
 	}
-	else 
-		darray_clear_destroy(files);
+	darray_clear_destroy(files);
 	return ;
 }
