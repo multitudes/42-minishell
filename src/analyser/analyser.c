@@ -292,7 +292,7 @@ void	expand_exit_status(t_data *data, t_token *token)
 	char	*temp;
 
 	debug("expand_exit_status");
-	if (!data)
+	if (data)
 		temp = ft_itoa(data->exit_status);
 	else
 		return ;

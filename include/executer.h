@@ -22,6 +22,7 @@ extern "C" {
 # include <limits.h>
 # include <sys/types.h>
 # include <stdint.h>
+# include "scanner.h"
 
 // forward declarations
 typedef struct s_data t_data;
@@ -33,12 +34,13 @@ int 	execute_list(t_ast_node *ast, t_data *data);
 int		execute_pipeline(t_ast_node *ast, t_data *data);
 int		execute_command(t_list *tokenlist, t_data *data);
 uint8_t execute_redirection(t_ast_node **ast);
-uint8_t setup_redirect_stdout(t_list **tokenlist);
-uint8_t setup_redirect_stdin(t_list **tokenlist);
-uint8_t setup_redirect_stdoutapp(t_list **tokenlist);
-uint8_t setup_redirect_stderr(t_list **tokenlist);
-uint8_t setup_redirect_stderrapp(t_list **tokenlist);
-uint8_t setup_redirect_stdouterr(t_list **tokenlist);
+uint8_t setup_redirect(t_list **tokenlist, t_tokentype type);
+// uint8_t setup_redirect_stdout(t_list **tokenlist);
+// uint8_t setup_redirect_stdin(t_list **tokenlist);
+// uint8_t setup_redirect_stdoutapp(t_list **tokenlist);
+// uint8_t setup_redirect_stderr(t_list **tokenlist);
+// uint8_t setup_redirect_stderrapp(t_list **tokenlist);
+// uint8_t setup_redirect_stdouterr(t_list **tokenlist);
 int		handle_first_child_process(t_data *data, t_ast_node *ast);
 int		handle_second_child_process(t_data *data, t_ast_node *ast);
 char	*create_path(char *base, char *path_env);
