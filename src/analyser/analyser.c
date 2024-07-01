@@ -19,26 +19,6 @@
 #include "builtins.h"
 
 /*
-Checks if tokenlist contains a redirection token.
-*/
-static bool	contains_redirection(t_list *tokenlist)
-{
-	t_tokentype	tokentype;
-	while (tokenlist)
-	{
-		tokentype = get_token_type(tokenlist);
-		if (tokentype == REDIRECT_IN || tokentype == REDIRECT_OUT)
-			return (true);
-		else if (tokentype == REDIRECT_BOTH || tokentype == REDIRECT_BOTH_APP)
-			return (true);
-		else if (tokentype == REDIRECT_OUT_APP)
-			return (true);
-		tokenlist = tokenlist->next;
-	}
-	return (false);
-}
-
-/*
 it checks if the terminal ast node is a builtin or a command
 but this could be already done in the parser 🧐🤨
 This function is probably just for debug purposes
@@ -49,24 +29,25 @@ void	which_ast_node(t_ast_node *ast)
 	t_list *tokenlist;
 	t_token *token;
 
+	debug("which_ast_node");
 	tokenlist = ast->token_list;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return ;
 	token = (t_token *)tokenlist->content;
-	debug("which_ast_node");
-	if (contains_redirection(tokenlist))
-	{
-		ast->type = NODE_REDIRECTION;
-		debug("NODE_REDIRECTION");
-	}
-	else if (token->type == BUILTIN)
+	debug("ast-type before check: %i, tokenlist: %p, token: %p, token type: %u", ast->type, tokenlist, token, token->type);
+	// if (contains_redirection(tokenlist))
+	// {
+	// 	ast->type = NODE_REDIRECTION;
+	// 	debug("NODE_REDIRECTION");
+	// }
+	if (token->type == BUILTIN)
 	{
 		ast->type = NODE_BUILTIN;
 		debug("NODE_BUILTIN");
 		return ;
 	}
 	// provisionally
-	else if (token->type == PATHNAME || token->type == WORD)
+	else if (token->type == PATHNAME || token->type == WORD || token->type == COMMAND)
 	{
 		ast->type = NODE_COMMAND;
 		debug("NODE_COMMAND");
@@ -378,6 +359,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 
 void	execute_expansion_by_type(t_data *data, t_list *tokenlist, t_exp_flags *flags)
 {
+	debug("Execute expansion by type");
 	if (get_token_type(tokenlist) == S_QUOTED_STRING)
 		expand_single_quotes(get_curr_token(tokenlist));
 	else if (get_token_type(tokenlist) == QUOTED_STRING)
@@ -401,12 +383,16 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 {
 	t_exp_flags	flags;
 
+	debug("expand tokenlist");
 	reset_flags(&flags);
 	while (tokenlist)
 	{
 		if (!get_curr_token(tokenlist))
-			print_error_status("minishell: system error: missing token\n", 1);
-		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
+		{
+			data->exit_status = print_error_status("minishell: system error: missing token\n", 1);
+			return ;
+		}
+//		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
 		set_flags(tokenlist, &flags);
 		execute_expansion_by_type(data, tokenlist, &flags);
 		if (token_followed_by_space(tokenlist))
@@ -425,23 +411,15 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 {
 	t_list	*tokenlist;
 
+	debug("analyse expand");
 	if (ast == NULL)
 		return ;
 	tokenlist = ast->token_list;
-	debug("analyse expand");
+	if (!tokenlist)
+		return ;
 	which_ast_node(ast);
 	debug("AST type: %d", ast->type);
 	expand_tokenlist(data, tokenlist);
 	while (tokenlist->next && !token_followed_by_space(tokenlist))
 		merge_tokens(tokenlist);
-	// debug("---------left -----------");
-	// if (ast->left)
-	// 	analyse_expand(ast->left, data);
-	// else
-	// 	debug("left is NULL");
-	// debug("---------right -----------");
-	// if (ast->right)
-	// 	analyse_expand(ast->right, data);
-	// else
-	// 	debug("right is NULL");
 }

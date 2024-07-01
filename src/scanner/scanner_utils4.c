@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "scanner.h"
+#include "debug.h"
 
 bool	not_a_delimiting_char(const char c)
 {
@@ -37,6 +38,7 @@ void	print_token_list(t_list *token_list)
 	t_list	*current;
 	t_token	*token;
 
+	debug("print tokenlist");
 	current = token_list;
 	while (current != NULL)
 	{
