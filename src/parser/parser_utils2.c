@@ -21,11 +21,9 @@ TODO check for leaks
 */
 bool	consume_token_and_connect(t_list **input_tokens)
 {
-	t_list	*tofree;
 	t_list	*ptr_to_next;
 
 	debug("consume token and connect, token to delete: %s", ((t_token *)((*input_tokens)->content))->lexeme);
-	tofree = *input_tokens;
 	ptr_to_next = (*input_tokens)->next;
 	if (*input_tokens == NULL)
 		return (false);
@@ -51,9 +49,9 @@ TODO check for leaks
 */
 bool	consume_token_and_break(t_list **input_tokens)
 {
-	t_list	*tofree;
+	// t_list	*tofree;
 
-	tofree = *input_tokens;
+	// tofree = *input_tokens;
 	if (*input_tokens == NULL)
 		return (false);
 	*input_tokens = (*input_tokens)->next;
