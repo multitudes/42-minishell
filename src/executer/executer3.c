@@ -31,7 +31,7 @@ static uint8_t dup2_by_redirect_type(t_tokentype type, char *filename, int *fd, 
 
     *status = 0;
     new_fd = -1;
-    if (type == REDIRECT_OUT || type == REDIRECT_OUT_APP || type == DGREAT)
+    if (type == REDIRECT_OUT || type == REDIRECT_OUT_APP || type == DGREAT || type == CLOBBER)
         new_fd = dup2(*fd, STDOUT_FILENO);
     else if (type == REDIRECT_IN)
         new_fd = dup2(*fd, STDIN_FILENO);
@@ -51,7 +51,7 @@ static int  open_fd_by_redirect_type(t_tokentype type, char *filename, uint8_t *
     int fd;
 
     fd = -1;
-    if (type == REDIRECT_OUT || type == REDIRECT_BOTH) // || type == REDIRECT_ERR
+    if (type == REDIRECT_OUT || type == REDIRECT_BOTH || type == GREATER_AND || type == CLOBBER) // || type == REDIRECT_ERR
         fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     else if (type == REDIRECT_IN)
         fd = open(filename, O_RDONLY);
@@ -59,7 +59,6 @@ static int  open_fd_by_redirect_type(t_tokentype type, char *filename, uint8_t *
         fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     check_return(fd, filename, status);
     return (fd);
-    
 }
 
 /*
@@ -249,6 +248,8 @@ Checks if redirect token is one that is supported by our shell
 
 static bool supported_redirect_token(t_tokentype type)
 {
+    // if (type >= REDIRECT_OUT && type <= GREATER_AND_GREATER)
+    //     return (true);
     if (type == REDIRECT_IN)
         return (true);
     else if (type == REDIRECT_OUT || type == REDIRECT_OUT_APP || type == DGREAT)
@@ -281,19 +282,6 @@ uint8_t	execute_redirection(t_ast_node **ast)
         type = get_token_type(tokenlist);
         if (supported_redirect_token(type))
             status = setup_redirect(&tokenlist, type);
-        // if (get_token_type(tokenlist) == REDIRECT_OUT)
-        //     status = setup_redirect_stdout(&tokenlist);
-        // else if (get_token_type(tokenlist) == REDIRECT_IN)
-        //     status = setup_redirect_stdin(&tokenlist);
-        // else if (get_token_type(tokenlist) == REDIRECT_OUT_APP)
-        //     status = setup_redirect_stdoutapp(&tokenlist);
-        // else if (get_token_type(tokenlist) == REDIRECT_BOTH)
-        //     status = setup_redirect_stdouterr(&tokenlist);
-        // else if (get_token_type(tokenlist) == REDIRECT_BOTH_APP) // this should require some more specific treatment of token deletion
-        // {
-        //     status = setup_redirect_stdoutapp(&tokenlist);
-        //     status = setup_redirect_stderrapp(&tokenlist);
-        // }
         else
             token_counter++;
         if (status != 0)
@@ -301,7 +289,6 @@ uint8_t	execute_redirection(t_ast_node **ast)
         if (tokenlist)
             tokenlist = tokenlist->next;
     }
-    // debug("Pointer to tokenlist after processing redirection: %p", tokenlist);
     if (tokenlist == NULL && token_counter == 0)
     {
         (*ast)->token_list = NULL;
