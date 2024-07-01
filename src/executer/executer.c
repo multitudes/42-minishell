@@ -93,6 +93,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 		else if (contains_redirection(ast->token_list))
 		{
 			// debug("contains redirection (check)");
+			save_fds(data);
 			status = execute_redirection(&ast);
 			continue ;
 		}
@@ -102,6 +103,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			status = execute_command(ast->token_list, data);
 		else if (astnodetype == NODE_TERMINAL)
 			status = execute_command(ast->token_list, data);
+		restore_fds(data);
 		break ;
 	}
 	return (status);
