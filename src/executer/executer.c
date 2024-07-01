@@ -34,7 +34,7 @@ static bool	contains_redirection(t_list *tokenlist)
 			return (true);
 		else if (tokentype == REDIRECT_BOTH || tokentype == REDIRECT_BOTH_APP)
 			return (true);
-		else if (tokentype == REDIRECT_OUT_APP)
+		else if (tokentype == REDIRECT_OUT_APP || tokentype == DGREAT)
 			return (true);
 		tokenlist = tokenlist->next;
 	}
