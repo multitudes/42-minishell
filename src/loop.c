@@ -317,6 +317,7 @@ int loop()
 	if (!init_data(&data))
 		return (1);
 	shlvl_init(data);
+	save_fds(data);
 	debug("init_data done");
 	load_history();
 	set_up_signals();
@@ -337,6 +338,7 @@ int loop()
 					{
 						// analyse_expand(data->ast, data);
 						data->exit_status = execute_ast(data->ast, data);
+						// restore_fds(data);
 						debug("Exit status: %i", data->exit_status);
 						free_ast(&(data->ast));
 					}
@@ -391,7 +393,9 @@ int single_command(const char *input)
 			if (data->ast)
 			{
 				// analyse_expand(data->ast, data);
+				// save_fds(data);
 				data->exit_status = execute_ast(data->ast, data);
+				// restore_fds(data);
 				free_ast(&(data->ast));
 			}
 			else
@@ -429,10 +433,9 @@ void	save_fds(t_data *data)
 
 void	restore_fds(t_data *data)
 {
-	data->original_stdout = dup2(data->original_stdout, STDOUT_FILENO);
-	data->original_stdin = dup2(data->original_stdin, STDIN_FILENO);
-	data->original_stderr = dup2(data->original_stderr, STDERR_FILENO);
-	if (data->original_stdout < 0 || data->original_stdin < 0 || data->original_stderr < 0)
+	if (dup2(data->original_stdout, STDOUT_FILENO) < 0 || \
+	dup2(data->original_stdin, STDIN_FILENO) < 0 || \
+	dup2(data->original_stderr, STDERR_FILENO) < 0)
 	{
 		data->exit_status = 1;
 		perror("minishell: dup2");
