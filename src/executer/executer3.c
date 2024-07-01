@@ -31,7 +31,7 @@ static uint8_t dup2_by_redirect_type(t_tokentype type, char *filename, int *fd, 
 
     *status = 0;
     new_fd = -1;
-    if (type == REDIRECT_OUT || type == REDIRECT_OUT_APP)
+    if (type == REDIRECT_OUT || type == REDIRECT_OUT_APP || type == DGREAT)
         new_fd = dup2(*fd, STDOUT_FILENO);
     else if (type == REDIRECT_IN)
         new_fd = dup2(*fd, STDIN_FILENO);
@@ -55,7 +55,7 @@ static int  open_fd_by_redirect_type(t_tokentype type, char *filename, uint8_t *
         fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     else if (type == REDIRECT_IN)
         fd = open(filename, O_RDONLY);
-    else if (type == REDIRECT_OUT_APP || type == REDIRECT_BOTH_APP) // || type == REDIRECT_ERRAPP
+    else if (type == REDIRECT_OUT_APP || type == REDIRECT_BOTH_APP || type == DGREAT) // || type == REDIRECT_ERRAPP
         fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     check_return(fd, filename, status);
     return (fd);
@@ -251,7 +251,7 @@ static bool supported_redirect_token(t_tokentype type)
 {
     if (type == REDIRECT_IN)
         return (true);
-    else if (type == REDIRECT_OUT || type == REDIRECT_OUT_APP)
+    else if (type == REDIRECT_OUT || type == REDIRECT_OUT_APP || type == DGREAT)
         return (true);
     else if (type == REDIRECT_BOTH || type == REDIRECT_BOTH_APP)
         return (true);
