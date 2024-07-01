@@ -33,7 +33,7 @@ a SIGCONT signal. The status will be 0.
 */
 uint8_t	get_wait_status(int status)
 {
-	debug("child exited with status %d\n", status);
+	debug("child exited with status %d", status);
 	if (WIFEXITED(status))
 	{
 		return (WEXITSTATUS(status));
@@ -41,16 +41,16 @@ uint8_t	get_wait_status(int status)
 	else if (WIFSIGNALED(status))
 		return (WTERMSIG(status) + 128);
 	else
-		return (status_and_perror("child did not exit normally\n", 1));
+		return (status_and_perror("child did not exit normally", 1));
 }
 
 
 /*
 removed these debug line for now
 if (WIFEXITED(status))
-	debug("child exited with status %d\n", WEXITSTATUS(status));
+	debug("child exited with status %d", WEXITSTATUS(status));
 else
-	debug("child did not exit normally\n");
+	debug("child did not exit normally");
 */
 int	execute_command(t_list *tokenlist, t_data *data)
 {
@@ -70,7 +70,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 		return (exit_and_print_err(NULL, 127));
 	}
 	else if (pid == -1)
-		return (status_and_perror("minishell: fork failed\n", EXIT_FAILURE));
+		return (status_and_perror("minishell: fork failed", EXIT_FAILURE));
 	else
 	{
 		waitpid(pid, &status, 0);

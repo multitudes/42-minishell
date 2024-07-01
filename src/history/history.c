@@ -49,9 +49,9 @@ char	*get_history_file_path(void)
 	home = getenv("HOME");
 	if (home == NULL || home[0] == '\0')
 		return (NULL);
-	debug("home: %s\n", home);
+	debug("home: %s", home);
 	path = ft_strjoin(home, MINIHISTFILEPATH);
-	debug("path: %s\n", path);
+	debug("path: %s", path);
 	if (path == NULL)
 		path = ft_strdup("~/.minishell_history");
 	return (path);

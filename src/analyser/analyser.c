@@ -29,36 +29,28 @@ void	which_ast_node(t_ast_node *ast)
 	t_list *tokenlist;
 	t_token *token;
 
-	debug("which_ast_node");
 	tokenlist = ast->token_list;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return ;
 	token = (t_token *)tokenlist->content;
-	debug("ast-type before check: %i, tokenlist: %p, token: %p, token type: %u", ast->type, tokenlist, token, token->type);
-	// if (contains_redirection(tokenlist))
-	// {
-	// 	ast->type = NODE_REDIRECTION;
-	// 	debug("NODE_REDIRECTION");
-	// }
+	debug("which ast node (ast-type before check: %i)", ast->type);
 	if (token->type == BUILTIN)
 	{
 		ast->type = NODE_BUILTIN;
-		debug("NODE_BUILTIN");
 		return ;
 	}
 	// provisionally
 	else if (token->type == PATHNAME || token->type == WORD || token->type == COMMAND)
 	{
 		ast->type = NODE_COMMAND;
-		debug("NODE_COMMAND");
 		return ;
 	}
 	else if (token->type == TRUETOK || token->type == FALSETOK)
 	{
 		debug("NODE_TRUE or NODE_FALSE");
 	}
-	else
-		debug("not TERMINAL");
+	// else
+	// 	debug("not TERMINAL");
 }
 
 
@@ -97,7 +89,7 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 	char	*back;
 	char	*temp;
 
-	debug("replace_tilde_in_str");
+	debug("replace_tilde_in_str: %s", lexeme);
 	i = 0;
 	new_lexeme = ft_strdup(lexeme);
 	if (flags->equal_status == 1)
@@ -114,7 +106,7 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 		pos = lexeme;
 	while (new_lexeme && new_lexeme[i])
 	{
-		debug("State of equal_status flag: %i", flags->equal_status);
+		// debug("State of equal_status flag: %i", flags->equal_status);
 		if (new_lexeme[i] == '~' && i == 0 && peek_is_valid_path(new_lexeme[i + 1]) && (flags->equal_status == 1) && valid_tilde_expansion(tokenlist, i))
 		{
 			back = ft_strdup(new_lexeme + 1);
@@ -131,9 +123,9 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 			if (flags->equal_status == 1)
 				flags->equal_status = 2;
 			temp = new_lexeme;
-			debug("front of new string: %s", front);
-			debug("middle of new string: %s", home);
-			debug("back of new string: %s", back);
+			// debug("front of new string: %s", front);
+			// debug("middle of new string: %s", home);
+			// debug("back of new string: %s", back);
 			new_lexeme = ft_strjoin3(front, home, back);
 			free(front);
 			free(back);
@@ -144,6 +136,7 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 			flags->equal_status = 2;
 		i++;
 	}
+	debug("New lexeme: %s", new_lexeme);
 	return (new_lexeme);
 }
 
@@ -196,7 +189,7 @@ void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 	token->type = WORD;
 	free(token->lexeme);
 	token->lexeme = lexeme;
-	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
+	debug("Expanded token: %s", token->lexeme);
 }
 
 /*
@@ -236,14 +229,14 @@ char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
 	char	*key;
 	char	*temp[3];
 
-	debug("replace dollar vars");
+	debug("replace dollar vars in lexeme: %s", lexeme);
 	i = 0;
 	new_lexeme = ft_strdup(lexeme);
 	key = NULL;
 	while (new_lexeme && new_lexeme[i])
 	{
 		key = get_key(new_lexeme + i);
-		debug("Extracted key: %s", key);
+		// debug("Extracted key: %s", key);
 		if (key != NULL)
 		{
 			if (ft_strlen(key) == 0)
@@ -263,6 +256,7 @@ char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
 		}
 		i++;
 	}
+	debug("new lexeme: %s", new_lexeme);
 	return (new_lexeme);
 }
 
@@ -302,6 +296,7 @@ void	expand_exit_status(t_data *data, t_token *token)
 		token->lexeme = temp;
 		token->type = WORD;
 	}
+	debug("expanded status: %s", temp);
 }
 
 void	expand_single_quotes(t_token *token)
@@ -359,7 +354,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 
 void	execute_expansion_by_type(t_data *data, t_list *tokenlist, t_exp_flags *flags)
 {
-	debug("Execute expansion by type");
+	// debug("Check and execute expansion by type (token type: %s)", get_token_type(tokenlist));
 	if (get_token_type(tokenlist) == S_QUOTED_STRING)
 		expand_single_quotes(get_curr_token(tokenlist));
 	else if (get_token_type(tokenlist) == QUOTED_STRING)
@@ -383,7 +378,6 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 {
 	t_exp_flags	flags;
 
-	debug("expand tokenlist");
 	reset_flags(&flags);
 	while (tokenlist)
 	{
@@ -411,14 +405,13 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 {
 	t_list	*tokenlist;
 
-	debug("analyse expand");
 	if (ast == NULL)
 		return ;
 	tokenlist = ast->token_list;
 	if (!tokenlist)
 		return ;
 	which_ast_node(ast);
-	debug("AST type: %d", ast->type);
+	debug("ast-node type after check: %i)", ast->type);
 	expand_tokenlist(data, tokenlist);
 	while (tokenlist->next && !token_followed_by_space(tokenlist))
 		merge_tokens(tokenlist);

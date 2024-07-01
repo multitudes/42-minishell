@@ -421,7 +421,7 @@ int single_command(const char *input)
 
 void	save_fds(t_data *data)
 {
-	debug("Save file descriptors for possible redirection");
+	debug("Save file descriptors for possible redirection (STDIN: %i, STDOUT: %i, STDERR: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
 	data->original_stdout = dup(STDOUT_FILENO);
 	data->original_stdin = dup(STDIN_FILENO);
 	data->original_stderr = dup(STDERR_FILENO);
@@ -434,7 +434,6 @@ void	save_fds(t_data *data)
 
 void	restore_fds(t_data *data)
 {
-	debug("Restore file descriptors");
 	data->original_stdout = dup2(data->original_stdout, STDOUT_FILENO);
 	data->original_stdin = dup2(data->original_stdin, STDIN_FILENO);
 	data->original_stderr = dup2(data->original_stderr, STDERR_FILENO);
@@ -443,7 +442,5 @@ void	restore_fds(t_data *data)
 		data->exit_status = 1;
 		perror("minishell: dup2");
 	}
-	debug("restored STDIN fd: %i", STDIN_FILENO);
-	debug("restored STDOUT fd: %i", STDOUT_FILENO);
-	debug("restored STDERR fd: %i", STDERR_FILENO);
+	debug("restored STDIN to: %i, STDOUT to: %i, STDERR to: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
 }
