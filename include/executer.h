@@ -32,7 +32,7 @@ int		execute_ast(t_ast_node *ast, t_data *data);
 int 	execute_list(t_ast_node *ast, t_data *data);
 int		execute_pipeline(t_ast_node *ast, t_data *data);
 int		execute_command(t_list *tokenlist, t_data *data);
-uint8_t execute_redirection(t_ast_node *ast, t_data *data);
+uint8_t execute_redirection(t_ast_node **ast);
 uint8_t setup_redirect_stdout(t_list **tokenlist);
 uint8_t setup_redirect_stdin(t_list **tokenlist);
 uint8_t setup_redirect_stdoutapp(t_list **tokenlist);

@@ -21,6 +21,27 @@ posix compliant use of the environ variable but wecan discuss this
 */
 extern char	**environ;
 
+/*
+Checks if tokenlist contains a redirection token.
+*/
+static bool	contains_redirection(t_list *tokenlist)
+{
+	debug("contains redirection (check)");
+	t_tokentype	tokentype;
+	while (tokenlist)
+	{
+		tokentype = get_token_type(tokenlist);
+		if (tokentype == REDIRECT_IN || tokentype == REDIRECT_OUT)
+			return (true);
+		else if (tokentype == REDIRECT_BOTH || tokentype == REDIRECT_BOTH_APP)
+			return (true);
+		else if (tokentype == REDIRECT_OUT_APP)
+			return (true);
+		tokenlist = tokenlist->next;
+	}
+	return (false);
+}
+
 int	execute_pipeline(t_ast_node *ast, t_data *data)
 {
 	pid_t	pid1;
@@ -56,26 +77,36 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 	t_nodetype	astnodetype;
 
 	status = 0;
-	if (ast == NULL)
+	if (ast == NULL || ast->token_list == NULL)
 		return (0);
 	debug("\nexecute:");
-	debug("ast node type: %d ", ast->type);
 	tokenlist = ast->token_list;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);
+	debug("ast node type: %d ", ast->type);
 	analyse_expand(ast, data);
 	astnodetype = ast->type;
-	if (astnodetype == NODE_LIST)
-		status = execute_list(ast, data);
-	else if (astnodetype == NODE_PIPELINE)
-		status = execute_pipeline(ast, data);
-	else if (astnodetype == NODE_REDIRECTION)
-		status = execute_redirection(ast, data);
-	else if (astnodetype == NODE_BUILTIN)
-		status = execute_builtin(tokenlist, data);
-	else if (astnodetype == NODE_COMMAND)
-		status = execute_command(tokenlist, data);
-	else if (astnodetype == NODE_TERMINAL)
-		status = execute_command(tokenlist, data);
+	while (1)
+	{
+		if (astnodetype == NODE_LIST)
+			status = execute_list(ast, data);
+		else if (astnodetype == NODE_PIPELINE)
+			status = execute_pipeline(ast, data);
+		else if (contains_redirection(ast->token_list))
+		{
+			debug("Token contains redirection type!");
+			status = execute_redirection(&ast);
+			continue ;
+		}
+		// else if (astnodetype == NODE_REDIRECTION)
+		// 	status = execute_redirection(ast, data);
+		else if (astnodetype == NODE_BUILTIN)
+			status = execute_builtin(ast->token_list, data);
+		else if (astnodetype == NODE_COMMAND)
+			status = execute_command(ast->token_list, data);
+		else if (astnodetype == NODE_TERMINAL)
+			status = execute_command(ast->token_list, data);
+		break ;
+	}
 	return (status);
 }

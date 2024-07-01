@@ -285,6 +285,19 @@ bool exit_condition(t_data *data)
 }
 
 /*
+with each new instance of the shell,
+the env variable SHLVL is increased by one.
+*/
+void	shlvl_init(t_data *data)
+{
+	char	*shlvl;
+
+	shlvl = ft_itoa(ft_atoi(mini_get_env(data->env_arr, "SHLVL")) + 1);
+	update_env(data->env_arr, "SHLVL", shlvl);
+	free(shlvl);
+}
+
+/*
 set_up_signals() returns 1 but if it fails I leave it failing 
 silently or should we exit the program?
 The readLine() function, reads a line of input from
@@ -303,7 +316,7 @@ int loop()
 	data = NULL;
 	if (!init_data(&data))
 		return (1);
-	update_env(data->env_arr, "SHLVL", ft_itoa(ft_atoi(mini_get_env(data->env_arr, "SHLVL")) + 1));
+	shlvl_init(data);
 	debug("init_data done");
 	load_history();
 	set_up_signals();

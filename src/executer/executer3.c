@@ -16,6 +16,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+// refactor the redirect functions into one with one or two supporting functions
+
 uint8_t setup_redirect_stderrapp(t_list **tokenlist)
 {
     char        *filename;
@@ -154,11 +156,13 @@ uint8_t setup_redirect_stdout(t_list **tokenlist)
     consume_token_and_connect(tokenlist);
     if (!(*tokenlist))
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme 'newline'
+    // print_token_list(*tokenlist);
+    // *tokenlist = (*tokenlist)->next;
     type = get_token_type(*tokenlist);
-    if (type != WORD && type != PATHNAME) // add all types that could be expanded to a filename
+    if (type != WORD && type != PATHNAME) // add all types that could be expanded to a filename ; maybe use access() to also ensure it is not a directory etc
         return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme
     filename = get_token_lexeme(*tokenlist);
-    fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC);
+    fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (fd < 0)
         return (status_and_detailed_perror("minishell: ", filename, 1));
     if (dup2(fd, STDOUT_FILENO) < 0)
@@ -172,13 +176,17 @@ uint8_t setup_redirect_stdout(t_list **tokenlist)
 Execute commands that contain basic redirection:
 '<', '>', '>>'
 */
-uint8_t	execute_redirection(t_ast_node *ast, t_data *data)
+uint8_t	execute_redirection(t_ast_node **ast)
 {
 	t_list  *tokenlist;
     uint8_t status;
+    int     token_counter;
 
     debug("execute redirection");
-	tokenlist = ast->token_list;
+    debug("ast type before redirection: %i", (*ast)->type);
+    status = 0;
+    token_counter = 0;
+	tokenlist = (*ast)->token_list;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);
     while (tokenlist)
@@ -191,16 +199,31 @@ uint8_t	execute_redirection(t_ast_node *ast, t_data *data)
             status = setup_redirect_stdoutapp(&tokenlist);
         else if (get_token_type(tokenlist) == REDIRECT_BOTH)
             status = setup_redirect_stdouterr(&tokenlist);
-        else if (get_token_type(tokenlist) == REDIRECT_BOTH_APP)
-        {
-            status = setup_redirect_stdoutapp(&tokenlist);
-            status = setup_redirect_stderrapp(&tokenlist);
-        }
+        // else if (get_token_type(tokenlist) == REDIRECT_BOTH_APP) // this should require some more specific treatment of token deletion
+        // {
+        //     status = setup_redirect_stdoutapp(&tokenlist);
+        //     status = setup_redirect_stderrapp(&tokenlist);
+        // }
+        else
+            token_counter++;
         if (status != 0)
             return (status);
         if (tokenlist)
             tokenlist = tokenlist->next;
     }
-    status = execute_ast(ast, data); // I do not want to go through expansion again.
+    debug("Pointer to tokenlist after processing redirection: %p", tokenlist);
+    if (tokenlist == NULL && token_counter == 0)
+    {
+        (*ast)->token_list = NULL;
+        (*ast)->type = NODE_NULL;
+    }
+    debug("ast type after redirection: %i", (*ast)->type);
+    // if (tokenlist == NULL && tokenlist->prev == NULL)
+    //     (*ast)->token_list = NULL;
+    // else if (tokenlist == NULL)
+    //     (*ast)->token_list->next = NULL;
+    // else
+    //     ft_lstadd_back(&(*ast)->token_list, tokenlist);
+    // print_token_list((*ast)->token_list);
     return (status);
 }

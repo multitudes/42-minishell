@@ -62,9 +62,11 @@ void	*free_ast(t_ast_node **ast)
 		free_ast(&((*ast)->left));
 	if ((*ast)->right)
 		free_ast(&((*ast)->right));
-	ft_lstclear(&((*ast)->token_list), free_tokennode);
+	if ((*ast)->token_list) 
+		ft_lstclear(&((*ast)->token_list), free_tokennode);
 	free(*ast);
 	*ast = NULL;
+	debug("free_ast finished");
 	return (NULL);
 }
 

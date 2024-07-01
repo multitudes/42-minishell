@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "scanner.h"
+#include <libft.h>
 
 /*
 returns the next token after deleting the current token
@@ -20,9 +22,12 @@ TODO check for leaks
 bool	consume_token_and_connect(t_list **input_tokens)
 {
 	t_list	*tofree;
+	t_list	*ptr_to_next;
 
 	debug("consume token and connect");
 	tofree = *input_tokens;
+	ptr_to_next = (*input_tokens)->next;
+	debug("Current token: %p, previous token: %p, next token: %p", (*input_tokens), (*input_tokens)->prev, (*input_tokens)->next);
 	debug("token (lexeme) to delete: %s", get_token_lexeme(*input_tokens));
 	if (*input_tokens == NULL)
 		return (false);
@@ -30,9 +35,13 @@ bool	consume_token_and_connect(t_list **input_tokens)
 		(*input_tokens)->prev->next = (*input_tokens)->next;
 	if ((*input_tokens)->next)
 		(*input_tokens)->next->prev = (*input_tokens)->prev;
-	*input_tokens = (*input_tokens)->next;
-	debug("next token (lexeme): %s", get_token_lexeme(*input_tokens));	
-	ft_lstdelone(tofree, free_tokennode);
+	free((void *)((t_token *)((*input_tokens)->content))->lexeme);
+	free((*input_tokens)->content);
+	(*input_tokens)->content = NULL;
+	free(*input_tokens);
+	*input_tokens = ptr_to_next;
+	// debug("changed to next token %p and token lexeme %s", *input_tokens, get_token_lexeme(*input_tokens));	
+	// ft_lstdelone(tofree, free_tokennode);
 	if (!input_tokens || !*input_tokens)
 		return (false);
 	return (true);
