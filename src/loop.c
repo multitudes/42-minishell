@@ -369,7 +369,6 @@ int loop()
 
 /*
 invoqued using the -c flag
-
 */
 int single_command(const char *input)
 {
@@ -421,7 +420,7 @@ int single_command(const char *input)
 
 void	save_fds(t_data *data)
 {
-	debug("Save file descriptors for possible redirection (STDIN: %i, STDOUT: %i, STDERR: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
+	debug("Save for later restoration STDIN: %i, STDOUT: %i, STDERR: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
 	data->original_stdout = dup(STDOUT_FILENO);
 	data->original_stdin = dup(STDIN_FILENO);
 	data->original_stderr = dup(STDERR_FILENO);
@@ -442,5 +441,5 @@ void	restore_fds(t_data *data)
 		data->exit_status = 1;
 		perror("minishell: dup2");
 	}
-	debug("restored STDIN to: %i, STDOUT to: %i, STDERR to: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
+	debug("Restored STDIN: %i, STDOUT: %i, STDERR: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
 }
