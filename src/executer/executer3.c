@@ -301,7 +301,7 @@ uint8_t	execute_redirection(t_ast_node **ast)
         if (tokenlist)
             tokenlist = tokenlist->next;
     }
-    debug("Pointer to tokenlist after processing redirection: %p", tokenlist);
+    // debug("Pointer to tokenlist after processing redirection: %p", tokenlist);
     if (tokenlist == NULL && token_counter == 0)
     {
         (*ast)->token_list = NULL;

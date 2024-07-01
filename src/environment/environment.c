@@ -22,12 +22,11 @@ bool update_env(t_darray *env_arr, const char *key, const char *value)
 	char		*new_env_str;
 	int			i;
 
-	debug("update_env");
 	new_env_str = ft_strjoin3(key, "=", value);
 	if (!new_env_str)
 		return (false);
 	i = get_var_index(env_arr, key);
-	debug("index with key: %i", i);
+	debug("update_env: key %s with value %s at index %i", key, value, i);
 	if (i < 0)
 	{
 		darray_set(env_arr, env_arr->end - 1, new_env_str);

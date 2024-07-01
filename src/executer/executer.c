@@ -26,7 +26,6 @@ Checks if tokenlist contains a redirection token.
 */
 static bool	contains_redirection(t_list *tokenlist)
 {
-	debug("contains redirection (check)");
 	t_tokentype	tokentype;
 	while (tokenlist)
 	{
@@ -79,11 +78,10 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 	status = 0;
 	if (ast == NULL || ast->token_list == NULL)
 		return (0);
-	debug("\nexecute:");
+	debug("\nexecute ast (node type: %d)", ast->type);;
 	tokenlist = ast->token_list;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);
-	debug("ast node type: %d ", ast->type);
 	analyse_expand(ast, data);
 	astnodetype = ast->type;
 	while (1)
@@ -94,12 +92,10 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			status = execute_pipeline(ast, data);
 		else if (contains_redirection(ast->token_list))
 		{
-			debug("Token contains redirection type!");
+			// debug("contains redirection (check)");
 			status = execute_redirection(&ast);
 			continue ;
 		}
-		// else if (astnodetype == NODE_REDIRECTION)
-		// 	status = execute_redirection(ast, data);
 		else if (astnodetype == NODE_BUILTIN)
 			status = execute_builtin(ast->token_list, data);
 		else if (astnodetype == NODE_COMMAND)
