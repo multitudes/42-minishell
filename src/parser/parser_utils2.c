@@ -24,11 +24,9 @@ bool	consume_token_and_connect(t_list **input_tokens)
 	t_list	*tofree;
 	t_list	*ptr_to_next;
 
-	debug("consume token and connect");
+	debug("consume token and connect, token to delete: %s", ((t_token *)((*input_tokens)->content))->lexeme);
 	tofree = *input_tokens;
 	ptr_to_next = (*input_tokens)->next;
-	debug("Current token: %p, previous token: %p, next token: %p", (*input_tokens), (*input_tokens)->prev, (*input_tokens)->next);
-	debug("token (lexeme) to delete: %s", get_token_lexeme(*input_tokens));
 	if (*input_tokens == NULL)
 		return (false);
 	if ((*input_tokens)->prev)
@@ -40,7 +38,6 @@ bool	consume_token_and_connect(t_list **input_tokens)
 	(*input_tokens)->content = NULL;
 	free(*input_tokens);
 	*input_tokens = ptr_to_next;
-	// debug("changed to next token %p and token lexeme %s", *input_tokens, get_token_lexeme(*input_tokens));	
 	// ft_lstdelone(tofree, free_tokennode);
 	if (!input_tokens || !*input_tokens)
 		return (false);
@@ -61,7 +58,7 @@ bool	consume_token_and_break(t_list **input_tokens)
 		return (false);
 	*input_tokens = (*input_tokens)->next;
 	break_list(input_tokens);
-//	ft_lstdelone(tofree, free_tokennode); // this seems to introduce a problem with one of the parser tree tests
+	// ft_lstdelone(tofree, free_tokennode); // this seems to introduce a problem with one of the parser tree tests
 	if (!input_tokens || !*input_tokens)
 		return (false);
 	return (true);
