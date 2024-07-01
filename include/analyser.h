@@ -34,7 +34,7 @@ typedef struct  s_expansion_flags {
 
 void	analyse_expand(t_ast_node *ast, t_data *data);
 void	expand_tokenlist(t_data *data, t_list *tokenlist);
-void	execute_expansion_by_type(t_data *data, t_list *tokenlist, t_exp_flags *flags);
+void	execute_expansion_by_type(t_data *data, t_list **tokenlist, t_exp_flags *flags);
 void	expand_dollar(t_darray *env_arr, t_token *token);
 char	*get_key(char *str);
 char	*replace_dollar_vars(t_darray *env_arr, char *lexeme);
