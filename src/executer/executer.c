@@ -96,6 +96,8 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			status = execute_redirection(&ast);
 			continue ;
 		}
+		// else if (is_heredoc(ast->token_list))
+		// 	status = execute_heredoc(&ast); // replace ast node and tokenlist with command + contents of heredoc
 		else if (astnodetype == NODE_BUILTIN)
 			status = execute_builtin(ast->token_list, data);
 		else if (astnodetype == NODE_COMMAND)
