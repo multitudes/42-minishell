@@ -352,23 +352,23 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
-void	execute_expansion_by_type(t_data *data, t_list *tokenlist, t_exp_flags *flags)
+void	execute_expansion_by_type(t_data *data, t_list **tokenlist, t_exp_flags *flags)
 {
 	// debug("Check and execute expansion by type (token type: %s)", get_token_type(tokenlist));
-	if (get_token_type(tokenlist) == S_QUOTED_STRING)
-		expand_single_quotes(get_curr_token(tokenlist));
-	else if (get_token_type(tokenlist) == QUOTED_STRING)
-		expand_double_quotes(data, get_curr_token(tokenlist));
-	else if (get_token_type(tokenlist) == VAR_EXPANSION || get_token_type(tokenlist) == DOLLAR)
-		expand_dollar(data->env_arr, get_curr_token(tokenlist));
-	else if (ft_strchr(get_token_lexeme(tokenlist), '~'))
-		expand_path(data->env_arr, tokenlist, flags);
+	if (get_token_type(*tokenlist) == S_QUOTED_STRING)
+		expand_single_quotes(get_curr_token(*tokenlist));
+	else if (get_token_type(*tokenlist) == QUOTED_STRING)
+		expand_double_quotes(data, get_curr_token(*tokenlist));
+	else if (get_token_type(*tokenlist) == VAR_EXPANSION || get_token_type(*tokenlist) == DOLLAR)
+		expand_dollar(data->env_arr, get_curr_token(*tokenlist));
+	else if (ft_strchr(get_token_lexeme(*tokenlist), '~'))
+		expand_path(data->env_arr, *tokenlist, flags);
 //	else if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
 //		expand_path(data->env_arr, tokenlist, flags);
-	else if (get_token_type(tokenlist) == DOLLAR_QUESTION)
-		expand_exit_status(data, get_curr_token(tokenlist));
-	else if (get_token_type(tokenlist) == GLOBBING)
-		expand_globbing(tokenlist);
+	else if (get_token_type(*tokenlist) == DOLLAR_QUESTION)
+		expand_exit_status(data, get_curr_token(*tokenlist));
+	else if (get_token_type(*tokenlist) == GLOBBING)
+		expand_globbing(*tokenlist);
 }
 
 /*
@@ -388,7 +388,7 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 		}
 //		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
 		set_flags(tokenlist, &flags);
-		execute_expansion_by_type(data, tokenlist, &flags);
+		execute_expansion_by_type(data, &tokenlist, &flags);
 		if (token_followed_by_space(tokenlist))
 			reset_flags(&flags);
 		tokenlist = tokenlist->next;
