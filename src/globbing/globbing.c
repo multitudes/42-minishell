@@ -80,45 +80,6 @@ bool 	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 	return (result && files->end > 0);
 }
 
-/*
- * I need to read the files in my directory and check if they match the pattern
- * this function will push a list of files in my darray and return true if it 
- * was successful
-*/
-bool	match_files_in_directory(t_darray *files, const char *pat) 
-{
-	t_globbing gl;
-	bool	result;
-
-	result = true;
-	if (!init(&gl))
-		result = false;
-	if (result == false || !globbing_loop(files, pat, gl))
-		result = false;
-	if (closedir(gl.dirp))
-		false_and_perr("closedir");
-	return (result);
-}
-
-/*
- * This recursive function will check if the pattern matches the file name
- * it will return true if it does
-*/
-bool	is_glob_match(const char *pat, const char *file_name)
-{
-    if (*pat == '\0')
-        return (*file_name == '\0');
-    if (*pat == '?')
-        return (*file_name != '\0' && is_glob_match(pat + 1, file_name + 1));
-    if (*pat == '*') 
-	{
-        if (is_glob_match(pat + 1, file_name))
-			return 1;
-        return (*file_name != '\0' && is_glob_match(pat, file_name + 1));
-    }
-    return (*pat == *file_name && is_glob_match(pat + 1, file_name + 1));
-}
-
 t_list *create_globbing_tokenlist(t_darray *files)
 {
 	t_list *head = NULL;
@@ -139,20 +100,19 @@ t_list *create_globbing_tokenlist(t_darray *files)
  * it will return nothing but will modify the tokenlist
  * if the pattern matches the files in the directory
 */
-void	expand_globbing(t_list *tokenlist)
+void	expand_globbing(t_list **tokenlist)
 {
 	char		*pat;
 	t_darray	*files;
 	
-	pat = get_token_lexeme(tokenlist);
+	pat = get_token_lexeme(*tokenlist);
 	files = darray_create(sizeof(char *), 100);
 	if (match_files_in_directory(files, pat))
 	{
-		t_list *next = tokenlist->next;
-		t_list *head = tokenlist->prev;
-		head->next = NULL;
-		tokenlist->next = NULL;
-		tokenlist->prev = NULL;
+		t_list *next = (*tokenlist)->next;
+		t_list *head = (*tokenlist)->prev;
+		(*tokenlist)->next = NULL;
+		(*tokenlist)->prev = NULL;
 		
 		head->next = create_globbing_tokenlist(files);
 		
@@ -160,7 +120,8 @@ void	expand_globbing(t_list *tokenlist)
 		last->next = next;
 		if (next)
 			next->prev = last;
-		ft_lstdelone(tokenlist, free_tokennode);
+		ft_lstdelone(*tokenlist, free_tokennode);
+		*tokenlist = head->next;
 	}
 	darray_clear_destroy(files);
 	return ;
