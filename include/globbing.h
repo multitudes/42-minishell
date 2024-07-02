@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:37 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/28 19:22:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/02 17:23:42 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ extern "C" {
 
 #include <dirent.h>
 #include <sys/stat.h>
+// this below is definitely needed by macos
+#include <limits.h>
 #include "darray.h"
 #include <stdbool.h>
 #include "libft.h"

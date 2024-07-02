@@ -6,13 +6,16 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/14 11:28:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/02 17:24:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+// stdio.h below is definitely needed by macos because of the 
+// alternative brew readline library used in the project
+# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
@@ -31,9 +34,7 @@
 # include <stdarg.h>
 # include <assert.h>
 # include <limits.h>
-
 # include <libft.h>
-
 # include "darray.h"
 # include "environment.h"
 # include "parser.h"
