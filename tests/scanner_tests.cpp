@@ -8,7 +8,6 @@
 void	ft_lstdelone(t_list *lst, void (*del)(void*));
 void	ft_lstclear(t_list **lst, void (*del)(void*));
 
-
 /*
 I am still looking for a way to make this function common to all tests files
 but it is complicated by the fact that it is a mix of C and C++ code
