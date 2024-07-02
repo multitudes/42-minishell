@@ -1,5 +1,3 @@
-
-
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -8,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/02 17:41:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/02 19:25:25 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +27,7 @@
  * This function will initialize the struct used in globbing func
  * it will return true if it was successful
 */
-bool init(t_globbing *gl)
+bool	init(t_globbing *gl)
 {
 	gl->dirp = opendir(".");
 	if (!gl->dirp)
@@ -48,13 +46,14 @@ bool init(t_globbing *gl)
 }
 
 /*
- * This function will loop through the directory and check if the files match the pattern
- * it will return true if it was successful and if the directory entry is not null
+ * This function will loop through the directory and check 
+ * if the files match the pattern it will return true if 
+ * it was successful and if the directory entry is not null
 */
-bool 	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
+bool	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 {
 	bool	result;
-	
+
 	result = gl.dir_entry && !errno;
 	while (result && gl.dir_entry)
 	{
@@ -75,20 +74,27 @@ bool 	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 		errno = 0;
 		gl.dir_entry = readdir(gl.dirp);
 		if (!gl.dir_entry && errno)
-			result = false_and_perr("readdir"); 
+			result = false_and_perr("readdir");
 	}
 	return (result && files->end > 0);
 }
 
-t_list *create_globbing_tokenlist(t_darray *files)
+t_list	*create_globbing_tokenlist(t_darray *files)
 {
-	t_list *head = NULL;
-	int i = 0;
-	int start = 0;
+	int		i;
+	int		start;
+	t_list	*head;
+	t_list	*new_node;
+	char	*file;
+
+	i = 0;
+	start = 0;
+	head = NULL;
+	new_node = NULL;
 	while (i < files->end)
 	{
-		char *file = darray_get(files, i);
-		t_list *new_node = new_toknode(WORD, file, &start);
+		file = darray_get(files, i);
+		new_node = new_toknode(WORD, file, &start);
 		ft_lstadd_back(&head, new_node);
 		i++;
 	}
@@ -103,20 +109,19 @@ t_list *create_globbing_tokenlist(t_darray *files)
 void	expand_globbing(t_list **tokenlist)
 {
 	char		*pat;
+	t_list		*next;
+	t_list		*head;
+	t_list		*last;
 	t_darray	*files;
-	
+
 	pat = get_token_lexeme(*tokenlist);
 	files = darray_create(sizeof(char *), 100);
 	if (match_files_in_directory(files, pat))
 	{
-		t_list *next = (*tokenlist)->next;
-		t_list *head = (*tokenlist)->prev;
-		(*tokenlist)->next = NULL;
-		(*tokenlist)->prev = NULL;
-		
+		next = (*tokenlist)->next;
+		head = (*tokenlist)->prev;
 		head->next = create_globbing_tokenlist(files);
-		
-		t_list *last = ft_lstlast(head);
+		last = ft_lstlast(head);
 		last->next = next;
 		if (next)
 			next->prev = last;
