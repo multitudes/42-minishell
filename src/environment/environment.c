@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 09:16:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/02 19:41:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ bool update_env(t_darray *env_arr, const char *key, const char *value)
 	if (!new_env_str)
 		return (false);
 	i = get_var_index(env_arr, key);
-	debug("update_env: key %s with value %s at index %i", key, value, i);
 	if (i < 0)
 	{
 		darray_set(env_arr, env_arr->end - 1, new_env_str);

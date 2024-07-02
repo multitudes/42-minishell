@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 09:15:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/02 19:40:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,10 +318,8 @@ int loop()
 		return (1);
 	shlvl_init(data);
 	save_fds(data);
-	debug("init_data done");
 	load_history();
-	set_up_signals();
-	debug("data input: %s", data->input);		
+	set_up_signals();	
 	while (true)
 	{
 		data->input = readline("minishell $ ");
