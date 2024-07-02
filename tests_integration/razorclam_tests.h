@@ -16,17 +16,16 @@ the debug macro will be replaced with an empty macro.
 during submission we will remove the debug macro from the code
 including the macro below which is not allowed by norminette.
 */
-#ifdef NDEBUG
-#define debug(M, ...)
-#else
-#define debug(M, ...) fprintf(stderr, "DEBUG %s:%s:%d: " M "\n",\
+# ifdef NDEBUG
+# define debug(M, ...)
+# else
+# define debug(M, ...) fprintf(stderr, "\033[0;92mDEBUG %s:%s:%d: " M "\033[0m\n",\
         __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#endif
-
+# endif
 #define clean_errno() (errno == 0 ? "None" : strerror(errno))
 
 #define log_err(M, ...) fprintf(stderr,\
-        "[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__,\
+        "\033[0;91m[ERROR] (%s:%d: errno: %s) " M "\033[0m\n", __FILE__, __LINE__,\
         clean_errno(), ##__VA_ARGS__)
 
 // for the test suite
