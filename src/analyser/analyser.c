@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/02 17:42:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/02 17:51:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -368,7 +368,7 @@ void	execute_expansion_by_type(t_data *data, t_list **tokenlist, t_exp_flags *fl
 	else if (get_token_type(*tokenlist) == DOLLAR_QUESTION)
 		expand_exit_status(data, get_curr_token(*tokenlist));
 	else if (get_token_type(*tokenlist) == GLOBBING)
-		expand_globbing(*tokenlist);
+		expand_globbing(tokenlist);
 }
 
 /*

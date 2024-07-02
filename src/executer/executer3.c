@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   executer3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/06/24 15:20:51 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/02 17:56:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "executer.h"
+
 #include "scanner.h"
 #include "parser.h"
 #include "error.h"
@@ -22,7 +22,7 @@
 static void check_return(int new_fd, char *filename, uint8_t *status)
 {
     if (new_fd < 0)
-        *status = status_and_detailed_perror("minishell: ", filename, 1);
+        *status = status_perror2("minishell: ", filename, 1);
 }
 
 static uint8_t dup2_by_redirect_type(t_tokentype type, char *filename, int *fd, u_int8_t *status)
