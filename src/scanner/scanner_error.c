@@ -21,6 +21,7 @@ in the data struct so it will stop and free the data
 bool	scanner_error(t_mini_data *data, char *err_str)
 {
 	write(2, err_str, ft_strlen(err_str));
+	write(2, "\n", 1);
 	data->scanner_err_str = err_str;
 	data->scanner_error = 2;
 	return (true);
