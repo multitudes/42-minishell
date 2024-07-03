@@ -42,6 +42,9 @@ uint8_t	print_error_status(const char *message, uint8_t status)
 	result = write(2, message, ft_strlen(message));
 	if (result == -1 || result != (ssize_t)ft_strlen(message)) 
 		status = status_and_perror("write", 1);
+	// result = write(2, "\n", 1); // we need to also print a newline, right?
+	// if (result == -1 || result != 1) 
+	// 	status = status_and_perror("write", 1);
 	return (status);
 }
 
@@ -68,8 +71,8 @@ uint8_t	print_minishell_error_status(const char *message, uint8_t status)
 		if (result == -1 || result != 10) 
 			status = status_and_perror("write", 1);
 	}
-	result = write(2, "\n", 2);
-	if (result == -1 || result != 2) 
+	result = write(2, "\n", 1);
+	if (result == -1 || result != 1) 
 		status = status_and_perror("write", 1);
 	return (status);
 }
