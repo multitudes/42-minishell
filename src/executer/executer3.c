@@ -248,8 +248,6 @@ Checks if redirect token is one that is supported by our shell
 
 static bool supported_redirect_token(t_tokentype type)
 {
-    // if (type >= REDIRECT_OUT && type <= GREATER_AND_GREATER)
-    //     return (true);
     if (type == REDIRECT_IN)
         return (true);
     else if (type == REDIRECT_OUT || type == REDIRECT_OUT_APP || type == DGREAT)
