@@ -38,10 +38,7 @@ bool	init(t_globbing *gl)
 		return (false_and_perr("readdir"));
 	gl->full_path = NULL;
 	if (getcwd(gl->cwd, PATH_MAX) == NULL)
-	{
 		return (false_and_perr("getcwd"));
-	}
-	gl->full_path = NULL;
 	return (true);
 }
 

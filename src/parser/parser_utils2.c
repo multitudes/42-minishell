@@ -85,8 +85,6 @@ char	*get_token_lexeme(t_list *input_tokens)
 	if (!input_tokens || !input_tokens->content)
 		return (NULL);
 	token = input_tokens->content;
-	if (!token)
-		return (NULL);
 	return (token->lexeme);
 }
 
@@ -100,7 +98,7 @@ t_tokentype	get_token_type(t_list *input_tokens)
 	if (!input_tokens || !input_tokens->content)
 		return (NULL_TOKEN);
 	token = input_tokens->content;
-	if (!token)
+	if (!token->lexeme)
 		return (NULL_TOKEN);
 	return (token->type);
 }
