@@ -80,14 +80,14 @@ bool	add_token(t_mini_data *data, int *i, const char *lexem, t_tokentype type)
 	t_list	*token;
 
 	if (!lexem)
-		scanner_error(data, "error: empty lexem in token creation");
+		scanner_error(data, "minishell: error: empty lexem in token creation");
 	else
 	{
 		token = new_toknode(type, lexem, i);
 		if (token)
 			ft_lstadd_back(&data->token_list, token);
 		else
-			scanner_error(data, "error: malloc in new_toknode failed");
+			scanner_error(data, "minishell: error: malloc in new_toknode failed");
 	}
 	return (true);
 }

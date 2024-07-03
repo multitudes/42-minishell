@@ -21,7 +21,7 @@ bool	add_here_and_delim(t_mini_data *data, int *i)
 	while (data->input[*i] && is_space(data->input[*i]))
 		advance(i);
 	if (data->input[*i] == '\0' || is_delimiter(data->input[*i]))
-		return (scanner_error(data, "error: missing here-delim"));
+		return (scanner_error(data, "minishell: syntax error"));
 	start = *i;
 	while ((data->input + *i) && !is_delimiter(data->input[*i]))
 		advance(i);
