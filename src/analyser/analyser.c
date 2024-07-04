@@ -383,7 +383,7 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 	{
 		if (!get_curr_token(tokenlist))
 		{
-			data->exit_status = print_error_status("minishell: system error: missing token\n", 1);
+			data->exit_status = print_error_status("minishell: system error: missing token", 1);
 			return ;
 		}
 //		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));

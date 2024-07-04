@@ -57,7 +57,7 @@ t_list	*tokenizer(const char *input)
 		else if (got_tokens(&data, &i))
 			continue ;
 		else if (!is_space(data.input[i]))
-			scanner_error(&data, "minishell: syntax error\n");
+			scanner_error(&data, "minishell: syntax error");
 		else// here I need to advance the pointer and insert a space true in the previous position
 			skip_space(data.token_list, data.input, &i);
 	}
