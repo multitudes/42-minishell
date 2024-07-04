@@ -13,6 +13,23 @@
 #include "parser.h"
 
 /*
+Checks if tokens in tokenlist are only of type flag or NULL.
+Used for heredoc functionality to check 
+for arguments of tokens of type COMMAND or TERMINAL.
+*/
+
+bool	only_flags(t_list *input_tokens)
+{
+	while (input_tokens)
+	{
+		if (get_token_type(input_tokens) != FLAGS)
+			return (false);
+		input_tokens = input_tokens->next;
+	}
+	return (true);
+}
+
+/*
 JUST a check for the type of token - not currently used!
 */
 bool	is_redirection(t_list *input_tokens)

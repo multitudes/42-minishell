@@ -76,6 +76,7 @@ bool		token_list_has_astnode(t_list *new_token_list);
 bool		is_not_control_token(t_token *token);
 int 		count_list(t_list *input_tokens);
 void		break_list(t_list **input_tokens);
+bool		only_flags(t_list *input_tokens);
 
 #  ifdef __cplusplus
 
