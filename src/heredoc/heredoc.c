@@ -104,7 +104,6 @@ static int init_heredoc(t_ast_node *ast, t_heredoc *heredoc)
         }
         tokenlist = tokenlist->next;
     }
-    ast->token_list = tokenlist;
     debug("init heredoc complete, delimiter count: %i", heredoc->delim_count);
     return (0);
 }
@@ -136,6 +135,7 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
     if (ast->type == NODE_BUILTIN)
     {
         free((&heredoc)->buffer);
+        // print_token_list(ast->token_list);
         status = execute_builtin(ast->token_list, data);
     }
     return (status);

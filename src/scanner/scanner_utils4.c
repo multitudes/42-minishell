@@ -43,9 +43,10 @@ void	print_token_list(t_list *token_list)
 	while (current != NULL)
 	{
 		token = (t_token *)(current)->content;
-		printf("token: %s", token->lexeme);
+		printf("token: %s ", token->lexeme);
 		current = current->next;
 	}
+	printf("\n");
 	return ;
 }
 
