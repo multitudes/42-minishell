@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/02 17:24:18 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/04 11:39:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ extern "C" {
 /*
 env_arr = enviroment variables array
 ast = abstract syntax tree for parser as linked lists of nodes
-DLESS_delimiter for DLESS
 exit_status for the exit status of the last command
 scanner_error when the mallocs in the scanner failed. 
 keep track of how many tokens were created

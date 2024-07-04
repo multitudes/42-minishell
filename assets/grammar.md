@@ -16,7 +16,7 @@ command ->  	  simple_command
 
 simple_command 	-> name (args)* ;
 builtin 		-> name (args)* ; 
-redirection 	-> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
+redirection 	-> expression ( "<" | ">" | ">>" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
 DLESS 			-> expression "<<" delimiter newline content delimiter;
 
 delimiter -> STRING;
@@ -39,8 +39,6 @@ For this subject:
 `<<`: Here Document
 
 There are a few more redirection operators that you might encounter but we will not need to implement them:
-`>>&`: Redirects both standard output and standard error to a file, appending 
-to the file if it exists.
 `2>`: Redirects standard error to a file, overwriting the file if it exists.
 `&>`: Redirects both standard output and standard error to a file, overwriting
  the file if it exists.
