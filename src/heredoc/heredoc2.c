@@ -76,7 +76,6 @@ static int read_heredoc(t_heredoc *heredoc, t_data *data, int i)
             ft_strlcpy(heredoc->buffer + heredoc->heredoc_len, line, heredoc->buffer_size - heredoc->heredoc_len);
             ft_strlcat(heredoc->buffer, "\n", heredoc->buffer_size);
             heredoc->heredoc_len = heredoc->heredoc_len + ft_strlen(line) + 1;
-            debug("current heredoc buffer: %s", heredoc->buffer);
         }
         free(line);
         line = readline("> ");

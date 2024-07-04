@@ -127,15 +127,16 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
         return (1);
     if (process_heredoc(&heredoc, data))
     {
-        free((&heredoc)->buffer);
+        free(heredoc.buffer);
         return (1);
     }
-    // if (ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL)
-    //     status = redirect_and_execute_heredoc(heredoc);
-    if (ast->type == NODE_BUILTIN)
+    if ((ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL) && only_flags(ast->token_list->next) && heredoc.buffer)
+        status = redirect_and_execute_heredoc(ast, data, &heredoc);
+    else if (ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL)
+        status = execute_command(ast->token_list, data);
+    else if (ast->type == NODE_BUILTIN)
     {
-        free((&heredoc)->buffer);
-        // print_token_list(ast->token_list);
+        free(heredoc.buffer);
         status = execute_builtin(ast->token_list, data);
     }
     return (status);
