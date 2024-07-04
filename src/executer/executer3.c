@@ -1,139 +1,150 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executer3.c                                        :+:      :+:    :+:   */
+/*   executer2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/02 17:56:03 by lbrusa           ###   ########.fr       */
+/*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
+/*   Updated: 2024/06/17 09:24:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "scanner.h"
+#include "executer.h"
+#include <limits.h>
+#include "debug.h"
 #include "parser.h"
+#include "minishell.h"
 #include "error.h"
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 
-// refactor the redirect functions into one with one or two supporting functions
-
-static void check_return(int new_fd, char *filename, uint8_t *status)
+/*
+getting the status properly involves using WIFEXITED and WEXITSTATUS
+so I this is an utility function to return the status of the child.
+WIFEXITED returns true if the child terminated normally and the status
+of the child is returned by WEXITSTATUS. If the child did not terminate
+normally, WIFSIGNALED will return true and WTERMSIG will return the signal
+number that caused the child to terminate, so the status will be the 
+signal number plus 128.
+WIFSTOPPED returns true if the child process is stopped and WSTOPSIG will
+return the signal number that caused the child to stop. The status will
+be the signal number that caused the child to stop plus 128.
+WIFCONTINUED is a status that is returned when the child is resumed by
+a SIGCONT signal. The status will be 0.
+*/
+uint8_t	get_wait_status(int status)
 {
-    if (new_fd < 0)
-        *status = status_perror2("minishell: ", filename, 1);
+	debug("child exited with status %d", status);
+	if (WIFEXITED(status))
+	{
+		return (WEXITSTATUS(status));
+	}
+	else if (WIFSIGNALED(status))
+		return (WTERMSIG(status) + 128);
+	else
+		return (status_and_perror("child did not exit normally", 1));
 }
 
-static uint8_t dup2_by_redirect_type(t_tokentype type, char *filename, int *fd, u_int8_t *status)
+
+/*
+removed these debug line for now
+if (WIFEXITED(status))
+	debug("child exited with status %d", WEXITSTATUS(status));
+else
+	debug("child did not exit normally");
+*/
+int	execute_command(t_list *tokenlist, t_data *data)
 {
-    int new_fd;
+	pid_t	pid;
+	int		status;
+	char	**argv;
 
-    *status = 0;
-    new_fd = -1;
-    if (type == REDIRECT_OUT || type == REDIRECT_OUT_APP || type == DGREAT || type == CLOBBER)
-        new_fd = dup2(*fd, STDOUT_FILENO);
-    else if (type == REDIRECT_IN)
-        new_fd = dup2(*fd, STDIN_FILENO);
-    else if (type == REDIRECT_BOTH || type == REDIRECT_BOTH_APP)
-    {
-        new_fd = dup2(*fd, STDOUT_FILENO);
-        new_fd = dup2(*fd, STDERR_FILENO);
-    }
-    // else if (type == REDIRECT_ERR)
-    //     check_dup2_return(dup2(fd, STDERR_FILENO), filename, status);
-    check_return(new_fd, filename, status);
-    return (*status);
-}
-
-static int  open_fd_by_redirect_type(t_tokentype type, char *filename, uint8_t *status)
-{
-    int fd;
-
-    fd = -1;
-    if (type == REDIRECT_OUT || type == REDIRECT_BOTH || type == GREATER_AND || type == CLOBBER) // || type == REDIRECT_ERR
-        fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-    else if (type == REDIRECT_IN)
-        fd = open(filename, O_RDONLY);
-    else if (type == REDIRECT_OUT_APP || type == REDIRECT_BOTH_APP || type == DGREAT) // || type == REDIRECT_ERRAPP
-        fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-    check_return(fd, filename, status);
-    return (fd);
+	status = 0;
+	pid = fork();
+	if (pid == 0)
+	{
+		argv = get_argv_from_tokenlist(tokenlist);
+		if (!resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")))
+			exit (127);
+		debug("command and args: %s %s", argv[0], argv[1]);
+		execve(argv[0], argv, (char **)data->env_arr->contents);
+		return (exit_and_print_err(NULL, 127));
+	}
+	else if (pid == -1)
+		return (status_and_perror("minishell: fork failed", EXIT_FAILURE));
+	else
+	{
+		waitpid(pid, &status, 0);
+		debug("status of my child %d", status);
+		return (get_wait_status(status));
+	}
 }
 
 /*
-Opens and duplicates file used for redirection.
-Deletes redirection and filename token.
+we will not use WIFEXITED but maybe this ? (((*(int *)&(status)) & 0177) == 0)
+or are we allowed to use it?
 */
-uint8_t setup_redirect(t_list **tokenlist, t_tokentype type)
+int	get_status_of_children(pid_t pid1, pid_t pid2)
 {
-    char    *filename;
-    int     fd;
-    uint8_t status;
-
-    debug("setup redirect");
-    fd = -1;
-    status = 0;
-    consume_token_and_connect(tokenlist);
-    if (!(*tokenlist))
-        return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme 'newline'
-    filename = get_token_lexeme(*tokenlist);
-    fd = open_fd_by_redirect_type(type, filename, &status);
-    if (status != 0)
-        return (status);
-    if (dup2_by_redirect_type(type, filename, &fd, &status) != 0)
-        return (status);
-    consume_token_and_connect(tokenlist);
-    close(fd);
-    return (0);
+	int status;
+	int	finalstatus;
+	
+	finalstatus = -1;
+	if (waitpid(pid1, &status, 0) == -1)
+		finalstatus = status_and_perror("waitpid 1", 1);
+	finalstatus = get_wait_status(status);
+	if (waitpid(pid2, &status, 0) == -1)
+		finalstatus = status_and_perror("waitpid 2", 1);
+	finalstatus = get_wait_status(status);
+	debug("status of my children %d", finalstatus);
+	return (finalstatus);
 }
 
-static bool supported_redirect_token(t_tokentype type)
+int	execute_list(t_ast_node *ast, t_data *data)
 {
-    if (type == REDIRECT_IN)
-        return (true);
-    else if (type == REDIRECT_OUT || type == REDIRECT_OUT_APP || type == DGREAT)
-        return (true);
-    else if (type == REDIRECT_BOTH || type == REDIRECT_BOTH_APP)
-        return (true);
-    return (false);
+	uint8_t	status;
+	t_tokentype	tokentype;
+
+	debug("NODE_LIST || &&");
+	status = execute_ast(ast->left, data);
+	tokentype = ((t_token *)ast->token_list->content)->type;
+	if (status == 0 && tokentype == AND_IF)
+	{
+		debug("ANDTOKEN");
+		status = execute_ast(ast->right, data);
+	}
+	else if (status != 0 && tokentype == OR_IF)
+	{
+		debug("ORTOKEN");
+		status = execute_ast(ast->right, data);
+	}
+	debug("status now %d", status);
+	return (status);
 }
 
-/*
-Execute commands that contain basic redirection:
-'<', '>', '>>'
-*/
-uint8_t	execute_redirection(t_ast_node **ast)
+int	handle_first_child_process(t_data *data, t_ast_node *ast)
 {
-	t_list      *tokenlist;
-    t_tokentype type;
-    uint8_t     status;
-    int         token_counter;
+	if (close(data->pipe_fd[0]) == -1)
+		exit_and_print_err("close 1 error", 1);
+	if (data->pipe_fd[1] != STDOUT_FILENO)
+	{
+		if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
+			exit_and_print_err("dup2 1 error", 1);
+		if (close(data->pipe_fd[1]) == -1)
+			exit_and_print_err("close 2 error", 1);
+	}
+	exit(execute_ast(ast->left, data));
+}
 
-    debug("execute redirection");
-    debug("ast type before redirection: %i", (*ast)->type);
-    status = 0;
-    token_counter = 0;
-	tokenlist = (*ast)->token_list;
-	if (tokenlist == NULL || tokenlist->content == NULL)
-		return (0);
-    while (tokenlist)
-    {
-        type = get_token_type(tokenlist);
-        if (supported_redirect_token(type))
-            status = setup_redirect(&tokenlist, type);
-        else
-            token_counter++;
-        if (status != 0)
-            return (status);
-        if (tokenlist)
-            tokenlist = tokenlist->next;
-    }
-    if (tokenlist == NULL && token_counter == 0)
-    {
-        (*ast)->token_list = NULL;
-        (*ast)->type = NODE_NULL;
-    }
-    debug("ast type after redirection: %i", (*ast)->type);
-    return (status);
+int	handle_second_child_process(t_data *data, t_ast_node *ast)
+{
+	if (close(data->pipe_fd[1]) == -1)
+		exit_and_print_err("close 3 - child write end of the pipe", 1);
+	if (data->pipe_fd[0] != STDIN_FILENO)
+	{
+		if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
+			exit_and_print_err("dup2 2 failed", 1);
+		if (close(data->pipe_fd[0]) == -1)
+			exit_and_print_err("close fd 4", 1);
+	}
+	exit(execute_ast(ast->right, data));
 }
