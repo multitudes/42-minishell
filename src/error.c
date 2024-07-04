@@ -78,6 +78,9 @@ uint8_t	zero_and_printerr(const char *msg)
 		write(2, msg, ft_strlen(msg));
 		if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
 			perror("write");
+		result = write(2, "\n", 1);
+		if (result == -1 || result != 1) 
+			perror("write", 1);
 	}
 	return (0);
 }
@@ -95,6 +98,9 @@ bool	false_and_print(const char *msg)
 		result = write(2, msg, ft_strlen(msg));
 		if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
 			perror("write");
+		result = write(2, "\n", 1);
+		if (result == -1 || result != 1) 
+			perror("write", 1);
 	}
 	return (false);
 }
