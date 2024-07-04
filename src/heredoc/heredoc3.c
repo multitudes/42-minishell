@@ -60,10 +60,10 @@ int redirect_and_execute_heredoc(t_ast_node *ast, t_data *data, t_heredoc *hered
 
     status = 0;
     if (pipe(pfd) == -1)
-        return(status_and_perror("minishell: setup heredoc pipe: ", 1));
+        return(status_and_perror("minishell: setup heredoc pipe", 1));
     pid = fork();
     if (pid == -1)
-        return(status_and_perror("minishell: redirect heredoc: ", 1));
+        return(status_and_perror("minishell: redirect heredoc", 1));
     if (pid == 0)
         status = execute_heredoc_child(ast->token_list, data, pfd);
     else
