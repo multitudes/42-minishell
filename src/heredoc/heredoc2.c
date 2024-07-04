@@ -26,6 +26,15 @@
 
 // }
 
+void    free_heredoc(t_heredoc *heredoc)
+{
+    int i;
+
+    i = 0;
+    while (i < heredoc->delim_count)
+        free(heredoc->delim[i++]);
+}
+
 static int increase_heredoc_size(t_heredoc *heredoc)
 {
     char    *new_buffer;
@@ -76,10 +85,12 @@ static void advance_to_final_delim(t_heredoc *heredoc, int *i)
 {
     char    *line;
 
+    debug("advance to final delim");
     while (heredoc->delim_count > 1 && *i < heredoc->delim_count - 1)
     {
+        debug("Current delimiter to match: %s", heredoc->delim[*i]);
         line = readline("> ");
-        if (line && ft_strncmp(heredoc->delim[*i], line, ft_strlen(heredoc->delim[*i])) == 0 && ft_strlen(line) == ft_strlen(heredoc->delim[*i]) + 1)
+        if (line && !(ft_strncmp(heredoc->delim[*i], line, ft_strlen(heredoc->delim[*i])) != 0 && ft_strlen(line) != ft_strlen(heredoc->delim[*i]) - 1))
             (*i)++;
         free (line);
     }
@@ -97,5 +108,6 @@ int process_heredoc(t_heredoc *heredoc, t_data *data)
     i = 0;
     advance_to_final_delim(heredoc, &i);
     status = read_heredoc(heredoc, data, i);
+    free_heredoc(heredoc);
     return (status);
 }

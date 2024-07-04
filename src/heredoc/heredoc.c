@@ -86,8 +86,9 @@ static int init_heredoc(t_ast_node *ast, t_heredoc *heredoc)
         {
             if (tokenlist->next && get_token_type(tokenlist->next) == DLESS_DELIM)
             {
-                heredoc->delim[heredoc->delim_count] = get_token_lexeme(tokenlist->next);
+                heredoc->delim[heredoc->delim_count] = ft_strdup(get_token_lexeme(tokenlist->next));
                 heredoc->delim_count++;
+                debug("Set delimiter %i: %s", heredoc->delim_count, heredoc->delim[heredoc->delim_count]);
                 consume_token_and_connect(&tokenlist);
                 consume_token_and_connect(&tokenlist);
                 continue ;

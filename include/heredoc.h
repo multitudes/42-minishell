@@ -31,6 +31,7 @@ typedef struct  s_heredoc
 } t_heredoc;
 
 int     execute_heredoc(t_ast_node *ast, t_data *data);
+void    free_heredoc(t_heredoc *heredoc);
 bool    is_heredoc(t_list *tokenlist);
 int     process_heredoc(t_heredoc *heredoc, t_data *data);
 
