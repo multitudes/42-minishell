@@ -80,7 +80,7 @@ uint8_t	zero_and_printerr(const char *msg)
 			perror("write");
 		result = write(2, "\n", 1);
 		if (result == -1 || result != 1) 
-			perror("write", 1);
+			perror("write");
 	}
 	return (0);
 }
@@ -100,7 +100,7 @@ bool	false_and_print(const char *msg)
 			perror("write");
 		result = write(2, "\n", 1);
 		if (result == -1 || result != 1) 
-			perror("write", 1);
+			perror("write");
 	}
 	return (false);
 }
