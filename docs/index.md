@@ -313,7 +313,7 @@ command		 	->  simple_command
 
 simple_command	-> name (args)* ;
 builtin 		-> name (args)* ; 
-redirection		-> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
+redirection		-> expression ( "<" | ">" | ">>" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
 DLESS 			-> expression "<<" delimiter newline content delimiter;
 
 delimiter 		-> STRING;
@@ -793,12 +793,6 @@ The >&> operator in bash is used for redirection. It redirects both the standa
 Here's an example:
 command >&> file
 This command will run command, and both the stdout and stderr will be redirected to file.
-
-
-The >>& operator in bash is used for redirection. It appends the standard output (stdout) and standard error (stderr) of the command on its left to the file on its right.
-Here's an example:
-
-command 1>>file 2>&1
 
 
 This command will run command, and append both the stdout and stderr to file.

@@ -56,8 +56,7 @@ CLOBBER, // '>|'
 REDIRECT_BOTH, // '&>'
 GREATAND, // '>&'
 LESSAND, // '<&'
-REDIRECT_OUT_APP, // '&>>'	
-REDIRECT_BOTH_APP, //">>&"
+REDIRECT_BOTH_APP, // '&>>'
 EQUAL, // =
 
 //The <> operator in bash is used for opening a file in read-write mode. Here's an example:
