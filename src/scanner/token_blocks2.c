@@ -60,9 +60,9 @@ bool	add_parenthesisblock(t_mini_data *data, int *i, char delim, int t_type)
 		advance(i);
 	}
 	if (count != 0)
-		return (scanner_error(data, "minishell: syntax error: unexpected end of file\n"));
+		return (scanner_error(data, "minishell: syntax error: unexpected end of file"));
 	if (is_empty_parenthesis(data->input, *i, start))
-		return (scanner_error(data, "minishell: syntax error near unexpected token ')'\n"));
+		return (scanner_error(data, "minishell: syntax error near unexpected token ')'"));
 	tmp = ft_substr(data->input, start, *i - start);
 	add_token(data, &start, tmp, t_type);
 	*i = start;

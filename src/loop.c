@@ -245,18 +245,18 @@ int	set_up_signals(void)
 {
 	
 	if (isatty(STDIN_FILENO) == -1)
-		return (status_and_perror("is atty failed\n", 1));
+		return (status_and_perror("is atty failed", 1));
 	else if (isatty(STDIN_FILENO))
 	{
 		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-		return (status_and_perror("SIG_ERR signal failed\n", 1));
+		return (status_and_perror("SIG_ERR signal failed", 1));
 	}
 	else 
 	{
 		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-		return (status_and_perror("SIG_ERR signal failed\n", 1));
+		return (status_and_perror("SIG_ERR signal failed", 1));
 	}
 	// TODO still not sure if needed!
 	// rl_catch_signals = 0;

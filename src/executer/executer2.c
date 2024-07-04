@@ -114,13 +114,13 @@ int	resolve_command_path(char **argv, char *path_env)
 	{
 		cmd = create_path(argv[0], path_env);
 		if (!cmd)
-			return (false_and_print("minishell: command not on path\n"));
+			return (false_and_print("minishell: command not on path"));
 		argv[0] = cmd;
 	}
 	else
 	{
 		if (access(argv[0], X_OK) == -1)
-			return (false_and_print("minishell: Permission denied\n"));
+			return (false_and_print("minishell: Permission denied"));
 	}
 	return (true);
 }

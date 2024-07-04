@@ -96,16 +96,16 @@ uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 	getcwd = NULL;
 	tokenlist = tokenlist->next;
 	if (tokenlist && tokenlist->next)
-		return (print_error_status("minishell: cd: too many arguments\n", 1));
+		return (print_error_status("minishell: cd: too many arguments", 1));
 	getoldcwd = execute_getcwd(old_dir, "minishell: cd: get old cwd");
 	status = execute_cd_tokenlist(env_arr, tokenlist);
 	if (!status)
 		return (status);
 	getcwd = execute_getcwd(dir, "minishell: cd: get new cwd");
 	if (!getoldcwd || !update_env(env_arr, "OLDPWD", old_dir))
-		print_error_status("minishell: cd: update of OLDPWD failed\n", 0);
+		print_error_status("minishell: cd: update of OLDPWD failed", 0);
 	if (!getcwd || !update_env(env_arr, "PWD", dir))
-		print_error_status("minishell: cd: update of PWD failed\n", 0);
+		print_error_status("minishell: cd: update of PWD failed", 0);
 	return (status);
 }
 
@@ -221,13 +221,13 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		if (no_valid_identifier(key))
 		{
 			// TODO instead the str3join do maybe a variadic func?
-			err_msg = ft_strjoin3("minishell: export `", get_token_lexeme(tokenlist), "': not a valid identifier\n");
+			err_msg = ft_strjoin3("minishell: export `", get_token_lexeme(tokenlist), "': not a valid identifier");
 			status = print_error_status(err_msg, 1);
 			free(err_msg);
 		}
 		else if (read_only_variable(key))
 		{
-			err_msg = ft_strjoin3("minishell: export: ", key, ": readonly variable\n");
+			err_msg = ft_strjoin3("minishell: export: ", key, ": readonly variable");
 			status = print_error_status(err_msg, 1);
 			free(err_msg);
 		}
@@ -235,7 +235,7 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		{
 			if (!update_env(env_arr, key, value))
 			{
-				err_msg = ft_strjoin3("minishell: export: ", value, ": adding to environment failed\n");
+				err_msg = ft_strjoin3("minishell: export: ", value, ": adding to environment failed");
 				print_error_status(err_msg, 0);
 				free(err_msg);
 			}
@@ -288,7 +288,7 @@ uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 			;
 		else if (read_only_variable(lexeme))
 		{
-			err_msg = ft_strjoin3("minishell: unset: ", lexeme, ": cannot unset: readonly variable\n");
+			err_msg = ft_strjoin3("minishell: unset: ", lexeme, ": cannot unset: readonly variable");
 			status = print_error_status(err_msg, 1);
 			free(err_msg);
 		}
