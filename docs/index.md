@@ -787,11 +787,6 @@ command <> file
 
 This command will run command, with file opened in read-write mode on standard input.
 
-
-
-The >&> operator in bash is used for redirection. It redirects both the standard output (stdout) and standard error (stderr) of the command on its left to the file on its right.
-Here's an example:
-command >&> file
 This command will run command, and both the stdout and stderr will be redirected to file.
 
 
