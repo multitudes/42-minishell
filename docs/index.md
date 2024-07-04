@@ -1498,6 +1498,10 @@ This is about building the correct ast tree... the image is self explanatory. (i
 
 <img src="assets/associativity.jpg" alt="associativity" width="400">
 
+## The status of the project at the time of the evaluation
+In the end we really used 28 tokens we receive from the scanner.  
+57 are recognized but not acted upon because are not feature we implement.  
+
 ## links
 The Bash reference manual:  
 https://www.gnu.org/software/bash/manual/bash.html  

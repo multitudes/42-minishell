@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/04 13:30:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/04 13:34:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,13 +91,10 @@ typedef enum e_tokentype {
 	REDIRECT_BOTH,
 	REDIRECT_BOTH_APP,
 	GLOBBING,
-	NULL_TOKEN,
 	DOLLAR_QUESTION,
-	CARET,
-	PERCENT,
 	TILDE,
-	EOF_TOK,
 	COMMAND,
+	NULL_TOKEN,
 	SEMI,
 	SEMI_AND,
 	DSEMI,
@@ -153,6 +150,8 @@ typedef enum e_tokentype {
 	DOLLAR_TILDE,
 	DOLLAR_DIGIT,
 	DOLLAR,
+	CARET,
+	PERCENT,
 } t_tokentype;
 
 struct						s_mini_data

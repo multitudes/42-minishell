@@ -91,7 +91,7 @@ DOLLAR,
 COMMENT, starting with # and ending with a newline are ignored! -- not implemented as token
 CARET, PERCENT, 
 TILDE, used in the context of home directory expansion
-EOF_TOK,  
+
 COMMAND,
 PIPE_AND, // |& - like pipe but redirects both stdout and stderr
 NULL_TOKEN -- used in error handling
