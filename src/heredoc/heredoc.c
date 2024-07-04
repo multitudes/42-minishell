@@ -64,13 +64,19 @@ static int process_delim_quotes(t_heredoc *heredoc)
         else if (count_single_quotes > 1 || count_double_quotes > 1)
         {
             remove_quotes(heredoc->delim[i]);
-            heredoc->expansion[i] = true;
+            heredoc->expansion[i] = false;
         }
         else
-            heredoc->expansion[i] = false;
+            heredoc->expansion[i] = true;
         i++;
         count_single_quotes = 0;
         count_double_quotes = 0;
+    }
+    i = 0;
+    while (i < heredoc->delim_count)
+    {
+        debug("delimiter %i will expand content: %i", i, heredoc->expansion[i]);
+        i++;
     }
     return (0);
 }
