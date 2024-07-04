@@ -58,6 +58,7 @@ int redirect_and_execute_heredoc(t_ast_node *ast, t_data *data, t_heredoc *hered
     pid_t   pid;
     int     status;
 
+    debug("redirect and execute heredoc");
     status = 0;
     if (pipe(pfd) == -1)
         return(status_and_perror("minishell: setup heredoc pipe", 1));

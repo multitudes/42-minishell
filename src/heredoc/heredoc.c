@@ -75,7 +75,7 @@ static int process_delim_quotes(t_heredoc *heredoc)
     i = 0;
     while (i < heredoc->delim_count)
     {
-        debug("delimiter %i will expand content: %i", i, heredoc->expansion[i]);
+        debug("delimiter %i will expand content: %i", i + 1, heredoc->expansion[i]);
         i++;
     }
     return (0);
@@ -99,8 +99,8 @@ static int init_heredoc(t_ast_node *ast, t_heredoc *heredoc)
             if (tokenlist->next && get_token_type(tokenlist->next) == DLESS_DELIM)
             {
                 heredoc->delim[heredoc->delim_count] = ft_strdup(get_token_lexeme(tokenlist->next));
-                heredoc->delim_count++;
                 debug("Set delimiter %i: %s", heredoc->delim_count, heredoc->delim[heredoc->delim_count]);
+                heredoc->delim_count++;
                 consume_token_and_connect(&tokenlist);
                 consume_token_and_connect(&tokenlist);
                 continue ;
