@@ -41,7 +41,7 @@ uint8_t	get_wait_status(int status)
 	else if (WIFSIGNALED(status))
 		return (WTERMSIG(status) + 128);
 	else
-		return (status_and_perror("child did not exit normally", 1));
+		return (status_and_perror("minishell: error: child exit", 1));
 }
 
 
@@ -124,13 +124,13 @@ int	execute_list(t_ast_node *ast, t_data *data)
 int	handle_first_child_process(t_data *data, t_ast_node *ast)
 {
 	if (close(data->pipe_fd[0]) == -1)
-		exit_and_print_err("close 1 error", 1);
+		exit_and_print_err("minishell: error: 1st child close read end of pipe", 1);
 	if (data->pipe_fd[1] != STDOUT_FILENO)
 	{
 		if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
-			exit_and_print_err("dup2 1 error", 1);
+			exit_and_print_err("minishell: error: 1st child dup2 write end of pipe", 1);
 		if (close(data->pipe_fd[1]) == -1)
-			exit_and_print_err("close 2 error", 1);
+			exit_and_print_err("minishell: error: 1st child close write end of pipe", 1);
 	}
 	exit(execute_ast(ast->left, data));
 }
@@ -138,13 +138,13 @@ int	handle_first_child_process(t_data *data, t_ast_node *ast)
 int	handle_second_child_process(t_data *data, t_ast_node *ast)
 {
 	if (close(data->pipe_fd[1]) == -1)
-		exit_and_print_err("close 3 - child write end of the pipe", 1);
+		exit_and_print_err("minishell: error: 2nd child close write end of the pipe", 1);
 	if (data->pipe_fd[0] != STDIN_FILENO)
 	{
 		if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
-			exit_and_print_err("dup2 2 failed", 1);
+			exit_and_print_err("minishell: error: 2nd child dup2 read end of pipe", 1);
 		if (close(data->pipe_fd[0]) == -1)
-			exit_and_print_err("close fd 4", 1);
+			exit_and_print_err("minishell: error: 2nd child close read end of the pipe", 1);
 	}
 	exit(execute_ast(ast->right, data));
 }
