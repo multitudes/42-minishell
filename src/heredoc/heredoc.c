@@ -122,10 +122,8 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
 {
     t_heredoc   heredoc;
     int         status;
-    int         i;
 
     debug("execute heredoc");
-    i = 0;
     status = 0;
     if (init_heredoc(ast, &heredoc) == 1)
         return ((int)print_error_status("minishell: syntax error", 1));
