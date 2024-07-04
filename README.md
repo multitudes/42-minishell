@@ -19,6 +19,19 @@ The bash manual describes a shell as follows:
 
 - Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
 
+## What we learned
+
+- The difference between a shell and a terminal.
+- The difference between Bash and other shells.
+- The POSIX standard.
+- keep the project documented.
+- Create and manage testing to allow to change and code without breaking. 
+- the two main testing paradigms, unit testing and integration testing
+- GitHub actions for the tests in a sanitized environment and to deploy our documentation.
+- Team work and Git rebase vs merge. Linear history. Branching. Code reviews, open issues and assigning/ splitting the workload. Communicate deadlines.
+- Create a good debugging workflow.
+- The importance of a good architecture. Decoupling. Modularity. Dividing the shell into a scanner, parser, analyser and expander, executer. which is useful for testing and debugging.
+
 ### Some more definitions from the bash manual
 - POSIX  A family of open system standards based on Unix.
 - builtin A command that is implemented internally by the shell itself, rather than by an executable program somewhere in the file system.
