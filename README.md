@@ -1001,6 +1001,21 @@ The single quotes (') are treated as literal characters within the double quotes
 So, if var="world", your command will output Hello' world'.
 
 ## Redirections
+
+quoting the shell manual:
+> 2.7.2 Redirecting Output  
+The two general formats for redirecting output are:  
+[n]>word  
+[n]>|word  
+where the optional n represents the file descriptor number. If the number is omitted, the redirection shall refer to standard output (file descriptor 1).  
+Output redirection using the '>' format shall fail if the noclobber option is set (see the description of set -C) and the file named by the expansion of word exists and is a regular file. Otherwise, redirection using the '>' or ">|" formats shall cause the file whose name results from the expansion of word to be created and opened for output on the designated file descriptor, or standard output if none is specified. If the file does not exist, it shall be created; otherwise, it shall be truncated to be an empty file after being opened.  
+
+As I read in the manual when we create a file, if we use a file descriptor number then it is created when we create the file (not implemented)
+### clobbering
+The `noclobber` option in shell environments (like Bash) is used to prevent accidentally overwriting existing files through redirection. When `noclobber` is set (using `set -o noclobber` or `set -C`), attempting to redirect output to an existing file using the `>` operator will fail with an error, thus protecting the file from being overwritten.  
+However, there might be cases where you intentionally want to overwrite a file even when `noclobber` is set. For this purpose, you can use the `>|` redirection operator. The `>|` operator forces the shell to overwrite the target file, effectively bypassing the `noclobber` setting for that particular redirection command. (not implemented)
+
+### redirections without a command
 Bash does handle redirections without a command. It's just that there's no command to execute, so nothing will be written to/read from the redirections.
 Regarding this problematic case, DLESSs should (preferably) be handled during or right after parsing.
 Look at these cases in bash:

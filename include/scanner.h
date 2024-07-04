@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 15:51:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/04 12:13:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ typedef enum e_tokentype {
 	REDIRECT_BOTH,
 	GREATAND,
 	LESSAND,
-	REDIRECT_OUT_APP,
 	REDIRECT_BOTH_APP,
 	EQUAL,
 	LESSGREAT,
