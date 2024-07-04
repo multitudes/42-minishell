@@ -23,8 +23,8 @@ scanner/redirection_tokens.c scanner/token_blocks2.c environment/environment.c e
 parser/parser.c parser/parser2.c parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c utils.c \
 error.c error2.c darray/darray.c darray/darray2.c darray/darray3.c globbing/globbing.c globbing/globbing1.c \
 analyser/analyser.c analyser/analyser2.c builtins/builtins.c builtins/builtins2.c \
-executer/executer.c executer/executer1.c executer/executer2.c executer/executer3.c \
-heredoc/heredoc.c heredoc/heredoc2.c)
+executer/executer.c executer/executer2.c executer/executer3.c executer/executer4.c \
+heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c)
 SUT_HDRS 	= 	$(addprefix ../include/, minishell.h scanner.h environment.h \
 parser.h analyser.h executer.h error.h darray.h builtins.h globbing.h heredoc.h) 
 
