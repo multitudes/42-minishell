@@ -43,6 +43,9 @@ static void remove_quotes(char *string)
     string[j] = '\0';
 }
 
+/*
+Checks for and handles single/double quotes in heredoc delimiter.
+*/
 static int process_delim_quotes(t_heredoc *heredoc)
 {
     int count_single_quotes;
@@ -72,6 +75,9 @@ static int process_delim_quotes(t_heredoc *heredoc)
     return (0);
 }
 
+/*
+Set up heredoc(s). Up to 10 heredocs/delimiters are supported.
+*/
 static int init_heredoc(t_ast_node *ast, t_heredoc *heredoc)
 {
     t_list  *tokenlist;
@@ -103,6 +109,10 @@ static int init_heredoc(t_ast_node *ast, t_heredoc *heredoc)
     return (0);
 }
 
+/*
+Executes heredoc and then passes heredoc to stdin of system command
+or calls builtin functions depending on ast node type.
+*/
 int execute_heredoc(t_ast_node *ast, t_data *data)
 {
     t_heredoc   heredoc;
@@ -131,6 +141,9 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
     return (status);
 }
 
+/*
+Checks for heredoc token in tokenlist.
+*/
 bool    is_heredoc(t_list *tokenlist)
 {
     while (tokenlist)

@@ -21,11 +21,9 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-// int redirect_and_execute_heredoc(t_heredoc *heredoc)
-// {
-
-// }
-
+/*
+Frees the memory used for storing delimiter lexemes.
+*/
 void    free_heredoc(t_heredoc *heredoc)
 {
     int i;
@@ -35,6 +33,9 @@ void    free_heredoc(t_heredoc *heredoc)
         free(heredoc->delim[i++]);
 }
 
+/*
+Increases buffer for heredoc if addition of next line would surpass buffer size.
+*/
 static int increase_heredoc_size(t_heredoc *heredoc)
 {
     char    *new_buffer;
@@ -49,6 +50,9 @@ static int increase_heredoc_size(t_heredoc *heredoc)
     return (0);
 }
 
+/*
+Read and save content of final heredoc.
+*/
 static int read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 {
     char    *line;
@@ -81,6 +85,9 @@ static int read_heredoc(t_heredoc *heredoc, t_data *data, int i)
     return (0);
 }
 
+/*
+Prompt for each delimiter and advancing to next heredoc/delimiter.
+*/
 static void advance_to_final_delim(t_heredoc *heredoc, int *i)
 {
     char    *line;
@@ -96,6 +103,10 @@ static void advance_to_final_delim(t_heredoc *heredoc, int *i)
     }
 }
 
+/*
+Reads heredoc content. Only input for final delimiter
+gets saved and passed to stdin of any commands.
+*/
 int process_heredoc(t_heredoc *heredoc, t_data *data)
 {
     int     i;
