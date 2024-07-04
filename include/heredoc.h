@@ -20,6 +20,20 @@ extern "C" {
 
 # define HEREDOC_BUFFER 1024
 
+typedef struct  s_heredoc
+{
+    int     delim_count;
+    char    *delim[10];
+    bool    expansion[10];
+    char    *buffer;
+    size_t  buffer_size;
+    size_t  heredoc_len;
+} t_heredoc;
+
+int     execute_heredoc(t_ast_node *ast, t_data *data);
+bool    is_heredoc(t_list *tokenlist);
+int     process_heredoc(t_heredoc *heredoc, t_data *data);
+
 # ifdef __cplusplus
 
 }

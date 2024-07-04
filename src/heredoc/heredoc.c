@@ -1,0 +1,142 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
+/*   Updated: 2024/07/01 20:52:35 by rpriess          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+#include "minishell.h"
+#include "heredoc.h"
+#include "analyser.h"
+#include "scanner.h"
+#include "builtins.h"
+#include "utils.h"
+#include "error.h"
+#include <libft.h>
+#include <stdio.h>
+#include <readline/readline.h>
+#include <readline/history.h> // needed?
+
+/*
+removes all single and double qoutes from a string.
+*/
+static void remove_quotes(char *string)
+{
+    int     i;
+    int     j;
+
+    i = 0;
+    j = 0;
+    while (string && string[i])
+    {        
+        if (string[i] != '"' && string[i] != '\'')
+        {
+            string[j] = string[i];
+            j++;
+        }
+        i++;
+    }
+    string[j] = '\0';
+}
+
+static int process_delim_quotes(t_heredoc *heredoc)
+{
+    int count_single_quotes;
+    int count_double_quotes;
+    int i;
+
+    count_single_quotes = 0;
+    count_double_quotes = 0;
+    i = 0;
+    while (i < heredoc->delim_count)
+    {
+        count_single_quotes = count_char_in_str(heredoc->delim[i], '\'');
+        count_double_quotes = count_char_in_str(heredoc->delim[i], '"');
+        if (count_single_quotes % 2 || count_double_quotes % 2)
+            return ((int)print_error_status("minishell: heredoc: invalid delimiter", 1));
+        else if (count_single_quotes > 1 || count_double_quotes > 1)
+        {
+            remove_quotes(heredoc->delim[i]);
+            heredoc->expansion[i] = true;
+        }
+        else
+            heredoc->expansion[i] = false;
+        i++;
+        count_single_quotes = 0;
+        count_double_quotes = 0;
+    }
+    return (0);
+}
+
+static int init_heredoc(t_ast_node *ast, t_heredoc *heredoc)
+{
+    t_list  *tokenlist;
+
+    heredoc->buffer_size = HEREDOC_BUFFER;
+    heredoc->delim_count = 0;
+    heredoc->heredoc_len = 0;
+    tokenlist = ast->token_list;
+    while (tokenlist)
+    {
+        if (get_token_type(tokenlist) == DLESS)
+        {
+            if (tokenlist->next && get_token_type(tokenlist->next) == DLESS_DELIM)
+            {
+                heredoc->delim[heredoc->delim_count] = get_token_lexeme(tokenlist->next);
+                heredoc->delim_count++;
+                consume_token_and_connect(&tokenlist);
+                consume_token_and_connect(&tokenlist);
+                continue ;
+            }
+            else
+                return((int)print_error_status("minishell: syntax error", 1));
+        }
+        tokenlist = tokenlist->next;
+    }
+    ast->token_list = tokenlist;
+    debug("init heredoc complete, delimiter count: %i", heredoc->delim_count);
+    return (0);
+}
+
+int execute_heredoc(t_ast_node *ast, t_data *data)
+{
+    t_heredoc   heredoc;
+    int         status;
+    int         i;
+
+    debug("execute heredoc");
+    i = 0;
+    status = 0;
+    if (init_heredoc(ast, &heredoc) == 1)
+        return ((int)print_error_status("minishell: syntax error", 1));
+    if (process_delim_quotes(&heredoc) == 1)
+        return (1);
+    if (process_heredoc(&heredoc, data))
+    {
+        free((&heredoc)->buffer);
+        return (1);
+    }
+    // if (ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL)
+    //     status = redirect_and_execute_heredoc(heredoc);
+    if (ast->type == NODE_BUILTIN)
+    {
+        free((&heredoc)->buffer);
+        status = execute_builtin(ast->token_list, data);
+    }
+    return (status);
+}
+
+bool    is_heredoc(t_list *tokenlist)
+{
+    while (tokenlist)
+    {
+        if (get_token_type(tokenlist) == DLESS)
+            return (true);
+        tokenlist = tokenlist->next;
+    }
+    return (false);
+}
