@@ -15,6 +15,7 @@
 #include "error.h"
 #include "builtins.h"
 #include "analyser.h"
+#include "heredoc.h"
 
 /*
 posix compliant use of the environ variable but wecan discuss this
@@ -93,16 +94,17 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 		else if (contains_redirection(ast->token_list))
 		{
 			// debug("contains redirection (check)");
-			status = execute_redirection(&ast);
+			status = execute_redirection(&ast); // double pointer should not be needed here.
 			continue ;
 		}
-		// else if (is_heredoc(ast->token_list))
-		// 	status = execute_heredoc(&ast); // replace ast node and tokenlist with command + contents of heredoc
+		else if (is_heredoc(ast->token_list))
+		{
+			debug("is heredoc");
+			status = execute_heredoc(ast, data);
+		}
 		else if (astnodetype == NODE_BUILTIN)
 			status = execute_builtin(ast->token_list, data);
-		else if (astnodetype == NODE_COMMAND)
-			status = execute_command(ast->token_list, data);
-		else if (astnodetype == NODE_TERMINAL)
+		else if (astnodetype == NODE_COMMAND || astnodetype == NODE_TERMINAL)
 			status = execute_command(ast->token_list, data);
 		restore_fds(data);
 		break ;
