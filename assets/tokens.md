@@ -88,7 +88,7 @@ DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.
 DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
 DOLLAR,
 
-COMMENT, starting with # and ending with a newline are ignored!
+COMMENT, starting with # and ending with a newline are ignored! -- not implemented as token
 CARET, PERCENT, 
 TILDE, used in the context of home directory expansion
 EOF_TOK,  
