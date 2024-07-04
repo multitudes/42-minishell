@@ -207,6 +207,8 @@ char	*get_key(char *str)
 	if (*str != '$')
 		return (NULL);
 	end = str + 1;
+	if (end && (*end == ' ' || *end == '\0'))
+		return (NULL);
 	if (end && (ft_isalpha(*end) || *end == '_'))
 		end++;
 	else
@@ -252,7 +254,7 @@ char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
 			free(temp[1]);
 			free(temp[2]);
 			free(key);
-			break ;
+			continue ; // this should perhaps be continue, if lexeme contains more than one $-expansion
 		}
 		i++;
 	}

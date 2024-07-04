@@ -56,13 +56,18 @@ Read and save content of final heredoc.
 static int read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 {
     char    *line;
+    char    *temp;
 
     debug("read heredoc");
     line = readline("> ");
-    while (line && (ft_strncmp(heredoc->delim[i], line, ft_strlen(heredoc->delim[i])) != 0 && ft_strlen(line) != ft_strlen(heredoc->delim[i]) - 1)) // while delimiter not encountered
+    while (line && ft_strcmp(heredoc->delim[i], line))
     {
         if (line && heredoc->expansion[i] == true && ft_strchr(line, '$'))
-            line = replace_dollar_vars(data->env_arr, line);
+        {
+            temp = replace_dollar_vars(data->env_arr, line);
+            free(line);
+            line = temp;
+        }
         while (heredoc->heredoc_len + ft_strlen(line) + 1 >= heredoc->buffer_size)
         {
             if (increase_heredoc_size(heredoc))
@@ -92,11 +97,12 @@ static void advance_to_final_delim(t_heredoc *heredoc, int *i)
     char    *line;
 
     debug("advance to final delim");
-    while (heredoc->delim_count > 1 && *i < heredoc->delim_count - 1)
+    while (*i < heredoc->delim_count - 1)
     {
         debug("Current delimiter to match: %s", heredoc->delim[*i]);
         line = readline("> ");
-        if (line && !(ft_strncmp(heredoc->delim[*i], line, ft_strlen(heredoc->delim[*i])) != 0 && ft_strlen(line) != ft_strlen(heredoc->delim[*i]) - 1))
+        debug("Difference between delimiter and line: %i", ft_strcmp(heredoc->delim[*i], line));
+        if (line == NULL || !ft_strcmp(heredoc->delim[*i], line))
             (*i)++;
         free (line);
     }
@@ -111,6 +117,7 @@ int process_heredoc(t_heredoc *heredoc, t_data *data)
     int     i;
     int     status;
 
+    debug("Process heredoc");
     status = 0;
     heredoc->buffer = ft_calloc(heredoc->buffer_size, sizeof(char));
     if (!heredoc->buffer)
