@@ -11,11 +11,10 @@ BUILTIN,
 FLAGS,
 PATHNAME, 
 PIPE, // | - | and |& have higher precedence than &&, ||, ;, and &. 
-PIPE_AND, // |&
 
 AND_TOK, // &
-AND_IF, 	// &&
-OR_IF, // || 
+AND_IF, 	// &&  --> name taken from the shell manual - used for the bonus
+OR_IF, // || --> name taken from the shell manual -- used for the bonus
 
 //; and & have the same precedence, which is lower than && 
 //and ||. They allow you to separate commands (;) 
@@ -52,18 +51,17 @@ DGREAT, // '>>'
 DLESS, // '<<'
 DLESS_DELIM,
 
-CLOBBER, // '>|'
+CLOBBER, // '>|'  -> used in special setting to overwrite files when noclobber is specified
 REDIRECT_BOTH, // '&>'
-GREATAND, // '>&'
+GREATAND, // '>&'  see 2.7.6 Duplicating an Output File Descriptor in the shell manual
 LESSAND, // '<&'
 REDIRECT_BOTH_APP, // '&>>'
 EQUAL, // =
 
 //The <> operator in bash is used for opening a file in read-write mode. Here's an example:
 // command <> file.txt
-LESSGREAT, 		// '<>'
-DLESSDASH,	 // '<<-' The here-document delimiter is treated as a literal string,
-GREATER_AND_GREATER, // ">&>",
+LESSGREAT, 		// '<>' open for reading and writing
+DLESSDASH,	 // '<<-' The here-document accepts tabs...
 COMMA, DOT, MINUS, PLUS, SLASH, STAR, BANG_EQUAL, BANG,
 // for the history expansion
 BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA,
@@ -74,8 +72,6 @@ MINUS_EQUAL, PLUS_EQUAL, SLASH_EQUAL, STAR_EQUAL,
 // control operators
 // metacharacter : A character that, when unquoted, separates words. 
 // A metacharacter is a space, tab, newline, or: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
-SPACE_TOK, TAB_TOK, GREATER_AND, 
-AMPERSAND,
 
 // reserved Keywords
 IF, THEN, ELSE, ELIF, FI, DO, DONE, IN,
@@ -92,16 +88,13 @@ DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.
 DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
 DOLLAR,
 
-DIGIT, CHAR,
-// end of file
-HASH, 
-
 COMMENT, starting with # and ending with a newline are ignored!
 CARET, PERCENT, 
 TILDE, used in the context of home directory expansion
 EOF_TOK,  
 COMMAND,
-NULL_TOKEN
+PIPE_AND, // |& - like pipe but redirects both stdout and stderr
+NULL_TOKEN -- used in error handling
 // to add ‘$’, ‘`’, ‘"’, ‘\’,The special parameters ‘*’ and ‘@’ have special meaning when in double quotes
 
 

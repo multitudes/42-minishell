@@ -305,7 +305,7 @@ const char* test_all_tokens() {
 
 
 const char* test_all_tokens2() {
-    std::string str = "& ;& ;; ;;& ( command ) $(command) ${param} $param $((expr)) \"string\" 'string' true false > < >> << delimiter >| &> >& <& &>> = <> <<- >&> , . - + / * ";
+    std::string str = "& ;& ;; ;;& ( command ) $(command) ${param} $param $((expr)) \"string\" 'string' true false > < >> << delimiter >| &> >& <& &>> = <> <<- , . - + / * ";
     const char* input = str.c_str();
 	t_list *lexemes = tokenizer(input);
     t_list *current = lexemes;
@@ -344,7 +344,6 @@ const char* test_all_tokens2() {
 	result = process_token(&current, &i, "=", EQUAL);
 	result = process_token(&current, &i, "<>", LESSGREAT);
 	result = process_token(&current, &i, "<<-", DLESSDASH);
-	result = process_token(&current, &i, ">&>", GREATER_AND_GREATER);
 	result = process_token(&current, &i, ",", COMMA);
 	result = process_token(&current, &i, ".", BUILTIN);
 	result = process_token(&current, &i, "-", MINUS);

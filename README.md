@@ -796,13 +796,6 @@ command <> file
 
 This command will run command, with file opened in read-write mode on standard input.
 
-
-
-The >&> operator in bash is used for redirection. It redirects both the standard output (stdout) and standard error (stderr) of the command on its left to the file on its right.
-Here's an example:
-command >&> file
-This command will run command, and both the stdout and stderr will be redirected to file.
-
 command 1>>file 2>&1
 
 
@@ -1001,7 +994,10 @@ The single quotes (') are treated as literal characters within the double quotes
 So, if var="world", your command will output Hello' world'.
 
 ## Redirections
+The basic redirection operators in bash we will implement are `>`, `<`, and `>>`. These operators allow you to redirect the standard input and output of a command to and from files.  
+We tokenized them as `REDIRECTION_OUT`, `REDIRECTION_IN`, and `REDIRECTION_APP` respectively.
 
+### Some more advanced use cases of redirections in bash:
 quoting the shell manual:
 > 2.7.2 Redirecting Output  
 The two general formats for redirecting output are:  
@@ -1011,6 +1007,34 @@ where the optional n represents the file descriptor number. If the number is omi
 Output redirection using the '>' format shall fail if the noclobber option is set (see the description of set -C) and the file named by the expansion of word exists and is a regular file. Otherwise, redirection using the '>' or ">|" formats shall cause the file whose name results from the expansion of word to be created and opened for output on the designated file descriptor, or standard output if none is specified. If the file does not exist, it shall be created; otherwise, it shall be truncated to be an empty file after being opened.  
 
 As I read in the manual when we create a file, if we use a file descriptor number then it is created when we create the file (not implemented)
+
+### LESSGREAT <>
+> 2.7.7 Open File Descriptors for Reading and Writing
+The redirection operator:
+[n]<>word
+shall cause the file whose name is the expansion of word to be opened for both reading and writing on the file descriptor denoted by n, or standard input if n is not specified. If the file does not exist, it shall be created.
+
+(not implemented)
+
+## More examples from the shell manual (not implemented)
+
+Open readfile as file descriptor 3 for reading:  
+```bash
+exec 3< readfile
+```
+Open writefile as file descriptor 4 for writing:
+```bash
+exec 4> writefile
+```
+Make file descriptor 5 a copy of file descriptor 0:
+```bash
+exec 5<&0
+```
+Close file descriptor 3:
+```bash
+exec 3<&-
+```
+
 ### clobbering
 The `noclobber` option in shell environments (like Bash) is used to prevent accidentally overwriting existing files through redirection. When `noclobber` is set (using `set -o noclobber` or `set -C`), attempting to redirect output to an existing file using the `>` operator will fail with an error, thus protecting the file from being overwritten.  
 However, there might be cases where you intentionally want to overwrite a file even when `noclobber` is set. For this purpose, you can use the `>|` redirection operator. The `>|` operator forces the shell to overwrite the target file, effectively bypassing the `noclobber` setting for that particular redirection command. (not implemented)
