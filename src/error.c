@@ -41,17 +41,17 @@ uint8_t	status_perror2(const char *msg_1, const char *msg_2, uint8_t status)
 	{
 		result = write(2, msg_1, ft_strlen(msg_1));
 		if (result == -1 || result != (ssize_t)ft_strlen(msg_1))
-			perror("write");
+			status = status_and_perror("write", 1);
 	}
 	if (msg_2)
 	{
 		result = write(2, msg_2, ft_strlen(msg_2));
 		if (result == -1 || result != (ssize_t)ft_strlen(msg_2))
-			perror("write");
+			status = status_and_perror("write", 1);
 	}
-	result = write(2, ": ", 3);
-	if (result == -1 || result != 3)
-		perror("write");
+	result = write(2, ": ", 2);
+	if (result == -1 || result != 2)
+		status = status_and_perror("write", 1);
 	perror("");
 	return (status);
 }
