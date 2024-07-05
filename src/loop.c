@@ -337,7 +337,6 @@ int loop()
 					{
 						// analyse_expand(data->ast, data);
 						data->exit_status = execute_ast(data->ast, data);
-						// restore_fds(data);
 						debug("Exit status: %i", data->exit_status);
 						free_ast(&(data->ast));
 					}
@@ -380,6 +379,7 @@ int single_command(const char *input)
 		return (EXIT_FAILURE);
 	debug("single command init_data done");
 	debug("input: %s", input);
+	save_fds(data);
 	set_up_signals();		
 	data->input = ft_strdup(input);
 	if (!exit_condition(data))
@@ -392,9 +392,7 @@ int single_command(const char *input)
 			if (data->ast)
 			{
 				// analyse_expand(data->ast, data);
-				// save_fds(data);
 				data->exit_status = execute_ast(data->ast, data);
-				// restore_fds(data);
 				free_ast(&(data->ast));
 			}
 			else

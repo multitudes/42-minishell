@@ -209,6 +209,8 @@ char	*get_key(char *str)
 	end = str + 1;
 	if (end && (*end == ' ' || *end == '\0'))
 		return (NULL);
+	if (end && (*end == '?') && (*(end + 1) == '\0' || ((end + 1) && *(end + 1) == ' ')))
+		return (ft_strdup("?"));
 	if (end && (ft_isalpha(*end) || *end == '_'))
 		end++;
 	else
@@ -223,7 +225,7 @@ In a token lexeme replaces all $-indicated variables
 with their respective values or with empty string if not existing.
 Returns the new lexeme, which must be freed.
 */
-char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
+char	*replace_dollar_vars(t_data *data, char *lexeme)
 {
 	int		i;
 	char	*new_lexeme;
@@ -243,8 +245,10 @@ char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
 		{
 			if (ft_strlen(key) == 0)
 				key_value = NULL;
+			else if (ft_strcmp(key, "?") == 0 && data)
+				key_value = ft_itoa(data->exit_status);
 			else
-				key_value = mini_get_env(env_arr, key);
+				key_value = mini_get_env(data->env_arr, key);
 			temp[0] = ft_strndup(new_lexeme, i);
 			temp[1] = ft_strdup(new_lexeme + i + ft_strlen(key) + 1);
 			temp[2] = new_lexeme;
@@ -253,6 +257,8 @@ char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
 			free(temp[0]);
 			free(temp[1]);
 			free(temp[2]);
+			if (ft_strcmp(key, "?") == 0 && data)
+				free (key_value);
 			free(key);
 			continue ; // this should perhaps be continue, if lexeme contains more than one $-expansion
 		}
@@ -265,7 +271,7 @@ char	*replace_dollar_vars(t_darray *env_arr, char *lexeme)
 /*
 Used to expand variables, indicated by "$".
 */
-void	expand_dollar(t_darray *env_arr, t_token *token)
+void	expand_dollar(t_data *data, t_token *token)
 {
 	char	*var;
 
@@ -275,7 +281,7 @@ void	expand_dollar(t_darray *env_arr, t_token *token)
 	token->type = WORD;
 	if (token->lexeme && ft_strchr(token->lexeme, '$'))
 	{
-		var = replace_dollar_vars(env_arr, token->lexeme);
+		var = replace_dollar_vars(data, token->lexeme);
 		free(token->lexeme);
 		token->lexeme = var;
 		token->type = WORD;
@@ -342,10 +348,10 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	ptr_token_list = string_tokens;
 	while (string_tokens)
 	{
-		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR)
-			expand_dollar(data->env_arr, get_curr_token(string_tokens));
-		else if (get_token_type(string_tokens) == DOLLAR_QUESTION)
-			expand_exit_status(data, get_curr_token(string_tokens));
+		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR || get_token_type(string_tokens) == DOLLAR_QUESTION)
+			expand_dollar(data, get_curr_token(string_tokens));
+		// else if (get_token_type(string_tokens) == DOLLAR_QUESTION)
+		// 	expand_exit_status(data, get_curr_token(string_tokens));
 		temp_lexeme = token->lexeme;
 		token->lexeme = ft_strjoin(temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
 		free(temp_lexeme);
@@ -363,14 +369,14 @@ void	execute_expansion_by_type(t_data *data, t_list **tokenlist, t_exp_flags *fl
 		expand_single_quotes(get_curr_token(*tokenlist));
 	else if (get_token_type(*tokenlist) == QUOTED_STRING)
 		expand_double_quotes(data, get_curr_token(*tokenlist));
-	else if (get_token_type(*tokenlist) == VAR_EXPANSION || get_token_type(*tokenlist) == DOLLAR)
-		expand_dollar(data->env_arr, get_curr_token(*tokenlist));
+	else if (get_token_type(*tokenlist) == VAR_EXPANSION || get_token_type(*tokenlist) == DOLLAR || get_token_type(*tokenlist) == DOLLAR_QUESTION)
+		expand_dollar(data, get_curr_token(*tokenlist));
 	else if (ft_strchr(get_token_lexeme(*tokenlist), '~'))
 		expand_path(data->env_arr, *tokenlist, flags);
 //	else if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
 //		expand_path(data->env_arr, tokenlist, flags);
-	else if (get_token_type(*tokenlist) == DOLLAR_QUESTION)
-		expand_exit_status(data, get_curr_token(*tokenlist));
+	// else if (get_token_type(*tokenlist) == DOLLAR_QUESTION)
+	// 	expand_exit_status(data, get_curr_token(*tokenlist));
 	else if (get_token_type(*tokenlist) == GLOBBING)
 		expand_globbing(tokenlist);
 }
