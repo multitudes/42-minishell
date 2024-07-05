@@ -104,6 +104,8 @@ static bool read_heredoc(t_heredoc *heredoc, t_data *data, int i)
             heredoc->heredoc_len = heredoc->heredoc_len + ft_strlen(line) + 1;
         }
         free(line);
+        if (g_signal == SIGINT)
+            return (false);
         line = readline("> ");
     }
 	if (line == NULL)
@@ -115,7 +117,7 @@ static bool read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 /*
 Prompt for each delimiter and advancing to next heredoc/delimiter.
 */
-static void advance_to_final_delim(t_heredoc *heredoc, int *i)
+static bool advance_to_final_delim(t_heredoc *heredoc, int *i)
 {
     char    *line;
 	// set_up_signals2();
@@ -124,6 +126,11 @@ static void advance_to_final_delim(t_heredoc *heredoc, int *i)
     {
         debug("Current delimiter to match: %s", heredoc->delim[*i]);
         line = readline("> ");
+        if (g_signal == SIGINT)
+        {
+            free (line);
+            return (false);
+        }
         debug("Difference between delimiter and line: %i", ft_strcmp(heredoc->delim[*i], line));
         if (line == NULL || !ft_strcmp(heredoc->delim[*i], line))
             (*i)++;
@@ -131,6 +138,7 @@ static void advance_to_final_delim(t_heredoc *heredoc, int *i)
 			write(2, "minishell: warning: here-document delimited by end-of-file\n", 60);
         free (line);
     }
+    return (true);
 }
 
 /*
@@ -149,12 +157,12 @@ bool	process_heredoc(t_heredoc *heredoc, t_data *data)
 		free_heredoc(heredoc);
         return(false_and_print("minishell: error: heredoc memory allocation"));
 	}
-    advance_to_final_delim(heredoc, &i);
-    if (!read_heredoc(heredoc, data, i))
+    if (!advance_to_final_delim(heredoc, &i) || !read_heredoc(heredoc, data, i))
 	{
 		free_heredoc(heredoc);
 		free(heredoc->buffer);
-		return (false_and_print("minishell: error: heredoc memory allocation"));
+        g_signal = 0;
+		return (false);
 	}
 	free_heredoc(heredoc);
     return (true);

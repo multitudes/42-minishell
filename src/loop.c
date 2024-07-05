@@ -244,7 +244,6 @@ whichy is added to 128 and gives 130, the exit code for ctrl-c
 */
 int	set_up_signals(void)
 {
-	
 	if (isatty(STDIN_FILENO) == -1)
 		return (status_and_perror("is atty failed", 1));
 	else if (isatty(STDIN_FILENO))
@@ -259,8 +258,7 @@ int	set_up_signals(void)
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
 		return (status_and_perror("SIG_ERR signal failed", 1));
 	}
-	// TODO still not sure if needed!
-	// rl_catch_signals = 0;
+	rl_catch_signals = 1;
 	return (0);
 }
 
@@ -320,7 +318,7 @@ int loop()
 	shlvl_init(data);
 	save_fds(data);
 	load_history();
-	set_up_signals();	
+	set_up_signals(); //check return value / status?
 	while (true)
 	{
 		data->input = readline("minishell $ ");

@@ -18,6 +18,25 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+static void	sigint_handler2(int sig)
+{
+    if (sig == SIGINT)
+    {
+        write(1, "^C", 2);
+        ioctl(0, TIOCSTI, "\n");
+		g_signal = sig;
+    }
+	return ;
+}
+
+void	set_up_heredoc_signals(void)
+{
+    rl_catch_signals = 0;
+	if (signal(SIGINT, sigint_handler2) == SIG_ERR)
+		return (perror("SIG_ERR signal failed"));
+	return ;
+}
+
 static int  execute_heredoc_child(t_list *tokenlist, t_data *data, int pfd[2])
 {
     char    **argv;
