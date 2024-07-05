@@ -142,13 +142,13 @@ bool	process_heredoc(t_heredoc *heredoc, t_data *data)
     int     i;
 
     debug("Process heredoc");
+    i = 0;
     heredoc->buffer = ft_calloc(heredoc->buffer_size, sizeof(char));
     if (!heredoc->buffer)
 	{
 		free_heredoc(heredoc);
         return(false_and_print("minishell: error: heredoc memory allocation"));
 	}
-    i = 0;
     advance_to_final_delim(heredoc, &i);
     if (!read_heredoc(heredoc, data, i))
 	{
