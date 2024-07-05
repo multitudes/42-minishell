@@ -1576,3 +1576,6 @@ https://www.conventionalcommits.org/en/v1.0.0/#summary
 
 More about pipes and redirections:  
 https://www.rozmichelle.com/pipes-forks-dups/
+
+Testing:  
+https://github.com/LucasKuhn/minishell_tester/blob/main/manual_tests/mandatory
