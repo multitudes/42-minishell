@@ -85,7 +85,7 @@ static int read_heredoc(t_heredoc *heredoc, t_data *data, int i)
     {
         if (line && heredoc->expansion[i] == true && ft_strchr(line, '$'))
         {
-            temp = replace_dollar_vars(data->env_arr, line);
+            temp = replace_dollar_vars(data, line);
             free(line);
             line = temp;
         }
