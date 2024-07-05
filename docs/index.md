@@ -291,7 +291,7 @@ Also there is the question of priority:
 - { and } are used to group commands in a block.
 
 How do we write down a grammar that contains an infinite number of valid strings? We obviously can’t list them all out. Instead, we create a finite set of rules.  
-This is from the book Crafting Interpreters by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:
+This is from the book Crafting Interpreters by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:  
 <img src="assets/expression_grammar.png" alt="Expression Grammar" width="400">
 
 ## Grammar of our shell
@@ -313,7 +313,7 @@ command		 	->  simple_command
 
 simple_command	-> name (args)* ;
 builtin 		-> name (args)* ; 
-redirection		-> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
+redirection		-> expression ( "<" | ">" | ">>" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
 DLESS 			-> expression "<<" delimiter newline content delimiter;
 
 delimiter 		-> STRING;
@@ -787,18 +787,7 @@ command <> file
 
 This command will run command, with file opened in read-write mode on standard input.
 
-
-
-The >&> operator in bash is used for redirection. It redirects both the standard output (stdout) and standard error (stderr) of the command on its left to the file on its right.
-Here's an example:
-command >&> file
 This command will run command, and both the stdout and stderr will be redirected to file.
-
-
-The >>& operator in bash is used for redirection. It appends the standard output (stdout) and standard error (stderr) of the command on its left to the file on its right.
-Here's an example:
-
-command 1>>file 2>&1
 
 
 This command will run command, and append both the stdout and stderr to file.
@@ -1508,6 +1497,10 @@ In this example, the output of command1 is piped into command2. If either comman
 This is about building the correct ast tree... the image is self explanatory. (image by hhj3 youtube)
 
 <img src="assets/associativity.jpg" alt="associativity" width="400">
+
+## The status of the project at the time of the evaluation
+In the end we really used 28 tokens we receive from the scanner.  
+57 are recognized but not acted upon because are not feature we implement.  
 
 ## links
 The Bash reference manual:  

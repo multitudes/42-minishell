@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 18:53:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/04 11:41:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,20 +73,13 @@ void	*free_ast(t_ast_node **ast)
 /* 
 For debugging: print the ast tree  
 Each node is printed with its type.
-like NODE_LIST, which is the default node
-..need to think if I want to assign a type to each node here
-or in the analyser?
-NODE_COMMAND, NODE_PIPELINE, NODE_REDIRECT, NODE_DLESS
-also, the args should be printed
+the content of each node in the linked list is a t_token like:
 
-still working on it - laurent
-the content of each node in the linked list is a t_token
-
-struct s_token {
+typedef struct	s_token {
 	t_tokentype	type;
 	char		*lexeme;
 	int 		start;
-};
+}				t_token ;
 typedef struct s_token t_token;
 */
 void	print_ast(t_ast_node *a, int level)

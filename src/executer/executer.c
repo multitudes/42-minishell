@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 09:24:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/04 12:10:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static bool	contains_redirection(t_list *tokenlist)
 			return (true);
 		else if (tokentype == REDIRECT_BOTH || tokentype == REDIRECT_BOTH_APP)
 			return (true);
-		else if (tokentype == REDIRECT_OUT_APP || tokentype == DGREAT)
+		else if (tokentype == DGREAT)
 			return (true);
 		tokenlist = tokenlist->next;
 	}

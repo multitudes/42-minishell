@@ -19,6 +19,19 @@ The bash manual describes a shell as follows:
 
 - Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
 
+## What we learned
+
+- The difference between a shell and a terminal.
+- The difference between Bash and other shells.
+- The POSIX standard.
+- keep the project documented.
+- Create and manage testing to allow to change and code without breaking. 
+- the two main testing paradigms, unit testing and integration testing
+- GitHub actions for the tests in a sanitized environment and to deploy our documentation.
+- Team work and Git rebase vs merge. Linear history. Branching. Code reviews, open issues and assigning/ splitting the workload. Communicate deadlines.
+- Create a good debugging workflow.
+- The importance of a good architecture. Decoupling. Modularity. Dividing the shell into a scanner, parser, analyser and expander, executer. which is useful for testing and debugging.
+
 ### Some more definitions from the bash manual
 - POSIX  A family of open system standards based on Unix.
 - builtin A command that is implemented internally by the shell itself, rather than by an executable program somewhere in the file system.
@@ -287,7 +300,7 @@ Also there is the question of priority:
 - { and } are used to group commands in a block.
 
 How do we write down a grammar that contains an infinite number of valid strings? We obviously can’t list them all out. Instead, we create a finite set of rules.  
-This is from the book Crafting Interpreters by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:
+This is from the book Crafting Interpreters by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:  
 <img src="assets/expression_grammar.png" alt="Expression Grammar" width="400">
 
 ## Grammar of our shell
@@ -309,7 +322,7 @@ command		 	->  simple_command
 
 simple_command	-> name (args)* ;
 builtin 		-> name (args)* ; 
-redirection		-> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
+redirection		-> expression ( "<" | ">" | ">>" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
 DLESS 			-> expression "<<" delimiter newline content delimiter;
 
 delimiter 		-> STRING;
@@ -796,17 +809,6 @@ command <> file
 
 This command will run command, with file opened in read-write mode on standard input.
 
-
-
-The >&> operator in bash is used for redirection. It redirects both the standard output (stdout) and standard error (stderr) of the command on its left to the file on its right.
-Here's an example:
-command >&> file
-This command will run command, and both the stdout and stderr will be redirected to file.
-
-
-The >>& operator in bash is used for redirection. It appends the standard output (stdout) and standard error (stderr) of the command on its left to the file on its right.
-Here's an example:
-
 command 1>>file 2>&1
 
 
@@ -1005,6 +1007,52 @@ The single quotes (') are treated as literal characters within the double quotes
 So, if var="world", your command will output Hello' world'.
 
 ## Redirections
+The basic redirection operators in bash we will implement are `>`, `<`, and `>>`. These operators allow you to redirect the standard input and output of a command to and from files.  
+We tokenized them as `REDIRECTION_OUT`, `REDIRECTION_IN`, and `REDIRECTION_APP` respectively.
+
+### Some more advanced use cases of redirections in bash:
+quoting the shell manual:
+> 2.7.2 Redirecting Output  
+The two general formats for redirecting output are:  
+[n]>word  
+[n]>|word  
+where the optional n represents the file descriptor number. If the number is omitted, the redirection shall refer to standard output (file descriptor 1).  
+Output redirection using the '>' format shall fail if the noclobber option is set (see the description of set -C) and the file named by the expansion of word exists and is a regular file. Otherwise, redirection using the '>' or ">|" formats shall cause the file whose name results from the expansion of word to be created and opened for output on the designated file descriptor, or standard output if none is specified. If the file does not exist, it shall be created; otherwise, it shall be truncated to be an empty file after being opened.  
+
+As I read in the manual when we create a file, if we use a file descriptor number then it is created when we create the file (not implemented)
+
+### LESSGREAT <>
+> 2.7.7 Open File Descriptors for Reading and Writing
+The redirection operator:
+[n]<>word
+shall cause the file whose name is the expansion of word to be opened for both reading and writing on the file descriptor denoted by n, or standard input if n is not specified. If the file does not exist, it shall be created.
+
+(not implemented)
+
+## More examples from the shell manual (not implemented)
+
+Open readfile as file descriptor 3 for reading:  
+```bash
+exec 3< readfile
+```
+Open writefile as file descriptor 4 for writing:
+```bash
+exec 4> writefile
+```
+Make file descriptor 5 a copy of file descriptor 0:
+```bash
+exec 5<&0
+```
+Close file descriptor 3:
+```bash
+exec 3<&-
+```
+
+### clobbering
+The `noclobber` option in shell environments (like Bash) is used to prevent accidentally overwriting existing files through redirection. When `noclobber` is set (using `set -o noclobber` or `set -C`), attempting to redirect output to an existing file using the `>` operator will fail with an error, thus protecting the file from being overwritten.  
+However, there might be cases where you intentionally want to overwrite a file even when `noclobber` is set. For this purpose, you can use the `>|` redirection operator. The `>|` operator forces the shell to overwrite the target file, effectively bypassing the `noclobber` setting for that particular redirection command. (not implemented)
+
+### redirections without a command
 Bash does handle redirections without a command. It's just that there's no command to execute, so nothing will be written to/read from the redirections.
 Regarding this problematic case, DLESSs should (preferably) be handled during or right after parsing.
 Look at these cases in bash:
@@ -1517,6 +1565,11 @@ In this example, the output of command1 is piped into command2. If either comman
 This is about building the correct ast tree... the image is self explanatory. (image by hhj3 youtube)
 
 <img src="assets/associativity.jpg" alt="associativity" width="400">
+
+## The status of the project at the time of the evaluation
+In the end we really used 28 tokens we receive from the scanner.  
+57 are recognized but not acted upon because are not feature we implement.  
+
 
 ## links
 The Bash reference manual:  

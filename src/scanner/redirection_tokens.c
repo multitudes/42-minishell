@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:47:55 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 15:51:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/04 13:25:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,10 @@ bool	is_a_simple_redirection(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, ">|", FUZZY))
 		return (add_token(data, i, ">|", CLOBBER));
-	else if (peek(data->input + *i, ">>&", FUZZY))
-		return (add_token(data, i, ">>&", REDIRECT_BOTH_APP));
 	else if (peek(data->input + *i, "<<-", FUZZY))
 		return (add_token(data, i, "<<-", DLESSDASH));
 	else if (peek(data->input + *i, "&>>", FUZZY))
-		return (add_token(data, i, "&>>", REDIRECT_OUT_APP));
-	else if (peek(data->input + *i, ">&>", FUZZY))
-		return (add_token(data, i, ">&>", GREATER_AND_GREATER));
+		return (add_token(data, i, "&>>", REDIRECT_BOTH_APP));
 	else if (peek(data->input + *i, "&>", FUZZY))
 		return (add_token(data, i, "&>", REDIRECT_BOTH));
 	else if (peek(data->input + *i, "<&", FUZZY))
