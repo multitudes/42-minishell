@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/05 16:57:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/05 18:57:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,7 @@ static void	sigint_handler(int sig)
         rl_on_new_line();
         rl_replace_line("", 0);
         rl_redisplay();
+		write(1,"got signal\n",12);
     }
 	else
 		g_signal = sig;

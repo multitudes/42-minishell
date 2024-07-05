@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 02:19:34 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/05 17:17:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/05 19:36:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,24 +57,24 @@ void    free_heredoc(t_heredoc *heredoc)
 /*
 Increases buffer for heredoc if addition of next line would surpass buffer size.
 */
-static int increase_heredoc_size(t_heredoc *heredoc)
+static bool increase_heredoc_size(t_heredoc *heredoc, int len)
 {
     char    *new_buffer;
 
-    new_buffer = ft_calloc(heredoc->buffer_size + HEREDOC_BUFFER, sizeof(char));
+    heredoc->buffer_size = heredoc->buffer_size + len + HEREDOC_BUFFER;
+    new_buffer = ft_calloc(heredoc->buffer_size, sizeof(char));
     if (!new_buffer)
-        return(print_error_status("minishell: error: heredoc memory allocation", 1));
-    heredoc->buffer_size = heredoc->buffer_size + HEREDOC_BUFFER;
+        return(false_and_print("minishell: error: heredoc memory allocation"));
     ft_strlcpy(new_buffer, heredoc->buffer, heredoc->buffer_size);
     free(heredoc->buffer);
     heredoc->buffer = new_buffer;
-    return (0);
+    return (true);
 }
 
 /*
 Read and save content of final heredoc.
 */
-static int read_heredoc(t_heredoc *heredoc, t_data *data, int i)
+static bool read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 {
     char    *line;
     char    *temp;
@@ -89,12 +89,12 @@ static int read_heredoc(t_heredoc *heredoc, t_data *data, int i)
             free(line);
             line = temp;
         }
-        while (heredoc->heredoc_len + ft_strlen(line) + 1 >= heredoc->buffer_size)
+        if (heredoc->heredoc_len + ft_strlen(line) + 1 >= heredoc->buffer_size)
         {
-            if (increase_heredoc_size(heredoc))
+            if (!increase_heredoc_size(heredoc, (int)ft_strlen(line)))
             {
                 free(line);
-                return (1);
+                return (false);
             }
         }
         if (ft_strlen(line) > 0 && (heredoc->heredoc_len + ft_strlen(line) + 1 < heredoc->buffer_size))
@@ -109,7 +109,7 @@ static int read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 	if (line == NULL)
 			write(2, "minishell: warning: here-document delimited by end-of-file\n", 60);
     free(line);
-    return (0);
+    return (true);
 }
 
 /*
@@ -137,19 +137,25 @@ static void advance_to_final_delim(t_heredoc *heredoc, int *i)
 Reads heredoc content. Only input for final delimiter
 gets saved and passed to stdin of any commands.
 */
-int process_heredoc(t_heredoc *heredoc, t_data *data)
+bool	process_heredoc(t_heredoc *heredoc, t_data *data)
 {
     int     i;
-    int     status;
 
     debug("Process heredoc");
-    status = 0;
     heredoc->buffer = ft_calloc(heredoc->buffer_size, sizeof(char));
     if (!heredoc->buffer)
-        return(print_error_status("minishell: error: heredoc memory allocation", 1));
+	{
+		free_heredoc(heredoc);
+        return(false_and_print("minishell: error: heredoc memory allocation"));
+	}
     i = 0;
     advance_to_final_delim(heredoc, &i);
-    status = read_heredoc(heredoc, data, i);
-    free_heredoc(heredoc);
-    return (status);
+    if (!read_heredoc(heredoc, data, i))
+	{
+		free_heredoc(heredoc);
+		free(heredoc->buffer);
+		return (false_and_print("minishell: error: heredoc memory allocation"));
+	}
+	free_heredoc(heredoc);
+    return (true);
 }
