@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/02 19:40:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/05 16:57:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ the current contents of the line buffer. Since you've just
 cleared the line buffer, this will effectively clear the line on 
 the terminal.
 */
-static void	exit_handler(int sig)
+static void	sigint_handler(int sig)
 {
     if (sig == SIGINT)
     {	
@@ -248,13 +248,13 @@ int	set_up_signals(void)
 		return (status_and_perror("is atty failed", 1));
 	else if (isatty(STDIN_FILENO))
 	{
-		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
+		if ((signal(SIGINT, sigint_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
 		return (status_and_perror("SIG_ERR signal failed", 1));
 	}
 	else 
 	{
-		if ((signal(SIGINT, exit_handler) == SIG_ERR) || \
+		if ((signal(SIGINT, sigint_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
 		return (status_and_perror("SIG_ERR signal failed", 1));
 	}

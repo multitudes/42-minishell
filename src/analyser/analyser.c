@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/02 17:51:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/05 17:14:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,6 +298,8 @@ void	expand_exit_status(t_data *data, t_token *token)
 		token->lexeme = temp;
 		token->type = WORD;
 	}
+	else
+		free(temp);
 	debug("expanded status: %s", temp);
 }
 
