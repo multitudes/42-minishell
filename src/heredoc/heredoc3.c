@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc3.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 09:41:09 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/04 09:41:13 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/05 20:07:25 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
 #include "heredoc.h"
 #include "parser.h"
 #include "executer.h"
@@ -23,14 +23,14 @@ static int  execute_heredoc_child(t_list *tokenlist, t_data *data, int pfd[2])
     char    **argv;
 
     if (close(pfd[1]) == -1)
-        return(status_and_perror("minishell: error: parent close write end of pipe", 1));
+        exit_and_print_err("minishell: error: parent close write end of pipe", 127);
     dup2(pfd[0], STDIN_FILENO);
     argv = get_argv_from_tokenlist(tokenlist);
     if (!resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")))
-        exit (127); // is this correct here. Adopted from execute command
+        exit (127);
     debug("command and args: %s %s", argv[0], argv[1]);
     execve(argv[0], argv, (char **)data->env_arr->contents);
-    return (exit_and_print_err(NULL, 127)); // also adopted from execute command
+    return (exit_and_print_err(NULL, 127));
 }
 
 static int  execute_heredoc_parent(int pfd[2], pid_t pid, t_heredoc *heredoc)
@@ -69,6 +69,5 @@ int redirect_and_execute_heredoc(t_ast_node *ast, t_data *data, t_heredoc *hered
         status = execute_heredoc_child(ast->token_list, data, pfd);
     else
         status = execute_heredoc_parent(pfd, pid, heredoc);
-    free(heredoc->buffer);
     return (status);
 }

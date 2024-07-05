@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/05 19:37:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/05 20:10:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,10 +136,8 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
     else if (ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL)
         status = execute_command(ast->token_list, data);
     else if (ast->type == NODE_BUILTIN)
-    {
-        free(heredoc.buffer);
         status = execute_builtin(ast->token_list, data);
-    }
+	free(heredoc.buffer);
     return (status);
 }
 
