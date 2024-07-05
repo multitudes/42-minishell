@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/05 15:58:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/05 19:37:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static void remove_quotes(char *string)
 /*
 Checks for and handles single/double quotes in heredoc delimiter.
 */
-static int process_delim_quotes(t_heredoc *heredoc)
+static bool process_delim_quotes(t_heredoc *heredoc)
 {
     int count_single_quotes;
     int count_double_quotes;
@@ -60,7 +60,7 @@ static int process_delim_quotes(t_heredoc *heredoc)
         count_single_quotes = count_char_in_str(heredoc->delim[i], '\'');
         count_double_quotes = count_char_in_str(heredoc->delim[i], '"');
         if (count_single_quotes % 2 || count_double_quotes % 2)
-            return (print_error_status("minishell: heredoc: invalid delimiter", 1));
+            return (false_and_print("minishell: heredoc: invalid delimiter"));
         else if (count_single_quotes > 1 || count_double_quotes > 1)
         {
             remove_quotes(heredoc->delim[i]);
@@ -73,18 +73,13 @@ static int process_delim_quotes(t_heredoc *heredoc)
         count_double_quotes = 0;
     }
     i = 0;
-    // while (i < heredoc->delim_count)
-    // {
-    //     debug("delimiter %i will expand content: %i", i + 1, heredoc->expansion[i]);
-    //     i++;
-    // }
-    return (0);
+    return (true);
 }
 
 /*
 Set up heredoc(s). Up to 10 heredocs/delimiters are supported.
 */
-static int init_heredoc(t_ast_node *ast, t_heredoc *heredoc)
+static bool init_heredoc(t_ast_node *ast, t_heredoc *heredoc)
 {
     t_list  *tokenlist;
 
@@ -99,19 +94,24 @@ static int init_heredoc(t_ast_node *ast, t_heredoc *heredoc)
             if (tokenlist->next && get_token_type(tokenlist->next) == DLESS_DELIM)
             {
                 heredoc->delim[heredoc->delim_count] = ft_strdup(get_token_lexeme(tokenlist->next));
-                debug("Set delimiter %i: %s", heredoc->delim_count, heredoc->delim[heredoc->delim_count]);
+				if (!heredoc->delim[heredoc->delim_count])
+				{	
+					free_heredoc(heredoc);
+					return false_and_print("minishell: heredoc memory error");
+				}
+				debug("Set delimiter %i: %s", heredoc->delim_count, heredoc->delim[heredoc->delim_count]);
                 heredoc->delim_count++;
                 consume_token_and_connect(&tokenlist);
                 consume_token_and_connect(&tokenlist);
                 continue ;
             }
             else
-                return(print_error_status("minishell: syntax error", 1));
+                return(false_and_print("minishell: syntax error"));
         }
         tokenlist = tokenlist->next;
     }
     debug("init heredoc complete, delimiter count: %i", heredoc->delim_count);
-    return (0);
+    return (true);
 }
 
 /*
@@ -124,16 +124,13 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
     int         status;
 
     debug("execute heredoc");
-    status = 0;
-    if (init_heredoc(ast, &heredoc) == 1)
-        return (1);
-    if (process_delim_quotes(&heredoc) == 1)
-        return (1);
-    if (process_heredoc(&heredoc, data))
-    {
-        free(heredoc.buffer);
-        return (1);
-    }
+    status = 1;
+    if (!init_heredoc(ast, &heredoc))
+        return (status);
+    if (!process_delim_quotes(&heredoc))
+        return (status);
+    if (!process_heredoc(&heredoc, data))
+        return (status);
     if ((ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL) && only_flags(ast->token_list->next) && heredoc.buffer)
         status = redirect_and_execute_heredoc(ast, data, &heredoc);
     else if (ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL)

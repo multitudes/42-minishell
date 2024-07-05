@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 21:02:07 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/05 16:20:31 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/05 19:32:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct  s_heredoc
 bool    is_heredoc(t_list *tokenlist);
 int     execute_heredoc(t_ast_node *ast, t_data *data);
 void    free_heredoc(t_heredoc *heredoc);
-int     process_heredoc(t_heredoc *heredoc, t_data *data);
+bool    process_heredoc(t_heredoc *heredoc, t_data *data);
 int     redirect_and_execute_heredoc(t_ast_node *ast, t_data *data, t_heredoc *heredoc);
 
 # ifdef __cplusplus
