@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 02:19:34 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/04 02:19:39 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/05 17:17:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
 #include "heredoc.h"
 #include "analyser.h"
 #include "scanner.h"
@@ -20,6 +20,27 @@
 #include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <signal.h>
+
+// static void	sigint_handler2(int sig)
+// {
+//     if (sig == SIGINT)
+//     {	
+// 		g_signal = sig;
+//         write(1, "testing signal\n", 1);
+
+//     }
+// 	else
+// 		g_signal = sig;
+// 	return ;
+// }
+
+// int	set_up_signals2(void)
+// {
+// 	if ((signal(SIGINT, sigint_handler2) == SIG_ERR))
+// 		return (status_and_perror("SIG_ERR signal failed", 1));
+// 	return (0);
+// }
 
 /*
 Frees the memory used for storing delimiter lexemes.
@@ -42,7 +63,7 @@ static int increase_heredoc_size(t_heredoc *heredoc)
 
     new_buffer = ft_calloc(heredoc->buffer_size + HEREDOC_BUFFER, sizeof(char));
     if (!new_buffer)
-        return((int)print_error_status("minishell: error: heredoc memory allocation", 1));
+        return(print_error_status("minishell: error: heredoc memory allocation", 1));
     heredoc->buffer_size = heredoc->buffer_size + HEREDOC_BUFFER;
     ft_strlcpy(new_buffer, heredoc->buffer, heredoc->buffer_size);
     free(heredoc->buffer);
@@ -85,6 +106,8 @@ static int read_heredoc(t_heredoc *heredoc, t_data *data, int i)
         free(line);
         line = readline("> ");
     }
+	if (line == NULL)
+			write(2, "minishell: warning: here-document delimited by end-of-file\n", 60);
     free(line);
     return (0);
 }
@@ -95,7 +118,7 @@ Prompt for each delimiter and advancing to next heredoc/delimiter.
 static void advance_to_final_delim(t_heredoc *heredoc, int *i)
 {
     char    *line;
-
+	// set_up_signals2();
     debug("advance to final delim");
     while (*i < heredoc->delim_count - 1)
     {
@@ -104,6 +127,8 @@ static void advance_to_final_delim(t_heredoc *heredoc, int *i)
         debug("Difference between delimiter and line: %i", ft_strcmp(heredoc->delim[*i], line));
         if (line == NULL || !ft_strcmp(heredoc->delim[*i], line))
             (*i)++;
+		if (line == NULL)
+			write(2, "minishell: warning: here-document delimited by end-of-file\n", 60);
         free (line);
     }
 }
@@ -121,7 +146,7 @@ int process_heredoc(t_heredoc *heredoc, t_data *data)
     status = 0;
     heredoc->buffer = ft_calloc(heredoc->buffer_size, sizeof(char));
     if (!heredoc->buffer)
-        return((int)print_error_status("minishell: error: heredoc memory allocation", 1));
+        return(print_error_status("minishell: error: heredoc memory allocation", 1));
     i = 0;
     advance_to_final_delim(heredoc, &i);
     status = read_heredoc(heredoc, data, i);

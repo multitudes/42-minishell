@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/01 20:52:35 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/05 15:58:14 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
+
 #include "heredoc.h"
 #include "analyser.h"
 #include "scanner.h"
@@ -60,7 +60,7 @@ static int process_delim_quotes(t_heredoc *heredoc)
         count_single_quotes = count_char_in_str(heredoc->delim[i], '\'');
         count_double_quotes = count_char_in_str(heredoc->delim[i], '"');
         if (count_single_quotes % 2 || count_double_quotes % 2)
-            return ((int)print_error_status("minishell: heredoc: invalid delimiter", 1));
+            return (print_error_status("minishell: heredoc: invalid delimiter", 1));
         else if (count_single_quotes > 1 || count_double_quotes > 1)
         {
             remove_quotes(heredoc->delim[i]);
@@ -73,11 +73,11 @@ static int process_delim_quotes(t_heredoc *heredoc)
         count_double_quotes = 0;
     }
     i = 0;
-    while (i < heredoc->delim_count)
-    {
-        debug("delimiter %i will expand content: %i", i + 1, heredoc->expansion[i]);
-        i++;
-    }
+    // while (i < heredoc->delim_count)
+    // {
+    //     debug("delimiter %i will expand content: %i", i + 1, heredoc->expansion[i]);
+    //     i++;
+    // }
     return (0);
 }
 
@@ -106,7 +106,7 @@ static int init_heredoc(t_ast_node *ast, t_heredoc *heredoc)
                 continue ;
             }
             else
-                return((int)print_error_status("minishell: syntax error", 1));
+                return(print_error_status("minishell: syntax error", 1));
         }
         tokenlist = tokenlist->next;
     }
@@ -126,7 +126,7 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
     debug("execute heredoc");
     status = 0;
     if (init_heredoc(ast, &heredoc) == 1)
-        return ((int)print_error_status("minishell: syntax error", 1));
+        return (1);
     if (process_delim_quotes(&heredoc) == 1)
         return (1);
     if (process_heredoc(&heredoc, data))
