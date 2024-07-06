@@ -1600,6 +1600,15 @@ This is about building the correct ast tree... the image is self explanatory. (i
 In the end we really used 28 tokens we receive from the scanner.  
 57 are recognized but not acted upon because are not feature we implement.  
 
+## Display the stderr
+A good idea is to display the std error with all the debug messages on a different widow in the terminal. For this we have two ways:
+```
+./minishell 2> errorlogfile
+```
+and in another window do `tail -f errorlogfile"
+
+But also open a new window and get the terminal file name with `tty` and `./minishell > /dev/pts/5`
+
 
 ## links
 The Bash reference manual:  
