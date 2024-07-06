@@ -51,7 +51,7 @@ endif
 TEST_SRCS	=	popen_tests.cpp builtin_export_tests.cpp \
 builtin_unset_tests.cpp builtin_cd_tests.cpp builtin_pwd_tests.cpp \
 builtin_env_tests.cpp builtin_exit_tests.cpp builtin_echo_tests.cpp \
-builtin_cat_tests.cpp
+builtin_cat_tests.cpp minishell_lukas_tests.cpp
 
 # this substitution create files without the extension
 # they will become the executables
