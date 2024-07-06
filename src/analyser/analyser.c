@@ -160,9 +160,9 @@ char	*get_home(t_darray *env_arr)
 
 	home = mini_get_env(env_arr, "HOME");
 	debug("HOME from env: %s", home);
-	if (env_arr && ft_strcmp(home, "") != 0)
-		home = ft_strdup(mini_get_env(env_arr, "HOME"));
-	else if (!env_arr || home == NULL || home[0] == '\0') 
+	if (home)
+		home = ft_strdup(home);
+	else
 	{
 		debug("HOME not set in env, trying to get from /etc/passwd");
         char *username = getenv("USER");

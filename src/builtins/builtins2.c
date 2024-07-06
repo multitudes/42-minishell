@@ -34,12 +34,14 @@ char *execute_getcwd(char old_dir[], char *message)
 uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 {
 	char *home;
+    char *lexeme;
 
 	debug("execute_cd_tokenlist with lexeme %s", get_token_lexeme(tokenlist));
-	home = NULL;
-	if (tokenlist && get_token_lexeme(tokenlist))
+	home = mini_get_env(env_arr, "HOME");
+	lexeme = get_token_lexeme(tokenlist);
+    if (tokenlist && lexeme) 
 	{
-		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0)
+		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0) // one arg  '-'
 		{
 			if (!mini_get_env(env_arr, "OLDPWD"))
 				return (print_minishell_error_status("cd: OLDPWD not set", 1));
@@ -50,13 +52,16 @@ uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 				execute_pwd_builtin();
 			}
 		}
-		else if (chdir(get_token_lexeme(tokenlist)))
+		else if (*lexeme && chdir(get_token_lexeme(tokenlist)))
             return (status_perror2("minishell: cd: ", get_token_lexeme(tokenlist), 1));
     }
-    else
+    else // no args
 	{
+        if (!home)
+			return (print_minishell_error_status("cd: HOME not set", 1));
 		home = get_home(env_arr);
-		if (chdir(home))
+        debug("home is -%s--------------------", home);
+		if (home && *home != '\0' && chdir(home))
 		{
 			free(home);
 			return (status_and_perror("minishell: cd", 1));

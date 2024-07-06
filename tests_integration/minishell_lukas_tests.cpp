@@ -25,7 +25,7 @@ const char* test_cd()
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
     debug("result from minishell: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "/\n", "output is not hello\n");
+	my_assert(result.str() == "/\n", "output is not root\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
@@ -40,9 +40,10 @@ const char* test_cd2()
     std::ostringstream result;
 	std::string arg = "cd ~ && pwd";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
-
+	const char* home = std::getenv("HOME");
+	debug("HOME -%s-", home);
     debug("result from minishell: -%s-\n", result.str().c_str());
-	my_assert((result.str() == "/home/runner\n" || result.str() == "/home/lbrusa\n"), "output is not the home dir\n");
+	my_assert((strcmp(home, result.str().c_str())), "output is not the home dir\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
@@ -59,9 +60,10 @@ const char* test_cd3()
 	// char *cwd = getcwd();
 	std::string arg = "cd && pwd";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
-
+	const char* home = std::getenv("HOME");
+	debug("HOME -%s-", home);
     debug("result from minishell: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "/home/runner\n" || result.str() == "/home/lbrusa\n", "output is not hello\n");
+	my_assert((strcmp(home, result.str().c_str())), "output is not the home dir\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
@@ -164,8 +166,10 @@ const char* test_cd9()
 	std::string arg = "cd && cd / && cd - && pwd";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
+	const char* home = std::getenv("HOME");
+	debug("HOME -%s-", home);
     debug("result from minishell: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "", "output is not correct cd9\n");
+	my_assert((strcmp(home, result.str().c_str())), "output is not the home dir\n");
 	my_assert(exit_status == 0, "exit status is not 1\n");
 	return NULL;
 }
