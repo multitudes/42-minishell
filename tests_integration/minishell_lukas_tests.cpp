@@ -57,6 +57,40 @@ const char* test_cd3()
 	return NULL;
 }
 
+/*
+cd ~/Desktop
+*/
+const char* test_cd4() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "cd ~/Desktop && pwd";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "/home/runner/Desktop\n" || result.str() == "/home/lbrusa/Desktop\n", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+unset HOME - cd ~
+*/
+const char* test_cd5() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "unset HOME && cd ~";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -66,6 +100,8 @@ const char *all_tests()
 	run_test(test_cd);
 	run_test(test_cd2);
 	run_test(test_cd3);
+	// run_test(test_cd4); cd ~/Desktop does not work 
+	run_test(test_cd5);
 
 	return NULL;
 }
