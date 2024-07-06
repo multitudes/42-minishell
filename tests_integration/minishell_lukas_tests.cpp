@@ -13,7 +13,9 @@
 uint8_t run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result);
 bool isRunningOnGitHubActions();
 
-
+/*
+cd ../../../../../.. && pwd
+*/
 const char* test_cd() 
 {
     fflush(stdout);
@@ -28,7 +30,9 @@ const char* test_cd()
 	return NULL;
 }
 
-
+/*
+cd ~ && pwd
+*/
 const char* test_cd2() 
 {
     fflush(stdout);
@@ -43,6 +47,9 @@ const char* test_cd2()
 	return NULL;
 }
 
+/*
+cd && pwd
+*/
 const char* test_cd3() 
 {
     fflush(stdout);

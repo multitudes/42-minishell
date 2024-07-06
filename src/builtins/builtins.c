@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 16:36:25 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,8 @@ uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 		return (print_error_status("minishell: cd: too many arguments", 1));
 	getoldcwd = execute_getcwd(old_dir, "minishell: cd: get old cwd");
 	status = execute_cd_tokenlist(env_arr, tokenlist);
-	if (!status)
+	debug("status: %d", status);
+	if (status != 0)
 		return (status);
 	getcwd = execute_getcwd(dir, "minishell: cd: get new cwd");
 	if (!getoldcwd || !update_env(env_arr, "OLDPWD", old_dir))
