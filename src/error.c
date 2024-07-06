@@ -6,11 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/28 19:38:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "error.h"
+#include "splash_error.h"
 #include <stdint.h>
 #include <libft.h>
 

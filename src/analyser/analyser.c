@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/05 17:14:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 15:26:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "analyser.h"
 #include "scanner.h"
 #include <libft.h>
-#include "error.h"
+#include "splash_error.h"
 #include "utils.h"
 #include "builtins.h"
 
@@ -142,15 +142,27 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 
 /*
 Get home from environment
-TODO (tbc) in the future: if HOME is unset,
-get HOME through system configuration entries.
+If the env array is NULL or HOME is not set, we 
+try to get the home directory from /etc/passwd
+This works in case HOME is unset or empty
+and it works without have to pass the env array
+Just pass NULL to the func ad you can get home from anywhere!
 */
 char	*get_home(t_darray *env_arr)
 {
 	char	*home;
 
-	home = ft_strdup(mini_get_env(env_arr, "HOME"));
-	debug("'HOME' retrieved: %s", home);
+	home = NULL;
+	if (env_arr)
+		home = ft_strdup(mini_get_env(env_arr, "HOME"));
+	else if (!env_arr || home == NULL || home[0] == '\0') 
+	{
+		debug("HOME not set in env, trying to get from /etc/passwd");
+        char *username = getenv("USER");
+		debug("Username: %s", username);
+		if (username)
+			home = ft_strjoin("/home/", username);
+    }
 	return (home);
 }
 

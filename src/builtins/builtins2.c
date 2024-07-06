@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 22:50:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/06/28 19:38:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 14:52:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 #include "environment.h"
 #include "history.h"
 #include <unistd.h>
-#include "error.h"
+#include "splash_error.h"
+#include "analyser.h"
 
 char *execute_getcwd(char old_dir[], char *message)
 {
@@ -50,7 +51,7 @@ uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
     }
     else
 	{
-		if (!mini_get_env(env_arr, "HOME"))
+		if (!get_home(NULL))
 			return (print_minishell_error_status("cd: HOME not set", 1));
 		else if (chdir(mini_get_env(env_arr, "HOME")))
 			return (status_and_perror("minishell: cd", 1));

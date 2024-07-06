@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.c                                        :+:       :+:    :+:   */
+/*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/05/28 08:26:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "environment.h"
 #include "history.h"
 #include <unistd.h>
-#include "error.h"
+#include "splash_error.h"
 #include "utils.h"
 
 /*

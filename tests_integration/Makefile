@@ -27,7 +27,7 @@ error.c error2.c darray/darray.c darray/darray2.c darray/darray3.c globbing/glob
 builtins/builtins.c builtins/builtins2.c executer/executer.c executer/executer2.c executer/executer3.c \
 executer/executer4.c heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c)
 SUT_HDRS 	= 	$(addprefix ../include/, minishell.h scanner.h environment.h \
-parser.h analyser.h executer.h error.h darray.h builtins.h globbing.h heredoc.h)
+parser.h analyser.h executer.h splash_error.h darray.h builtins.h globbing.h heredoc.h)
 
 # will be compiled into object files
 SUT_OBJS 	= 	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SUT_SRCS))

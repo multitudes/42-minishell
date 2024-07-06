@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/04 11:39:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 15:23:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ pipe_fd : file descriptors for the pipe
 */
 struct s_data 
 {
+	char 		*home;	
 	const char	*input;
 	t_list		*token_list;
 	t_darray	*env_arr;

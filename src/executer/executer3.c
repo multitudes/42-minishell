@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executer2.c                                        :+:      :+:    :+:   */
+/*   executer3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/04 12:12:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "debug.h"
 #include "parser.h"
 #include "minishell.h"
-#include "error.h"
+#include "splash_error.h"
 
 /*
 getting the status properly involves using WIFEXITED and WEXITSTATUS

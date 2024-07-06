@@ -35,7 +35,7 @@ builtins/builtins.c builtins/builtins2.c executer/executer.c executer/executer2.
 executer/executer4.c heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c)
 OBJS 			=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 HDRS 			=	$(addprefix include/, minishell.h scanner.h environment.h \
-parser.h analyser.h executer.h error.h darray.h builtins.h globbing.h debug.h heredoc.h) 
+parser.h analyser.h executer.h splash_error.h darray.h builtins.h globbing.h debug.h heredoc.h) 
 
 # linker flags and libraries
 LIBFT 			=	$(LIBFTDIR)/libft.a

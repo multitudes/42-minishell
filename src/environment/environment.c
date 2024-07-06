@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/02 19:41:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "environment.h"
 #include "darray.h"
 #include "utils.h"
-#include "error.h"
+#include "splash_error.h"
 
 bool update_env(t_darray *env_arr, const char *key, const char *value)
 {

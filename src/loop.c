@@ -6,13 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 14:11:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 15:24:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "darray.h"
-#include "error.h"
+#include "splash_error.h"
 #include "analyser.h"
 #include <fcntl.h>
 
@@ -181,7 +181,9 @@ initialiser for data
 bool	init_data(t_data **data)
 {
 	t_darray	*env_array;
+	char 		*home;
 
+	home = get_home(NULL);
 	if (!init_env_darray(&env_array))
 		return (false);
 	*data = malloc(sizeof(t_data));

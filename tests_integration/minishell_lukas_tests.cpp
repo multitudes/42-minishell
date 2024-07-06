@@ -38,7 +38,7 @@ const char* test_cd2()
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
     debug("result from minishell: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "/home/runner\n" || result.str() == "/home/lbrusa\n", "output is not hello\n");
+	my_assert((result.str() == "/home/runner\n" || result.str() == "/home/lbrusa\n"), "output is not the home dir\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
