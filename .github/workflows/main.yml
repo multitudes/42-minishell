@@ -22,8 +22,11 @@ jobs:
     - name: tests_integration
       run: make tests_integration
 
+    - name: List test_integration directory contents
+      run: ls -la tests_integration
+      
     - name: Upload log file
       uses: actions/upload-artifact@v2
       with:
         name: log-file
-        path: logfile.log
+        path: tests_integration/tests.log
