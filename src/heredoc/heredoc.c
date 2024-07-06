@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/05 20:23:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 18:03:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
     status = 1;
     if (!init_heredoc(ast, &heredoc) || !process_delim_quotes(&heredoc) || !process_heredoc(&heredoc, data))
     {
-        set_up_signals();
+        set_up_std_signals();
         return (status);
     }
     if ((ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL) && only_flags(ast->token_list->next) && heredoc.buffer)
@@ -138,7 +138,7 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
     else if (ast->type == NODE_BUILTIN)
 		status = execute_builtin(ast->token_list, data);
 	free(heredoc.buffer);
-    set_up_signals();
+    set_up_std_signals();
     return (status);
 }
 
