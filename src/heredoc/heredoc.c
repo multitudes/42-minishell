@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 18:03:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,21 +124,21 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
     int         status;
 
     debug("execute heredoc");
+    set_up_heredoc_signals();
     status = 1;
-    if (!init_heredoc(ast, &heredoc))
+    if (!init_heredoc(ast, &heredoc) || !process_delim_quotes(&heredoc) || !process_heredoc(&heredoc, data))
+    {
+        set_up_std_signals();
         return (status);
-    if (!process_delim_quotes(&heredoc))
-        return (status);
-    if (!process_heredoc(&heredoc, data))
-        return (status);
+    }
     if ((ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL) && only_flags(ast->token_list->next) && heredoc.buffer)
         status = redirect_and_execute_heredoc(ast, data, &heredoc);
     else if (ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL)
         status = execute_command(ast->token_list, data);
     else if (ast->type == NODE_BUILTIN)
 		status = execute_builtin(ast->token_list, data);
-
 	free(heredoc.buffer);
+    set_up_std_signals();
     return (status);
 }
 

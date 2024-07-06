@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 02:19:34 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 18:03:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,26 +21,6 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
-
-// static void	sigint_handler2(int sig)
-// {
-//     if (sig == SIGINT)
-//     {	
-// 		g_signal = sig;
-//         write(1, "testing signal\n", 1);
-
-//     }
-// 	else
-// 		g_signal = sig;
-// 	return ;
-// }
-
-// int	set_up_signals2(void)
-// {
-// 	if ((signal(SIGINT, sigint_handler2) == SIG_ERR))
-// 		return (status_and_perror("SIG_ERR signal failed", 1));
-// 	return (0);
-// }
 
 /*
 Frees the memory used for storing delimiter lexemes.
@@ -104,6 +84,8 @@ static bool read_heredoc(t_heredoc *heredoc, t_data *data, int i)
             heredoc->heredoc_len = heredoc->heredoc_len + ft_strlen(line) + 1;
         }
         free(line);
+        if (g_signal == SIGINT)
+            return (false);
         line = readline("> ");
     }
 	if (line == NULL)
@@ -115,15 +97,20 @@ static bool read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 /*
 Prompt for each delimiter and advancing to next heredoc/delimiter.
 */
-static void advance_to_final_delim(t_heredoc *heredoc, int *i)
+static bool advance_to_final_delim(t_heredoc *heredoc, int *i)
 {
     char    *line;
-	// set_up_signals2();
+	// set_up_std_signals2();
     debug("advance to final delim");
     while (*i < heredoc->delim_count - 1)
     {
         debug("Current delimiter to match: %s", heredoc->delim[*i]);
         line = readline("> ");
+        if (g_signal == SIGINT)
+        {
+            free (line);
+            return (false);
+        }
         debug("Difference between delimiter and line: %i", ft_strcmp(heredoc->delim[*i], line));
         if (line == NULL || !ft_strcmp(heredoc->delim[*i], line))
             (*i)++;
@@ -131,6 +118,7 @@ static void advance_to_final_delim(t_heredoc *heredoc, int *i)
 			write(2, "minishell: warning: here-document delimited by end-of-file\n", 60);
         free (line);
     }
+    return (true);
 }
 
 /*
@@ -142,19 +130,19 @@ bool	process_heredoc(t_heredoc *heredoc, t_data *data)
     int     i;
 
     debug("Process heredoc");
+    i = 0;
     heredoc->buffer = ft_calloc(heredoc->buffer_size, sizeof(char));
     if (!heredoc->buffer)
 	{
 		free_heredoc(heredoc);
         return(false_and_print("minishell: error: heredoc memory allocation"));
 	}
-    i = 0;
-    advance_to_final_delim(heredoc, &i);
-    if (!read_heredoc(heredoc, data, i))
+    if (!advance_to_final_delim(heredoc, &i) || !read_heredoc(heredoc, data, i))
 	{
 		free_heredoc(heredoc);
 		free(heredoc->buffer);
-		return (false_and_print("minishell: error: heredoc memory allocation"));
+        g_signal = 0;
+		return (false);
 	}
 	free_heredoc(heredoc);
     return (true);

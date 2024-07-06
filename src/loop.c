@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 16:13:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 18:03:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,15 +217,15 @@ static void	sigint_handler(int sig)
 {
     if (sig == SIGINT)
     {	
-		g_signal = sig;
+		// g_signal = sig;
         write(1, "\n", 1);
         rl_on_new_line();
         rl_replace_line("", 0);
         rl_redisplay();
 		// write(1,"got signal\n",12);
     }
-	else
-		g_signal = sig;
+	// else
+	// 	g_signal = sig;
 	return ;
 }
 
@@ -244,9 +244,8 @@ variable with the number of the signal received but
 usually only SIGINT is handled. the value of sigint is 2 
 whichy is added to 128 and gives 130, the exit code for ctrl-c
 */
-int	set_up_signals(void)
+int	set_up_std_signals(void)
 {
-	
 	if (isatty(STDIN_FILENO) == -1)
 		return (status_and_perror("is atty failed", 1));
 	else if (isatty(STDIN_FILENO))
@@ -261,8 +260,7 @@ int	set_up_signals(void)
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
 		return (status_and_perror("SIG_ERR signal failed", 1));
 	}
-	// TODO still not sure if needed!
-	// rl_catch_signals = 0;
+	rl_catch_signals = 1;
 	return (0);
 }
 
@@ -301,7 +299,7 @@ void	shlvl_init(t_data *data)
 }
 
 /*
-set_up_signals() returns 1 but if it fails I leave it failing 
+set_up_std_signals() returns 1 but if it fails I leave it failing 
 silently or should we exit the program?
 The readLine() function, reads a line of input from
 the user on the command line and returns the result.
@@ -322,7 +320,7 @@ int loop()
 	shlvl_init(data);
 	save_fds(data);
 	load_history();
-	set_up_signals();	
+	set_up_std_signals(); //check return value / status?
 	while (true)
 	{
 		data->input = readline("minishell $ ");
@@ -382,7 +380,7 @@ int single_command(const char *input)
 	debug("single command init_data done");
 	debug("input: %s", input);
 	save_fds(data);
-	set_up_signals();		
+	set_up_std_signals();		
 	data->input = ft_strdup(input);
 	if (!exit_condition(data))
 	{

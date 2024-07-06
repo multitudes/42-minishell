@@ -39,6 +39,7 @@ typedef struct  s_heredoc
 bool    is_heredoc(t_list *tokenlist);
 int     execute_heredoc(t_ast_node *ast, t_data *data);
 void    free_heredoc(t_heredoc *heredoc);
+void    set_up_heredoc_signals(void);
 bool    process_heredoc(t_heredoc *heredoc, t_data *data);
 int     redirect_and_execute_heredoc(t_ast_node *ast, t_data *data, t_heredoc *heredoc);
 
