@@ -215,15 +215,15 @@ static void	sigint_handler(int sig)
 {
     if (sig == SIGINT)
     {	
-		g_signal = sig;
+		// g_signal = sig;
         write(1, "\n", 1);
         rl_on_new_line();
         rl_replace_line("", 0);
         rl_redisplay();
-		write(1,"got signal\n",12);
+		// write(1,"got signal\n",12);
     }
-	else
-		g_signal = sig;
+	// else
+	// 	g_signal = sig;
 	return ;
 }
 
@@ -258,7 +258,7 @@ int	set_up_signals(void)
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
 		return (status_and_perror("SIG_ERR signal failed", 1));
 	}
-	rl_catch_signals = 1;
+	// rl_catch_signals = 1;
 	return (0);
 }
 

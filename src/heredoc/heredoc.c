@@ -138,6 +138,7 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
     else if (ast->type == NODE_BUILTIN)
 		status = execute_builtin(ast->token_list, data);
 	free(heredoc.buffer);
+    set_up_signals();
     return (status);
 }
 
