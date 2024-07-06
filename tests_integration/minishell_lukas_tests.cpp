@@ -98,6 +98,22 @@ const char* test_cd5()
 	return NULL;
 }
 
+/*
+export HOME=/Users/user42 && cd ~
+*/
+const char* test_cd6() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export HOME=/Users/user42 && cd ~";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct cd6\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
+	return NULL;
+}
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -109,6 +125,7 @@ const char *all_tests()
 	run_test(test_cd3);
 	// run_test(test_cd4); cd ~/Desktop does not work 
 	run_test(test_cd5);
+	run_test(test_cd6);
 
 	return NULL;
 }
