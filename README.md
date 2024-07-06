@@ -1543,6 +1543,36 @@ $ wc -c <<''
 ```
 Since this requires handling quotes around the delimiter, which is not required by the subject, and it would mean implementing different parsing rules, at which point you could go haywire and ask why not require <<- too.
 
+## the ioctl system call
+To fix the issue with the signals in the heredoc we used the `ioctl` system call.  
+`ioctl` stands for "input/output control" and is a system call in Unix-like operating systems. It provides a generic way to make device-specific calls on file descriptors, which might represent files, devices, or other types of I/O streams. The purpose of `ioctl` is to perform operations on a file descriptor that are not achievable with simple read or write commands, often because they involve hardware control or special modes of communication.
+
+The signature of `ioctl` is typically as follows:
+
+```c
+int ioctl(int fd, unsigned long request, ...);
+```
+
+- `fd`: The file descriptor on which the operation is to be performed. This could be a descriptor for a device file, socket, or any other entity that can perform I/O operations.
+- `request`: A device-specific request code that indicates the operation to be performed. These codes are usually defined in the device's header files.
+- `...`: Zero or more additional arguments. The type and number of these arguments depend on the request code. They might be used to pass data to the device driver or to receive data from it.
+
+The `ioctl` call returns an integer value. A return value of `-1` indicates an error, and `errno` is set to indicate the specific error.
+
+`ioctl` is used for a wide range of purposes, including but not limited to:
+- Querying or setting device parameters.
+- Performing special control functions on devices, such as formatting or ejecting media.
+- Enabling or disabling specific features of a device.
+- Managing file or device locks.
+
+We used `ioctl(0, TIOCSTI, "\n");` to simulate input in the terminal.
+
+- `ioctl` system call, see above.
+- The first argument `0` refers to the file descriptor for standard input (`stdin`).
+- `TIOCSTI` is a command for the `ioctl` system call, which stands for "Terminal Input Control for STImulating input." It allows a process to insert bytes into the input queue of a terminal.
+- The third argument `"\n"` is the character to be inserted into the terminal's input queue. In this case, it's the newline character.
+
+So, `ioctl(0, TIOCSTI, "\n");` simulates pressing the Enter key in the terminal. This can be used in programs to automatically feed input to the terminal as if it was typed by the user. However, using this requires appropriate permissions, as it can pose security risks by allowing a process to inject commands into another user's terminal sessions.
 
 ## Precedences
 the precedence of || and && in Bash and C is different.
