@@ -26,4 +26,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: log-file
-        path: logfile.log
+        path: test_integration/logfile.log
