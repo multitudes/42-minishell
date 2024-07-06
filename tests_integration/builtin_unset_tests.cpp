@@ -9,9 +9,8 @@
 
 // forward declaration
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
-
 bool make_directory_read_only(const std::string& path);
-
+bool isRunningOnGitHubActions();
 /*
 bool    read_only_variable(const char *key)
 {
@@ -120,18 +119,17 @@ access righhts on files
 */
 const char *all_tests()
 {
-	// necessary to start the test suite
-	suite_start();
-	
-	// run the tests
-	run_test(test_unset_read_only);
-	run_test(test_unset_read_only_EUID);
-	run_test(test_unset_read_only_UID);
-	run_test(test_unset_read_only2);
-	run_test(test_unset_read_only_EUID2);
-	run_test(test_unset_read_only_UID2);
-
-	
+	if (isRunningOnGitHubActions())
+	{
+		// necessary to start the test suite
+		suite_start();
+		run_test(test_unset_read_only);
+		run_test(test_unset_read_only_EUID);
+		run_test(test_unset_read_only_UID);
+		run_test(test_unset_read_only2);
+		run_test(test_unset_read_only_EUID2);
+		run_test(test_unset_read_only_UID2);
+	}
 	
 	return NULL;
 }

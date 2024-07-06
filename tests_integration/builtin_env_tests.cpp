@@ -39,12 +39,14 @@ access righhts on files
 */
 const char *all_tests()
 {
-	// necessary to start the test suite
-	suite_start();
-	
-	// run the tests
-	run_test(test_export_read_only);
-	
+	if (isRunningOnGitHubActions())
+	{
+		// necessary to start the test suite
+		suite_start();
+		
+		// run the tests
+		run_test(test_export_read_only);
+	}
 	
 	return NULL;
 }

@@ -30,16 +30,19 @@ const char* test_basicminishell_cat()
 	return NULL;
 }
 
+const char *test_empty(){
+	return NULL;
+}
 
 
 const char *all_tests()
 {
-	// necessary to start the test suite
-	suite_start();
-	
-	// run the tests
-	run_test(test_basicminishell_cat);
-	
+	if (isRunningOnGitHubActions())
+	{
+		// necessary to start the test suite
+		suite_start();
+		run_test(test_basicminishell_cat);
+	}
 
 	return NULL;
 }

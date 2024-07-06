@@ -9,7 +9,7 @@
 
 // forward declaration
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
-
+bool isRunningOnGitHubActions();
 
 std::string get_current_directory() {
     char buffer[PATH_MAX];
@@ -85,13 +85,17 @@ make: *** [Makefile:90: tests_integration] Error 2
 // }
 
 const char *all_tests() {
-    suite_start();
-    run_test(test_pwd_on_startup);
-	// run_test(test_pwd_after_unset);
-    // run_test(test_pwd_after_cd);
-    // run_test(test_pwd_after_non_cd_command);
-    // run_test(test_pwd_after_relative_cd);
-    // run_test(test_pwd_after_absolute_cd);
+	if (isRunningOnGitHubActions())
+	{
+		// necessary to start the test suite
+		suite_start();
+		run_test(test_pwd_on_startup);
+		// run_test(test_pwd_after_unset);
+		// run_test(test_pwd_after_cd);
+		// run_test(test_pwd_after_non_cd_command);
+		// run_test(test_pwd_after_relative_cd);
+		// run_test(test_pwd_after_absolute_cd);
+	}
     return NULL;
 }
 
