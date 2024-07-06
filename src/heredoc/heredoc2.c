@@ -15,7 +15,7 @@
 #include "scanner.h"
 #include "builtins.h"
 #include "utils.h"
-#include "error.h"
+#include "splash_error.h"
 #include <libft.h>
 #include <stdio.h>
 #include <readline/readline.h>

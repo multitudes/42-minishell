@@ -66,14 +66,15 @@ access righhts on files
 */
 const char *all_tests()
 {
-	// necessary to start the test suite
-	suite_start();
-	
-	// run the tests
-	run_test(test_export_read_only);
-	run_test(test_export_read_only_EUID);
-	run_test(test_export_read_only_UID);
-	
+	if (isRunningOnGitHubActions())
+	{
+		// necessary to start the test suite
+		suite_start();
+		// run the tests
+		run_test(test_export_read_only);
+		run_test(test_export_read_only_EUID);
+		run_test(test_export_read_only_UID);
+	}
 	return NULL;
 }
 

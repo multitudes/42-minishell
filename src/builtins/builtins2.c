@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 22:50:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/06/28 19:38:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 17:17:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 #include "environment.h"
 #include "history.h"
 #include <unistd.h>
-#include "error.h"
+#include "splash_error.h"
+#include "analyser.h"
 
 char *execute_getcwd(char old_dir[], char *message)
 {
@@ -32,9 +33,15 @@ char *execute_getcwd(char old_dir[], char *message)
 
 uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 {
-	if (tokenlist && get_token_lexeme(tokenlist))
+	char *home;
+    char *lexeme;
+
+	debug("execute_cd_tokenlist with lexeme %s", get_token_lexeme(tokenlist));
+	home = mini_get_env(env_arr, "HOME");
+	lexeme = get_token_lexeme(tokenlist);
+    if (tokenlist && lexeme) 
 	{
-		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0)
+		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0) // one arg  '-'
 		{
 			if (!mini_get_env(env_arr, "OLDPWD"))
 				return (print_minishell_error_status("cd: OLDPWD not set", 1));
@@ -45,15 +52,21 @@ uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 				execute_pwd_builtin();
 			}
 		}
-		else if (chdir(get_token_lexeme(tokenlist)))
+		else if (*lexeme && chdir(get_token_lexeme(tokenlist)))
             return (status_perror2("minishell: cd: ", get_token_lexeme(tokenlist), 1));
     }
-    else
+    else // no args
 	{
-		if (!mini_get_env(env_arr, "HOME"))
+        if (!home)
 			return (print_minishell_error_status("cd: HOME not set", 1));
-		else if (chdir(mini_get_env(env_arr, "HOME")))
+		home = get_home(env_arr);
+        debug("home is -%s--------------------", home);
+		if (home && *home != '\0' && chdir(home))
+		{
+			free(home);
 			return (status_and_perror("minishell: cd", 1));
+		}
+		free(home);
 	}
     return (0);
 }

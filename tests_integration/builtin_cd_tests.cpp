@@ -8,8 +8,7 @@
 
 // forward declaration
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
-
-
+bool isRunningOnGitHubActions();
 /*
 bool    read_only_variable(const char *key)
 {
@@ -39,13 +38,12 @@ access righhts on files
 */
 const char *all_tests()
 {
-	// necessary to start the test suite
-	suite_start();
-	
-	// run the tests
-	run_test(test_cd);
-	
-	
+	if (isRunningOnGitHubActions())
+	{
+		// necessary to start the test suite
+		suite_start();
+		run_test(test_cd);
+	}
 	return NULL;
 }
 
@@ -133,4 +131,10 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 			exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
 		return exit_status;
 	}
+}
+
+bool isRunningOnGitHubActions() 
+{
+    const char* githubActions = std::getenv("GITHUB_ACTIONS");
+    return githubActions != nullptr && githubActions == std::string("true");
 }

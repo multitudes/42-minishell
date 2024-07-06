@@ -6,12 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:28:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/13 09:03:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
-#include "error.h"
+#include "splash_error.h"
 
 /*
 */

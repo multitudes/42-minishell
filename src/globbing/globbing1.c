@@ -6,12 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 19:16:09 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/02 19:25:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "globbing.h"
-#include "error.h"
+#include "splash_error.h"
 
 /*
  * I need to read the files in my directory and check if they match the pattern

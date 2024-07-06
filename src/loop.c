@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 #include "darray.h"
-#include "error.h"
+#include "splash_error.h"
 #include "analyser.h"
 #include <fcntl.h>
 
@@ -177,6 +177,7 @@ bool	init_env_darray(t_darray **env_array)
 
 /*
 initialiser for data
+It would be nice to to save the home dir at the very beginning
 */
 bool	init_data(t_data **data)
 {
@@ -187,6 +188,7 @@ bool	init_data(t_data **data)
 	*data = malloc(sizeof(t_data));
 	if (*data == NULL && darray_clear_destroy(env_array))
 		return (zero_and_printerr("malloc data"));
+	// (*data)->home = get_home(NULL);
 	(*data)->env_arr = env_array;
 	return (init_data2(data));
 }

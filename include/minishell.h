@@ -73,6 +73,7 @@ pipe_fd : file descriptors for the pipe
 */
 struct s_data 
 {
+	// char 		*home;	
 	const char	*input;
 	t_list		*token_list;
 	t_darray	*env_arr;

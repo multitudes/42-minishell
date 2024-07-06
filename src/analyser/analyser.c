@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/05 17:14:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 16:25:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "analyser.h"
 #include "scanner.h"
 #include <libft.h>
-#include "error.h"
+#include "splash_error.h"
 #include "utils.h"
 #include "builtins.h"
 
@@ -141,16 +141,37 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 }
 
 /*
-Get home from environment
-TODO (tbc) in the future: if HOME is unset,
-get HOME through system configuration entries.
+Get home from environment -  it is a tricky one
+because bash always manages to get the home directory
+even if HOME is not set in the environment
+We are also not able to use special functions
+so the best we can do is to check the user from 
+the environment. In wtc/passwd the current user might also
+not be included so it is not a viable option.
+params:
+env_array: if NULL or HOME is not set, get the home 
+from the USER environment variable and collated with /home
+Just pass NULL to the func ad you can get home from anywhere
+but both need to be freed!
 */
 char	*get_home(t_darray *env_arr)
 {
 	char	*home;
 
-	home = ft_strdup(mini_get_env(env_arr, "HOME"));
-	debug("'HOME' retrieved: %s", home);
+	home = mini_get_env(env_arr, "HOME");
+	debug("HOME from env: %s", home);
+	if (home)
+		home = ft_strdup(home);
+	else
+	{
+		debug("HOME not set in env, trying to get from /etc/passwd");
+        char *username = getenv("USER");
+		debug("Username: %s", username);
+		if (username)
+			home = ft_strjoin("/home/", username);
+		else
+			home = ft_strdup("/home");
+    }
 	return (home);
 }
 
@@ -186,6 +207,7 @@ void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 		lexeme = replace_tilde_in_str(tokenlist, token->lexeme, home, flags);
 		free(home);
 	}
+
 	token->type = WORD;
 	free(token->lexeme);
 	token->lexeme = lexeme;
