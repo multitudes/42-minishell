@@ -18,9 +18,12 @@ jobs:
 
     - name: test
       run: make tests
+    
+    - name: tests_integration
+      run: make tests_integration
 
     - name: Upload log file
       uses: actions/upload-artifact@v2
       with:
         name: log-file
-        path: path/to/your/logfile.log
+        path: logfile.log
