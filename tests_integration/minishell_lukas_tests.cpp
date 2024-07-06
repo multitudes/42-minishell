@@ -43,6 +43,20 @@ const char* test_cd2()
 	return NULL;
 }
 
+const char* test_cd3() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "cd && pwd";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "/home/runner\n" || result.str() == "/home/lbrusa\n", "output is not hello\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -51,6 +65,7 @@ const char *all_tests()
 	// run the tests
 	run_test(test_cd);
 	run_test(test_cd2);
+	run_test(test_cd3);
 
 	return NULL;
 }
