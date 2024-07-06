@@ -55,6 +55,8 @@ const char* test_cd3()
     fflush(stdout);
 
     std::ostringstream result;
+
+	// char *cwd = getcwd();
 	std::string arg = "cd && pwd";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
@@ -114,6 +116,66 @@ const char* test_cd6()
 	my_assert(exit_status == 1, "exit status is not 1\n");
 	return NULL;
 }
+
+/*
+cd .. cool swag
+*/
+const char* test_cd7() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "cd .. cool swag";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct cd6\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
+	return NULL;
+}
+
+/*
+cd Eyooooore
+*/
+const char* test_cd8() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "cd Eyooooore";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct cd6\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
+	return NULL;
+}
+
+
+/*
+again
+cd -  
+*/
+const char* test_cd9() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "cd && cd / && cd - && pwd";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct cd9\n");
+	my_assert(exit_status == 0, "exit status is not 1\n");
+	return NULL;
+}
+
+
+
+
+
+
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -126,6 +188,11 @@ const char *all_tests()
 	// run_test(test_cd4); cd ~/Desktop does not work 
 	run_test(test_cd5);
 	run_test(test_cd6);
+	run_test(test_cd7);
+	run_test(test_cd8);
+	run_test(test_cd9);
+	// run_test(test_cd10);
+
 
 	return NULL;
 }
@@ -159,18 +226,18 @@ uint8_t run_command_and_check_output(const std::string& command_to_exec, std::os
         result << buffer.data();
     }
 
-	int status = pclose(fp);
-	if (status == -1) {
-		perror("pclose");
-		return 1;
-	} else {
-		if (WIFEXITED(status)) {
-			printf("Exit status: %d\n", WEXITSTATUS(status));
-		} else {
-			printf("Command did not terminate normally\n");
-		}
-	}
-    debug("result: -%s- status %d", result.str().c_str(), status);
-
-    return 0;
+  	int status = pclose(fp);
+    if (status == -1) {
+        perror("pclose");
+        return 1; // Error code for pclose failure
+    } else {
+        if (WIFEXITED(status)) {
+            uint8_t exit_status = WEXITSTATUS(status);
+            printf("Exit status: %d\n", exit_status);
+            return exit_status; // Return the extracted exit status
+        } else {
+            printf("Command did not terminate normally\n");
+            return 1; // Error code for abnormal termination
+        }
+    }
 }
