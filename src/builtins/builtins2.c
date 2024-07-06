@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 22:50:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/06 14:52:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 16:20:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ char *execute_getcwd(char old_dir[], char *message)
 
 uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 {
+	char *home;
+
+	home = NULL;
 	if (tokenlist && get_token_lexeme(tokenlist))
 	{
 		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0)
@@ -51,10 +54,13 @@ uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
     }
     else
 	{
-		if (!get_home(NULL))
-			return (print_minishell_error_status("cd: HOME not set", 1));
-		else if (chdir(mini_get_env(env_arr, "HOME")))
+		home = get_home(env_arr);
+		if (chdir(home))
+		{
+			free(home);
 			return (status_and_perror("minishell: cd", 1));
+		}
+		free(home);
 	}
     return (0);
 }

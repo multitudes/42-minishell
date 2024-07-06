@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 15:52:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ char *mini_get_env(t_darray *env_arr, const char *key)
 	char		*position;
 	int			i;
 
+	if (!env_arr || !key)
+		return (NULL);
 	if (ft_strchr(key, '='))
 		return (NULL);
 	i = 0;

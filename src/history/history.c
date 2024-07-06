@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 15:30:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 16:19:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,14 @@ char	*get_history_file_path(void)
 	char	*home;
 
 	home = get_home(NULL);
-	if (home == NULL || home[0] == '\0')
+	if (home == NULL)
 		return (NULL);
 	debug("history home: %s", home);
 	path = ft_strjoin(home, MINIHISTFILEPATH);
+	free(home);
 	debug("path: %s", path);
 	if (path == NULL)
-		path = ft_strdup("~/.minishell_history");
+		print_minishell_error_status("history file path missing", 1);
 	return (path);
 }
 
@@ -64,7 +65,7 @@ char	*get_history_file_path(void)
 - add_history to be able to scroll through the history of commands
 (readline built in)
 - write line to history file for persistence
--  add to history only if line is not empty
+- add to history only if line is not empty
 we will check if the input is a command to delete the history!
 This would be
 history -c or history --clear

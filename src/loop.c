@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 15:24:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/06 16:13:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,18 +177,18 @@ bool	init_env_darray(t_darray **env_array)
 
 /*
 initialiser for data
+It would be nice to to save the home dir at the very beginning
 */
 bool	init_data(t_data **data)
 {
 	t_darray	*env_array;
-	char 		*home;
 
-	home = get_home(NULL);
 	if (!init_env_darray(&env_array))
 		return (false);
 	*data = malloc(sizeof(t_data));
 	if (*data == NULL && darray_clear_destroy(env_array))
 		return (zero_and_printerr("malloc data"));
+	// (*data)->home = get_home(NULL);
 	(*data)->env_arr = env_array;
 	return (init_data2(data));
 }
