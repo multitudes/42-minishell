@@ -22,26 +22,6 @@
 #include <readline/history.h>
 #include <signal.h>
 
-// static void	sigint_handler2(int sig)
-// {
-//     if (sig == SIGINT)
-//     {	
-// 		g_signal = sig;
-//         write(1, "testing signal\n", 1);
-
-//     }
-// 	else
-// 		g_signal = sig;
-// 	return ;
-// }
-
-// int	set_up_signals2(void)
-// {
-// 	if ((signal(SIGINT, sigint_handler2) == SIG_ERR))
-// 		return (status_and_perror("SIG_ERR signal failed", 1));
-// 	return (0);
-// }
-
 /*
 Frees the memory used for storing delimiter lexemes.
 */
