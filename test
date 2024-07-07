@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo "argc:$#"
+
+for arg; do
+    printf '"%s"\n' "$arg"
+done
