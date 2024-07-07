@@ -13,6 +13,9 @@
 uint8_t run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result);
 bool isRunningOnGitHubActions();
 
+// since we will unset it better save it
+const char* home = std::getenv("HOME");
+
 /*
 cd ../../../../../.. && pwd
 */
@@ -86,7 +89,7 @@ const char* test_cd4()
 }
 
 /*
-unset HOME - cd ~
+unset HOME - cd ~ // should output home still
 */
 const char* test_cd5() 
 {
@@ -99,11 +102,18 @@ const char* test_cd5()
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	arg = "unset HOME && cd ~ && pwd";
+	exit_status = run_command_and_check_output(arg, result);
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(strcmp(home, result.str().c_str()), "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+
 	return NULL;
 }
 
 /*
-export HOME=/Users/user42 && cd ~
+export HOME=/Users/user42 && cd ~ // exit status is 1 because dir not found
 */
 const char* test_cd6() 
 {
@@ -120,7 +130,7 @@ const char* test_cd6()
 }
 
 /*
-cd .. cool swag
+cd .. cool swag  // exit status 1
 */
 const char* test_cd7() 
 {
@@ -137,7 +147,7 @@ const char* test_cd7()
 }
 
 /*
-cd Eyooooore
+cd Eyooooore // output is empty and exit status is 1
 */
 const char* test_cd8() 
 {
@@ -166,8 +176,6 @@ const char* test_cd9()
 	std::string arg = "cd && cd / && cd - && pwd";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-	const char* home = std::getenv("HOME");
-	debug("HOME -%s-", home);
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert((strcmp(home, result.str().c_str())), "output is not the home dir\n");
 	my_assert(exit_status == 0, "exit status is not 1\n");
@@ -175,9 +183,100 @@ const char* test_cd9()
 }
 
 
+/*
+Here I get errors but no std out and exit status is 0
+mkdir a - mkdir a/b - cd a/b - rm -r ../../a - cd ..
+*/
+const char* test_cd10() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "mkdir aa && mkdir aa/b && cd aa/b && rm -r ../../aa && cd ..";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct cd10\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
 
 
+/*
+because home is changed to "" the cd ~ should not change anything
+"export HOME=""""
+cd ~"
+*/
+const char* test_cd11() 
+{
+    fflush(stdout);
 
+	// the current dir
+	const char *curr_dir = getenv("PWD");
+
+    std::ostringstream result;
+	std::string arg = "export HOME=\"\" && cd ~";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct cd10\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	arg = "export HOME=\"\" && cd ~ && pwd";
+	exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(strcmp(result.str().c_str(), curr_dir), "output is not correct cd10\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+const char* test_echo() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "echo";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "\n", "output is not correct echo\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+const char* test_echo2() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "echo $dontknow";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "\n", "output is not correct echo\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+const char* test_echo3() 
+{
+    fflush(stdout);
+	const char *path_c = getenv("PATH");
+	if (path_c == nullptr) 
+    	return "PATH is not set";
+
+	std::string path(path_c);
+	path = path + "\n";
+    std::ostringstream result;
+	std::string arg = "echo $PATH";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == path, "output is not correct echo3\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
 
 
 const char *all_tests()
@@ -195,8 +294,12 @@ const char *all_tests()
 	run_test(test_cd7);
 	run_test(test_cd8);
 	run_test(test_cd9);
-	// run_test(test_cd10);
+	run_test(test_cd10);
+	run_test(test_cd11);
 
+	run_test(test_echo);
+	run_test(test_echo2);
+	run_test(test_echo3);
 
 	return NULL;
 }
