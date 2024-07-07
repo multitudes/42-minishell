@@ -60,26 +60,26 @@ We have restrictions in what we are allowed to use and it is summarized here [su
 
 The functionality of the builtin commands we will implement is described in the BASH manual and a short summary provided in the following.
 
-### `echo [-n] [arg ...]`
+#### `echo [-n] [arg ...]`
 (_Bash builtin command_)
 Output `args` separated by spaces and terminated with a newline. With `-n` option trailing newline is suppressed.
 Just `echo` prints a newline. `echo -n` prints nothing. `echo -n "hello"` prints `hello` without a newline.  `echo -n -nnnn` prints nothing.  
 `echo -n -nwhy` prints `-nwhy`. (dont ask me why :) but I think it is since the flag is not recognized as a flag but as a string). 
 Return status is zero (usually since it is hard to fail!).  
 
-### `cd [directory]` (with relative or absolute path)
+#### `cd [directory]` (with relative or absolute path)
 (_original Bourne Shell builtin_)
 Used to change the current working directory to another directory. If directory is not specified the `HOME` shell variable is used. If directory is '-', it is converted to $OLDPWD before attempting directory change. 
 Successful execution of `cd` should set `PWD` to new directory and `OLDPWD` to the working directory before the change.  
 can fail if the directory is not existent. if the directory is not a directory. if the directory is not readable. if the directory is not searchable. if the directory is not writable. if the directory is not accessible. Errors are printed to stderr and can be like `cd: no such file or directory: /nonexistent` or `cd: permission denied: /root`.  
 Return status is zero upon success, non-zero otherwise.
 
-### `pwd` (without options)
+#### `pwd` (without options)
 (_original Bourne Shell builtin_)
 Prints the absolute pathname of the current working directory (can contain symbolic links though this may be implementation defined as the normally available options either explicitly prohibit symbolic links (`-P`) or explicitly allow symbolic links (`-L`).
 Return status is zero unless an error is encountered while determining the name of the current directory (or an invalid option is supplied).
 
-### `export [name[=value]]` (without options)
+#### `export [name[=value]]` (without options)
 (_original Bourne Shell builtin_)
 Without any other options (as in our implementation) `name` refers to variables. Export allows to pass specified names/variable to be passed to child processes. When no names are provided, a list of all exported variables is displayed. When a value is provided after `name` and `=` the variable is set to `value`.
 To note: "All values undergo tilde expansion, parameter and variable expansion, command substitution, arithmetic expansion, and quote removal." (see 3.4 Shell Parameters in the Bash Manual)
@@ -87,7 +87,7 @@ Return status is zero unless invalid option is supplied or one of the names is n
 
 To clarify: difference between environment variables and exported variables
 
-### `unset [name]` (without options)
+#### `unset [name]` (without options)
 (_original Bourne Shell builtin_)
 Removes each variable or function with `name`.
 > If no options are supplied, each name refers to a variable; if there is no variable by that name, a function with that name, if any, is unset. [...] Some shell variables lose their special behavior if they are unset.
@@ -95,7 +95,7 @@ Read-only variables and functions cannot be unset.
 Return status is zero unless `name` is read-only or cannot not be unset.
 To clarify: should we actually treat the removal/unsetting of functions? How do we identify read-only variables and functions?
 
-### `env` (without options or arguments)
+#### `env` (without options or arguments)
 `env` is not described as a builtin in the BASH manual. The variable $ENV is described related to POSIX variant of invoking shell.
 Presumably env prints the current environment, i.e. the inherited environment plus any modifications through `export` and `unset`. 
 From bash there is a way to start the minishell without any environment variables doing:  
@@ -104,7 +104,7 @@ env -i ./minishell
 ```
 We check for this eventuality too. the env will have only the PWD PATH _ and SHLVL variables.
 
-### `exit [n]` (without options)
+#### `exit [n]` (without options)
 (_original Bourne Shell builtin_)
 The builtin command `exit`,- as the name implies -, exits the shell. The exit status is of type uint8_t and shall be set to that of the last executed command.  
 The BASH builtin allows optionally to set the exit status as an argument ([n]) which will be cast to the uint8_t type..
