@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 14:48:09 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 16:26:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <libft.h>
 #include "utils.h"
 #include "splash_error.h"
+#include "scanner.h"
 
 /*
 when I need to free a string array like the envpaths
@@ -75,6 +76,30 @@ int	count_tokens(t_list *tokenlist)
 }
 
 /*
+In the case of having a token expanded for ex to "ls -la"
+the command would fail because of the space between the flags
+I need to retokenize the command so this functions checks for spaces
+and creates a new token for each word
+*/
+void	check_for_spaces(t_list **tokenlist)
+{
+	char *lex = NULL;
+
+	while (*tokenlist)
+	{
+		lex = get_token_lexeme(*tokenlist);
+		if (ft_strchr(lex, ' '))
+		{
+			debug("======================== > found space in token: %s", lex);
+			t_list *new = tokenizer(lex);
+			replace_token_with_tokenlist(tokenlist, new);
+		}
+		*tokenlist = (*tokenlist)->next;
+	}
+}
+
+
+/*
 Since until now we store the token as linked list
 we convert it to a char array for the execve function
 */ 
@@ -85,6 +110,7 @@ char	**get_argv_from_tokenlist(t_list *tokenlist)
 	int		count;
 	
 	i = 0;
+	// check_for_spaces(&tokenlist);
 	count = count_tokens(tokenlist);
 	if (!count)
 		return (NULL);
