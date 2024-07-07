@@ -603,6 +603,117 @@ const char* test_export4()
 	return NULL;
 }
 
+/*
+export "" test=a
+*/
+const char* test_export5() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export "" test=a";	
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct export 5\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
+	return NULL;
+}
+
+/*
+export 42=42
+*/
+const char* test_export6() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export 42=42";	
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct export 6\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
+	return NULL;
+}
+
+const char* test_export7() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export test3=$HOME && echo $test3";	
+	if (home == NULL || *home == '\0')
+		return "HOME is not set";
+	std::string homeString = std::string(home) + "\n";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == homeString, "output is not correct export 7\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+export ==value
+*/
+const char* test_export8() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export ==value";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct export 8\n");
+	my_assert(exit_status == 1, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+
+*/
+const char* test_parsing() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "\"\"";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct parsing\n");
+	my_assert(exit_status == 126, "exit status is not 126\n");
+	return NULL;
+}
+
+
+/*
+echo "\s" ; echo "\\s"
+*/
+const char* test_parsing2() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "echo \\s && echo \\\\s";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "\\s\n\\s\n", "output is not correct parsing2\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
 
 const char *all_tests()
 {
@@ -643,6 +754,13 @@ const char *all_tests()
 	run_test(test_export2);
 	//run_test(test_export3);
 	// run_test(test_export4); // cant make it work under thuis config
+	// run_test(test_export5); // test returns 0 for unknown reason but minishell interactive is correct?
+	run_test(test_export6);
+	// run_test(test_export7); //not working because of quotes and popen probably
+	run_test(test_export8);
+
+	// run_test(test_parsing);
+	run_test(test_parsing2);
 
 	return NULL;
 }

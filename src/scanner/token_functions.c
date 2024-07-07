@@ -6,12 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 15:16:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 18:59:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 #include "debug.h"
+#include "libft.h"
 
 /*
 peek wil look ahead to see if my string is beginning with a sequence of chars
@@ -39,6 +40,34 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
 		return (false);
 }
 
+char *return_lexeme_malloc(const char *lex)
+{
+	char *result;
+	const char *p;
+	char *q;
+
+	if (!lex) 
+		return NULL;
+	result = ft_calloc(ft_strlen(lex) + 1, sizeof(char));
+    if (!result) 
+		return NULL;
+    p = lex;
+	q = result;
+    while (*p) 
+	{
+        if (*p == '\\' && *(p + 1) == '\\')
+        {
+            *q++ = *p;
+            p += 2;
+        }
+		else
+            *q++ = *p++;
+    }
+    *q = '\0';
+	debug("return_lexeme_malloc: %s", result);
+    return result;
+}
+
 /*
 creates a simple t_list node - the token is in the content of the node
 in form of a string that will need to be freed
@@ -53,8 +82,8 @@ t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i)
 		return (NULL);
 	token->type = type;
 	token->folldbyspace = false;
-	token->lexeme = ft_strdup(lexeme);
-	*i = *i + ft_strlen(lexeme);
+	token->lexeme = return_lexeme_malloc(lexeme);
+	*i = *i + ft_strlen(token->lexeme);
 	debug("token created type %d -%s-", token->type, token->lexeme);
 	new_node = ft_lstnew(token);
 	if (new_node == NULL)
