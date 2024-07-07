@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 16:26:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 17:05:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,19 @@ int	count_tokens(t_list *tokenlist)
 }
 
 /*
+sometimes you need to know where you heat is at
+*/
+t_list	*get_head(t_list *tokenlist)
+{
+	t_list	*head;
+
+	head = tokenlist;
+	while (head->prev)
+		head = head->prev;
+	return (head);
+}
+
+/*
 In the case of having a token expanded for ex to "ls -la"
 the command would fail because of the space between the flags
 I need to retokenize the command so this functions checks for spaces
@@ -84,18 +97,33 @@ and creates a new token for each word
 void	check_for_spaces(t_list **tokenlist)
 {
 	char *lex = NULL;
+	t_list *new;
+	t_list *head;
 
+	head = *tokenlist;
+	debug("head: %s - > %s ", get_token_lexeme(head), get_token_lexeme(head->next));
 	while (*tokenlist)
 	{
 		lex = get_token_lexeme(*tokenlist);
-		if (ft_strchr(lex, ' '))
+		if (ft_strchr(lex, ' ') && get_token_type(*tokenlist) == RESOLVED)
 		{
 			debug("======================== > found space in token: %s", lex);
-			t_list *new = tokenizer(lex);
+			new = tokenizer(lex);
+			debug("new tokenlist: %s - > %s ", get_token_lexeme(new), get_token_lexeme(new->next));
+
+		
 			replace_token_with_tokenlist(tokenlist, new);
+			debug("new tokenlist: %s - > %s ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
 		}
+		debug("new tokenlist: %s - > %s ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
+		if (!(*tokenlist)->next)
+			break;	
 		*tokenlist = (*tokenlist)->next;
 	}
+	debug("about to ...");
+	head = get_head(*tokenlist);
+	debug("head: %s - > %s ", get_token_lexeme(head), get_token_lexeme(head->next));
+	*tokenlist = head;
 }
 
 
@@ -103,24 +131,24 @@ void	check_for_spaces(t_list **tokenlist)
 Since until now we store the token as linked list
 we convert it to a char array for the execve function
 */ 
-char	**get_argv_from_tokenlist(t_list *tokenlist)
+char	**get_argv_from_tokenlist(t_list **tokenlist)
 {
 	int		i;
 	char **argv;
 	int		count;
 	
 	i = 0;
-	// check_for_spaces(&tokenlist);
-	count = count_tokens(tokenlist);
+	check_for_spaces(tokenlist);
+	count = count_tokens(*tokenlist);
 	if (!count)
 		return (NULL);
 	argv = malloc(sizeof(char *) * (count + 1));
 	if (!argv)
 		return (NULL);
-	while (tokenlist)
+	while (*tokenlist)
 	{
-		argv[i++] = get_token_lexeme(tokenlist);
-		tokenlist = tokenlist->next;
+		argv[i++] = get_token_lexeme(*tokenlist);
+		*tokenlist = (*tokenlist)->next;
 	}
 	argv[i] = NULL;
 	return (argv);

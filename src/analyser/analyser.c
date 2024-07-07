@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 16:25:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 17:24:44 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@ char	*replace_dollar_vars(t_data *data, char *lexeme)
 			if (ft_strcmp(key, "?") == 0 && data)
 				free (key_value);
 			free(key);
-			continue ; // this should perhaps be continue, if lexeme contains more than one $-expansion
+			continue ;
 		}
 		i++;
 	}
@@ -300,13 +300,13 @@ void	expand_dollar(t_data *data, t_token *token)
 	debug("expand_dollar");
 	if (!token)
 		return ;
-	token->type = WORD;
+	// token->type = WORD; because it is executed again below 
 	if (token->lexeme && ft_strchr(token->lexeme, '$'))
 	{
 		var = replace_dollar_vars(data, token->lexeme);
 		free(token->lexeme);
 		token->lexeme = var;
-		token->type = WORD;
+		token->type = RESOLVED; // changed to resolved, so that it is not expanded again
 	}
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
