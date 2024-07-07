@@ -844,6 +844,39 @@ which will be not found and will have null value so when I enter $4 in the minis
 */
 
 
+const char* test_parsing9() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "$4";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct parsing9\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+const char* test_parsing10() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "echo \'\"abc\"\'";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "\"abc\"", "output is not correct parsing10\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -896,7 +929,8 @@ const char *all_tests()
 	run_test(test_parsing6);
 	run_test(test_parsing7);
 	// run_test(test_parsing8);// not working as expected
-
+	// run_test(test_parsing9);
+	// run_test(test_parsing10);
 
 	return NULL;
 }
