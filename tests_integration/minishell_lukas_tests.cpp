@@ -8,6 +8,7 @@
 #include <cstring>
 #include <array>
 #include <sstream>
+#include <iostream>
 
 // forward declaration
 uint8_t run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result);
@@ -15,7 +16,6 @@ bool isRunningOnGitHubActions();
 
 // since we will unset it better save it
 const char* home = getenv("HOME");
-std::string homeString = std::string(home);
 
 /*
 cd ../../../../../.. && pwd
@@ -45,6 +45,8 @@ const char* test_cd2()
 	std::string arg = "cd ~ && pwd";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 	const char* home = std::getenv("HOME");
+	if (home == NULL || *home == '\0')
+		return "HOME is not set";
 	debug("HOME -%s-", home);
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert((strcmp(home, result.str().c_str())), "output is not the home dir\n");
@@ -286,8 +288,10 @@ echo ~
 const char* test_echo4() 
 {
     fflush(stdout);
-
-
+	
+	if (home == NULL || *home == '\0')
+		return "HOME is not set";
+	std::string homeString = std::string(home);
     std::ostringstream result;
 	std::string arg = "echo ~";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
@@ -374,7 +378,13 @@ const char* test_env()
 	std::string arg = "env";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
+	// std::cout << "-----------------------------------" << std::endl;
+	// std::cout << result.str() << std::endl;
+	// std::cout << "-----------------------------------" << std::endl;
+	// std::cout << envVariables << std::endl;
+	// std::cout << "-----------------------------------" << std::endl;
     debug("result from minishell: -%s-\n", result.str().c_str());
+	debug("envVariables: -%s-\n", envVariables.c_str());
 	my_assert(result.str() == envVariables, "output is not correct env\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -407,7 +417,6 @@ const char *all_tests()
 	run_test(test_echo6);
 
 	run_test(test_env);
-
 
 	return NULL;
 }
@@ -448,10 +457,10 @@ uint8_t run_command_and_check_output(const std::string& command_to_exec, std::os
     } else {
         if (WIFEXITED(status)) {
             uint8_t exit_status = WEXITSTATUS(status);
-            printf("Exit status: %d\n", exit_status);
+            // printf("Exit status: %d\n", exit_status);
             return exit_status; // Return the extracted exit status
         } else {
-            printf("Command did not terminate normally\n");
+            fprintf(stderr, "Command did not terminate normally\n");
             return 1; // Error code for abnormal termination
         }
     }

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 12:05:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 12:27:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,8 @@ bool	handle_history(t_data *data)
 		return (false);
 	add_history(data->input);
 	char *cmd = create_path((char *)data->input, mini_get_env(data->env_arr, "PATH"));
-	if (!cmd)
+	debug("cmd: %s ===================================", cmd);
+	if (!cmd || ft_strncmp(data->input, "env", 3) == 0)
 		cmd = ft_strdup(data->input);
 	if (update_env(data->env_arr, "_", cmd) == FALSE)
 		perror("update_env for _ with history input");
