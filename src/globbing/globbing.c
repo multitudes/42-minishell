@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 16:09:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,25 +106,12 @@ t_list	*create_globbing_tokenlist(t_darray *files)
 void	expand_globbing(t_list **tokenlist)
 {
 	char		*pat;
-	t_list		*next;
-	t_list		*head;
-	t_list		*last;
 	t_darray	*files;
 
 	pat = get_token_lexeme(*tokenlist);
 	files = darray_create(sizeof(char *), 100);
 	if (match_files_in_directory(files, pat))
-	{
-		next = (*tokenlist)->next;
-		head = (*tokenlist)->prev;
-		head->next = create_globbing_tokenlist(files);
-		last = ft_lstlast(head);
-		last->next = next;
-		if (next)
-			next->prev = last;
-		ft_lstdelone(*tokenlist, free_tokennode);
-		*tokenlist = head->next;
-	}
+		replace_token_with_tokenlist(tokenlist, create_globbing_tokenlist(files));
 	darray_clear_destroy(files);
 	return ;
 }
