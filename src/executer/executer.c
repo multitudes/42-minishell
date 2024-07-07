@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 14:36:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 		{
 			// debug("contains redirection (check)");
 			status = execute_redirection(&ast); // double pointer should not be needed here.
-			continue ;
+			continue ; // should not be needed either? maybe?
 		}
 		else if (is_heredoc(ast->token_list))
 		{

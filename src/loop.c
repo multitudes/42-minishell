@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 18:03:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 14:12:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,7 +316,7 @@ int loop()
 	status = 0;
 	data = NULL;
 	if (!init_data(&data))
-		return (1);
+		return (EXIT_FAILURE);
 	shlvl_init(data);
 	save_fds(data);
 	load_history();
@@ -335,7 +335,6 @@ int loop()
 					data->ast = create_ast(data->token_list);
 					if (data->ast)
 					{
-						// analyse_expand(data->ast, data);
 						data->exit_status = execute_ast(data->ast, data);
 						debug("Exit status: %i", data->exit_status);
 						free_ast(&(data->ast));
@@ -353,13 +352,13 @@ int loop()
 		debug("Break from loop()");
 		break ;
 	}
-	free((char *)(data->input));
 	status = data->exit_status;
+	free((char *)(data->input));
 	free_data(&data);
 
 	debug("exit_minishell");
 	debug("Exit status: %i", status);
-	// printf("\033[A\r\033[K"); // Move to the line above, go to the beginning of the line, and clear the line
+
 	write(1, "exit\n", 5);
 		
 	return (status); 
@@ -373,12 +372,13 @@ int single_command(const char *input)
 	uint8_t	status;	
 	t_data	*data;
 
-	data = NULL;
 	status = 0;
+	data = NULL;
 	if (!init_data(&data))
 		return (EXIT_FAILURE);
 	debug("single command init_data done");
 	debug("input: %s", input);
+	shlvl_init(data);
 	save_fds(data);
 	set_up_std_signals();		
 	data->input = ft_strdup(input);
@@ -391,8 +391,8 @@ int single_command(const char *input)
 			data->ast = create_ast(data->token_list);
 			if (data->ast)
 			{
-				// analyse_expand(data->ast, data);
 				data->exit_status = execute_ast(data->ast, data);
+				debug("Exit status: %i", data->exit_status);
 				free_ast(&(data->ast));
 			}
 			else
@@ -410,8 +410,7 @@ int single_command(const char *input)
 	free_data(&data);
 	debug("exit_minishell");
 	debug("Exit status: %i", status);
-	// printf("\033[A");
-// printf("This will overwrite the line above.\n");
+
 	return (status); 
 }
 
