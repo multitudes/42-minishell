@@ -56,6 +56,8 @@ The shell then parses these tokens into commands and other constructs, removes t
 
 We have restrictions in what we are allowed to use and it is summarized here [subject and allowed functions](assets/allowed_functions.md).  
 
+## The builtins
+
 The functionality of the builtin commands we will implement is described in the BASH manual and a short summary provided in the following.
 
 ### Builtin: `echo [-n] [arg ...]`
