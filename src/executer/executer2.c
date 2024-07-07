@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 17:05:30 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 19:47:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,8 +167,8 @@ int	resolve_command_path(char **argv, char *path_env)
 	if (ft_strchr(argv[0], '/') == NULL)
 	{
 		cmd = create_path(argv[0], path_env);
-		if (!cmd)
-			return (print_error_status("minishell: command not on path", 127));
+		if (!cmd || ft_strcmp(argv[0], "..") == 0 || ft_strcmp(argv[0], ".") == 0)
+			return (print_error_status("minishell: command not found", 127));
 		argv[0] = cmd;
 	}
 	else

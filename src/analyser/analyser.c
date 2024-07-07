@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 17:24:44 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 20:08:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,6 +258,7 @@ char	*replace_dollar_vars(t_data *data, char *lexeme)
 	debug("replace dollar vars in lexeme: %s", lexeme);
 	i = 0;
 	new_lexeme = ft_strdup(lexeme);
+	debug("new lexeme: %s ============================", new_lexeme);
 	key = NULL;
 	while (new_lexeme && new_lexeme[i])
 	{

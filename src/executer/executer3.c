@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/07 16:39:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 20:01:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,16 @@ int	execute_command(t_list *tokenlist, t_data *data)
 	if (pid == 0)
 	{
 		argv = get_argv_from_tokenlist(&tokenlist);
+		if (argv == NULL || argv[0] == NULL || argv[0][0] == '\0')
+			exit(0);
+		debug("my command is %s", argv[0]);
 		status = resolve_command_path(argv, mini_get_env(data->env_arr, "PATH"));
 		if (status != 0)
 			exit (status);
 		debug("command and args: %s %s", argv[0], argv[1]);
 		execve(argv[0], argv, (char **)data->env_arr->contents);
-		return (status_perror2("minishell: ", argv[0], 126));
+		status = status_perror2("minishell: ", argv[0], 126);
+		exit(status);
 	}
 	else if (pid == -1)
 		return (status_and_perror("minishell: fork failed", EXIT_FAILURE));

@@ -6,13 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 13:55:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 19:50:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print_history(void)
+int	print_history(void)
 {
 	int		i;
 	int		fd;
@@ -26,7 +26,7 @@ void	print_history(void)
 	if (fd == -1)
 	{
 		perror("open");
-		return ;
+		return (EXIT_FAILURE);
 	}
 	line = get_next_line(fd);
 	while (line != NULL)
@@ -37,6 +37,7 @@ void	print_history(void)
 		line = get_next_line(fd);
 	}
 	close(fd);
+	return (EXIT_SUCCESS);
 }
 
 /*
