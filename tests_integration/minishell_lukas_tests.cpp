@@ -512,6 +512,97 @@ const char* test_exit4()
 	return NULL;
 }
 
+/*
+export ls="ls -l" - $ls
+*/
+const char* test_exit5() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export ls='ls -l' && $ls";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct exit 4\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
+	return NULL;
+}
+
+
+/*
+export var=a && export $var=test && echo $var $a
+
+*/
+const char* test_export() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export var=a && export $var=test && echo $var $a";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "a test\n", "output is not correct export\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+
+/*
+export $var=test - unset var
+
+*/
+const char* test_export2() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export $var=test && unset var";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct export 2\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+export test1 - env
+*/
+const char* test_export3() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export test1 && env | grep test1";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct export 3\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
+	return NULL;
+}
+
+const char* test_export4() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export test1 && env | grep test1 && export | grep test1";	
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct export 4\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
+	return NULL;
+}
+
 
 const char *all_tests()
 {
@@ -546,12 +637,19 @@ const char *all_tests()
 	run_test(test_exit2);
 	run_test(test_exit3);
 	run_test(test_exit4);
+	// run_test(test_exit5); // not working because of quotes and popen probably
 
+	run_test(test_export);
+	run_test(test_export2);
+	//run_test(test_export3);
+	// run_test(test_export4); // cant make it work under thuis config
 
 	return NULL;
 }
 
 RUN_TESTS(all_tests);
+
+
 
 bool isRunningOnGitHubActions() 
 {

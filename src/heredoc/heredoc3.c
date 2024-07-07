@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 09:41:09 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 17:47:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int  execute_heredoc_child(t_list *tokenlist, t_data *data, int pfd[2])
     if (close(pfd[1]) == -1)
         exit_and_print_err("minishell: error: parent close write end of pipe", 127);
     dup2(pfd[0], STDIN_FILENO);
-    argv = get_argv_from_tokenlist(tokenlist);
+    argv = get_argv_from_tokenlist(&tokenlist);
     if (!resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")))
         exit (127);
     debug("command and args: %s %s", argv[0], argv[1]);

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/07 15:05:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 16:39:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 	pid = fork();
 	if (pid == 0)
 	{
-		argv = get_argv_from_tokenlist(tokenlist);
+		argv = get_argv_from_tokenlist(&tokenlist);
 		status = resolve_command_path(argv, mini_get_env(data->env_arr, "PATH"));
 		if (status != 0)
 			exit (status);

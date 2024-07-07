@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 13:33:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 16:46:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ t_list	*tokenizer(const char *input)
 		ft_lstclear(&data.token_list, free_tokennode);
 		return (NULL);
 	}
+	debug("token list successfully tokenized === ");
 	return (data.token_list);
 }
 
