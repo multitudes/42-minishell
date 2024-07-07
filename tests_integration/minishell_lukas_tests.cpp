@@ -14,7 +14,8 @@ uint8_t run_command_and_check_output(const std::string& command_to_exec, std::os
 bool isRunningOnGitHubActions();
 
 // since we will unset it better save it
-const char* home = std::getenv("HOME");
+const char* home = getenv("HOME");
+std::string homeString = std::string(home);
 
 /*
 cd ../../../../../.. && pwd
@@ -262,18 +263,119 @@ const char* test_echo2()
 const char* test_echo3() 
 {
     fflush(stdout);
+
 	const char *path_c = getenv("PATH");
 	if (path_c == nullptr) 
     	return "PATH is not set";
-
 	std::string path(path_c);
 	path = path + "\n";
+
     std::ostringstream result;
 	std::string arg = "echo $PATH";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(result.str() == path, "output is not correct echo3\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+echo ~
+*/
+const char* test_echo4() 
+{
+    fflush(stdout);
+
+
+    std::ostringstream result;
+	std::string arg = "echo ~";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+	homeString = homeString + "\n";
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == homeString, "output is not correct echo4\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+
+const char* test_echo5() 
+{
+    fflush(stdout);
+
+
+    std::ostringstream result;
+	std::string arg = "echo -n -n -nnnn -nnnnm";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "-nnnnm", "output is not correct echo5\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+echo -n -nnn hello -n
+*/
+const char* test_echo6() 
+{
+    fflush(stdout);
+
+
+    std::ostringstream result;
+	std::string arg = "echo -n -nnn hello -n";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "hello -n", "output is not correct echo6\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+echo "front$HOMEback"
+*/
+const char* test_echo7() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "echo \"front$HOMEback\"";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "front\n", "output is not correct echo7\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+
+
+extern char **environ;
+
+std::string getEnvironmentVariableAsString() {
+	std::stringstream envString;
+	for (char **env = environ; *env; ++env) {
+		envString << *env << "\n";
+	}
+	return envString.str();
+}
+/*
+test value of env command output
+
+*/
+const char* test_env() 
+{
+    fflush(stdout);
+
+    std::string envVariables = getEnvironmentVariableAsString();
+
+    std::ostringstream result;
+	std::string arg = "env";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == envVariables, "output is not correct env\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
@@ -300,6 +402,12 @@ const char *all_tests()
 	run_test(test_echo);
 	run_test(test_echo2);
 	run_test(test_echo3);
+	run_test(test_echo4);
+	run_test(test_echo5);
+	run_test(test_echo6);
+
+	run_test(test_env);
+
 
 	return NULL;
 }
