@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 20:08:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 20:24:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,7 @@ char	*get_key(char *str)
 		return (NULL);
 	if (end && (*end == '?') && (*(end + 1) == '\0' || ((end + 1) && *(end + 1) == ' ')))
 		return (ft_strdup("?"));
-	if (end && (ft_isalpha(*end) || *end == '_'))
+	if (end && (ft_isalnum(*end) || *end == '_'))
 		end++;
 	else
 		return (ft_strdup(""));
@@ -263,7 +263,7 @@ char	*replace_dollar_vars(t_data *data, char *lexeme)
 	while (new_lexeme && new_lexeme[i])
 	{
 		key = get_key(new_lexeme + i);
-		// debug("Extracted key: %s", key);
+		debug("Extracted key: %s", key);
 		if (key != NULL)
 		{
 			if (ft_strlen(key) == 0)
@@ -272,6 +272,7 @@ char	*replace_dollar_vars(t_data *data, char *lexeme)
 				key_value = ft_itoa(data->exit_status);
 			else
 				key_value = mini_get_env(data->env_arr, key);
+			debug("key_value: %s ==================================", key_value);
 			temp[0] = ft_strndup(new_lexeme, i);
 			temp[1] = ft_strdup(new_lexeme + i + ft_strlen(key) + 1);
 			temp[2] = new_lexeme;

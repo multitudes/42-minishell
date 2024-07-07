@@ -85,7 +85,7 @@ DOLLAR_AT, // '$@'  ‘@’ is used to get all the positional parameters, except
 DOLLAR_HASH, // '$#'  ‘#’ is used to get the number of positional parameters.
 DOLLAR_BANG, // '$!'  ‘!’ is used to get the process ID of the last background command.
 DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.	 
-DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
+VAR_EXPANSION, // '$0' ‘0’ is used to get the name of the shell or script.
 DOLLAR,
 
 COMMENT, starting with # and ending with a newline are ignored! -- not implemented as token
