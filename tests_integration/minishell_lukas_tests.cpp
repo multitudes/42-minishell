@@ -715,6 +715,55 @@ const char* test_parsing2()
 	return NULL;
 }
 
+/*
+echo "bip | bip ; coyotte > < "
+*/
+const char* test_parsing3() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "echo 'bip | bip ; coyote > <; <3 !'";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "bip | bip ; coyote > <; <3 !\n", "output is not correct parsing3\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+export var=--- && echo $USER$var$USER$USER$USERtest$USER
+
+*/
+const char* test_parsing4() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	// export a env var into env
+	if (setenv("var", "---", 1) != 0) {
+        std::cerr << "Failed to set environment variable" << std::endl;
+        return "Failed to set environment variable";
+    }
+	std::string arg = "echo $USER$var$USER$USER$USERtest$USER";
+	char *user = getenv("USER");
+	if (user == NULL || *user == '\0')
+		return "USER is not set";
+	std::string userString = std::string(user);
+	userString = userString + "---" + userString + userString + userString + "\n";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == userString, "output is not correct parsing 4\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -761,6 +810,8 @@ const char *all_tests()
 
 	// run_test(test_parsing);
 	run_test(test_parsing2);
+	run_test(test_parsing3);
+	run_test(test_parsing4);
 
 	return NULL;
 }
