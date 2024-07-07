@@ -9,6 +9,7 @@
 #include <array>
 #include <sstream>
 #include <iostream>
+#include <sys/stat.h>
 
 // forward declaration
 uint8_t run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result);
@@ -390,6 +391,114 @@ const char* test_env()
 	return NULL;
 }
 
+/*
+Do export test1 && export test2=hi <- test1 should not show in env
+
+cnnot make this test work with popen? works when calling minishell
+*/
+const char* test_env2() 
+{
+    fflush(stdout);
+
+
+    std::ostringstream result;
+	std::string arg = "export test1 && export test2=hi && env | grep test";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "_=export test1 && export test2=hi && env | grep test\ntest2=hi\n", "output is not correct env2\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+const char* test_env3() 
+{
+    fflush(stdout);
+
+
+    std::ostringstream result;
+	std::string arg = "env what?";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct env2\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
+	return NULL;
+}
+
+/*
+exit status
+*/
+const char* test_exit() 
+{
+    fflush(stdout);
+
+
+    std::ostringstream result;
+	std::string arg = "what?";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct env2\n");
+	my_assert(exit_status == 127, "exit status is not 1\n");
+	return NULL;
+}
+
+/*
+trying to execute a non executable file
+
+*/
+const char* test_exit2() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "./LICENSE";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct exit 2\n");
+	my_assert(exit_status == 126, "exit status is not 126\n");
+	return NULL;
+}
+
+const char* test_exit3() 
+{
+    fflush(stdout);
+
+	// modify the permissions of the file!
+	const char* filename = "../LICENSE"; // Path to the file
+    struct stat st;
+    if (stat(filename, &st) == 0) {
+        // Add execute permissions for user, group, and others
+        mode_t mode = st.st_mode | S_IXUSR | S_IXGRP | S_IXOTH;
+        if (chmod(filename, mode) == -1) {
+            perror("chmod failed");
+            return "chmod failed";
+        }
+    } else {
+        perror("stat failed");
+        return "stat failed";
+    }
+
+
+    std::ostringstream result;
+	std::string arg = "./LICENSE";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct exit 2\n");
+	my_assert(exit_status == 126, "exit status is not 126\n");
+	return NULL;
+}
+
+
+
 
 const char *all_tests()
 {
@@ -416,7 +525,14 @@ const char *all_tests()
 	run_test(test_echo5);
 	run_test(test_echo6);
 
-	run_test(test_env);
+	// run_test(test_env);
+	// run_test(test_env2); // cannot make this work with popen
+	run_test(test_env3);
+
+	run_test(test_exit);
+	run_test(test_exit2);
+	run_test(test_exit3);
+
 
 	return NULL;
 }

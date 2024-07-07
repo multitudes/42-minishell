@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 14:48:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,13 +114,13 @@ int	resolve_command_path(char **argv, char *path_env)
 	{
 		cmd = create_path(argv[0], path_env);
 		if (!cmd)
-			return (false_and_print("minishell: command not on path"));
+			return (print_error_status("minishell: command not on path", 127));
 		argv[0] = cmd;
 	}
 	else
 	{
 		if (access(argv[0], X_OK) == -1)
-			return (false_and_print("minishell: Permission denied"));
+			return (status_perror2("minishell: ", argv[0], 126));
 	}
-	return (true);
+	return (0);
 }
