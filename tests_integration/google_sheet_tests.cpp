@@ -829,6 +829,10 @@ const char* test_parsing8()
 	return NULL;
 }
 
+/*
+var exp now includes $ alfanum
+which will be not found and will have null value so when I enter $4 in the minishell nothing happens
+*/
 
 
 const char *all_tests()
