@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:32:51 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:53:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 20:15:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ bool	is_complex_dollar_exp(t_mini_data *data, int *i)
 	else if (peek(data->input + *i, "$", FUZZY) && \
 	is_digit(*(data->input + *i + 1)))
 		return (proc_token_off_1(data, i, is_digit, \
-		DOLLAR_DIGIT));
+		VAR_EXPANSION));
 	else if (peek(data->input + *i, "${", FUZZY))
 		return (add_tokenblock(data, i, '}', VAR_EXPANSION));
 	else if (peek(data->input + *i, "$", FUZZY) && is_alnum(*(data->input \
@@ -65,7 +65,7 @@ bool	is_complex_dollar_exp(t_mini_data *data, int *i)
     DOLLAR_BANG, // '$!'  ‘!’ is used to get the process ID of the last 
 	background command.
 	DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.	 
-	DOLLAR_DIGIT, // '$0' ‘0’ is used to get the name of the shell or script.
+	VAR_EXPANSION, // '$0' ‘0’ is used to get the name of the shell or script.
 	Parameter names in bash can only contain alphanumeric 
 	characters or underscores, and must start with a letter or underscore.
 */
