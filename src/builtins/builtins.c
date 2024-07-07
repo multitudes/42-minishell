@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/07 18:19:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/07 19:56:14 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 {
 	uint8_t	status;
 
+	status = 0;
 	if (!tokenlist)
 		return (EXIT_FAILURE);
-	status = 0;
 	if (ft_strncmp(get_token_lexeme(tokenlist), "echo", 5) == 0)
 		status = execute_echo_builtin(tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "cd", 3) == 0)
@@ -46,27 +46,18 @@ uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
 		status = (int)execute_exit_builtin(data, tokenlist->next);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "true", 5) == 0)
-	{
 		status = 0;
-		debug("true builtin");
-	}
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "false", 6) == 0)
-	{
 		status = 1;
-		debug("false builtin");
-	}
 	else if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
 	{
-		// debug("clearing history\n");
 		clear_hist_file();
 		rl_clear_history();
 	}
 	else if (ft_strncmp(data->input, "history", 7) == 0)
-		print_history(); //we need exit status of history command ! (after all) ;)
-	else
-	{
-		debug("not an implemented builtin");
-	}
+		status = print_history();
+	else 
+		return (print_error_status("minishell: not implemented", 2));
 	return (status);
 }
 

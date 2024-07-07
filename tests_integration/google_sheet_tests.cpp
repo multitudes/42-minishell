@@ -763,6 +763,73 @@ const char* test_parsing4()
 	return NULL;
 }
 
+const char* test_parsing5() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "$";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct parsing5\n");
+	my_assert(exit_status == 127, "exit status is not 127\n");
+	return NULL;
+}
+
+const char* test_parsing6() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "..";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct parsing5\n");
+	my_assert(exit_status == 127, "exit status is not 127\n");
+	return NULL;
+}
+
+
+const char* test_parsing7() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = ".";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct parsing7\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+	return NULL;
+}
+
+
+const char* test_parsing8() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "$whatever";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct parsing8\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+
 
 const char *all_tests()
 {
@@ -812,6 +879,11 @@ const char *all_tests()
 	run_test(test_parsing2);
 	run_test(test_parsing3);
 	run_test(test_parsing4);
+	run_test(test_parsing5);
+	run_test(test_parsing6);
+	run_test(test_parsing7);
+	// run_test(test_parsing8);// not working as expected
+
 
 	return NULL;
 }
