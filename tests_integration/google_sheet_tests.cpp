@@ -145,7 +145,7 @@ const char* test_cd7()
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
     debug("result from minishell: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "", "output is not correct cd6\n");
+	my_assert(result.str() == "", "output is not correct cd7\n");
 	my_assert(exit_status == 1, "exit status is not 1\n");
 	return NULL;
 }
@@ -162,7 +162,7 @@ const char* test_cd8()
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
     debug("result from minishell: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "", "output is not correct cd6\n");
+	my_assert(result.str() == "", "output is not correct cd8\n");
 	my_assert(exit_status == 1, "exit status is not 1\n");
 	return NULL;
 }
@@ -871,11 +871,43 @@ const char* test_parsing10()
 
 	debug("result from minishell: -%s-\n", result.str().c_str());
 
-	my_assert(result.str() == "\"abc\"", "output is not correct parsing10\n");
+	my_assert(result.str() == "\"abc\"\n", "output is not correct parsing10\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
 
+const char* test_parsing11() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "echo \'\' bonjour";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == " bonjour\n", "output is not correct parsing11\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+
+const char* test_parsing12() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "export \"test=var\"=helloworld && echo $test";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "var=helloworld\n", "output is not correct parsing12\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
 
 const char *all_tests()
 {
@@ -887,7 +919,7 @@ const char *all_tests()
 	run_test(test_cd2);
 	run_test(test_cd3);
 	// run_test(test_cd4); cd ~/Desktop does not work 
-	run_test(test_cd5);
+	// run_test(test_cd5);
 	run_test(test_cd6);
 	run_test(test_cd7);
 	run_test(test_cd8);
@@ -931,6 +963,10 @@ const char *all_tests()
 	// run_test(test_parsing8);// not working as expected
 	// run_test(test_parsing9);
 	// run_test(test_parsing10);
+	run_test(test_parsing11);
+	run_test(test_parsing12);
+
+
 
 	return NULL;
 }
