@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 19:47:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/08 12:44:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	check_for_spaces(t_list **tokenlist)
 	while (*tokenlist)
 	{
 		lex = get_token_lexeme(*tokenlist);
-		if (ft_strchr(lex, ' ') && get_token_type(*tokenlist) == RESOLVED)
+		if (ft_strchr(lex, ' ') && get_token_type(*tokenlist) == EXPANDED)
 		{
 			debug("======================== > found space in token: %s", lex);
 			new = tokenizer(lex);

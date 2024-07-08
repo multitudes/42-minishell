@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 12:27:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/08 13:57:22 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,20 +41,35 @@ void	load_history(void)
 	close(fd);
 }
 
-/*
 
+
+/*
+this is different than the get_home function because it is called before we create 
+our minienv array. So we cannot use the mini_get_env function. 
 */
 char	*get_history_file_path(void)
 {
 	char	*path;
 	char	*home;
 
-	home = get_home(NULL);
+	home = getenv("HOME");
+	debug("HOME from bash env: %s", home);
+	if (home)
+		home = ft_strdup(home);
+	else
+	{
+		debug("HOME not set in env, trying to get from /etc/passwd");
+        char *username = getenv("USER");
+		debug("Username: %s", username);
+		if (username)
+			home = ft_strjoin("/home/", username);
+		else
+			home = ft_strdup("/home");
+    }
 	if (home == NULL)
 		return (NULL);
 	debug("history home: %s", home);
 	path = ft_strjoin(home, MINIHISTFILEPATH);
-	free(home);
 	debug("path: %s", path);
 	if (path == NULL)
 		print_minishell_error_status("history file path missing", 1);
@@ -144,3 +159,55 @@ int	clear_hist_file(void)
 	close(fd);
 	return (0);
 }
+
+
+/*
+TODO implement this for macos and do the same for linux if we have time
+also implement the get_home function for linux
+and replace the popen with our commands
+*/
+// char *get_macos_home_directory(void) {
+//     int fd;
+//     char buffer[1035];
+//     ssize_t numRead;
+//     char *home = NULL;
+
+//     /* Open the command for reading. */
+//     FILE *fp = popen("dscl . -read /Users/$(whoami) NFSHomeDirectory | awk '{print $2}'", "r");
+//     if (fp == NULL) {
+//         printf("Failed to run command\n");
+//         exit(1);
+//     }
+
+//     /* Convert FILE* stream to file descriptor */
+//     fd = fileno(fp);
+//     if (fd == -1) {
+//         perror("fileno failed");
+//         pclose(fp);
+//         return NULL;
+//     }
+
+//     /* Initialize buffer */
+//     memset(buffer, 0, sizeof(buffer));
+
+//     /* Read the output a chunk at a time - output it. */
+//     numRead = read(fd, buffer, sizeof(buffer) - 1); // Read up to sizeof(buffer)-1 bytes
+//     if (numRead > 0) {
+//         // Ensure null-termination
+//         buffer[numRead] = '\0';
+
+//         // Remove newline character at the end if present
+//         if (buffer[numRead - 1] == '\n') {
+//             buffer[numRead - 1] = '\0';
+//         }
+
+//         home = strdup(buffer);
+//     } else {
+//         printf("Failed to read data\n");
+//     }
+
+//     /* Close */
+//     pclose(fp);
+
+//     return home;
+// }

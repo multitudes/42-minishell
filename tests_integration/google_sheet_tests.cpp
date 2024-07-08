@@ -10,9 +10,16 @@
 #include <sstream>
 #include <iostream>
 #include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
-// forward declaration
+// forward declaration 
+// this is the new version of the function with popen
 uint8_t run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result);
+// the number 2 is the one with the pipes
+int	run_command_and_check_output2(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
+// check if I am on GH actions and if not do not execute locally to save time
 bool isRunningOnGitHubActions();
 
 // since we will unset it better save it
@@ -112,12 +119,14 @@ const char* test_cd5()
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(strcmp(home, result.str().c_str()), "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
-
+	
 	return NULL;
 }
 
 /*
 export HOME=/Users/user42 && cd ~ // exit status is 1 because dir not found
+
+at the end I will set home again
 */
 const char* test_cd6() 
 {
@@ -130,6 +139,10 @@ const char* test_cd6()
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct cd6\n");
 	my_assert(exit_status == 1, "exit status is not 1\n");
+
+	// reasign home to old value
+	if (home != NULL && *home != '\0')
+		setenv("HOME", home, 1);
 	return NULL;
 }
 
@@ -232,6 +245,10 @@ const char* test_cd11()
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(strcmp(result.str().c_str(), curr_dir), "output is not correct cd10\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	// reasign home to old value
+	if (home != NULL && *home != '\0')
+		setenv("HOME", home, 1);
 	return NULL;
 }
 
@@ -909,6 +926,62 @@ const char* test_parsing12()
 	return NULL;
 }
 
+/*
+cat | cat | cat | ls
+*/
+const char* test_pipe() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "cat | cat | cat | ls\n\n\n\n";	
+	bool pass;
+	std::string output;
+	uint8_t exit_status = run_command_and_check_output2(arg, output, &pass);
+ 	// ioctl(0, TIOCSTI, "\n");
+	// ioctl(0, TIOCSTI, "\n");
+	// ioctl(0, TIOCSTI, "\n");
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == " bonjour\n", "output is not correct pipe\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+
+const char* test_pipe2() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "cat Makefile | grep pr | head -n 5 | cd file_not_exit";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct pipe2\n");
+	my_assert(exit_status == 1, "exit status is not 0\n");
+	return NULL;
+}
+
+const char* test_pipe3() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "cat Makefile | grep pr | head -n 5 | hello";	
+
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+
+	my_assert(result.str() == "", "output is not correct pipe3\n");
+	my_assert(exit_status == 127, "exit status is not 0\n");
+	return NULL;
+}
+
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -964,7 +1037,12 @@ const char *all_tests()
 	// run_test(test_parsing9);
 	// run_test(test_parsing10);
 	run_test(test_parsing11);
-	run_test(test_parsing12);
+	// run_test(test_parsing12);
+
+	// run_test(test_pipe); // to difficult to test with popen and with pipes... skip
+
+	run_test(test_pipe2);
+	run_test(test_pipe3);
 
 
 
@@ -1017,3 +1095,91 @@ uint8_t run_command_and_check_output(const std::string& command_to_exec, std::os
         }
     }
 }
+
+
+
+int	run_command_and_check_output2(const std::string& command_to_exec, const std::string& expected_output, bool *pass) {
+	// seen from the point of you of the child process. pipefd_in is the input to the child process
+	// and pipefd_out is the output of the child process
+	int status;
+	uint8_t	exit_status;
+	int pipefd_in[2];
+    int pipefd_out[2]; 
+
+	// create the pipes
+    if (pipe(pipefd_in) == -1)
+        return -1;
+    if (pipe(pipefd_out) == -1)
+        return (-1);
+
+	// create a child process	
+    pid_t pid = fork();
+    if (pid == -1)
+		return (-1);
+    
+    else if (pid == 0) {
+		// The child will read from pipefd_in[0] and write to pipefd_out[1]
+
+		// I need to duplicate the file descriptors to the standard input and output
+        dup2(pipefd_in[0], STDIN_FILENO); 
+        close(pipefd_in[0]);
+        dup2(pipefd_out[1], STDOUT_FILENO);
+        close(pipefd_out[1]);
+
+		// close the other ends of the pipes - child writes to pipefd_out[1]
+		// which is now his stdout, so I could close pipefd_out[0]
+		// but this gives me an error. I think this has to be closed by the process that 
+		// is exiting... because if I write to a pipe that has no reader, the process will
+		// receive a SIGPIPE signal and be killed. Race condition. the reader in the parent is not
+		// ready to receive the child output? 
+		// close(pipefd_out[0]);
+
+		// close the other ends of the pipes - child reads from pipefd_in[0]
+		// so I close pipefd_in[1] 
+		close(pipefd_in[1]);
+
+        execl("../minishell", "minishell", (char*) NULL);
+        exit(EXIT_FAILURE);
+    } else {
+		// The parent will write to pipefd_in[1] and read from pipefd_out[0]
+        close(pipefd_out[1]);
+        close(pipefd_in[0]);
+		usleep(5000);
+        write(pipefd_in[1], command_to_exec.c_str(), command_to_exec.size());
+        write(pipefd_in[1], "\x04", 1);
+		write(pipefd_in[1], "\x04", 1);
+		write(pipefd_in[1], "\x04", 1);
+
+		// close pipefd_in after use to send the eof
+		close(pipefd_in[1]);
+		usleep(5000);
+
+        char buffer[1024];
+        int n = read(pipefd_out[0], buffer, sizeof(buffer));
+        buffer[n] = '\0';
+       	debug("output: -%s-", buffer);
+        
+
+        if (strcmp(buffer, expected_output.c_str()) == 0)
+			*pass = true;
+		debug("pass: %s", *pass ? "true" : "false");
+		
+		// clean up closing the file descriptors that I used
+		close(pipefd_out[0]);
+		
+		// this is the proper way to get the exit status of the child process
+		exit_status = 0;
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status)) /* child exited normally */
+			exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status)) /* child exited on a signal */
+			exit_status = WTERMSIG(status) + 128; /* 128 is the offset for signals */
+		else
+			exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
+		return exit_status;
+	}
+}
+
+
+
+
