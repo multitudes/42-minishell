@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/08 12:44:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/08 18:52:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,16 +299,18 @@ void	expand_dollar(t_data *data, t_token *token)
 {
 	char	*var;
 
-	debug("expand_dollar");
-	if (!token)
+	debug("expand_dollar %s", token->lexeme);
+
+	if (!token || !token->lexeme)
 		return ;
-	// token->type = WORD; because it is executed again below 
-	if (token->lexeme && ft_strchr(token->lexeme, '$'))
+	if (ft_strlen(token->lexeme) == 1 && token->lexeme[0] == '$')
+		token->type = EXPANDED;
+	else if (ft_strchr(token->lexeme, '$'))
 	{
 		var = replace_dollar_vars(data, token->lexeme);
 		free(token->lexeme);
 		token->lexeme = var;
-		token->type = EXPANDED; // changed to resolved, so that it is not expanded again
+		token->type = EXPANDED;
 	}
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
@@ -355,7 +357,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	t_list	*string_tokens;
 	t_list	*ptr_token_list;
 
-	debug("expand_string");
+	debug("expand_string double quotes %s", token->lexeme);
 	unquoted_lexeme = NULL;
 	if (!token)
 		return ;
@@ -367,15 +369,15 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		token->lexeme = unquoted_lexeme;
 		return ;
 	}
+	debug("unquoted lexeme: %s ********************", unquoted_lexeme);
 	string_tokens = string_tokenizer(unquoted_lexeme);
+	debug("string tokens: %s type %d", get_token_lexeme(string_tokens), get_token_type(string_tokens));
 	free(unquoted_lexeme);
 	ptr_token_list = string_tokens;
 	while (string_tokens)
 	{
 		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR || get_token_type(string_tokens) == DOLLAR_QUESTION)
 			expand_dollar(data, get_curr_token(string_tokens));
-		// else if (get_token_type(string_tokens) == DOLLAR_QUESTION)
-		// 	expand_exit_status(data, get_curr_token(string_tokens));
 		temp_lexeme = token->lexeme;
 		token->lexeme = ft_strjoin(temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
 		free(temp_lexeme);
@@ -420,7 +422,7 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 			data->exit_status = print_error_status("minishell: system error: missing token", 1);
 			return ;
 		}
-//		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
+		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
 		set_flags(tokenlist, &flags);
 		execute_expansion_by_type(data, &tokenlist, &flags);
 		if (token_followed_by_space(tokenlist))

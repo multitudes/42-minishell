@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/08 14:06:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/08 18:21:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ char	*create_path(char *base, char *path_env)
 	char	**envpaths;
 
 	i = 0;
+	if (!path_env || !base)
+		return (NULL);
 	envpaths = ft_split(path_env, ':');
 	while (envpaths[i])
 	{
