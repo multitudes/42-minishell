@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/08 18:21:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/08 20:00:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,11 @@ int	resolve_command_path(char **argv, char *path_env)
 	char 	*err;
 
 	cmd = NULL;
+	if (access(argv[0], F_OK) != -1)
+	{
+		if (access(argv[0], X_OK) == -1)
+			return (status_perror2("minishell: ", argv[0], 126));
+	}
 	if (ft_strchr(argv[0], '/') == NULL)
 	{
 		cmd = create_path(argv[0], path_env);
@@ -177,11 +182,6 @@ int	resolve_command_path(char **argv, char *path_env)
 			return (print_error_status(err, 127));
 		}
 		argv[0] = cmd;
-	}
-	else
-	{
-		if (access(argv[0], X_OK) == -1)
-			return (status_perror2("minishell: ", argv[0], 126));
 	}
 	return (0);
 }
