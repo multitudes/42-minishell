@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 20:24:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/08 12:44:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,7 +308,7 @@ void	expand_dollar(t_data *data, t_token *token)
 		var = replace_dollar_vars(data, token->lexeme);
 		free(token->lexeme);
 		token->lexeme = var;
-		token->type = RESOLVED; // changed to resolved, so that it is not expanded again
+		token->type = EXPANDED; // changed to resolved, so that it is not expanded again
 	}
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }

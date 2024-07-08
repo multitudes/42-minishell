@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 20:15:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/08 12:44:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ typedef enum e_tokentype {
 	DOLLAR_QUESTION,
 	TILDE,
 	COMMAND,
-	RESOLVED,
+	EXPANDED,
 	NULL_TOKEN,
 	SEMI,
 	SEMI_AND,
