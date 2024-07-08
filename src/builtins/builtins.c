@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/08 17:39:54 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/08 17:48:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,7 +301,7 @@ bool remove_sign_token(t_list **tokenlist)
 
 	sign = false;
     if (tokenlist == NULL || *tokenlist == NULL)
-        return (false);
+		return (false);
 	if (ft_strncmp(get_token_lexeme(*tokenlist), "-", 1) == 0)
 		sign = true;
     tmp = *tokenlist;
