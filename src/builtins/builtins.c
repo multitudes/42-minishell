@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/07 19:56:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/08 16:46:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
 		status = execute_env_builtin(data->env_arr, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
-		status = (int)execute_exit_builtin(data, tokenlist->next);
+		status = execute_exit_builtin(data, tokenlist);
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "true", 5) == 0)
 		status = 0;
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "false", 6) == 0)
@@ -293,23 +293,87 @@ uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 	return (status);
 }
 
+bool remove_sign_token(t_list **tokenlist)
+{
+    t_list *tmp;
+	t_list *prev;
+	char 	sign;
+
+	sign = false;
+    if (tokenlist == NULL || *tokenlist == NULL)
+        return (false);
+	if (ft_strncmp(get_token_lexeme(*tokenlist), "-", 1) == 0)
+		sign = true;
+    tmp = *tokenlist;
+	prev = tmp->prev;
+    *tokenlist = tmp->next;
+	if (tmp->next)
+		tmp->next->prev = prev;
+    free_tokennode(tmp->content);
+	free(tmp);
+	return (sign);
+}
+
+void merge_sign_token(t_list **tokenlist)
+{
+	char	*old_lexeme;
+	char	*new_lexeme;
+	bool	sign;
+
+	old_lexeme = get_token_lexeme(*tokenlist);
+	if (!old_lexeme)
+		return ;
+	debug("merge_minus_token old lex %s and length %zu", old_lexeme, ft_strlen(old_lexeme));
+	if ((old_lexeme[0] == '-' || old_lexeme[0] == '+') && ft_strlen(old_lexeme) == 1)
+	{
+		sign = remove_sign_token(tokenlist);
+		old_lexeme = get_token_lexeme(*tokenlist);
+		debug("new tokenlist: %s - > %s ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
+		if (sign)
+		{
+			new_lexeme = ft_strjoin("-", old_lexeme);				
+			free(old_lexeme);
+			if (!new_lexeme)
+				return ;
+			((t_token *)(*tokenlist)->content)->lexeme = new_lexeme;
+		}
+	}
+	return ;
+}
+
+/*
+Now updated as follows
+if I have a "exit -100" I will have the 3 tokens exit - 100
+so I do atoi of 100 and multiply to -1 and cast to unsigned int 
+modulo 256 to get the same result as bash
+*/
 uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 {
 	uint8_t	status;
 	char	*lexeme;
 	char	*message;
 
+	tokenlist = tokenlist->next;
+	// merge in case I have a minus token
+	merge_sign_token(&tokenlist);
+	debug("exit builtin %s =============", get_token_lexeme(tokenlist));
+	//prev token
+	debug("exit builtin prev %s =============", get_token_lexeme(tokenlist->prev));
+	debug("exit builtin next %s =============", get_token_lexeme(tokenlist->next));
 	lexeme = get_token_lexeme(tokenlist);
+	// check if I have more than three token when a minus token is there
 	if (lexeme && ft_isnumstring(lexeme) && tokenlist->next)
+		return (print_minishell_error_status("exit: too many arguments", 1));
+	else if (lexeme && ft_isnumstring(lexeme) && tokenlist->next)
 		return (print_minishell_error_status("exit: too many arguments", 1));
 	restore_fds(data);
 	write(1, "exit\n", 5);
 	if (lexeme && ft_isnumstring(lexeme))
-		status = ft_atoi(lexeme);
+		status = (unsigned int)ft_atoi(lexeme) % 256;
 	else if (lexeme && !ft_isnumstring(lexeme))
 	{
 		message = ft_strjoin3("exit: ", lexeme, ": numeric arguments required");
-		status = print_minishell_error_status(message, 2);
+		status = print_minishell_error_status(message, 255);
 		free(message);
 	}
 	else
@@ -326,7 +390,11 @@ bool	ft_isnumstring(const char *str)
 	int	i;
 
 	i = 0;
-	while (str && str[i])
+	if (!str)
+		return (false);
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))
 			return (false);
