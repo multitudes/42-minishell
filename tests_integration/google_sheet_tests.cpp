@@ -147,7 +147,7 @@ const char* test_cd6()
 }
 
 /*
-cd .. cool swag  // exit status 1
+cd .. cool swag  // exit status 0 and output is empty
 */
 const char* test_cd7() 
 {
@@ -159,7 +159,7 @@ const char* test_cd7()
 
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct cd7\n");
-	my_assert(exit_status == 1, "exit status is not 1\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
 

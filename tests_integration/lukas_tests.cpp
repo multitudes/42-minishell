@@ -139,8 +139,45 @@ const char* test_builtin7()
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
     debug("result from minishell: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "", "output is not correct\n");
+	my_assert(result.str() == "exit\n", "output is not correct\n");
 	my_assert(exit_status == 255, "exit status is not 255\n");
+	return NULL;
+}
+
+/*
+unset PATH 
+check exit status
+
+*/
+const char* test_builtin_unset() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "unset PATH && echo $?";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "0\n", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 255\n");
+	return NULL;
+}
+
+
+/*
+echo "$"
+*/
+const char* test_builtin_echo() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "echo '$'";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "$\n", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 255\n");
 	return NULL;
 }
 
@@ -156,7 +193,11 @@ const char *all_tests()
 	run_test(test_builtin4);
 	run_test(test_builtin5);
 	run_test(test_builtin6);
+	run_test(test_builtin7);
 
+	run_test(test_builtin_unset);
+
+	run_test(test_builtin_echo);
 
 
 
