@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/08 16:46:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/08 17:39:54 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -320,6 +320,7 @@ void merge_sign_token(t_list **tokenlist)
 	char	*new_lexeme;
 	bool	sign;
 
+	sign = false;
 	old_lexeme = get_token_lexeme(*tokenlist);
 	if (!old_lexeme)
 		return ;
@@ -328,15 +329,15 @@ void merge_sign_token(t_list **tokenlist)
 	{
 		sign = remove_sign_token(tokenlist);
 		old_lexeme = get_token_lexeme(*tokenlist);
-		debug("new tokenlist: %s - > %s ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
+		debug("new tokenlist: %s > %s ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
 		if (sign)
-		{
-			new_lexeme = ft_strjoin("-", old_lexeme);				
-			free(old_lexeme);
-			if (!new_lexeme)
-				return ;
-			((t_token *)(*tokenlist)->content)->lexeme = new_lexeme;
-		}
+			new_lexeme = ft_strjoin("-", old_lexeme);	
+		else
+			new_lexeme = ft_strjoin("+", old_lexeme);			
+		free(old_lexeme);
+		if (!new_lexeme)
+			return ;
+		((t_token *)(*tokenlist)->content)->lexeme = new_lexeme;
 	}
 	return ;
 }
@@ -353,18 +354,16 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	char	*lexeme;
 	char	*message;
 
+	t_list *head = tokenlist;
+	debug("exit builtin %s =============", get_token_lexeme(tokenlist));
+
 	tokenlist = tokenlist->next;
 	// merge in case I have a minus token
 	merge_sign_token(&tokenlist);
-	debug("exit builtin %s =============", get_token_lexeme(tokenlist));
-	//prev token
-	debug("exit builtin prev %s =============", get_token_lexeme(tokenlist->prev));
-	debug("exit builtin next %s =============", get_token_lexeme(tokenlist->next));
+	head->next = tokenlist;
 	lexeme = get_token_lexeme(tokenlist);
 	// check if I have more than three token when a minus token is there
 	if (lexeme && ft_isnumstring(lexeme) && tokenlist->next)
-		return (print_minishell_error_status("exit: too many arguments", 1));
-	else if (lexeme && ft_isnumstring(lexeme) && tokenlist->next)
 		return (print_minishell_error_status("exit: too many arguments", 1));
 	restore_fds(data);
 	write(1, "exit\n", 5);

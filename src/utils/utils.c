@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:37:46 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/08 17:24:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,8 @@ void	replace_node_with_newlist(t_list **node, t_list *newlist)
 	t_list *last;
 	t_list *tmp;
 	
+	if (!node || !newlist)
+		return ;
 	tmp = *node;
 	prev = (*node)->prev;
 	next = (*node)->next;
