@@ -982,6 +982,7 @@ const char* test_pipe3()
 }
 
 
+
 const char *all_tests()
 {
 	// necessary to start the test suite
