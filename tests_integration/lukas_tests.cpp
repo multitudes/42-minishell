@@ -26,6 +26,7 @@ bool isRunningOnGitHubActions();
 const char* home = getenv("HOME");
 
 /*
+exit hello
 */
 const char* test_builtin() 
 {
@@ -36,7 +37,7 @@ const char* test_builtin()
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
     debug("result from minishell: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "exit\n", "output is not root\n");
+	my_assert(result.str() == "exit\n", "output is not correct\n");
 	my_assert(exit_status == 255, "exit status is not 255\n");
 	return NULL;
 }
@@ -53,24 +54,92 @@ const char* test_builtin2()
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
     debug("result from minishell: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "exit\n", "output is not root\n");
-	my_assert(exit_status == 255, "exit status is not 255\n");
+	my_assert(result.str() == "exit\n", "output is not correct\n");
+	my_assert(exit_status == 156, "exit status is not 255\n");
 	return NULL;
 }
 
 /*
-exit -"100"
+exit +"100"
 */
 const char* test_builtin3() 
 {
     fflush(stdout);
 
     std::ostringstream result;
-	std::string arg = "exit -\"100\"";
+	std::string arg = "exit +\"100\"";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
     debug("result from minishell: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "exit\n", "output is not root\n");
+	my_assert(result.str() == "exit\n", "output is not correct\n");
+	my_assert(exit_status == 100, "exit status is not 255\n");
+	return NULL;
+}
+
+/*
+exit "-100"
+*/
+const char* test_builtin4() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "exit \"-100\"";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "exit\n", "output is not correct\n");
+	my_assert(exit_status == 156, "exit status is not 255\n");
+	return NULL;
+}
+
+/*
+exit "+100"
+*/
+const char* test_builtin5() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "exit \"+100\"";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "exit\n", "output is not correct\n");
+	my_assert(exit_status == 100, "exit status is not 255\n");
+	return NULL;
+}
+
+/*
+exit 100 morestuff
+*/
+const char* test_builtin6() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "exit 100 toomany";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct\n");
+	my_assert(exit_status == 1, "exit status is not 255\n");
+	return NULL;
+}
+
+/*
+exit  more stuff
+*/
+const char* test_builtin7() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "exit too many";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 255, "exit status is not 255\n");
 	return NULL;
 }
@@ -82,7 +151,12 @@ const char *all_tests()
 	
 	// run the tests
 	run_test(test_builtin);
-	
+	run_test(test_builtin2);
+	run_test(test_builtin3);
+	run_test(test_builtin4);
+	run_test(test_builtin5);
+	run_test(test_builtin6);
+
 
 
 
