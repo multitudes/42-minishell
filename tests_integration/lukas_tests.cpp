@@ -215,6 +215,57 @@ const char* test_builtin_echo3()
 	return NULL;
 }
 
+/*
+echo 'bye *'
+*/
+const char* test_builtin_echo4() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "echo 'bye *'";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "bye *\n", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+export a=43 | echo $a
+*/
+const char* test_builtin_export() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export a=42 && export a=43 | echo $a";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "42\n", "output is not 42\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+export GHOST=123 | env | grep GHOST
+*/
+const char* test_builtin_export2() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "export GHOST=123 | env | grep GHOST";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not nothing\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -234,6 +285,10 @@ const char *all_tests()
 	run_test(test_builtin_echo);
 	// run_test(test_builtin_echo2); 
 	run_test(test_builtin_echo3);
+	run_test(test_builtin_echo4);
+
+	run_test(test_builtin_export);
+	// run_test(test_builtin_export2); doesnt work in -c mode but works in minishell
 
 
 

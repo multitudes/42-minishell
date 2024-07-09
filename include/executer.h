@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 16:40:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/09 15:00:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ extern "C" {
 # include <sys/types.h>
 # include <stdint.h>
 # include "scanner.h"
+# include "darray.h"
 
 // forward declarations
 typedef struct s_data t_data;
@@ -44,6 +45,7 @@ int		count_tokens(t_list *tokenlist);
 int		get_status_of_children(pid_t pid1, pid_t pid2);
 int 	free_array(char **envpaths);
 uint8_t	get_wait_status(int	status);
+void	update_dollar_underscore(t_darray *env_arr, t_list *tokenlist);
 
 #  ifdef __cplusplus
 

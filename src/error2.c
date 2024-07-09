@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 19:33:34 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 14:40:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/09 16:28:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,30 @@ void	*null_on_err(const char *message)
 {
 	perror(message);
 	return (NULL);
+}
+
+/*
+Print error to standard error and return passed status.
+the format defaults to "minishell: " followed by the 
+argument or command like argv[0] and then the custom error message.
+*/
+uint8_t	print_error_status2(const char *message, const char *message2, uint8_t status)
+{
+	ssize_t	result;
+
+	result = write(2, "minishell: ", 12);
+	if (result == -1 || result != 12) 
+		status = status_and_perror("write", 1);
+	result = write(2, message, ft_strlen(message));
+	if (result == -1 || result != (ssize_t)ft_strlen(message)) 
+		status = status_and_perror("write", 1);
+	result = write(2, message2, ft_strlen(message2));
+	if (result == -1 || result != (ssize_t)ft_strlen(message2)) 
+		status = status_and_perror("write", 1);
+	result = write(2, "\n", 1);
+	if (result == -1 || result != 1) 
+		status = status_and_perror("write", 1);
+	return (status);
 }
 
 /*
