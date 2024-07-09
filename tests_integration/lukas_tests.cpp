@@ -177,7 +177,7 @@ const char* test_builtin_echo()
 
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "$\n", "output is not correct\n");
-	my_assert(exit_status == 0, "exit status is not 255\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
 
@@ -194,7 +194,24 @@ const char* test_builtin_echo2()
 
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "$\n", "output is not correct\n");
-	my_assert(exit_status == 0, "exit status is not 255\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+echo a c b  | sort
+*/
+const char* test_builtin_echo3() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "echo a c b  | sort";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "a c b\n", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
 
@@ -216,6 +233,7 @@ const char *all_tests()
 
 	run_test(test_builtin_echo);
 	// run_test(test_builtin_echo2); 
+	run_test(test_builtin_echo3);
 
 
 

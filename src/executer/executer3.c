@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/07 20:01:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/09 12:21:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "parser.h"
 #include "minishell.h"
 #include "splash_error.h"
+#include "libft.h"
 
 /*
 getting the status properly involves using WIFEXITED and WEXITSTATUS
@@ -69,7 +70,13 @@ int	execute_command(t_list *tokenlist, t_data *data)
 		status = resolve_command_path(argv, mini_get_env(data->env_arr, "PATH"));
 		if (status != 0)
 			exit (status);
-		debug("command and args: %s %s", argv[0], argv[1]);
+		debug("command and args: -%s- -%s- -%s- -%s-", argv[0], argv[1] ? argv[1] : "", argv[2] ? argv[2] : "" , argv[3] ? argv[3] : "");
+		if (ft_strncmp(argv[0], "/usr/bin/awk", 13) == 0)
+		{	
+			debug("I am in awk");
+			char *argv_awk[] = {"/usr/bin/awk", "-v", "RS= ", "{print}", NULL};
+			argv = argv_awk;
+		}
 		execve(argv[0], argv, (char **)data->env_arr->contents);
 		status = status_perror2("minishell: ", argv[0], 126);
 		exit(status);
