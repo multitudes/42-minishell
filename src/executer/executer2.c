@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 16:26:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/09 16:34:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,6 @@ if it cannot be resolved it will return 1
 int	resolve_command_path(char **argv, char *path_env)
 {
 	char	*cmd;
-	char 	*err;
 	struct stat statbuf;
 	
 	cmd = NULL;
@@ -230,14 +229,13 @@ int	resolve_command_path(char **argv, char *path_env)
 		if (!cmd || ft_strcmp(argv[0], "..") == 0 || ft_strcmp(argv[0], ".") == 0)
 		{
 			free(cmd);
-			err = ft_strjoin3("minishell: ", argv[0], " command not found");
-			return (print_error_status(err, 127));
+			return (print_error_status2(argv[0], " command not found", 127));
 		}
 		argv[0] = cmd;
 	} 
 	else
 	{
-		return (print_error_status(err, 127));
+		return (print_error_status2(argv[0], " command not found", 127));
 	}
 	
 	return (0);
