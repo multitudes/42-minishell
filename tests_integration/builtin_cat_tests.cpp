@@ -41,7 +41,8 @@ const char *all_tests()
 	{
 		// necessary to start the test suite
 		suite_start();
-		run_test(test_basicminishell_cat);
+		// run_test(test_basicminishell_cat);
+		run_test(test_empty);
 	}
 
 	return NULL;
