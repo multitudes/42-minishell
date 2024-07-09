@@ -374,7 +374,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		return ;
 	unquoted_lexeme = ft_strtrim(token->lexeme, "\""); // this does not behave well, when we have strings like "\"djklfjsdl\"" or ""dkldfj" as escape characters and unclosed quotes are not handled ;
 	free(token->lexeme);
-	token->lexeme = NULL;
+	token->lexeme = ft_strdup("");
 	if (!ft_strchr(unquoted_lexeme, '$'))
 	{
 		token->lexeme = unquoted_lexeme;
@@ -384,14 +384,17 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	string_tokens = tokenizer(unquoted_lexeme);
 	free(unquoted_lexeme);
 	token_sanitization(string_tokens);
-	debug("First string token: %s type %d space? %i", get_token_lexeme(string_tokens), get_token_type(string_tokens));
+	debug("First string token: %s type %d", get_token_lexeme(string_tokens), get_token_type(string_tokens));
 	ptr_token_list = string_tokens;
 	while (string_tokens)
 	{
 		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR_QUESTION)
 			expand_dollar(data, get_curr_token(string_tokens));
 		temp_lexeme = token->lexeme;
-		token->lexeme = ft_strjoin(temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
+		if (((t_token *)(string_tokens->content))->folldbyspace == true)
+			token->lexeme = ft_strjoin3(temp_lexeme, ((t_token *)string_tokens->content)->lexeme, " ");
+		else
+			token->lexeme = ft_strjoin(temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
 		free(temp_lexeme);
 		string_tokens = string_tokens->next;
 	}
