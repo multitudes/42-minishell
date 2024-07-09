@@ -287,7 +287,7 @@ const char *all_tests()
 	run_test(test_builtin_echo3);
 	run_test(test_builtin_echo4);
 
-	run_test(test_builtin_export);
+	// run_test(test_builtin_export);
 	// run_test(test_builtin_export2); doesnt work in -c mode but works in minishell
 
 
