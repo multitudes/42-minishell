@@ -376,7 +376,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	ptr_token_list = string_tokens;
 	while (string_tokens)
 	{
-		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR || get_token_type(string_tokens) == DOLLAR_QUESTION)
+		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR_QUESTION)
 			expand_dollar(data, get_curr_token(string_tokens));
 		temp_lexeme = token->lexeme;
 		token->lexeme = ft_strjoin(temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
