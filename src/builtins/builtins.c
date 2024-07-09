@@ -372,7 +372,7 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	else if (lexeme && !ft_isnumstring(lexeme))
 	{
 		message = ft_strjoin3("exit: ", lexeme, ": numeric arguments required");
-		status = print_minishell_error_status(message, 255);
+		status = print_minishell_error_status(message, 2);
 		free(message);
 	}
 	else
