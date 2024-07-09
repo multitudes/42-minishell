@@ -87,7 +87,7 @@ uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 	getcwd = NULL;
 	tokenlist = tokenlist->next;
 	if (tokenlist && tokenlist->next)
-		return (print_error_status("minishell: cd: too many arguments", 0));
+		return (print_error_status("minishell: cd: too many arguments", 1));
 	getoldcwd = execute_getcwd(old_dir); //, "minishell: cd: get old cwd");
 	status = execute_cd_tokenlist(env_arr, tokenlist);
 	debug("status: %d", status);
