@@ -12,6 +12,25 @@
 
 #include "scanner.h"
 
+bool	is_heredoc_token(t_tokentype tokentype)
+{
+	if (tokentype == DLESS)
+		return (true);
+	return (false);
+}
+
+bool	is_redirection_token(t_tokentype tokentype)
+{
+
+	if (tokentype == REDIRECT_IN || tokentype == REDIRECT_OUT)
+		return (true);
+	else if (tokentype == REDIRECT_BOTH || tokentype == REDIRECT_BOTH_APP)
+		return (true);
+	else if (tokentype == DGREAT)
+		return (true);
+	return (false);
+}
+
 bool	add_here_and_delim(t_mini_data *data, int *i)
 {
 	int		start;

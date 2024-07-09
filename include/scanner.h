@@ -228,6 +228,8 @@ bool	is_a_flag(t_mini_data *data, int *i);
 bool	is_a_string_thing(t_mini_data *data, int *i);
 bool	is_a_redirection(t_mini_data *data, int *i);
 bool	is_a_globbing(t_mini_data *data, const char *tmp, int *start);
+bool	is_redirection_token(t_tokentype tokentype);
+bool	is_heredoc_token(t_tokentype tokentype);
 
 #  ifdef __cplusplus
 

@@ -17,6 +17,7 @@
 #include "analyser.h"
 #include "heredoc.h"
 #include "darray.h"
+#include "scanner.h"
 
 /*
 posix compliant use of the environ variable but wecan discuss this
@@ -32,11 +33,7 @@ static bool	contains_redirection(t_list *tokenlist)
 	while (tokenlist)
 	{
 		tokentype = get_token_type(tokenlist);
-		if (tokentype == REDIRECT_IN || tokentype == REDIRECT_OUT)
-			return (true);
-		else if (tokentype == REDIRECT_BOTH || tokentype == REDIRECT_BOTH_APP)
-			return (true);
-		else if (tokentype == DGREAT)
+		if (is_redirection_token(tokentype))
 			return (true);
 		tokenlist = tokenlist->next;
 	}
@@ -122,7 +119,9 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 		{
 			// debug("contains redirection (check)");
 			status = execute_redirection(&ast); // double pointer should not be needed here.
-			continue ; // should not be needed either? maybe?
+			debug("Status after execute redirection: %i", status);
+			if (status == 0)
+				continue ;
 		}
 		else if (is_heredoc(ast->token_list))
 		{

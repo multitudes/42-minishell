@@ -427,10 +427,26 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 		execute_expansion_by_type(data, &tokenlist, &flags);
 		if (token_followed_by_space(tokenlist))
 			reset_flags(&flags);
-		debug("Token expanded - token type: %d ", get_token_type(tokenlist));
-		// debug("Token expanded - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
+		debug("Token expanded - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
 		tokenlist = tokenlist->next;
 	}
+}
+
+static bool	separated_token_types(t_list *tokenlist)
+{
+	t_tokentype	type_token_1;
+	t_tokentype	type_token_2;
+
+	if (!tokenlist || !tokenlist->next)
+		return (true);
+	type_token_1 = get_token_type(tokenlist);
+	type_token_2 = get_token_type(tokenlist->next);
+	if (is_redirection_token(type_token_1) || is_redirection_token(type_token_2))
+		return (true);
+	else if (is_heredoc_token(type_token_1) || is_heredoc_token(type_token_2))
+		return (true);
+	return (false);
+
 }
 
 /*
@@ -451,6 +467,14 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	which_ast_node(ast);
 	debug("ast-node type after check: %i)", ast->type);
 	expand_tokenlist(data, tokenlist);
-	while (tokenlist->next && !token_followed_by_space(tokenlist))
-		merge_tokens(tokenlist);
+	while (tokenlist && tokenlist->next)
+	{
+		if (!token_followed_by_space(tokenlist) && !separated_token_types(tokenlist))
+		{
+			merge_tokens(tokenlist);
+			continue ;
+		}
+		tokenlist = tokenlist->next;
+	}
+	debug("First lexeme in merged tokenlist: %s", get_token_lexeme(ast->token_list));
 }

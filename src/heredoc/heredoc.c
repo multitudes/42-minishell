@@ -147,9 +147,12 @@ Checks for heredoc token in tokenlist.
 */
 bool    is_heredoc(t_list *tokenlist)
 {
+    t_tokentype tokentype;
+
     while (tokenlist)
     {
-        if (get_token_type(tokenlist) == DLESS)
+        tokentype = get_token_type(tokenlist);
+        if (is_heredoc_token(tokentype))
             return (true);
         tokenlist = tokenlist->next;
     }
