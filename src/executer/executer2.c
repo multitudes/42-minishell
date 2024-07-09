@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 17:32:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/09 18:41:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,9 +170,10 @@ int	resolve_command_path(char **argv, char *path_env)
 	cmd = NULL;
 
 	// if starts with a .slash it is a exec in curr dir
+	// or starting a relative path
 	if (ft_strncmp(argv[0], "./", 2) == 0)
 	{
-		// check if there is a file with that name
+		// check if there is a file or dir with that name
 		if (access(argv[0], F_OK) != -1) 
 		{
 			debug("file exists but is a directory? ----------");
@@ -182,17 +183,43 @@ int	resolve_command_path(char **argv, char *path_env)
 				{
 					debug("is a directory!");
 					return (print_error_status2(argv[0], ": is a directory", 126));
-				}
+				} 
 				else if (S_ISREG(statbuf.st_mode))
 				{
 					// check if it is executable
 					if (access(argv[0], X_OK) == -1)
 						return (status_perror2("minishell: ", argv[0], 126));
+					else
+						return (0);
 				}
 
 			}
 		}
+		else 
+		{
+			//No such file or directory
+			return (print_error_status2(argv[0], ": No such file or directory", 127));
+		}
 	}
+
+	// just the name of file without a path is always a command even if there is a 
+	// file with that name in the current directory
+	if (ft_strchr(argv[0], '/') == NULL)
+	{
+		debug("file does not exist in current directory - no slash in name - look for command in PATH"); 
+		cmd = create_path(argv[0], path_env);
+		if (!cmd || ft_strcmp(argv[0], "..") == 0 || ft_strcmp(argv[0], ".") == 0)
+		{
+			free(cmd);
+			return (print_error_status2(argv[0], " command not found", 127));
+		}
+		argv[0] = cmd;
+	} 
+	else
+	{
+		return (print_error_status2(argv[0], " command not found", 127));
+	}
+
 	// if file is /usr/bin/ls
 	// but if src check for existence and also if not a dir
 	// .. is considered a command?
@@ -200,7 +227,7 @@ int	resolve_command_path(char **argv, char *path_env)
 	{
 		// file might exist
         // Check if it's not a directory
-		debug("file exists but is a directory? ----------");
+		debug("file might exists but is a directory? ----------");
 		if (stat(argv[0], &statbuf) == 0) 
 		{
 			if (!S_ISDIR(statbuf.st_mode))
@@ -222,24 +249,7 @@ int	resolve_command_path(char **argv, char *path_env)
 			return (status_perror2("minishell: ", argv[0], 1));
 		}
 	}
-	// file doesnt exits in current directory but maybe is a command
-	// so  check if it doesnt have a slash in its name  
-	// like ls 
-	if (ft_strchr(argv[0], '/') == NULL)
-	{
-		debug("file does not exist in current directory - no slash in name - look for command in PATH"); 
-		cmd = create_path(argv[0], path_env);
-		if (!cmd || ft_strcmp(argv[0], "..") == 0 || ft_strcmp(argv[0], ".") == 0)
-		{
-			free(cmd);
-			return (print_error_status2(argv[0], " command not found", 127));
-		}
-		argv[0] = cmd;
-	} 
-	else
-	{
-		return (print_error_status2(argv[0], " command not found", 127));
-	}
+
 	
 	return (0);
 }
