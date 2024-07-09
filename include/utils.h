@@ -18,7 +18,7 @@
 
 int     ft_isascii(const int c);
 char	*ft_strndup(const char *s, size_t n);
-char	*ft_strjoin3(const char *key, const char *mid, const char *value);
+char	*ft_strjoin3(const char *s1, const char *s2, const char *s3);
 int	    count_char_in_str(char *str, char c);
 void	replace_node_with_newlist(t_list **node, t_list *newlist);
 int     ft_strcmp(const char *s1, const char *s2);
