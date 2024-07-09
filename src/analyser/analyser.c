@@ -57,11 +57,11 @@ void	which_ast_node(t_ast_node *ast)
 /*
 We dont expand tilde if the next char after the tilde is not a valid path
 */
-int	peek_is_valid_path(char c)
+bool	peek_is_valid_path(char c)
 {
 	if (ft_strchr("/:", c) || c == '\0')
-		return (1);
-	return (0);
+		return (true);
+	return (false);
 }
 
 /*
@@ -71,7 +71,7 @@ we have more equal signs in between.
 */
 bool	valid_tilde_separator(char sep, int equal_status)
 {
-	if (ft_strchr(":", sep))
+	if (ft_strchr(": ", sep))
 		return (true);
 	else if (sep == '=' && equal_status == 1)
 		return (true);
@@ -79,6 +79,7 @@ bool	valid_tilde_separator(char sep, int equal_status)
 }
 
 /*
+Replaces occurances of '~' in a string, if conditions for ~-expansion are met.
 */
 char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_flags *flags)
 {
@@ -89,24 +90,21 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 	char	*back;
 	char	*temp;
 
-	debug("replace_tilde_in_str: %s", lexeme);
+	debug("replace_tilde_in_str: %s with home: %s", lexeme, home);
 	i = 0;
 	new_lexeme = ft_strdup(lexeme);
 	if (flags->equal_status == 1)
 	{
-		pos = ft_strchr(lexeme, '=');
+		pos = ft_strchr(new_lexeme, '=');
 		if (!pos)
-		{
-			pos = lexeme;
-			flags->equal_status = 2;
-		}
-		i = pos - lexeme + 1;
+			pos = new_lexeme;
+		else
+			i = pos - new_lexeme + 1;
 	}
 	else
-		pos = lexeme;
+		pos = new_lexeme;
 	while (new_lexeme && new_lexeme[i])
 	{
-		// debug("State of equal_status flag: %i", flags->equal_status);
 		if (new_lexeme[i] == '~' && i == 0 && peek_is_valid_path(new_lexeme[i + 1]) && (flags->equal_status == 1) && valid_tilde_expansion(tokenlist, i))
 		{
 			back = ft_strdup(new_lexeme + 1);
@@ -123,9 +121,6 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 			if (flags->equal_status == 1)
 				flags->equal_status = 2;
 			temp = new_lexeme;
-			// debug("front of new string: %s", front);
-			// debug("middle of new string: %s", home);
-			// debug("back of new string: %s", back);
 			new_lexeme = ft_strjoin3(front, home, back);
 			free(front);
 			free(back);
