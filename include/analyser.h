@@ -44,7 +44,7 @@ void	expand_exit_status(t_data *data, t_token *token);
 void	expand_single_quotes(t_token *token);
 void	expand_double_quotes(t_data *data, t_token *token);
 char	*get_home(t_darray *env_arr);
-int     peek_is_valid_path(char c);
+bool    peek_is_valid_path(char c);
 bool    valid_tilde_separator(char sep, int equal_status);
 bool	valid_tilde_expansion(t_list *tokenlist, int index);
 char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_flags *flags);
