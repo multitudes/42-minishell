@@ -465,7 +465,8 @@ const char* test_exit()
 
 /*
 trying to execute a non executable file
-
+bash: ./LICENSE: Permission denied
+exit 126
 */
 const char* test_exit2() 
 {
