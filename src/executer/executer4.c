@@ -82,7 +82,10 @@ uint8_t setup_redirect(t_list **tokenlist, t_tokentype type)
     if (status != 0)
         return (status);
     if (dup2_by_redirect_type(type, filename, &fd, &status) != 0)
+    {
+        close(fd);
         return (status);
+    }
     consume_token_and_connect(tokenlist);
     close(fd);
     return (0);
@@ -124,7 +127,11 @@ uint8_t	execute_redirection(t_ast_node **ast)
     {
         type = get_token_type(tokenlist);
         if (supported_redirect_token(type))
+        {
             status = setup_redirect(&tokenlist, type);
+            if (token_counter == 0)
+                (*ast)->token_list = tokenlist;
+        }
         else
             token_counter++;
         if (status != 0)
