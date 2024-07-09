@@ -472,15 +472,14 @@ $(..) ${..} $'..' $".."
 */
 void analyse_expand(t_ast_node *ast, t_data *data)
 {
-	t_list	*tokenlist;
+	t_list		*tokenlist;
+	t_tokentype	tokentype;
 
 	if (ast == NULL)
 		return ;
 	tokenlist = ast->token_list;
 	if (!tokenlist)
 		return ;
-	which_ast_node(ast);
-	debug("ast-node type after check: %i)", ast->type);
 	expand_tokenlist(data, tokenlist);
 	while (tokenlist && tokenlist->next)
 	{
@@ -489,7 +488,15 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 			merge_tokens(tokenlist);
 			continue ;
 		}
+		else if (ft_strlen(get_token_lexeme(tokenlist)) == 0)
+		{
+			tokentype = ((t_token *)(tokenlist->next->content))->type;
+			merge_tokens(tokenlist);
+			((t_token *)(tokenlist->content))->type = tokentype;
+		}
 		tokenlist = tokenlist->next;
 	}
-	debug("First lexeme in merged tokenlist: %s", get_token_lexeme(ast->token_list));
+	which_ast_node(ast);
+	debug("ast-node type after check: %i)", ast->type);
+	// debug("First lexeme in merged tokenlist: -%s- of type: %i", get_token_lexeme(ast->token_list), get_token_type(ast->token_list));
 }
