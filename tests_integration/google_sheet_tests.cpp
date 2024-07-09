@@ -473,7 +473,7 @@ const char* test_exit2()
     fflush(stdout);
 
 	int fd = open("LICENCE", O_CREAT | O_RDWR, 0644);
-    if (file_descriptor == -1) {
+    if (fd == -1) {
         std::cerr << "Failed to open or create file." << std::endl;
         return "error in file creation";
     }
@@ -481,10 +481,10 @@ const char* test_exit2()
     if (chmod("LICENCE", S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH) == -1) {
         std::cerr << "Failed to set file permissions." << std::endl;
         // Close the file descriptor
-        close(file_descriptor);
+        close(fd);
         return "error in chmod";
     }
-	
+
     std::ostringstream result;
 	std::string arg = "./LICENSE";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
