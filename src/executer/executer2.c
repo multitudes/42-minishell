@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 16:34:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/09 17:32:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,8 @@ int	resolve_command_path(char **argv, char *path_env)
 	}
 	// if file is /usr/bin/ls
 	// but if src check for existence and also if not a dir
-	if (access(argv[0], F_OK) != -1) //&& !S_ISDIR(statbuf.st_mode)) 
+	// .. is considered a command?
+	if (access(argv[0], F_OK) != -1 && ft_strcmp(argv[0], "..") != 0)
 	{
 		// file might exist
         // Check if it's not a directory
@@ -210,9 +211,11 @@ int	resolve_command_path(char **argv, char *path_env)
 					return (status_perror2("minishell: ", argv[0], 126));
 				else
 					return (0);
-
 			}
-				
+			else
+			{
+				return (print_error_status2(argv[0], ": is a directory", 126));
+			}
 		}
 		else
 		{
