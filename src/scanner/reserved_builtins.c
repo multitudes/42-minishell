@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:40:02 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:56:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/09 15:46:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ bool	not_implemented_builtin(const char *id)
 	!ft_strncmp(id, "return", 6) || !ft_strncmp(id, "set", 3) || \
 	!ft_strncmp(id, "shift", 5) || !ft_strncmp(id, "shopt", 5) || \
 	!ft_strncmp(id, "source", 6) || !ft_strncmp(id, "suspend", 7) || \
-	!ft_strncmp(id, "test", 4) || !ft_strncmp(id, "times", 5) || \
+	!ft_strncmp(id, "test", 5) || !ft_strncmp(id, "times", 5) || \
 	!ft_strncmp(id, "trap", 4) || !ft_strncmp(id, "type", 4) || \
 	!ft_strncmp(id, "typeset", 7) || !ft_strncmp(id, "ulimit", 6) || \
 	!ft_strncmp(id, "umask", 5) || !ft_strncmp(id, "unalias", 7) || \

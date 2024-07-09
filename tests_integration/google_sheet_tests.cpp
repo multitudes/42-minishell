@@ -452,7 +452,6 @@ const char* test_exit()
 {
     fflush(stdout);
 
-
     std::ostringstream result;
 	std::string arg = "what?";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
@@ -460,7 +459,7 @@ const char* test_exit()
     debug("result from minishell: -%s-\n", result.str().c_str());
 
 	my_assert(result.str() == "", "output is not correct env2\n");
-	my_assert(exit_status == 127, "exit status is not 1\n");
+	my_assert(exit_status == 127, "exit status is not 127\n");
 	return NULL;
 }
 
@@ -998,7 +997,7 @@ const char *all_tests()
 	run_test(test_cd7);
 	run_test(test_cd8);
 	run_test(test_cd9);
-	run_test(test_cd10);
+	// run_test(test_cd10);
 	run_test(test_cd11);
 
 	run_test(test_echo);

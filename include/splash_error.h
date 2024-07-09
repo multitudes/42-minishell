@@ -31,6 +31,7 @@ uint8_t	zero_and_printerr(const char *msg);
 void	*null_on_err(const char *message);
 bool	false_and_perr(const char *msg);
 bool	false_and_print(const char *msg);
+uint8_t	print_error_status2(const char *message, const char *message2, uint8_t status);
 
 #  ifdef __cplusplus
 
