@@ -266,6 +266,79 @@ const char* test_builtin_export2()
 	return NULL;
 }
 
+/*
+exits
+assumes src is a folder
+*/
+const char* test_exits() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "./src";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not nothing\n");
+	my_assert(exit_status == 126, "exit status is not 126\n");
+	return NULL;
+}
+
+
+/*
+exits
+assumes ./Makefile exists - permission denied
+*/
+const char* test_exits2() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "./Makefile";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not nothing\n");
+	my_assert(exit_status == 126, "exit status is not 126\n");
+	return NULL;
+}
+
+/*
+exits
+assumes ./Makefiles doesnt exist - no file or directory
+*/
+const char* test_exits3() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "./Makefiles";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not nothing\n");
+	my_assert(exit_status == 127, "exit status is not 126\n");
+	return NULL;
+}
+
+/*
+exits
+assumes src is a folder - comand not found
+*/
+const char* test_exits4() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "src";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not nothing\n");
+	my_assert(exit_status == 127, "exit status is not 126\n");
+	return NULL;
+}
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -290,7 +363,10 @@ const char *all_tests()
 	// run_test(test_builtin_export);
 	// run_test(test_builtin_export2); doesnt work in -c mode but works in minishell
 
-
+	// run_test(test_exits);
+	run_test(test_exits2);
+	run_test(test_exits3);
+	run_test(test_exits4);
 
 
 	return NULL;
