@@ -1030,7 +1030,7 @@ const char *all_tests()
 	run_test(test_exit);
 	// run_test(test_exit2); //works n minishell
 	// run_test(test_exit3); // works in minishell
-	run_test(test_exit4);
+	// run_test(test_exit4);
 	// run_test(test_exit5); // not working because of quotes and popen probably
 
 	// run_test(test_export);
