@@ -19,6 +19,22 @@
 #include "builtins.h"
 
 /*
+Changes type of all tokens in string_tokens to WORD,
+except for those $-tokens that our shell expands in a double quoted string
+*/
+
+static void	token_sanitization(t_list *string_tokens)
+{
+	while (string_tokens)
+	{
+
+		if (get_token_type(string_tokens) != VAR_EXPANSION && get_token_type(string_tokens) != DOLLAR_QUESTION)
+			((t_token *)(string_tokens->content))->type = WORD;
+		string_tokens = string_tokens->next;
+	}
+}
+
+/*
 it checks if the terminal ast node is a builtin or a command
 but this could be already done in the parser 🧐🤨
 This function is probably just for debug purposes
@@ -365,9 +381,10 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		return ;
 	}
 	debug("unquoted lexeme: %s ********************", unquoted_lexeme);
-	string_tokens = string_tokenizer(unquoted_lexeme);
-	debug("string tokens: %s type %d", get_token_lexeme(string_tokens), get_token_type(string_tokens));
+	string_tokens = tokenizer(unquoted_lexeme);
 	free(unquoted_lexeme);
+	token_sanitization(string_tokens);
+	debug("First string token: %s type %d space? %i", get_token_lexeme(string_tokens), get_token_type(string_tokens));
 	ptr_token_list = string_tokens;
 	while (string_tokens)
 	{
