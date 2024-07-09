@@ -68,9 +68,10 @@ int	execute_command(t_list *tokenlist, t_data *data)
 			exit(0);
 		debug("my command is %s", argv[0]);
 		status = resolve_command_path(argv, mini_get_env(data->env_arr, "PATH"));
+		debug("my resolved command is %s", argv[0]);
 		if (status != 0)
 			exit (status);
-		debug("command and args: -%s- -%s- -%s- -%s-", argv[0], argv[1] ? argv[1] : "", argv[2] ? argv[2] : "" , argv[3] ? argv[3] : "");
+		// debug("command and args: -%s- -%s- -%s- -%s-", argv[0], argv[1] ? argv[1] : "", argv[2] ? argv[2] : "" , argv[3] ? argv[3] : "");
 		if (ft_strncmp(argv[0], "/usr/bin/awk", 13) == 0)
 		{	
 			debug("I am in awk");

@@ -228,7 +228,7 @@ int	resolve_command_path(char **argv, char *path_env)
 		// file might exist
         // Check if it's not a directory
 		debug("file might exists but is a directory? ----------");
-		if (stat(argv[0], &statbuf) == 0) 
+		if (stat(argv[0], &statbuf) == 0)
 		{
 			if (!S_ISDIR(statbuf.st_mode))
 			{
