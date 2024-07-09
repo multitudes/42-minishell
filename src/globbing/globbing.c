@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 16:09:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/09 11:17:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ t_list	*create_globbing_tokenlist(t_darray *files)
 	while (i < files->end)
 	{
 		file = darray_get(files, i);
-		new_node = new_toknode(WORD, file, &start);
+		new_node = new_toknode(WORD, file, &start, true);
 		ft_lstadd_back(&head, new_node);
 		i++;
 	}

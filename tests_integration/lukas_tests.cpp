@@ -181,6 +181,23 @@ const char* test_builtin_echo()
 	return NULL;
 }
 
+/*
+echo "$"
+*/
+const char* test_builtin_echo2() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "echo \"$\"";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "$\n", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 255\n");
+	return NULL;
+}
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -198,6 +215,8 @@ const char *all_tests()
 	run_test(test_builtin_unset);
 
 	run_test(test_builtin_echo);
+	// run_test(test_builtin_echo2); 
+
 
 
 

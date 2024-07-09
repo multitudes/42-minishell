@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/08 20:00:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/09 11:39:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void	check_for_spaces(t_list **tokenlist)
 	t_list *head;
 
 	head = *tokenlist;
-	debug("head: %s - > %s ", get_token_lexeme(head), get_token_lexeme(head->next));
+	debug("head: -%s-  -%s-", get_token_lexeme(head), get_token_lexeme(head->next));
 	while (*tokenlist)
 	{
 		lex = get_token_lexeme(*tokenlist);
@@ -111,20 +111,20 @@ void	check_for_spaces(t_list **tokenlist)
 		{
 			debug("======================== > found space in token: %s", lex);
 			new = tokenizer(lex);
-			debug("new tokenlist: %s - > %s ", get_token_lexeme(new), get_token_lexeme(new->next));
+			debug("new tokenlist: -%s- -%s-", get_token_lexeme(new), get_token_lexeme(new->next));
 
 		
 			replace_token_with_tokenlist(tokenlist, new);
-			debug("new tokenlist: %s - > %s ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
+			debug("new tokenlist: -%s- -%s- ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
 		}
-		debug("new tokenlist: %s - > %s ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
+		debug("new tokenlist: -%s- -%s- ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
 		if (!(*tokenlist)->next)
 			break;	
 		*tokenlist = (*tokenlist)->next;
 	}
 	debug("about to ...");
 	head = get_head(*tokenlist);
-	debug("head: %s - > %s ", get_token_lexeme(head), get_token_lexeme(head->next));
+	debug("head: -%s- -%s-", get_token_lexeme(head), get_token_lexeme(head->next));
 	*tokenlist = head;
 }
 

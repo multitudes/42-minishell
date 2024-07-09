@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 18:59:09 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/09 11:18:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ char *return_lexeme_malloc(const char *lex)
 creates a simple t_list node - the token is in the content of the node
 in form of a string that will need to be freed
 */
-t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i)
+t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i, bool folldbyspace)
 {
 	t_token	*token;
 	t_list	*new_node;
@@ -81,7 +81,7 @@ t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i)
 	if (token == NULL)
 		return (NULL);
 	token->type = type;
-	token->folldbyspace = false;
+	token->folldbyspace = folldbyspace;
 	token->lexeme = return_lexeme_malloc(lexeme);
 	*i = *i + ft_strlen(token->lexeme);
 	debug("token created type %d -%s-", token->type, token->lexeme);
@@ -112,7 +112,7 @@ bool	add_token(t_mini_data *data, int *i, const char *lexem, t_tokentype type)
 		scanner_error(data, "minishell: error: empty lexem in token creation");
 	else
 	{
-		token = new_toknode(type, lexem, i);
+		token = new_toknode(type, lexem, i, false);
 		if (token)
 			ft_lstadd_back(&data->token_list, token);
 		else
