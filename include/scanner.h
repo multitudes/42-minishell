@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/08 12:44:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/09 11:17:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ struct						s_token
 typedef struct s_token		t_token;
 
 int		init_scanner_data(t_mini_data *data, const char *input);
-t_list	*new_toknode(t_tokentype type, const char *lexeme, int *start);
+t_list	*new_toknode(t_tokentype type, const char *lexeme, int *start, bool folldbyspace);
 t_list	*tokenizer(const char *input);
 t_list	*string_tokenizer(const char *input);
 bool	peek(const char *input, const char *identifier, bool end_space);
@@ -195,7 +195,6 @@ bool	is_true_false(t_mini_data *data, char *str, int *start);
 bool	is_builtin(t_mini_data *data, char *identifier, int *start);
 bool	add_token(t_mini_data *data, int *i, const char *lxm, t_tokentype type);
 void	print_token_list(t_list *token_list);
-t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i);
 bool	is_io_number(const char *identifier);
 bool	str_is_number(const char *identifier);
 bool	str_is_alphanum(const char *identifier);

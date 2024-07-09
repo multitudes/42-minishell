@@ -51,7 +51,7 @@ else ifeq ($(UNAME), Darwin)
 endif
 
 # target
-all: $(LIBFT) $(NAME) tests tests_integration
+all: $(LIBFT) $(NAME) tests tests_integration copy_bonus
 
 # Static pattern rule for compilation - adding the .o files in the obj folder 
 # with includes for the libft that will allow the <libft.h> notation 
@@ -82,7 +82,7 @@ fclean: clean
 	$(MAKE) -C tests fclean
 	$(MAKE) -C tests_integration fclean
 
-re: fclean all
+re: fclean all copy_bonus
 
 tests:
 	$(MAKE) -C tests
@@ -93,7 +93,10 @@ tests_integration:
 monkey:
 	sh monkey_tests/monkey.sh
 
-.PHONY: all clean fclean re tests tests_integration
+copy_bonus: minishell
+	cp minishell minishell_bonus
+
+.PHONY: all clean fclean re tests tests_integration	copy_bonus
 
 # This regex has been created by the maintainer of a http server 
 # to avoid using c functions like strcpy() etc... 
