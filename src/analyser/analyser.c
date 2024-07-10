@@ -356,7 +356,7 @@ void	expand_single_quotes(t_token *token)
 		lexeme = ft_strtrim(token->lexeme, "'"); 
 		free(token->lexeme);
 		token->lexeme = lexeme;
-		token->type = WORD;
+		token->type = QUOTE_EXPANDED;
 	}
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
@@ -399,7 +399,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		string_tokens = string_tokens->next;
 	}
 	ft_lstclear(&ptr_token_list, free_tokennode); //free_tokennode function is from scanner.h
-	token->type = WORD;
+	token->type = QUOTE_EXPANDED;
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
@@ -488,7 +488,7 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 			merge_tokens(tokenlist);
 			continue ;
 		}
-		else if (ft_strlen(get_token_lexeme(tokenlist)) == 0 && !token_followed_by_space(tokenlist))
+		else if (ft_strlen(get_token_lexeme(tokenlist)) == 0 && get_token_type(tokenlist) != QUOTE_EXPANDED)
 		{
 			tokentype = ((t_token *)(tokenlist->next->content))->type;
 			merge_tokens(tokenlist);
