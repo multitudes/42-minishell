@@ -38,7 +38,7 @@ const char* test_builtin()
 
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "exit\n", "output is not correct\n");
-	my_assert(exit_status == 255, "exit status is not 255\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
 	return NULL;
 }
 
@@ -140,7 +140,7 @@ const char* test_builtin7()
 
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "exit\n", "output is not correct\n");
-	my_assert(exit_status == 255, "exit status is not 255\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
 	return NULL;
 }
 

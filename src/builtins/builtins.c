@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/09 15:45:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/10 10:44:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -371,7 +371,7 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 		status = (unsigned int)ft_atoi(lexeme) % 256;
 	else if (lexeme && !ft_isnumstring(lexeme))
 	{
-		message = ft_strjoin3("exit: ", lexeme, ": numeric arguments required");
+		message = ft_strjoin3("exit: ", lexeme, ": numeric argument required");
 		status = print_minishell_error_status(message, 2);
 		free(message);
 	}
