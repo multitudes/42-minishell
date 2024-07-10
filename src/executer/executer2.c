@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 18:41:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/10 16:37:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,9 +169,22 @@ int	resolve_command_path(char **argv, char *path_env)
 	
 	cmd = NULL;
 
+// just the name of file without a path is always a command even if there is a 
+	// file with that name in the current directory
+	if (ft_strchr(argv[0], '/') == NULL)
+	{
+		debug("file does not exist in current directory - no slash in name - look for command in PATH"); 
+		cmd = create_path(argv[0], path_env);
+		if (!cmd || ft_strcmp(argv[0], "..") == 0 || ft_strcmp(argv[0], ".") == 0)
+		{
+			free(cmd);
+			return (print_error_status2(argv[0], " command not found", 127));
+		}
+		argv[0] = cmd;
+	}
 	// if starts with a .slash it is a exec in curr dir
 	// or starting a relative path
-	if (ft_strncmp(argv[0], "./", 2) == 0)
+	else if (ft_strncmp(argv[0], "./", 2) == 0)
 	{
 		// check if there is a file or dir with that name
 		if (access(argv[0], F_OK) != -1) 
@@ -201,20 +214,6 @@ int	resolve_command_path(char **argv, char *path_env)
 			return (print_error_status2(argv[0], ": No such file or directory", 127));
 		}
 	}
-
-	// just the name of file without a path is always a command even if there is a 
-	// file with that name in the current directory
-	if (ft_strchr(argv[0], '/') == NULL)
-	{
-		debug("file does not exist in current directory - no slash in name - look for command in PATH"); 
-		cmd = create_path(argv[0], path_env);
-		if (!cmd || ft_strcmp(argv[0], "..") == 0 || ft_strcmp(argv[0], ".") == 0)
-		{
-			free(cmd);
-			return (print_error_status2(argv[0], " command not found", 127));
-		}
-		argv[0] = cmd;
-	} 
 	// else
 	// {
 	// 	return (print_error_status2(argv[0], " command not found", 127));
@@ -223,7 +222,7 @@ int	resolve_command_path(char **argv, char *path_env)
 	// if file is /usr/bin/ls
 	// but if src check for existence and also if not a dir
 	// .. is considered a command?
-	if (access(argv[0], F_OK) != -1 && ft_strcmp(argv[0], "..") != 0)
+	else if (access(argv[0], F_OK) != -1 && ft_strcmp(argv[0], "..") != 0)
 	{
 		// file might exist
         // Check if it's not a directory
