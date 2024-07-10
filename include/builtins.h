@@ -30,7 +30,7 @@ extern "C" {
 uint8_t		execute_builtin(t_list *tokenlist, t_data *data);
 uint8_t		execute_cd_builtin(t_darray *env_arr, t_list *tokenlist);
 uint8_t		execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist);
-char    	*execute_getcwd(char old_dir[], char *message);
+char    	*execute_getcwd(char old_dir[]); //, char *message);
 uint8_t		execute_echo_builtin(t_list *tokenlist);
 uint8_t		execute_env_builtin(t_darray *env_arr, t_list *tokenlist);
 uint8_t	    execute_exit_builtin(t_data *data, t_list *tokenlist);

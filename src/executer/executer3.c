@@ -19,8 +19,8 @@
 #include "libft.h"
 
 /*
-getting the status properly involves using WIFEXITED and WEXITSTATUS
-so I this is an utility function to return the status of the child.
+getting the status properly involves using WIFEXITED and WEXITSTATUS.
+This is a utility function to return the status of the child.
 WIFEXITED returns true if the child terminated normally and the status
 of the child is returned by WEXITSTATUS. If the child did not terminate
 normally, WIFSIGNALED will return true and WTERMSIG will return the signal
@@ -68,9 +68,10 @@ int	execute_command(t_list *tokenlist, t_data *data)
 			exit(0);
 		debug("my command is %s", argv[0]);
 		status = resolve_command_path(argv, mini_get_env(data->env_arr, "PATH"));
+		debug("my resolved command is %s", argv[0]);
 		if (status != 0)
 			exit (status);
-		debug("command and args: -%s- -%s- -%s- -%s-", argv[0], argv[1] ? argv[1] : "", argv[2] ? argv[2] : "" , argv[3] ? argv[3] : "");
+		// debug("command and args: -%s- -%s- -%s- -%s-", argv[0], argv[1] ? argv[1] : "", argv[2] ? argv[2] : "" , argv[3] ? argv[3] : "");
 		if (ft_strncmp(argv[0], "/usr/bin/awk", 13) == 0)
 		{	
 			debug("I am in awk");
@@ -117,7 +118,9 @@ int	execute_list(t_ast_node *ast, t_data *data)
 	t_tokentype	tokentype;
 
 	debug("NODE_LIST || &&");
+	restore_fds(data);
 	status = execute_ast(ast->left, data);
+	restore_fds(data);
 	tokentype = ((t_token *)ast->token_list->content)->type;
 	if (status == 0 && tokentype == AND_IF)
 	{

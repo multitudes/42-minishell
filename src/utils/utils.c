@@ -82,7 +82,9 @@ char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 	return (result);
 }
 
-
+/*
+Counts the number of occurances of a char c in a string
+*/
 int	count_char_in_str(char *str, char c)
 {
 	int	i;

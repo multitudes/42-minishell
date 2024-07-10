@@ -20,14 +20,12 @@
 #include "splash_error.h"
 #include "analyser.h"
 
-char *execute_getcwd(char old_dir[], char *message)
+char *execute_getcwd(char old_dir[]) // char *message)
 {
     char    *retval;
 
     retval = NULL;
     retval = getcwd(old_dir, PATH_MAX);
-    if (!retval)
-		perror(message);
     return (retval);
 }
 

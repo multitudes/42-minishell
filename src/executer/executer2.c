@@ -182,13 +182,13 @@ int	resolve_command_path(char **argv, char *path_env)
 				if (S_ISDIR(statbuf.st_mode))
 				{
 					debug("is a directory!");
-					return (print_error_status2(argv[0], ": is a directory", 126));
+					return ((int)print_error_status2(argv[0], ": is a directory", (uint8_t)126));
 				} 
 				else if (S_ISREG(statbuf.st_mode))
 				{
 					// check if it is executable
 					if (access(argv[0], X_OK) == -1)
-						return (status_perror2("minishell: ", argv[0], 126));
+						return ((int)status_perror2("minishell: ", argv[0], (uint8_t)126));
 					else
 						return (0);
 				}
@@ -215,10 +215,10 @@ int	resolve_command_path(char **argv, char *path_env)
 		}
 		argv[0] = cmd;
 	} 
-	else
-	{
-		return (print_error_status2(argv[0], " command not found", 127));
-	}
+	// else
+	// {
+	// 	return (print_error_status2(argv[0], " command not found", 127));
+	// }
 
 	// if file is /usr/bin/ls
 	// but if src check for existence and also if not a dir
@@ -228,7 +228,7 @@ int	resolve_command_path(char **argv, char *path_env)
 		// file might exist
         // Check if it's not a directory
 		debug("file might exists but is a directory? ----------");
-		if (stat(argv[0], &statbuf) == 0) 
+		if (stat(argv[0], &statbuf) == 0)
 		{
 			if (!S_ISDIR(statbuf.st_mode))
 			{
@@ -249,7 +249,7 @@ int	resolve_command_path(char **argv, char *path_env)
 			return (status_perror2("minishell: ", argv[0], 1));
 		}
 	}
-
-	
+	else if (access(argv[0], F_OK) == -1 && ft_strcmp(argv[0], "..") != 0)
+		return (status_perror2("minishell: ", argv[0], 127));
 	return (0);
 }

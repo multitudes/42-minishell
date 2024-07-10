@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/09 15:45:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/10 10:44:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,17 +87,17 @@ uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 	getcwd = NULL;
 	tokenlist = tokenlist->next;
 	if (tokenlist && tokenlist->next)
-		return (print_error_status("minishell: cd: too many arguments", 0));
-	getoldcwd = execute_getcwd(old_dir, "minishell: cd: get old cwd");
+		return (print_error_status("minishell: cd: too many arguments", 1));
+	getoldcwd = execute_getcwd(old_dir); //, "minishell: cd: get old cwd");
 	status = execute_cd_tokenlist(env_arr, tokenlist);
 	debug("status: %d", status);
 	if (status != 0)
 		return (status);
-	getcwd = execute_getcwd(dir, "minishell: cd: get new cwd");
-	if (!getoldcwd || !update_env(env_arr, "OLDPWD", old_dir))
-		print_error_status("minishell: cd: update of OLDPWD failed", 0);
-	if (!getcwd || !update_env(env_arr, "PWD", dir))
-		print_error_status("minishell: cd: update of PWD failed", 0);
+	getcwd = execute_getcwd(dir); //, "minishell: cd: get new cwd");
+	if (!getoldcwd || !getcwd)
+		perror("minishell: getcwd");
+	else if (!update_env(env_arr, "PWD", dir) || !update_env(env_arr, "OLDPWD", old_dir))
+		print_error_status("minishell: cd: env update failed", 0);
 	return (status);
 }
 
@@ -371,8 +371,8 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 		status = (unsigned int)ft_atoi(lexeme) % 256;
 	else if (lexeme && !ft_isnumstring(lexeme))
 	{
-		message = ft_strjoin3("exit: ", lexeme, ": numeric arguments required");
-		status = print_minishell_error_status(message, 255);
+		message = ft_strjoin3("exit: ", lexeme, ": numeric argument required");
+		status = print_minishell_error_status(message, 2);
 		free(message);
 	}
 	else

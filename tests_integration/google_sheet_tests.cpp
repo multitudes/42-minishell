@@ -159,7 +159,7 @@ const char* test_cd7()
 
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct cd7\n");
-	my_assert(exit_status == 0, "exit status is not 0\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
 	return NULL;
 }
 
@@ -913,7 +913,7 @@ const char* test_parsing11()
 	fflush(stdout);
 
 	std::ostringstream result;
-	std::string arg = "echo \'\' bonjour";	
+	std::string arg = "echo \'\' bonjour";
 
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 

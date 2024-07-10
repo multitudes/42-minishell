@@ -19,6 +19,22 @@
 #include "builtins.h"
 
 /*
+Changes type of all tokens in string_tokens to WORD,
+except for those $-tokens that our shell expands in a double quoted string
+*/
+
+static void	token_sanitization(t_list *string_tokens)
+{
+	while (string_tokens)
+	{
+
+		if (get_token_type(string_tokens) != VAR_EXPANSION && get_token_type(string_tokens) != DOLLAR_QUESTION)
+			((t_token *)(string_tokens->content))->type = WORD;
+		string_tokens = string_tokens->next;
+	}
+}
+
+/*
 it checks if the terminal ast node is a builtin or a command
 but this could be already done in the parser 🧐🤨
 This function is probably just for debug purposes
@@ -57,11 +73,11 @@ void	which_ast_node(t_ast_node *ast)
 /*
 We dont expand tilde if the next char after the tilde is not a valid path
 */
-int	peek_is_valid_path(char c)
+bool	peek_is_valid_path(char c)
 {
 	if (ft_strchr("/:", c) || c == '\0')
-		return (1);
-	return (0);
+		return (true);
+	return (false);
 }
 
 /*
@@ -71,7 +87,7 @@ we have more equal signs in between.
 */
 bool	valid_tilde_separator(char sep, int equal_status)
 {
-	if (ft_strchr(":", sep))
+	if (ft_strchr(": ", sep))
 		return (true);
 	else if (sep == '=' && equal_status == 1)
 		return (true);
@@ -79,6 +95,7 @@ bool	valid_tilde_separator(char sep, int equal_status)
 }
 
 /*
+Replaces occurances of '~' in a string, if conditions for ~-expansion are met.
 */
 char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_flags *flags)
 {
@@ -89,24 +106,21 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 	char	*back;
 	char	*temp;
 
-	debug("replace_tilde_in_str: %s", lexeme);
+	debug("replace_tilde_in_str: %s with home: %s", lexeme, home);
 	i = 0;
 	new_lexeme = ft_strdup(lexeme);
 	if (flags->equal_status == 1)
 	{
-		pos = ft_strchr(lexeme, '=');
+		pos = ft_strchr(new_lexeme, '=');
 		if (!pos)
-		{
-			pos = lexeme;
-			flags->equal_status = 2;
-		}
-		i = pos - lexeme + 1;
+			pos = new_lexeme;
+		else
+			i = pos - new_lexeme + 1;
 	}
 	else
-		pos = lexeme;
+		pos = new_lexeme;
 	while (new_lexeme && new_lexeme[i])
 	{
-		// debug("State of equal_status flag: %i", flags->equal_status);
 		if (new_lexeme[i] == '~' && i == 0 && peek_is_valid_path(new_lexeme[i + 1]) && (flags->equal_status == 1) && valid_tilde_expansion(tokenlist, i))
 		{
 			back = ft_strdup(new_lexeme + 1);
@@ -123,9 +137,6 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 			if (flags->equal_status == 1)
 				flags->equal_status = 2;
 			temp = new_lexeme;
-			// debug("front of new string: %s", front);
-			// debug("middle of new string: %s", home);
-			// debug("back of new string: %s", back);
 			new_lexeme = ft_strjoin3(front, home, back);
 			free(front);
 			free(back);
@@ -363,23 +374,27 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		return ;
 	unquoted_lexeme = ft_strtrim(token->lexeme, "\""); // this does not behave well, when we have strings like "\"djklfjsdl\"" or ""dkldfj" as escape characters and unclosed quotes are not handled ;
 	free(token->lexeme);
-	token->lexeme = NULL;
+	token->lexeme = ft_strdup("");
 	if (!ft_strchr(unquoted_lexeme, '$'))
 	{
 		token->lexeme = unquoted_lexeme;
 		return ;
 	}
 	debug("unquoted lexeme: %s ********************", unquoted_lexeme);
-	string_tokens = string_tokenizer(unquoted_lexeme);
-	debug("string tokens: %s type %d", get_token_lexeme(string_tokens), get_token_type(string_tokens));
+	string_tokens = tokenizer(unquoted_lexeme);
 	free(unquoted_lexeme);
+	token_sanitization(string_tokens);
+	debug("First string token: %s type %d", get_token_lexeme(string_tokens), get_token_type(string_tokens));
 	ptr_token_list = string_tokens;
 	while (string_tokens)
 	{
-		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR || get_token_type(string_tokens) == DOLLAR_QUESTION)
+		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR_QUESTION)
 			expand_dollar(data, get_curr_token(string_tokens));
 		temp_lexeme = token->lexeme;
-		token->lexeme = ft_strjoin(temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
+		if (((t_token *)(string_tokens->content))->folldbyspace == true)
+			token->lexeme = ft_strjoin3(temp_lexeme, ((t_token *)string_tokens->content)->lexeme, " ");
+		else
+			token->lexeme = ft_strjoin(temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
 		free(temp_lexeme);
 		string_tokens = string_tokens->next;
 	}
@@ -457,15 +472,14 @@ $(..) ${..} $'..' $".."
 */
 void analyse_expand(t_ast_node *ast, t_data *data)
 {
-	t_list	*tokenlist;
+	t_list		*tokenlist;
+	t_tokentype	tokentype;
 
 	if (ast == NULL)
 		return ;
 	tokenlist = ast->token_list;
 	if (!tokenlist)
 		return ;
-	which_ast_node(ast);
-	debug("ast-node type after check: %i)", ast->type);
 	expand_tokenlist(data, tokenlist);
 	while (tokenlist && tokenlist->next)
 	{
@@ -474,7 +488,16 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 			merge_tokens(tokenlist);
 			continue ;
 		}
+		else if (ft_strlen(get_token_lexeme(tokenlist)) == 0 && !token_followed_by_space(tokenlist))
+		{
+			tokentype = ((t_token *)(tokenlist->next->content))->type;
+			merge_tokens(tokenlist);
+			((t_token *)(tokenlist->content))->type = tokentype;
+			debug("Merged token lexeme %s, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
+		}
 		tokenlist = tokenlist->next;
 	}
-	debug("First lexeme in merged tokenlist: %s", get_token_lexeme(ast->token_list));
+	which_ast_node(ast);
+	debug("ast-node type after check: %i)", ast->type);
+	// debug("First lexeme in merged tokenlist: -%s- of type: %i", get_token_lexeme(ast->token_list), get_token_type(ast->token_list));
 }
