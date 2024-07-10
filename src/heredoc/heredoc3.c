@@ -61,6 +61,7 @@ static int  execute_heredoc_parent(int pfd[2], pid_t pid, t_heredoc *heredoc)
     write_return = -1;
     if (close(pfd[0]) == -1)
         return(status_and_perror("minishell: error: parent close read end of pipe", 1));
+    debug("heredoc buffer: %s", heredoc->buffer);
     write_return = write(pfd[1], heredoc->buffer, ft_strlen(heredoc->buffer));
     if (write_return == -1 || (size_t)write_return != ft_strlen(heredoc->buffer))
         return(status_and_perror("minishell: write heredoc to stdin of command", 1));
