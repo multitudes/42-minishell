@@ -19,8 +19,8 @@
 #include "libft.h"
 
 /*
-getting the status properly involves using WIFEXITED and WEXITSTATUS
-so I this is an utility function to return the status of the child.
+getting the status properly involves using WIFEXITED and WEXITSTATUS.
+This is a utility function to return the status of the child.
 WIFEXITED returns true if the child terminated normally and the status
 of the child is returned by WEXITSTATUS. If the child did not terminate
 normally, WIFSIGNALED will return true and WTERMSIG will return the signal
