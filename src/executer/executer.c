@@ -138,7 +138,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			update_dollar_underscore(data->env_arr, ast->token_list);
 			status = execute_command(ast->token_list, data);
 		}
-		restore_fds(data);
+		// restore_fds(data);
 		break ;
 	}
 	return (status);

@@ -336,6 +336,7 @@ int loop()
 					if (data->ast)
 					{
 						data->exit_status = execute_ast(data->ast, data);
+						restore_fds(data);
 						debug("Exit status: %i", data->exit_status);
 						free_ast(&(data->ast));
 					}

@@ -118,7 +118,9 @@ int	execute_list(t_ast_node *ast, t_data *data)
 	t_tokentype	tokentype;
 
 	debug("NODE_LIST || &&");
+	restore_fds(data);
 	status = execute_ast(ast->left, data);
+	restore_fds(data);
 	tokentype = ((t_token *)ast->token_list->content)->type;
 	if (status == 0 && tokentype == AND_IF)
 	{
