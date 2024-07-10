@@ -6,20 +6,15 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 11:17:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/10 17:33:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SCANNER_H
 # define SCANNER_H
 
-# ifdef __cplusplus
-
-extern "C" {
-# endif
-
-#include <stdbool.h>
-#include <libft.h>
+# include <stdbool.h>
+# include <libft.h>
 
 /*
 to make the code more clear I add these two defines 
@@ -30,6 +25,13 @@ and FUZZY it means I will look for the match with anything after it
 
 # define EXACT true
 # define FUZZY false
+
+// for testing - leave here
+# ifdef __cplusplus
+
+extern "C" {
+# endif
+
 
 
 /*
@@ -165,21 +167,22 @@ struct						s_mini_data
 
 typedef struct s_mini_data	t_mini_data;
 
-struct						s_token
+struct					s_token
 {
-	t_tokentype				type;
-	char					*lexeme;
-	bool					folldbyspace;
-};
+	t_tokentype			type;
+	char				*lexeme;
+	bool				folldbyspace;
+}						t_token;
 typedef struct s_token		t_token;
 
 int		init_scanner_data(t_mini_data *data, const char *input);
-t_list	*new_toknode(t_tokentype type, const char *lexeme, int *start, bool folldbyspace);
+t_list	*new_toknode(t_tokentype type, const char *lexeme, \
+						int *start, bool folldbyspace);
 t_list	*tokenizer(const char *input);
 t_list	*string_tokenizer(const char *input);
 bool	peek(const char *input, const char *identifier, bool end_space);
 void	advance(int *i);
-int		skip_space(t_list *tokenlist, const char* input, int *i);
+int		skip_space(t_list *tokenlist, const char *input, int *i);
 bool	is_space(const char c);
 int		ft_strncicmp(char const *a, char const *b, int n);
 bool	cmp_char_case_insensitive(const char a, const char b);
@@ -216,7 +219,8 @@ bool	is_simple_operator(t_mini_data *data, int *i);
 bool	is_a_redirection(t_mini_data *data, int *i);
 bool	is_a_aggregate_redirection(t_mini_data *data, int *i);
 bool	is_a_simple_redirection(t_mini_data *data, int *i);
-bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), t_tokentype type);
+bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), \
+						t_tokentype type);
 bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type);
 bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int typ);
 bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type);

@@ -6,25 +6,16 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:27:54 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/03 11:41:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/10 17:31:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DARRAY_H
 # define DARRAY_H
 
-// needed for the tests - leave it here
-# ifdef __cplusplus
-
-extern "C" {
-
-# endif
-
 # include "stddef.h"
 
 # define DEFAULT_EXPAND_RATE 300
-
-typedef struct s_darray		t_darray;
 
 /*
    A dynamic array is simply an array of void ** pointers that’s 
@@ -34,7 +25,7 @@ typedef struct s_darray		t_darray;
    h header and is commonly used to represent the size of arrays, 
    memory blocks, and strings.
    */
-typedef struct				s_darray
+typedef struct s_darray
 {
 	int						end;
 	int						max;
@@ -43,8 +34,14 @@ typedef struct				s_darray
 	void					**contents;
 }							t_darray;
 
+// needed for the tests - leave it here
+# ifdef __cplusplus
 
-void		*ft_realloc(void *ptr, size_t size, size_t old_size);
+extern "C" {
+
+# endif
+
+void *ft_realloc(void *ptr, size_t size, size_t old_size);
 t_darray	*darray_create(size_t element_size, size_t initial_max);
 void		darray_destroy(t_darray *array);
 int			darray_resize(t_darray *array, size_t newsize, size_t old_size);

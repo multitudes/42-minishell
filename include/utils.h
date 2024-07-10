@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:38:35 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/10 12:42:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/10 17:03:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 # include <stddef.h>
 # include <libft.h>
 
-int     ft_isascii(const int c);
+int		ft_isascii(const int c);
 char	*ft_strndup(const char *s, size_t n);
 char	*ft_strjoin3(const char *s1, const char *s2, const char *s3);
-int	    count_char_in_str(char *str, char c);
+int		count_char_in_str(char *str, char c);
 void	replace_node_with_newlist(t_list **node, t_list *newlist);
 void	replace_token_with_tokenlist(t_list **tokenlist, t_list *new_tokenlist);
 

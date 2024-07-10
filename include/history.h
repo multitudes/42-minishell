@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 11:51:41 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/10 11:52:31 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/10 17:28:56 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <stdbool.h>
 
-typedef struct s_data t_data;	
+typedef struct s_data	t_data;	
 
 bool	handle_history(t_data *data);
 bool	add_to_hist_file(const char *input, t_darray *env_arr);
