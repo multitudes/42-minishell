@@ -95,6 +95,7 @@ typedef enum e_tokentype {
 	TILDE,
 	COMMAND,
 	EXPANDED,
+	QUOTE_EXPANDED,
 	NULL_TOKEN,
 	SEMI,
 	SEMI_AND,
