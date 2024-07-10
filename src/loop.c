@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 14:12:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/10 11:58:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,24 +154,24 @@ bool init_data2(t_data **data)
 	return (true);
 }
 
-bool	init_env_darray(t_darray **env_array)
+bool	init_env_darray(t_darray **env_arr)
 {
 	int		i;
 	char	*env;
 
 	i = 0;
-	*env_array = darray_create(sizeof(char *), 100);
-	if (*env_array == NULL)
+	*env_arr = darray_create(sizeof(char *), 100);
+	if (*env_arr == NULL)
 		return (zero_and_printerr("env_array env"));
 	while (environ && environ[i])
 	{ 
 		env = ft_strdup(environ[i++]);
-		if (env == NULL && darray_clear_destroy(*env_array))
+		if (env == NULL && darray_clear_destroy(*env_arr))
 			return (zero_and_printerr("malloc env"));
-		if (darray_push(*env_array, env) == -1 && darray_clear_destroy(*env_array))
+		if (darray_push(*env_arr, env) == -1 && darray_clear_destroy(*env_arr))
 			return (zero_and_printerr("darray_push"));
 	}
-	darray_push(*env_array, NULL);
+	darray_push(*env_arr, NULL);
 	return (true);
 }
 
@@ -319,7 +319,7 @@ int loop()
 		return (EXIT_FAILURE);
 	shlvl_init(data);
 	save_fds(data);
-	load_history();
+	load_history(data->env_arr);
 	set_up_std_signals(); //check return value / status?
 	while (true)
 	{

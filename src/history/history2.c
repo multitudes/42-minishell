@@ -6,13 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/07 19:50:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/10 11:46:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	print_history(void)
+int	print_history(t_darray *env_arr)
 {
 	int		i;
 	int		fd;
@@ -20,7 +20,7 @@ int	print_history(void)
 	char	*line;
 
 	i = 0;
-	path = get_history_file_path();
+	path = get_history_file_path(env_arr);
 	fd = open(path, O_RDONLY);
 	free(path);
 	if (fd == -1)

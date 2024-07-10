@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/10 10:44:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/10 11:52:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,11 @@ uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 		status = 1;
 	else if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
 	{
-		clear_hist_file();
+		clear_hist_file(data->env_arr);
 		rl_clear_history();
 	}
 	else if (ft_strncmp(data->input, "history", 7) == 0)
-		status = print_history();
+		status = print_history(data->env_arr);
 	else 
 		return (print_error_status("minishell: builtin not implemented", 2));
 	return (status);
