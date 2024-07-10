@@ -72,7 +72,7 @@ void	update_dollar_underscore(t_darray *env_arr, t_list *tokenlist)
 	if (count_tokens(tokenlist) == 1)
 	{
 		cmd = create_path(get_token_lexeme(tokenlist), mini_get_env(env_arr, "PATH"));
-		if (cmd == NULL || ft_strncmp(get_token_lexeme(tokenlist), "env", 3) == 0)
+		if (cmd == NULL) // || ft_strncmp(get_token_lexeme(tokenlist), "env", 3) == 0)
 			cmd = ft_strdup(get_token_lexeme(tokenlist));
 		if (update_env(env_arr, "_", cmd) == FALSE)
 			perror("in update_env for _ ");
