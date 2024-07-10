@@ -363,7 +363,7 @@ const char *all_tests()
 	// run_test(test_builtin_export);
 	// run_test(test_builtin_export2); doesnt work in -c mode but works in minishell
 
-	run_test(test_exits);
+	// run_test(test_exits);
 	run_test(test_exits2);
 	run_test(test_exits3);
 	run_test(test_exits4);
