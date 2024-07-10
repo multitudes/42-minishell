@@ -45,7 +45,7 @@ static int  execute_heredoc_child(t_list *tokenlist, t_data *data, int pfd[2])
         exit_and_print_err("minishell: error: parent close write end of pipe", 127);
     dup2(pfd[0], STDIN_FILENO);
     argv = get_argv_from_tokenlist(&tokenlist);
-    if (!resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")))
+    if (resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")) > 0)
         exit (127);
     debug("command and args: %s %s", argv[0], argv[1]);
     execve(argv[0], argv, (char **)data->env_arr->contents);
