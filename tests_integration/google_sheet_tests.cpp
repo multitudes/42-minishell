@@ -913,7 +913,7 @@ const char* test_parsing11()
 	fflush(stdout);
 
 	std::ostringstream result;
-	std::string arg = "echo \'\' bonjour";	
+	std::string arg = "echo \'\' bonjour";
 
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 

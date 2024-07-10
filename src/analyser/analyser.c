@@ -488,11 +488,12 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 			merge_tokens(tokenlist);
 			continue ;
 		}
-		else if (ft_strlen(get_token_lexeme(tokenlist)) == 0)
+		else if (ft_strlen(get_token_lexeme(tokenlist)) == 0 && !token_followed_by_space(tokenlist))
 		{
 			tokentype = ((t_token *)(tokenlist->next->content))->type;
 			merge_tokens(tokenlist);
 			((t_token *)(tokenlist->content))->type = tokentype;
+			debug("Merged token lexeme %s, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 		}
 		tokenlist = tokenlist->next;
 	}
