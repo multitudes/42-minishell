@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 19:37:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 20:01:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,48 +182,19 @@ if it cannot be resolved it will return 1
 */
 int	resolve_command_path(char **argv, char *path_env)
 {
-	struct stat	statbuf;
-	
-	if (!find_path(argv, path_env))
-		return (print_error_status2(argv[0], " command not found", 127));
-	else if (ft_strncmp(argv[0], "./", 2) == 0)
-	{
-		if (access(argv[0], F_OK) != -1) 
-		{
-			if (stat(argv[0], &statbuf) == 0) 
-			{
-				if (S_ISDIR(statbuf.st_mode))
-					return ((int)print_error_status2(argv[0], ": is a directory", (uint8_t)126));
-				else if (S_ISREG(statbuf.st_mode))
-				{
-					if (access(argv[0], X_OK) == -1)
-						return ((int)status_perror2("minishell: ", argv[0], (uint8_t)126));
-					else
-						return (0);
-				}
-			}
-		}
-		else 
-			return (print_error_status2(argv[0], ": No such file or directory", 127));
-	}
-	else if (access(argv[0], F_OK) != -1 && ft_strcmp(argv[0], "..") != 0)
-	{
-		if (stat(argv[0], &statbuf) == 0)
-		{
-			if (!S_ISDIR(statbuf.st_mode))
-			{
-				if (access(argv[0], X_OK) == -1)
-					return (status_perror2("minishell: ", argv[0], 126));
-				else
-					return (0);
-			}
-			else
-				return (print_error_status2(argv[0], ": is a directory", 126));
-		}
-		else
-			return (status_perror2("minishell: ", argv[0], 1));
-	}
-	else if (access(argv[0], F_OK) == -1 && ft_strcmp(argv[0], "..") != 0)
-		return (status_perror2("minishell: ", argv[0], 127));
-	return (0);
+    struct stat	statbuf;
+    int			is_relative_path;
+
+    if (!find_path(argv, path_env))
+        return (print_error_status2(argv[0], " command not found", 127));
+    if (access(argv[0], F_OK) == -1)
+        return (status_perror2("minishell: ", argv[0], 127));
+	if (stat(argv[0], &statbuf))
+        return (status_perror2("minishell: ", argv[0], 1));
+    if (S_ISDIR(statbuf.st_mode))
+        return (print_error_status2(argv[0], ": is a directory", 126));
+    is_relative_path = ft_strncmp(argv[0], "./", 2) == 0 || ft_strcmp(argv[0], "..") != 0;
+    if (is_relative_path && access(argv[0], X_OK) == -1)
+        return (status_perror2("minishell: ", argv[0], 126));
+    return (0);
 }
