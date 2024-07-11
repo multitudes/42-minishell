@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 20:15:18 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 20:19:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,24 +44,30 @@ int	resolve_command_path(char **argv, char *path_env)
 }
 
 /*
-when I need to free a string array like the envpaths
+ * used by resolve_command_path when I get a simple command like "ls"
+ * I need to check if the command is in the PATH
 */
-int	free_array(char **envpaths)
+bool	find_path(char **argv, char *path_env) 
 {
-	int	i;
+	char		*cmd;
 
-	i = 0;
-	while (envpaths[i])
+	cmd = NULL;
+	if (ft_strchr(argv[0], '/') == NULL)
 	{
-		free(envpaths[i]);
-		i++;
+		cmd = create_path(argv[0], path_env);
+		if (!cmd || ft_strcmp(argv[0], "..") == 0)
+		{
+			free(cmd);
+			return (false);
+		}
+		argv[0] = cmd;
 	}
-	free(envpaths);
-	return (0);
+	return (true);
 }
 
 /*
-
+ * used by find_path to create the path to the command
+ * 
 */
 char	*create_path(char *base, char *path_env)
 {
@@ -89,6 +95,23 @@ char	*create_path(char *base, char *path_env)
 	free_array(envpaths);
 	return (NULL);
 }
+/*
+when I need to free a string array like the envpaths
+*/
+int	free_array(char **envpaths)
+{
+	int	i;
+
+	i = 0;
+	while (envpaths[i])
+	{
+		free(envpaths[i]);
+		i++;
+	}
+	free(envpaths);
+	return (0);
+}
+
 
 
 /*
@@ -148,22 +171,4 @@ char	**get_argv_from_tokenlist(t_list **tokenlist)
 	}
 	argv[i] = NULL;
 	return (argv);
-}
-
-bool	find_path(char **argv, char *path_env) 
-{
-	char		*cmd;
-
-	cmd = NULL;
-	if (ft_strchr(argv[0], '/') == NULL)
-	{
-		cmd = create_path(argv[0], path_env);
-		if (!cmd || ft_strcmp(argv[0], "..") == 0)
-		{
-			free(cmd);
-			return (false);
-		}
-		argv[0] = cmd;
-	}
-	return (true);
 }
