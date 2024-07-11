@@ -76,7 +76,7 @@ uint8_t setup_redirect(t_list **tokenlist, t_tokentype type)
     status = 0;
     consume_token_and_connect(tokenlist);
     if (!(*tokenlist))
-        return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme 'newline'
+        return (print_minishell_error_status("minishell: redirect syntax error", 2)); // add token lexeme 'newline'
     filename = get_token_lexeme(*tokenlist);
     fd = open_fd_by_redirect_type(type, filename, &status);
     if (status != 0)
@@ -131,13 +131,14 @@ uint8_t	execute_redirection(t_ast_node **ast)
             status = setup_redirect(&tokenlist, type);
             if (token_counter == 0)
                 (*ast)->tokenlist = tokenlist;
+            if (status != 0)
+                return (status);
+            else
+                continue ;
         }
         else
             token_counter++;
-        if (status != 0)
-            return (status);
-        if (tokenlist)
-            tokenlist = tokenlist->next;
+        tokenlist = tokenlist->next;
     }
     if (tokenlist == NULL && token_counter == 0)
     {
