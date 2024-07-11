@@ -5,7 +5,7 @@
 # CFLAGS 		+= 	-DNDEBUG
 # CFLAGS 	+= 	-DMINIHISTFILEPATH=\"/.minishell_test_history\"
 
-CXXFLAGS 	= 	-Wall -Wextra -Werror -std=c++11
+CXXFLAGS 	= 	-Wall -Wextra -Werror -std=c++17
 CXXFLAGS 	+= 	-g
 CFLAGS 	+= 	-DMINIHISTFILEPATH=\"/.minishell_test_history\"
 

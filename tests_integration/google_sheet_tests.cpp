@@ -13,6 +13,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <filesystem>
 
 // forward declaration 
 // this is the new version of the function with popen
@@ -995,6 +996,76 @@ const char* test_pipe3()
 	my_assert(exit_status == 127, "exit status is not 0\n");
 	return NULL;
 }
+	namespace fs = std::filesystem;
+const char* test_resolve_path_func() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+
+	// print my working directory
+	char cwd[1024];
+	if (getcwd(cwd, sizeof(cwd)) != NULL) {
+		debug("Current working dir: %s\n", cwd);
+	} else {
+		perror("getcwd() error");
+		return "getcwd() error";
+	}
+
+
+
+
+	bool created = fs::create_directory("abc");
+	if (created) {
+		// Directory created successfully
+	} else {
+		// Directory might already exist or an error occurred
+	}
+	std::string arg = "../src";	
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct pipe3\n");
+	my_assert(exit_status == 126, "exit status is not 127\n");
+	
+	arg = "../src/";	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct pipe3\n");
+	my_assert(exit_status == 126, "exit status is not 126\n");
+	
+	arg = "../LICENSE";	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct pipe3\n");
+	my_assert(exit_status == 126, "exit status is not 126\n");
+	
+	arg = "abc";	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct pipe3\n");
+	my_assert(exit_status == 127, "exit status is not 127\n");
+	
+	arg = "./LICENSE";	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct pipe3\n");
+	my_assert(exit_status == 127, "exit status is not 126\n");
+
+	arg = "./builtin_cat_tests.cpp";	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct pipe3\n");
+	my_assert(exit_status == 126, "exit status is not 126\n");
+	
+	arg = "./abcwhat";	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct pipe3\n");
+	my_assert(exit_status == 127, "exit status is not 127\n");
+	
+	return NULL;
+}
+
 
 
 
@@ -1060,6 +1131,7 @@ const char *all_tests()
 	run_test(test_pipe2);
 	run_test(test_pipe3);
 
+	run_test(test_resolve_path_func);
 
 
 	return NULL;
