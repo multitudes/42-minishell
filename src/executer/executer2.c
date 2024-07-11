@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 17:21:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 19:37:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,10 +182,8 @@ if it cannot be resolved it will return 1
 */
 int	resolve_command_path(char **argv, char *path_env)
 {
-	char		*cmd;
 	struct stat	statbuf;
 	
-	cmd = NULL;
 	if (!find_path(argv, path_env))
 		return (print_error_status2(argv[0], " command not found", 127));
 	else if (ft_strncmp(argv[0], "./", 2) == 0)
