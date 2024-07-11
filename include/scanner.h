@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 20:08:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,6 +230,8 @@ bool	is_a_redirection(t_mini_data *data, int *i);
 bool	is_a_globbing(t_mini_data *data, const char *tmp, int *start);
 bool	is_redirection_token(t_tokentype tokentype);
 bool	is_heredoc_token(t_tokentype tokentype);
+t_list	*get_head(t_list *tokenlist);
+int		count_tokens(t_list *tokenlist);
 
 #  ifdef __cplusplus
 
