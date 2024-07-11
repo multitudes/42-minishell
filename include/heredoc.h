@@ -6,17 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 21:02:07 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/05 19:32:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 07:50:58 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HEREDOC_H
 # define HEREDOC_H
-
-# ifdef __cplusplus
-
-extern "C" {
-# endif
 
 # include <stdbool.h>
 # include <stddef.h>
@@ -26,26 +21,32 @@ extern "C" {
 
 # define HEREDOC_BUFFER 1024
 
-typedef struct  s_heredoc
+typedef struct s_heredoc
 {
-    int     delim_count;
-    char    *delim[10];
-    bool    expansion[10];
-    char    *buffer;
-    size_t  buffer_size;
-    size_t  heredoc_len;
-} t_heredoc;
-
-bool    is_heredoc(t_list *tokenlist);
-int     execute_heredoc(t_ast_node *ast, t_data *data);
-void    free_heredoc(t_heredoc *heredoc);
-void    set_up_heredoc_signals(void);
-bool    process_heredoc(t_heredoc *heredoc, t_data *data);
-int     redirect_and_execute_heredoc(t_ast_node *ast, t_data *data, t_heredoc *heredoc);
+	int		delim_count;
+	char	*delim[10];
+	bool	expansion[10];
+	char	*buffer;
+	size_t	buffer_size;
+	size_t	heredoc_len;
+}	t_heredoc;
 
 # ifdef __cplusplus
 
-}
+extern "C" {
 # endif
+
+bool is_heredoc(t_list * tokenlist);
+int		execute_heredoc(t_ast_node *ast, t_data *data);
+void	free_heredoc(t_heredoc *heredoc);
+void	set_up_heredoc_signals(void);
+bool	process_heredoc(t_heredoc *heredoc, t_data *data);
+int		redirect_and_execute_heredoc(t_ast_node *ast, t_data *data, \
+										t_heredoc *heredoc);
+
+#  ifdef __cplusplus
+
+}
+#  endif
 
 # endif

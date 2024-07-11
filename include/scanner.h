@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 07:34:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 07:41:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,9 +147,9 @@ typedef enum e_tokentype {
 	DOLLAR,
 	CARET,
 	PERCENT,
-} t_tokentype;
+}	t_tokentype;
 
-typedef struct		s_mini_data
+typedef struct s_mini_data
 {
 	const char		*input;
 	t_list			*token_list;
@@ -157,7 +157,7 @@ typedef struct		s_mini_data
 	char			*scanner_err_str;
 }						t_mini_data;
 
-typedef struct			s_token
+typedef struct s_token
 {
 	t_tokentype			type;
 	char				*lexeme;
@@ -170,7 +170,7 @@ typedef struct			s_token
 extern "C" {
 # endif
 
-int		init_scanner_data(t_mini_data *data, const char *input);
+int init_scanner_data(t_mini_data * data, const char *input);
 t_list	*new_toknode(t_tokentype type, const char *lexeme, \
 						int *start, bool folldbyspace);
 t_list	*tokenizer(const char *input);

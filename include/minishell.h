@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 07:30:32 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 07:41:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ extern int	g_signal;
 # ifndef MINIHISTFILESIZE
 #  define MINIHISTFILESIZE  1000
 # endif
-
 
 /*
 env_arr = enviroment variables array
