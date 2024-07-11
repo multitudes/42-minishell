@@ -70,6 +70,7 @@ char	*get_history_file_path(t_darray *env_arr)
 		return (NULL);
 	debug("history home: %s", home);
 	path = ft_strjoin(home, MINIHISTFILEPATH);
+	free(home);
 	debug("path: %s", path);
 	if (path == NULL)
 		print_minishell_error_status("history file path missing", 1);
