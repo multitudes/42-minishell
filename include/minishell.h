@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/10 17:39:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 07:30:32 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ extern int	g_signal;
 #  define MINIHISTFILESIZE  1000
 # endif
 
-typedef struct s_darray	t_darray;
 
 /*
 env_arr = enviroment variables array

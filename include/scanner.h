@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/10 17:33:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 07:34:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,6 @@ and FUZZY it means I will look for the match with anything after it
 
 # define EXACT true
 # define FUZZY false
-
-// for testing - leave here
-# ifdef __cplusplus
-
-extern "C" {
-# endif
-
-
 
 /*
 > This operator redirects the output of a command to a file. 
@@ -157,23 +149,26 @@ typedef enum e_tokentype {
 	PERCENT,
 } t_tokentype;
 
-struct						s_mini_data
+typedef struct		s_mini_data
 {
-	const char				*input;
-	t_list					*token_list;
-	bool					scanner_error;
-	char					*scanner_err_str;
-};
+	const char		*input;
+	t_list			*token_list;
+	bool			scanner_error;
+	char			*scanner_err_str;
+}						t_mini_data;
 
-typedef struct s_mini_data	t_mini_data;
-
-struct					s_token
+typedef struct			s_token
 {
 	t_tokentype			type;
 	char				*lexeme;
 	bool				folldbyspace;
 }						t_token;
-typedef struct s_token		t_token;
+
+// for testing - leave here
+# ifdef __cplusplus
+
+extern "C" {
+# endif
 
 int		init_scanner_data(t_mini_data *data, const char *input);
 t_list	*new_toknode(t_tokentype type, const char *lexeme, \

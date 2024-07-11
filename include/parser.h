@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 09:03:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 07:32:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ extern "C" {
 # include "parser.h"
 
 // forwards declarations
-typedef struct s_token		t_token;
+// typedef struct s_token		t_token;
 typedef enum e_tokentype 	t_tokentype;
 /*
 I am creating a ast tree for my context free grammar with these structs...
