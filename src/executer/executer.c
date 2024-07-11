@@ -99,7 +99,6 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 {
 	int			status;
 	t_list		*tokenlist;
-	t_nodetype	astnodetype;
 
 	status = 0;
 	if (ast == NULL || ast->tokenlist == NULL)
@@ -109,12 +108,11 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);
 	analyse_expand(ast, data);
-	astnodetype = ast->type;
 	while (1)
 	{
-		if (astnodetype == NODE_LIST)
+		if (ast->type == NODE_LIST)
 			status = execute_list(ast, data);
-		else if (astnodetype == NODE_PIPELINE)
+		else if (ast->type == NODE_PIPELINE)
 			status = execute_pipeline(ast, data);
 		else if (contains_redirection(ast->tokenlist))
 		{
@@ -129,12 +127,12 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			debug("is heredoc"); // TODO look for updating $_ somewhere
 			status = execute_heredoc(ast, data);
 		}
-		else if (astnodetype == NODE_BUILTIN)
+		else if (ast->type == NODE_BUILTIN)
 		{	
 			update_dollar_underscore(data->env_arr, ast->tokenlist);
 			status = execute_builtin(ast->tokenlist, data);
 		}
-		else if (astnodetype == NODE_COMMAND || astnodetype == NODE_TERMINAL)
+		else if (ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL)
 		{
 			update_dollar_underscore(data->env_arr, ast->tokenlist);
 			status = execute_command(ast->tokenlist, data);
