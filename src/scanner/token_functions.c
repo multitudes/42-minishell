@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 11:18:07 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ bool	add_token(t_mini_data *data, int *i, const char *lexem, t_tokentype type)
 	{
 		token = new_toknode(type, lexem, i, false);
 		if (token)
-			ft_lstadd_back(&data->token_list, token);
+			ft_lstadd_back(&data->tokenlist, token);
 		else
 			scanner_error(data, "minishell: error: malloc in new_toknode failed");
 	}

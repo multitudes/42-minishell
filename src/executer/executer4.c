@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/07 17:37:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ uint8_t	execute_redirection(t_ast_node **ast)
     debug("ast type before redirection: %i", (*ast)->type);
     status = 0;
     token_counter = 0;
-	tokenlist = (*ast)->token_list;
+	tokenlist = (*ast)->tokenlist;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);
     while (tokenlist)
@@ -130,7 +130,7 @@ uint8_t	execute_redirection(t_ast_node **ast)
         {
             status = setup_redirect(&tokenlist, type);
             if (token_counter == 0)
-                (*ast)->token_list = tokenlist;
+                (*ast)->tokenlist = tokenlist;
         }
         else
             token_counter++;
@@ -141,7 +141,7 @@ uint8_t	execute_redirection(t_ast_node **ast)
     }
     if (tokenlist == NULL && token_counter == 0)
     {
-        (*ast)->token_list = NULL;
+        (*ast)->tokenlist = NULL;
         (*ast)->type = NODE_NULL;
     }
     debug("ast type after redirection: %i", (*ast)->type);

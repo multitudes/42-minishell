@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 14:10:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ bool	is_pipe_token(t_list *input_tokens)
 	return (false);
 }
 
-t_ast_node	*parse_pipeline(t_list **token_list)
+t_ast_node	*parse_pipeline(t_list **tokenlist)
 {
 	t_ast_node	*a;
 	t_token		*token;
@@ -67,17 +67,17 @@ t_ast_node	*parse_pipeline(t_list **token_list)
 
 	a = NULL;
 	token = NULL;
-	if (token_list == NULL || *token_list == NULL)
+	if (tokenlist == NULL || *tokenlist == NULL)
 		return (NULL);
-	a = parse_terminal(token_list);
+	a = parse_terminal(tokenlist);
 	if (a == NULL)
 		return (NULL);
-	while (is_pipe_token(*token_list))
+	while (is_pipe_token(*tokenlist))
 	{
-		token = get_curr_token(*token_list);
-		if (!consume_token_and_break(token_list))
+		token = get_curr_token(*tokenlist);
+		if (!consume_token_and_break(tokenlist))
 			return (NULL);
-		b = parse_terminal(token_list);
+		b = parse_terminal(tokenlist);
 		if (b == NULL)
 			return (free_ast(&a));
 		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
@@ -90,7 +90,7 @@ t_ast_node	*parse_pipeline(t_list **token_list)
 /*
 Parsing sequence of pipelines separated by operators "&&", "||"
 */
-t_ast_node	*parse_list(t_list **token_list)
+t_ast_node	*parse_list(t_list **tokenlist)
 {
 	t_token		*token;
 	t_ast_node	*a;
@@ -99,32 +99,32 @@ t_ast_node	*parse_list(t_list **token_list)
 	a = NULL;
 	b = NULL;
 	token = NULL;
-	if (token_list == NULL || *token_list == NULL)
+	if (tokenlist == NULL || *tokenlist == NULL)
 		return (NULL);
-	a = parse_pipeline(token_list);
+	a = parse_pipeline(tokenlist);
 	if (a == NULL)
 		return (NULL);
-	while (*token_list)
+	while (*tokenlist)
 	{
-		token = get_curr_token(*token_list);
+		token = get_curr_token(*tokenlist);
 		if (token->type == AND_IF || token->type == OR_IF || \
 		token->type == EXPRESSION)
 		{
-			if (token->type != EXPRESSION && !consume_token_and_break(token_list))
+			if (token->type != EXPRESSION && !consume_token_and_break(tokenlist))
 				return (NULL);
-			b = parse_pipeline(token_list);
+			b = parse_pipeline(tokenlist);
 			if (b == NULL)
 				return (free_ast(&a));
 			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
 			if (a == NULL)
 				return (free_ast(&a));
 		}
-		else if (*token_list)
+		else if (*tokenlist)
 		{
 			debug("extraneus tken: %d, %s", \
-			get_token_type(*token_list), \
-			get_token_lexeme(*token_list));
-			*token_list = (*token_list)->next;
+			get_token_type(*tokenlist), \
+			get_token_lexeme(*tokenlist));
+			*tokenlist = (*tokenlist)->next;
 		}
 	}
 	return (a);

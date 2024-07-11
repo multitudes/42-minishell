@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/06 18:03:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static bool init_heredoc(t_ast_node *ast, t_heredoc *heredoc)
     heredoc->buffer_size = HEREDOC_BUFFER;
     heredoc->delim_count = 0;
     heredoc->heredoc_len = 0;
-    tokenlist = ast->token_list;
+    tokenlist = ast->tokenlist;
     while (tokenlist)
     {
         if (get_token_type(tokenlist) == DLESS)
@@ -131,12 +131,12 @@ int execute_heredoc(t_ast_node *ast, t_data *data)
         set_up_std_signals();
         return (status);
     }
-    if ((ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL) && only_flags(ast->token_list->next) && heredoc.buffer)
+    if ((ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL) && only_flags(ast->tokenlist->next) && heredoc.buffer)
         status = redirect_and_execute_heredoc(ast, data, &heredoc);
     else if (ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL)
-        status = execute_command(ast->token_list, data);
+        status = execute_command(ast->tokenlist, data);
     else if (ast->type == NODE_BUILTIN)
-		status = execute_builtin(ast->token_list, data);
+		status = execute_builtin(ast->tokenlist, data);
 	free(heredoc.buffer);
     set_up_std_signals();
     return (status);

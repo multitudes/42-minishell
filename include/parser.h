@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 07:47:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct s_ast_node {
 	struct s_ast_node	*parent;
 	struct s_ast_node	*left;
 	struct s_ast_node	*right;
-	t_list				*token_list;
+	t_list				*tokenlist;
 }						t_ast_node;
 
 // needed for the tests - leave it here - norminette allows it I think 
@@ -52,9 +52,9 @@ typedef struct s_ast_node {
 extern "C" {
 # endif
 
-t_ast_node * create_ast(t_list * token_list);
+t_ast_node * create_ast(t_list * tokenlist);
 t_ast_node	*new_node(t_nodetype type, t_ast_node *left, t_ast_node *right, \
-			t_list *expr_token_list);
+			t_list *expr_tokenlist);
 bool		consume_token_and_break(t_list **input_tokens);
 bool		consume_token_and_connect(t_list **input_tokens);
 t_ast_node	*parse_list(t_list **input_tokens);
@@ -70,7 +70,7 @@ t_token		*get_curr_token(t_list *input_tokens);
 char		*get_token_lexeme(t_list *input_tokens);
 bool		token_followed_by_space(t_list *input_tokens);
 t_tokentype	get_token_type(t_list *input_tokens);
-bool		token_list_has_astnode(t_list *new_token_list);
+bool		tokenlist_has_astnode(t_list *new_tokenlist);
 bool		is_not_control_token(t_token *token);
 int			count_list(t_list *input_tokens);
 void		break_list(t_list **input_tokens);

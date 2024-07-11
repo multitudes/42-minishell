@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:03:58 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 15:12:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ bool	is_true_false(t_mini_data *data, char *str, int *start)
 	return (true);
 }
 
-void	print_token_list(t_list *token_list)
+void	print_tokenlist(t_list *tokenlist)
 {
 	t_list	*current;
 	t_token	*token;
 
 	debug("print tokenlist");
-	current = token_list;
+	current = tokenlist;
 	while (current != NULL)
 	{
 		token = (t_token *)(current)->content;

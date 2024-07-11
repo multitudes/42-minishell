@@ -62,7 +62,7 @@ const char* process_token(t_list **current, int *i, const char* expected_lexeme,
 
 const char* process_ast_node(t_ast_node *ast, t_nodetype expected_node_type, t_tokentype expected_type, const char *expected_lexeme) 
 {
-	t_token *token = (t_token *)ast->token_list->content;
+	t_token *token = (t_token *)ast->tokenlist->content;
 	t_tokentype token_type = token->type;
 	t_nodetype node_type = ast->type;
 	debug("ast node type: %d ", node_type);
@@ -72,9 +72,9 @@ const char* process_ast_node(t_ast_node *ast, t_nodetype expected_node_type, t_t
 		return "ast is null";
 	else if (node_type != expected_node_type)
 		return "ast type is not expected type";
-	else if (ast->token_list == NULL)
+	else if (ast->tokenlist == NULL)
 		return "astnode token list is null";
-	else if (ast->token_list->content == NULL)
+	else if (ast->tokenlist->content == NULL)
 		return "astnode token list content is null";
 	else if (token_type != expected_type)
 		return "token type is not expected type";
@@ -127,7 +127,7 @@ const char* test_parser_tree_simple_command() {
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
 	t_ast_node *ast = create_ast(lexemes);
-	t_token *token = (t_token *)ast->token_list->content;
+	t_token *token = (t_token *)ast->tokenlist->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
 	debug("ast node token type: %d ", token_type);
@@ -156,7 +156,7 @@ const char* test_parser_tree_simple_command2() {
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
 	t_ast_node *ast = create_ast(lexemes);
-	t_token *token = (t_token *)ast->token_list->content;
+	t_token *token = (t_token *)ast->tokenlist->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
 	debug("ast node token type: %d ", token_type);
@@ -198,7 +198,7 @@ const char *test_parser_tree_simple_command3() {
 
 	t_ast_node *ast = create_ast(lexemes);
 
-	t_token *token = (t_token *)ast->token_list->content;
+	t_token *token = (t_token *)ast->tokenlist->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
 	debug("ast node token type: %d ", token_type);
@@ -241,7 +241,7 @@ const char *test_parser_tree_simple_command4() {
 
 	t_ast_node *ast = create_ast(lexemes);
 
-	t_token *token = (t_token *)ast->token_list->content;
+	t_token *token = (t_token *)ast->tokenlist->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
 	debug("ast node token type: %d ", token_type);
@@ -284,7 +284,7 @@ const char *test_parser_tree_simple_command5() {
 
 	t_ast_node *ast = create_ast(lexemes);
 
-	t_token *token = (t_token *)ast->token_list->content;
+	t_token *token = (t_token *)ast->tokenlist->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
 	debug("ast node token type: %d ", token_type);
@@ -332,7 +332,7 @@ const char *test_parser_tree_simple_command6() {
 
 	t_ast_node *ast = create_ast(lexemes);
 
-	t_token *token = (t_token *)ast->token_list->content;
+	t_token *token = (t_token *)ast->tokenlist->content;
 //	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
 	debug("ast node token type: %d ", token->type);
@@ -371,7 +371,7 @@ const char *test_parser_tree_simple_command7() {
 
 	t_ast_node *ast = create_ast(lexemes);
 
-	t_token *token = (t_token *)ast->token_list->content;
+	t_token *token = (t_token *)ast->tokenlist->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
 	debug("ast node token type: %d ", token_type);
@@ -468,7 +468,7 @@ const char *test_parser_tree_simple_command8() {
 
 	t_ast_node *ast = create_ast(lexemes);
 	
-	t_token *token = (t_token *)ast->token_list->content;
+	t_token *token = (t_token *)ast->tokenlist->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
 	debug("ast node token type: %d ", token_type);
@@ -503,7 +503,7 @@ const char *test_parser_tree_simple_command9() {
 
 	t_ast_node *ast = create_ast(lexemes);
 	
-	t_token *token = (t_token *)ast->token_list->content;
+	t_token *token = (t_token *)ast->tokenlist->content;
 	t_tokentype token_type = token->type;
 	debug("ast node type: %d ", ast->type);
 	debug("ast node token type: %d ", token_type);

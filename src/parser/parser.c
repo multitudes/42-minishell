@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/04 11:41:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,21 @@ introducing a new node type for the tree, t_ast_node.
 The tree will be composed of nodes, each node will have a type,
 a left and a right node, and a list of tokens as a t_list.
 */
-t_ast_node	*create_ast(t_list *token_list)
+t_ast_node	*create_ast(t_list *tokenlist)
 {
 	t_ast_node	*a;
 	t_list		*tmp;
 
 	a = NULL;
-	tmp = token_list;
-	if (token_list == NULL)
+	tmp = tokenlist;
+	if (tokenlist == NULL)
 		return (NULL);
 	while (tmp)
 	{
 		a = parse_list(&tmp);
 		if (!a)
 		{
-			ft_lstclear(&token_list, free_tokennode);
+			ft_lstclear(&tokenlist, free_tokennode);
 			return (NULL);
 		}
 	}
@@ -62,8 +62,8 @@ void	*free_ast(t_ast_node **ast)
 		free_ast(&((*ast)->left));
 	if ((*ast)->right)
 		free_ast(&((*ast)->right));
-	if ((*ast)->token_list) 
-		ft_lstclear(&((*ast)->token_list), free_tokennode);
+	if ((*ast)->tokenlist) 
+		ft_lstclear(&((*ast)->tokenlist), free_tokennode);
 	free(*ast);
 	*ast = NULL;
 	debug("free_ast finished");
@@ -89,7 +89,7 @@ void	print_ast(t_ast_node *a, int level)
 
 	if (a == NULL)
 		return ;
-	tokenlist = a->token_list;
+	tokenlist = a->tokenlist;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return ;
 	while (tokenlist)

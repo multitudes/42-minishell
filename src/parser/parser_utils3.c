@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 14:08:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,12 @@ I need to check if there if the list has just normal tokens or
 it will potentially create a node like pipe or a new list
 because I will handle them differently
 */
-bool	token_list_has_astnode(t_list *new_token_list)
+bool	tokenlist_has_astnode(t_list *new_tokenlist)
 {
 	t_list	*tmp;
 
-	tmp = new_token_list;
-	if (new_token_list == NULL)
+	tmp = new_tokenlist;
+	if (new_tokenlist == NULL)
 		return (false);
 	while (tmp)
 	{
@@ -77,7 +77,7 @@ bool	token_list_has_astnode(t_list *new_token_list)
 /*
 I now take care of empty expressions in the scanner
 NOTE: I do not change head if there is a node before the expression
-new_token_list from the tokenizer is the new list of tokens
+new_tokenlist from the tokenizer is the new list of tokens
 and if that is null I already have the scanner error message 
 on stderr and do not need to print anothererror... I will continue?
 return -1?
@@ -86,30 +86,30 @@ bool	replace_expression_tokens(t_list **head, t_list **input_tokens)
 {
 	t_list	*expr_node;
 	t_token	*curr_token;
-	t_list	*new_token_list;
+	t_list	*new_tokenlist;
 	bool	has_node;
 
 	has_node = false;
 	expr_node = *input_tokens;
 	curr_token = get_curr_token(expr_node);
-	new_token_list = tokenizer(ft_substr(curr_token->lexeme, 1, \
+	new_tokenlist = tokenizer(ft_substr(curr_token->lexeme, 1, \
 	ft_strlen(curr_token->lexeme) - 2));
-	if (new_token_list == NULL)
+	if (new_tokenlist == NULL)
 		return (false);
-	has_node = token_list_has_astnode(new_token_list);
+	has_node = tokenlist_has_astnode(new_tokenlist);
 	*input_tokens = (*input_tokens)->next;
 	if (*input_tokens)
 	{
-		(*input_tokens)->prev = ft_lstlast(new_token_list);
-		ft_lstlast(new_token_list)->next = *input_tokens;
+		(*input_tokens)->prev = ft_lstlast(new_tokenlist);
+		ft_lstlast(new_tokenlist)->next = *input_tokens;
 	}
 	if ((expr_node)->prev)
 	{
-		expr_node->prev->next = new_token_list;
-		new_token_list->prev = expr_node->prev;
+		expr_node->prev->next = new_tokenlist;
+		new_tokenlist->prev = expr_node->prev;
 	}
 	else
-		*head = new_token_list;
+		*head = new_tokenlist;
 	free(curr_token->lexeme);
 	free(curr_token);
 	free(expr_node);

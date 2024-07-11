@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/08 18:52:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	which_ast_node(t_ast_node *ast)
 	t_list *tokenlist;
 	t_token *token;
 
-	tokenlist = ast->token_list;
+	tokenlist = ast->tokenlist;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return ;
 	token = (t_token *)tokenlist->content;
@@ -366,7 +366,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	char	*unquoted_lexeme;
 	char	*temp_lexeme;
 	t_list	*string_tokens;
-	t_list	*ptr_token_list;
+	t_list	*ptr_tokenlist;
 
 	debug("expand_string double quotes %s", token->lexeme);
 	unquoted_lexeme = NULL;
@@ -385,7 +385,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	free(unquoted_lexeme);
 	token_sanitization(string_tokens);
 	debug("First string token: %s type %d", get_token_lexeme(string_tokens), get_token_type(string_tokens));
-	ptr_token_list = string_tokens;
+	ptr_tokenlist = string_tokens;
 	while (string_tokens)
 	{
 		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR_QUESTION)
@@ -398,7 +398,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		free(temp_lexeme);
 		string_tokens = string_tokens->next;
 	}
-	ft_lstclear(&ptr_token_list, free_tokennode); //free_tokennode function is from scanner.h
+	ft_lstclear(&ptr_tokenlist, free_tokennode); //free_tokennode function is from scanner.h
 	token->type = QUOTE_EXPANDED;
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
@@ -477,7 +477,7 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 
 	if (ast == NULL)
 		return ;
-	tokenlist = ast->token_list;
+	tokenlist = ast->tokenlist;
 	if (!tokenlist)
 		return ;
 	expand_tokenlist(data, tokenlist);
@@ -499,5 +499,5 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	}
 	which_ast_node(ast);
 	debug("ast-node type after check: %i)", ast->type);
-	// debug("First lexeme in merged tokenlist: -%s- of type: %i", get_token_lexeme(ast->token_list), get_token_type(ast->token_list));
+	// debug("First lexeme in merged tokenlist: -%s- of type: %i", get_token_lexeme(ast->tokenlist), get_token_type(ast->tokenlist));
 }

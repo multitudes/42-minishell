@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 09:41:09 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/07 17:47:17 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int redirect_and_execute_heredoc(t_ast_node *ast, t_data *data, t_heredoc *hered
     if (pid == -1)
         return(status_and_perror("minishell: redirect heredoc", 1));
     if (pid == 0)
-        status = execute_heredoc_child(ast->token_list, data, pfd);
+        status = execute_heredoc_child(ast->tokenlist, data, pfd);
     else
         status = execute_heredoc_parent(pfd, pid, heredoc);
     return (status);

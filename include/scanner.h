@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 07:41:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ typedef enum e_tokentype {
 typedef struct s_mini_data
 {
 	const char		*input;
-	t_list			*token_list;
+	t_list			*tokenlist;
 	bool			scanner_error;
 	char			*scanner_err_str;
 }						t_mini_data;
@@ -193,7 +193,7 @@ bool	is_reserved(t_mini_data *data, char *identifier, int *start);
 bool	is_true_false(t_mini_data *data, char *str, int *start);
 bool	is_builtin(t_mini_data *data, char *identifier, int *start);
 bool	add_token(t_mini_data *data, int *i, const char *lxm, t_tokentype type);
-void	print_token_list(t_list *token_list);
+void	print_tokenlist(t_list *tokenlist);
 bool	is_io_number(const char *identifier);
 bool	str_is_number(const char *identifier);
 bool	str_is_alphanum(const char *identifier);

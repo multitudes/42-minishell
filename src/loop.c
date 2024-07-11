@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/10 11:58:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ extern char **environ;
 util function
 it makes sense to collect what we malloc in our data struct
 because it is easier to free at the end or when we need to exit
-token_list is freed in the loop with the ast
+tokenlist is freed in the loop with the ast
 */
 void	free_data(t_data **data)
 {
@@ -148,7 +148,7 @@ char *add_newline(char *input)
 bool init_data2(t_data **data)
 {
 	(*data)->input = "no input";
-	(*data)->token_list = NULL;
+	(*data)->tokenlist = NULL;
 	(*data)->ast = NULL;
 	(*data)->exit_status = 0;
 	return (true);
@@ -329,10 +329,10 @@ int loop()
 			if (ft_strncmp(data->input, "", 1) != 0)
 			{
 				handle_history(data);
-				data->token_list = tokenizer(data->input);
-				if (data->token_list != NULL)
+				data->tokenlist = tokenizer(data->input);
+				if (data->tokenlist != NULL)
 				{
-					data->ast = create_ast(data->token_list);
+					data->ast = create_ast(data->tokenlist);
 					if (data->ast)
 					{
 						data->exit_status = execute_ast(data->ast, data);
@@ -386,10 +386,10 @@ int single_command(const char *input)
 	if (!exit_condition(data))
 	{
 		sanitize_input(data->input);
-		data->token_list = tokenizer(data->input);
-		if (data->token_list != NULL)
+		data->tokenlist = tokenizer(data->input);
+		if (data->tokenlist != NULL)
 		{
-			data->ast = create_ast(data->token_list);
+			data->ast = create_ast(data->tokenlist);
 			if (data->ast)
 			{
 				data->exit_status = execute_ast(data->ast, data);

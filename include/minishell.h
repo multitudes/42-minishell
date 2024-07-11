@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 07:41:31 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ pipe_fd : file descriptors for the pipe
 typedef struct s_data 
 {
 	const char			*input;
-	t_list				*token_list;
+	t_list				*tokenlist;
 	t_darray			*env_arr;
 	t_ast_node			*ast;
 	uint8_t				exit_status;
