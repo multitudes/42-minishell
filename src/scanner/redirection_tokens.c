@@ -30,7 +30,7 @@ bool	is_heredoc_delim(t_list *tokenlist)
 	bool		heredoc_delim;
 
 	if (!tokenlist)
-		(false);
+		return (false);
 	tokentype = get_token_type(tokenlist);
 	if (tokentype == DLESS_DELIM || tokentype == DLESSDASH)
 		return (true);

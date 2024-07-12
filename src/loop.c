@@ -17,6 +17,7 @@
 #include "analyser.h"
 #include <signal.h>
 #include <fcntl.h>
+#include "init.h"
 
 /*
 Allowed global variable for signals only. 
@@ -147,54 +148,6 @@ char *add_newline(char *input)
 	return (here_content);
 }
 
-bool init_data2(t_data **data)
-{
-	(*data)->input = "no input";
-	(*data)->tokenlist = NULL;
-	(*data)->ast = NULL;
-	(*data)->exit_status = 0;
-	return (true);
-}
-
-bool	init_env_darray(t_darray **env_arr)
-{
-	int		i;
-	char	*env;
-
-	i = 0;
-	*env_arr = darray_create(sizeof(char *), 100);
-	if (*env_arr == NULL)
-		return (zero_and_printerr("env_array env"));
-	while (environ && environ[i])
-	{ 
-		env = ft_strdup(environ[i++]);
-		if (env == NULL && darray_clear_destroy(*env_arr))
-			return (zero_and_printerr("malloc env"));
-		if (darray_push(*env_arr, env) == -1 && darray_clear_destroy(*env_arr))
-			return (zero_and_printerr("darray_push"));
-	}
-	darray_push(*env_arr, NULL);
-	return (true);
-}
-
-/*
-initialiser for data
-It would be nice to to save the home dir at the very beginning
-*/
-bool	init_data(t_data **data)
-{
-	t_darray	*env_array;
-
-	if (!init_env_darray(&env_array))
-		return (false);
-	*data = malloc(sizeof(t_data));
-	if (*data == NULL && darray_clear_destroy(env_array))
-		return (zero_and_printerr("malloc data"));
-	// (*data)->home = get_home(NULL);
-	(*data)->env_arr = env_array;
-	return (init_data2(data));
-}
-
 /*
 for signals
 The readline library maintains an internal buffer of the current 
@@ -285,19 +238,6 @@ bool exit_condition(t_data *data)
 	if (data->input == NULL )
 		return (true);
 	return false;
-}
-
-/*
-with each new instance of the shell,
-the env variable SHLVL is increased by one.
-*/
-void	shlvl_init(t_data *data)
-{
-	char	*shlvl;
-
-	shlvl = ft_itoa(ft_atoi(mini_get_env(data->env_arr, "SHLVL")) + 1);
-	update_env(data->env_arr, "SHLVL", shlvl);
-	free(shlvl);
 }
 
 /*
@@ -417,29 +357,4 @@ int single_command(const char *input)
 	debug("Exit status: %i", status);
 
 	return (status); 
-}
-
-void	save_fds(t_data *data)
-{
-	debug("Save for later restoration STDIN: %i, STDOUT: %i, STDERR: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
-	data->original_stdout = dup(STDOUT_FILENO);
-	data->original_stdin = dup(STDIN_FILENO);
-	data->original_stderr = dup(STDERR_FILENO);
-	if (data->original_stdout < 0 || data->original_stdin < 0 || data->original_stderr < 0)
-	{
-		data->exit_status = 1;
-		perror("minishell: dup");
-	}
-}
-
-void	restore_fds(t_data *data)
-{
-	if (dup2(data->original_stdout, STDOUT_FILENO) < 0 || \
-	dup2(data->original_stdin, STDIN_FILENO) < 0 || \
-	dup2(data->original_stderr, STDERR_FILENO) < 0)
-	{
-		data->exit_status = 1;
-		perror("minishell: dup2");
-	}
-	debug("Restored STDIN: %i, STDOUT: %i, STDERR: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
 }
