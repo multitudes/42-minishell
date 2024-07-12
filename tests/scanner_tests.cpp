@@ -428,7 +428,7 @@ const char* test_all_tokens4() {
 	result = process_token(&current, &i, "$#", DOLLAR_HASH);
 	result = process_token(&current, &i, "$!", DOLLAR_BANG);
 	result = process_token(&current, &i, "$-", DOLLAR_HYPHEN);
-	result = process_token(&current, &i, "$0", VAR_EXPANSION);
+	result = process_token(&current, &i, "$0", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "$", DOLLAR);
 	result = process_token(&current, &i, "$a", VAR_EXPANSION);
 

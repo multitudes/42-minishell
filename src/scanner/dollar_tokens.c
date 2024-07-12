@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:32:51 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/08 19:09:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 08:32:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,18 @@ bool	is_simple_dollar_exp(t_mini_data *data, int *i)
 
 bool	is_complex_dollar_exp(t_mini_data *data, int *i)
 {
+	char	dollar_digit_lexeme[3];
+
 	if (peek(data->input + *i, "$((", FUZZY))
 		return (add_block_dbl_paren(data, i, "))", EXPR_EXPANSION));
 	else if (peek(data->input + *i, "$", FUZZY) && \
 	is_digit(*(data->input + *i + 1)))
-		return (proc_token_off_1(data, i, is_digit, \
-		VAR_EXPANSION));
+	{
+		dollar_digit_lexeme[0] = '$';
+		dollar_digit_lexeme[1] = *(data->input + *i + 1);
+		dollar_digit_lexeme[2] = '\0';
+		return (add_token(data, i, dollar_digit_lexeme, DOLLAR_DIGIT));
+	}
 	else if (peek(data->input + *i, "${", FUZZY))
 		return (add_tokenblock(data, i, '}', VAR_EXPANSION));
 	else if (peek(data->input + *i, "$", FUZZY) && is_alnum(*(data->input \
