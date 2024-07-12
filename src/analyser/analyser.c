@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 10:06:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,18 +172,12 @@ char	*get_home(t_darray *env_arr)
 	home = mini_get_env(env_arr, "HOME");
 	debug("HOME from env: %s", home);
 	if (home)
-		home = ft_strdup(home);
-	else
-	{
-		debug("HOME not set in env, trying to get from /etc/passwd");
-        char *username = getenv("USER");
-		debug("Username: %s", username);
-		if (username)
-			home = ft_strjoin("/home/", username);
-		else
-			home = ft_strdup("/home");
-    }
-	return (home);
+		return (ft_strdup(home));
+	if (getenv("USER"))
+		return (ft_strjoin("/home/", getenv("USER")));
+	if (getcwd(home, sizeof(home)) != NULL) 
+		return (home);
+	return (ft_strdup("/home"));
 }
 
 bool	valid_tilde_expansion(t_list *tokenlist, int index)

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 07:46:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ typedef enum e_tokentype {
 	EXPR_EXPANSION,
 	QUOTED_STRING,
 	S_QUOTED_STRING,
+	DOLLAR_DIGIT,
 	TRUETOK,
 	FALSETOK,
 	DGREAT,
@@ -200,6 +201,7 @@ bool	str_is_number(const char *identifier);
 bool	str_is_alphanum(const char *identifier);
 bool	filename_delimiter(const char ch);
 bool	not_implemented_builtin(const char *identifier);
+bool	not_implemented_builtin2(const char *id);
 void	free_tokennode(void *content);
 bool	scanner_error(t_mini_data *data, char *err_str);
 bool	got_tokens(t_mini_data *data, int *i);
@@ -232,6 +234,9 @@ bool	is_a_globbing(t_mini_data *data, const char *tmp, int *start);
 bool	is_redirection_token(t_tokentype tokentype);
 bool	is_heredoc(t_tokentype tokentype);
 bool	is_heredoc_delim(t_list *tokenlist);
+bool	is_heredoc_token(t_tokentype tokentype);
+t_list	*get_head(t_list *tokenlist);
+int		count_tokens(t_list *tokenlist);
 
 #  ifdef __cplusplus
 

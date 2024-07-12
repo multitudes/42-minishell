@@ -79,7 +79,7 @@ const char* test_scanner_dollar() {
 	result = process_token(&current, &i, "a", WORD);
 	result = process_token(&current, &i, "$-", DOLLAR_HYPHEN);
 	result = process_token(&current, &i, "a", WORD);
-	result = process_token(&current, &i, "$0", VAR_EXPANSION);
+	result = process_token(&current, &i, "$0", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "$", DOLLAR);
 
 	// this is how I check for the end of the list
@@ -140,36 +140,38 @@ const char* test_scanner_subst_dollar_digit() {
 	int i = 0;
 
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$0", VAR_EXPANSION);
+	result = process_token(&current, &i, "$0", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$1", VAR_EXPANSION);
+	result = process_token(&current, &i, "$1", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$2", VAR_EXPANSION);
+	result = process_token(&current, &i, "$2", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$3", VAR_EXPANSION);
+	result = process_token(&current, &i, "$3", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$4", VAR_EXPANSION);
+	result = process_token(&current, &i, "$4", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$5", VAR_EXPANSION);
+	result = process_token(&current, &i, "$5", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$6", VAR_EXPANSION);
+	result = process_token(&current, &i, "$6", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$7", VAR_EXPANSION);
+	result = process_token(&current, &i, "$7", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$8", VAR_EXPANSION);
+	result = process_token(&current, &i, "$8", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$9", VAR_EXPANSION);
+	result = process_token(&current, &i, "$9", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$10", VAR_EXPANSION);
+	result = process_token(&current, &i, "$1", DOLLAR_DIGIT);
+	result = process_token(&current, &i, "0", NUMBER);
+	
 
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
