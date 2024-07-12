@@ -6,12 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 11:40:17 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 11:46:05 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 11:52:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include "init.h"
 #include "minishell.h"
 #include "splash_error.h"
 
@@ -46,6 +47,7 @@ bool	init_data2(t_data **data)
 	(*data)->tokenlist = NULL;
 	(*data)->ast = NULL;
 	(*data)->exit_status = 0;
+	shlvl_init(*data);
 	return (true);
 }
 
@@ -68,4 +70,17 @@ bool	init_env_darray(t_darray **env_arr)
 	}
 	darray_push(*env_arr, NULL);
 	return (true);
+}
+
+/*
+with each new instance of the shell,
+the env variable SHLVL is increased by one.
+*/
+void	shlvl_init(t_data *data)
+{
+	char	*shlvl;
+
+	shlvl = ft_itoa(ft_atoi(mini_get_env(data->env_arr, "SHLVL")) + 1);
+	update_env(data->env_arr, "SHLVL", shlvl);
+	free(shlvl);
 }

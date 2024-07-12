@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 11:44:18 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 11:50:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,31 +122,11 @@ void	exit_minishell(t_data *data)
 	free_data(&data);
 }
 
-void	update_env_exit_status_with(uint8_t exit_status, t_data *data)
-{
-	if (!update_env(data->env_arr, "?", ft_itoa(exit_status)))
-		print_error_status("update_env", 1);
-	
-}
-
 bool exit_condition(t_data *data)
 {
 	if (data->input == NULL )
 		return (true);
 	return false;
-}
-
-/*
-with each new instance of the shell,
-the env variable SHLVL is increased by one.
-*/
-void	shlvl_init(t_data *data)
-{
-	char	*shlvl;
-
-	shlvl = ft_itoa(ft_atoi(mini_get_env(data->env_arr, "SHLVL")) + 1);
-	update_env(data->env_arr, "SHLVL", shlvl);
-	free(shlvl);
 }
 
 /*
@@ -168,7 +148,6 @@ int loop()
 	data = NULL;
 	if (!init_data(&data))
 		return (EXIT_FAILURE);
-	shlvl_init(data);
 	save_fds(data);
 	load_history(data->env_arr);
 	set_up_std_signals(); //check return value / status?
@@ -230,7 +209,6 @@ int single_command(const char *input)
 		return (EXIT_FAILURE);
 	debug("single command init_data done");
 	debug("input: %s", input);
-	shlvl_init(data);
 	save_fds(data);
 	set_up_std_signals();		
 	data->input = ft_strdup(input);
