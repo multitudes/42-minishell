@@ -22,7 +22,7 @@ SRC_DIR			= 	src/
 LIBFTDIR 		= 	lib/libft
 
 # the files to compile
-SRCS 			= 	$(addprefix $(SRC_DIR), main.c loop.c history/history.c history/history2.c \
+SRCS 			= 	$(addprefix $(SRC_DIR), init.c main.c loop.c history/history.c history/history2.c \
 scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/token_functions2.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
@@ -34,7 +34,7 @@ error.c error2.c darray/darray.c darray/darray2.c darray/darray3.c \
 builtins/builtins.c builtins/builtins2.c executer/executer.c executer/executer2.c executer/executer3.c \
 executer/executer4.c heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c)
 OBJS 			=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
-HDRS 			=	$(addprefix include/, minishell.h scanner.h environment.h \
+HDRS 			=	$(addprefix include/, init.h minishell.h scanner.h environment.h \
 parser.h analyser.h executer.h splash_error.h darray.h builtins.h globbing.h debug.h heredoc.h) 
 
 # linker flags and libraries

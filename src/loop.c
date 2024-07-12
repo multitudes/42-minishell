@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 09:32:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 11:44:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "splash_error.h"
 #include "analyser.h"
 #include <fcntl.h>
+#include "init.h"
 
 /*
 Allowed global variable for signals only. 
@@ -25,14 +26,6 @@ that caused the child to terminate when the child did not
 exit normally and it has been added to the executor.
 */
 int	g_signal;
-
-/*
-The environ variable is part of the POSIX standard, so it should be 
-available on any POSIX-compliant system.
-according to the linux programming language by kerrisk (page 127), using
-the environ variable is better than getting it in main.. (not posix compliant)
-*/
-extern char **environ;
 
 /*
 util function
@@ -49,147 +42,6 @@ void	free_data(t_data **data)
 	free(*data);
 	*data = NULL;
 	debug("data freed");
-}
-
-
-/*
-to move to utilities header
-*/
-char 	*add_newline(char *input);
-bool	contains_heredoc(const char *input, char **here_delimiter);
-
-
-/*
-functions to be moved to utilities!
-
-check if the input contains a << DLESS operator and change 
-the prompt to indicate that it expects more...
-*/
-bool	contains_heredoc(const char *input, char **here_delimiter)
-{
-	int	i;
-	int start;
-
-	i = 0;
-	while (input[i])
-	{
-		if (input[i] == '<' && input[i + 1] && input[i + 1] == '<')
-		{
-			i += 2;
-			while (is_space(input[i]))
-				i++;
-			if (input[i] == '\0')
-			{
-				debug("DLESS delimiter is missing\n");
-				here_delimiter = NULL;
-				return (true);
-			}
-			start = i;
-			while (!filename_delimiter(input[i]))
-				i++;
-			if (i == start)
-				here_delimiter = NULL;
-			else
-				*here_delimiter = ft_substr(input, start, i - start);
-			printf("DLESS delimiter: %s\n", *here_delimiter);
-			return (true);
-		}
-		i++;	
-	}
-	return (false);
-}
-
-/*
-in case the input contains a << DLESS operator, we need to check if the
-input contains the delimiter string
-if not we need to keep reading the input until we find it
-*/
-bool contains_string(char *here_content, char *DLESS_delimiter)
-{
-	// the DLESS can be any string
-	int i = 0;
-	int j = 0;
-	int k = 0;
-	while (here_content[i])
-	{
-		if (here_content[i] == DLESS_delimiter[0])
-		{
-			k = i;
-			while (here_content[k] && DLESS_delimiter[j] && here_content[k] == DLESS_delimiter[j])
-			{
-				// debug("here_content[k] == DLESS_delimiter[j] %c %c\n", here_content[k], DLESS_delimiter[j]);	
-				k++;
-				j++;
-			}
-			if ((int)ft_strlen(DLESS_delimiter) == j)
-			{
-				debug("they are equal\n");
-				return (true);
-			}	
-		}
-		j = 0;
-		i++;
-	}
-	return (false);
-}
-
-/*
-used for a DLESS test but not implemented yet
-*/
-char *add_newline(char *input)
-{
-	char *here_content;
-
-	here_content = ft_strjoin(input, "\n");
-	free(input);
-	return (here_content);
-}
-
-bool init_data2(t_data **data)
-{
-	(*data)->input = "no input";
-	(*data)->tokenlist = NULL;
-	(*data)->ast = NULL;
-	(*data)->exit_status = 0;
-	return (true);
-}
-
-bool	init_env_darray(t_darray **env_arr)
-{
-	int		i;
-	char	*env;
-
-	i = 0;
-	*env_arr = darray_create(sizeof(char *), 100);
-	if (*env_arr == NULL)
-		return (zero_and_printerr("env_array env"));
-	while (environ && environ[i])
-	{ 
-		env = ft_strdup(environ[i++]);
-		if (env == NULL && darray_clear_destroy(*env_arr))
-			return (zero_and_printerr("malloc env"));
-		if (darray_push(*env_arr, env) == -1 && darray_clear_destroy(*env_arr))
-			return (zero_and_printerr("darray_push"));
-	}
-	darray_push(*env_arr, NULL);
-	return (true);
-}
-
-/*
-initialiser for data
-It would be nice to to save the home dir at the very beginning
-*/
-bool	init_data(t_data **data)
-{
-	t_darray	*env_array;
-
-	if (!init_env_darray(&env_array))
-		return (false);
-	*data = malloc(sizeof(t_data));
-	if (*data == NULL && darray_clear_destroy(env_array))
-		return (zero_and_printerr("malloc data"));
-	(*data)->env_arr = env_array;
-	return (init_data2(data));
 }
 
 /*
