@@ -54,17 +54,13 @@ char	*get_history_file_path(t_darray *env_arr)
 
 	home = get_home(env_arr);
 	debug("HOME from bash env: %s", home);
-	if (home)
-		home = ft_strdup(home);
-	else
+	if (home == NULL)
 	{
 		debug("HOME not set in env, trying to get from /etc/passwd");
         char *username = getenv("USER");
 		debug("Username: %s", username);
 		if (username)
 			home = ft_strjoin("/home/", username);
-		else
-			home = ft_strdup("/home");
     }
 	if (home == NULL)
 		return (NULL);
@@ -114,11 +110,6 @@ bool	add_to_hist_file(const char *input, t_darray *env_arr)
 	if (path == NULL)
 		return (false);
 	fd = open(path, O_CREAT | O_APPEND | O_WRONLY, 0644);
-	if (fd == -1)
-	{
-		free(path);
-		return (false);
-	}
 	free(path);
 	if (fd == -1)
 		return (false);
