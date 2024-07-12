@@ -28,7 +28,7 @@ void	load_history(t_darray *env_arr)
 	path = get_history_file_path(env_arr);
 	fd = open(path, O_CREAT, 0644);
 	free(path);
-	if (fd == -1 && status_and_perror("open", 1))
+	if (fd == -1)
 		return ;
 	line = get_next_line(fd);
 	while (line != NULL)

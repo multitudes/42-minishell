@@ -259,7 +259,6 @@ int loop()
 	data = NULL;
 	if (!init_data(&data))
 		return (EXIT_FAILURE);
-	shlvl_init(data);
 	save_fds(data);
 	load_history(data->env_arr);
 	set_up_std_signals(); //check return value / status?
