@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 11:40:17 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 11:52:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 13:00:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ bool	init_data(t_data **data)
 	if (*data == NULL && darray_clear_destroy(env_array))
 		return (zero_and_printerr("malloc data"));
 	(*data)->env_arr = env_array;
+	shlvl_init(*data);
 	return (init_data2(data));
 }
 
@@ -47,7 +48,12 @@ bool	init_data2(t_data **data)
 	(*data)->tokenlist = NULL;
 	(*data)->ast = NULL;
 	(*data)->exit_status = 0;
-	shlvl_init(*data);
+	(*data)->original_stdout = -1;
+	(*data)->original_stdin = -1;
+	(*data)->original_stderr = -1;
+	(*data)->pipe_fd[0] = -1;
+	(*data)->pipe_fd[1] = -1;
+	(*data)->pipe_open = false;
 	return (true);
 }
 

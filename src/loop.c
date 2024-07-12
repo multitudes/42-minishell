@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 12:19:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 12:49:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "analyser.h"
 #include <fcntl.h>
 #include "init.h"
+#include "fd.h"
 
 /*
 Allowed global variable for signals only. 
@@ -247,27 +248,3 @@ int single_command(const char *input)
 	return (status); 
 }
 
-void	save_fds(t_data *data)
-{
-	debug("Save for later restoration STDIN: %i, STDOUT: %i, STDERR: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
-	data->original_stdout = dup(STDOUT_FILENO);
-	data->original_stdin = dup(STDIN_FILENO);
-	data->original_stderr = dup(STDERR_FILENO);
-	if (data->original_stdout < 0 || data->original_stdin < 0 || data->original_stderr < 0)
-	{
-		data->exit_status = 1;
-		perror("minishell: dup");
-	}
-}
-
-void	restore_fds(t_data *data)
-{
-	if (dup2(data->original_stdout, STDOUT_FILENO) < 0 || \
-	dup2(data->original_stdin, STDIN_FILENO) < 0 || \
-	dup2(data->original_stderr, STDERR_FILENO) < 0)
-	{
-		data->exit_status = 1;
-		perror("minishell: dup2");
-	}
-	debug("Restored STDIN: %i, STDOUT: %i, STDERR: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
-}
