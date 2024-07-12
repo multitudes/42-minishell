@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 20:38:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 07:46:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ typedef enum e_tokentype {
 	EXPR_EXPANSION,
 	QUOTED_STRING,
 	S_QUOTED_STRING,
+	DOLLAR_DIGIT,
 	TRUETOK,
 	FALSETOK,
 	DGREAT,
