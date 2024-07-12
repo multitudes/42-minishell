@@ -51,7 +51,7 @@ static int  open_fd_by_redirect_type(t_tokentype type, char *filename, uint8_t *
     fd = -1;
     if (type == REDIRECT_OUT || type == REDIRECT_BOTH || type == GREATAND || type == CLOBBER) // || type == REDIRECT_ERR
         fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-    else if (type == REDIRECT_IN)
+    else if (type == REDIRECT_IN || type == DLESS || type == DLESSDASH)
         fd = open(filename, O_RDONLY);
     else if (type == REDIRECT_BOTH_APP || type == DGREAT) // || type == REDIRECT_ERRAPP
         fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
@@ -84,7 +84,8 @@ uint8_t setup_redirect(t_list **tokenlist, t_tokentype type)
         close(fd);
         return (status);
     }
-    unlink(filename);
+    if (is_heredoc_token(type))
+        unlink(filename);
     consume_token_and_connect(tokenlist);
     close(fd);
     return (0);

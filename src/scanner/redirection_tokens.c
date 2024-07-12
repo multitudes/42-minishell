@@ -13,7 +13,7 @@
 #include "scanner.h"
 #include "parser.h"
 
-bool	is_heredoc(t_tokentype tokentype)
+bool	is_heredoc_token(t_tokentype tokentype)
 {
 	if (tokentype == DLESS || tokentype == DLESSDASH)
 		return (true);

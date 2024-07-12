@@ -126,7 +126,7 @@ static bool init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
     // heredoc->heredoc_len = 0;
     while (tokenlist)
     {
-        if (is_heredoc(get_token_type(tokenlist)))
+        if (is_heredoc_token(get_token_type(tokenlist)))
         {
             if (is_heredoc_delim(tokenlist->next))
             {
@@ -138,10 +138,10 @@ static bool init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
 					return (false_and_print("minishell: heredoc memory error"));
 				}
 				debug("Set delimiter %i: %s", heredoc->delim_count, heredoc->delim[heredoc->delim_count]);
-                temp = ((t_token *)(tokenlist->content))->lexeme;
-                ((t_token *)(tokenlist->content))->lexeme = ft_strdup("<");
-                free(temp);
-                ((t_token *)(tokenlist->content))->type = REDIRECT_IN;
+                // temp = ((t_token *)(tokenlist->content))->lexeme;
+                // ((t_token *)(tokenlist->content))->lexeme = ft_strdup("<");
+                // free(temp);
+                // ((t_token *)(tokenlist->content))->type = REDIRECT_IN;
                 tokenlist = tokenlist->next;
                 temp = ((t_token *)(tokenlist->content))->lexeme;
                 ((t_token *)(tokenlist->content))->lexeme = get_heredoc_filename();
@@ -199,7 +199,7 @@ bool    contains_heredoc(t_list *tokenlist)
     while (tokenlist)
     {
         tokentype = get_token_type(tokenlist);
-        if (is_heredoc(tokentype))
+        if (is_heredoc_token(tokentype))
             return (true);
         tokenlist = tokenlist->next;
     }
