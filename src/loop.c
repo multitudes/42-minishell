@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 09:32:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,6 @@ bool	init_data(t_data **data)
 	*data = malloc(sizeof(t_data));
 	if (*data == NULL && darray_clear_destroy(env_array))
 		return (zero_and_printerr("malloc data"));
-	// (*data)->home = get_home(NULL);
 	(*data)->env_arr = env_array;
 	return (init_data2(data));
 }
