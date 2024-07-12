@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 11:47:54 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 12:20:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ int			single_command(const char *input);
 int			set_up_std_signals(void);
 void		save_fds(t_data *data);
 void		restore_fds(t_data *data);
+void		single_command_innerloop(t_data *data);
 
 #  ifdef __cplusplus
 

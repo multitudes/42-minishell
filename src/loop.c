@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 11:50:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 12:19:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,6 +195,30 @@ int loop()
 	return (status); 
 }
 
+void	single_command_innerloop(t_data *data)
+{
+	sanitize_input(data->input);
+	data->tokenlist = tokenizer(data->input);
+	if (data->tokenlist != NULL)
+	{
+		data->ast = create_ast(data->tokenlist);
+		if (data->ast)
+		{
+			data->exit_status = execute_ast(data->ast, data);
+			debug("Exit status: %i", data->exit_status);
+			free_ast(&(data->ast));
+		}
+		else
+			data->exit_status = print_error_status("syntax parse error", 1);
+	}
+	else
+	{
+		free((char *)(data->input));
+		free_data(&data);
+		exit(2);
+	}
+}
+
 /*
 invoqued using the -c flag
 */
@@ -213,28 +237,7 @@ int single_command(const char *input)
 	set_up_std_signals();		
 	data->input = ft_strdup(input);
 	if (!exit_condition(data))
-	{
-		sanitize_input(data->input);
-		data->tokenlist = tokenizer(data->input);
-		if (data->tokenlist != NULL)
-		{
-			data->ast = create_ast(data->tokenlist);
-			if (data->ast)
-			{
-				data->exit_status = execute_ast(data->ast, data);
-				debug("Exit status: %i", data->exit_status);
-				free_ast(&(data->ast));
-			}
-			else
-				debug("syntax parse error");
-		}
-		else
-		{
-			free((char *)(data->input));
-			free_data(&data);
-			exit(2);
-		}
-	}
+		single_command_innerloop(data);
 	status = data->exit_status;
 	free((char *)(data->input));
 	free_data(&data);
