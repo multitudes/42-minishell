@@ -13,7 +13,9 @@
 #include "minishell.h"
 #include "darray.h"
 #include "splash_error.h"
+#include "heredoc.h"
 #include "analyser.h"
+#include <signal.h>
 #include <fcntl.h>
 
 /*
@@ -56,7 +58,7 @@ void	free_data(t_data **data)
 to move to utilities header
 */
 char 	*add_newline(char *input);
-bool	contains_heredoc(const char *input, char **here_delimiter);
+// bool	contains_heredoc(const char *input, char **here_delimiter);
 
 
 /*
@@ -65,73 +67,73 @@ functions to be moved to utilities!
 check if the input contains a << DLESS operator and change 
 the prompt to indicate that it expects more...
 */
-bool	contains_heredoc(const char *input, char **here_delimiter)
-{
-	int	i;
-	int start;
+// bool	contains_heredoc(const char *input, char **here_delimiter)
+// {
+// 	int	i;
+// 	int start;
 
-	i = 0;
-	while (input[i])
-	{
-		if (input[i] == '<' && input[i + 1] && input[i + 1] == '<')
-		{
-			i += 2;
-			while (is_space(input[i]))
-				i++;
-			if (input[i] == '\0')
-			{
-				debug("DLESS delimiter is missing\n");
-				here_delimiter = NULL;
-				return (true);
-			}
-			start = i;
-			while (!filename_delimiter(input[i]))
-				i++;
-			if (i == start)
-				here_delimiter = NULL;
-			else
-				*here_delimiter = ft_substr(input, start, i - start);
-			printf("DLESS delimiter: %s\n", *here_delimiter);
-			return (true);
-		}
-		i++;	
-	}
-	return (false);
-}
+// 	i = 0;
+// 	while (input[i])
+// 	{
+// 		if (input[i] == '<' && input[i + 1] && input[i + 1] == '<')
+// 		{
+// 			i += 2;
+// 			while (is_space(input[i]))
+// 				i++;
+// 			if (input[i] == '\0')
+// 			{
+// 				debug("DLESS delimiter is missing\n");
+// 				here_delimiter = NULL;
+// 				return (true);
+// 			}
+// 			start = i;
+// 			while (!filename_delimiter(input[i]))
+// 				i++;
+// 			if (i == start)
+// 				here_delimiter = NULL;
+// 			else
+// 				*here_delimiter = ft_substr(input, start, i - start);
+// 			printf("DLESS delimiter: %s\n", *here_delimiter);
+// 			return (true);
+// 		}
+// 		i++;	
+// 	}
+// 	return (false);
+// }
 
 /*
 in case the input contains a << DLESS operator, we need to check if the
 input contains the delimiter string
 if not we need to keep reading the input until we find it
 */
-bool contains_string(char *here_content, char *DLESS_delimiter)
-{
-	// the DLESS can be any string
-	int i = 0;
-	int j = 0;
-	int k = 0;
-	while (here_content[i])
-	{
-		if (here_content[i] == DLESS_delimiter[0])
-		{
-			k = i;
-			while (here_content[k] && DLESS_delimiter[j] && here_content[k] == DLESS_delimiter[j])
-			{
-				// debug("here_content[k] == DLESS_delimiter[j] %c %c\n", here_content[k], DLESS_delimiter[j]);	
-				k++;
-				j++;
-			}
-			if ((int)ft_strlen(DLESS_delimiter) == j)
-			{
-				debug("they are equal\n");
-				return (true);
-			}	
-		}
-		j = 0;
-		i++;
-	}
-	return (false);
-}
+// bool contains_string(char *here_content, char *DLESS_delimiter)
+// {
+// 	// the DLESS can be any string
+// 	int i = 0;
+// 	int j = 0;
+// 	int k = 0;
+// 	while (here_content[i])
+// 	{
+// 		if (here_content[i] == DLESS_delimiter[0])
+// 		{
+// 			k = i;
+// 			while (here_content[k] && DLESS_delimiter[j] && here_content[k] == DLESS_delimiter[j])
+// 			{
+// 				// debug("here_content[k] == DLESS_delimiter[j] %c %c\n", here_content[k], DLESS_delimiter[j]);	
+// 				k++;
+// 				j++;
+// 			}
+// 			if ((int)ft_strlen(DLESS_delimiter) == j)
+// 			{
+// 				debug("they are equal\n");
+// 				return (true);
+// 			}	
+// 		}
+// 		j = 0;
+// 		i++;
+// 	}
+// 	return (false);
+// }
 
 /*
 used for a DLESS test but not implemented yet
@@ -330,6 +332,8 @@ int loop()
 			{
 				handle_history(data);
 				data->tokenlist = tokenizer(data->input);
+				set_up_heredocs(data);
+				debug("Back to loop after heredoc set up");
 				if (data->tokenlist != NULL)
 				{
 					data->ast = create_ast(data->tokenlist);

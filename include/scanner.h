@@ -80,6 +80,7 @@ typedef enum e_tokentype {
 	DGREAT,
 	DLESS,
 	DLESS_DELIM,
+	HEREDOC_FILE,
 	REDIRECT_OUT,
 	REDIRECT_IN,
 	REDIRECT_BOTH,
@@ -229,7 +230,8 @@ bool	is_a_string_thing(t_mini_data *data, int *i);
 bool	is_a_redirection(t_mini_data *data, int *i);
 bool	is_a_globbing(t_mini_data *data, const char *tmp, int *start);
 bool	is_redirection_token(t_tokentype tokentype);
-bool	is_heredoc_token(t_tokentype tokentype);
+bool	is_heredoc(t_tokentype tokentype);
+bool	is_heredoc_delim(t_list *tokenlist);
 
 #  ifdef __cplusplus
 

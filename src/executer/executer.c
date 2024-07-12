@@ -122,11 +122,11 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			if (status == 0)
 				continue ;
 		}
-		else if (is_heredoc(ast->tokenlist))
-		{
-			debug("is heredoc"); // TODO look for updating $_ somewhere
-			status = execute_heredoc(ast, data);
-		}
+		// else if (is_heredoc(ast->tokenlist))
+		// {
+		// 	debug("is heredoc"); // TODO look for updating $_ somewhere
+		// 	status = execute_heredoc(ast, data);
+		// }
 		else if (ast->type == NODE_BUILTIN)
 		{	
 			update_dollar_underscore(data->env_arr, ast->tokenlist);

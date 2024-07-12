@@ -17,8 +17,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-// refactor the redirect functions into one with one or two supporting functions
-
 static void check_return(int new_fd, char *filename, uint8_t *status)
 {
     if (new_fd < 0)
@@ -86,6 +84,7 @@ uint8_t setup_redirect(t_list **tokenlist, t_tokentype type)
         close(fd);
         return (status);
     }
+    unlink(filename);
     consume_token_and_connect(tokenlist);
     close(fd);
     return (0);

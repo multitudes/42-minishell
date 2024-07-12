@@ -14,6 +14,7 @@
 #include <libft.h>
 #include "splash_error.h"
 #include "scanner.h"
+#include <stdbool.h>
 
 
 /*
@@ -134,4 +135,23 @@ void	replace_node_with_newlist(t_list **node, t_list *newlist)
 	ft_lstdelone(*node, free_tokennode);
 	if (!prev)
 		*node = tmp;
+}
+
+/*
+wrapper for the system write function to simplify syntax
+and perform write return value checking.
+Returns false if write call returns error.
+*/
+bool	ft_write(int fd, char *str)
+{
+	ssize_t	write_return;
+
+	write_return = 0;
+	write_return = write(fd, str, ft_strlen(str));
+	if (write_return == -1 || write_return != (ssize_t)ft_strlen(str))
+	{
+		perror("write");
+		return (false);
+	}
+	return (true);
 }
