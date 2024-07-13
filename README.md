@@ -1216,7 +1216,7 @@ So if the child process exited normally, the exit status will be the return valu
 A student here suggested this shell command to debug file descriptors in our minishell program with the the `lsof` command:
 Run the minishell and then in a separate terminal, run the following command:  
 ```
-pid="$(pgrep minishell)"; 2>/dev/null lsof -p $({ echo "${pid}" && pgrep -P "${pid}"; } | paste -sd, -) | grep " [01][[:alpha:]] " 
+pid="$(pgrep minishell)"; 2>/dev/null lsof -p $({ echo "${pid}" && pgrep -P "${pid}"; } | paste -sd, -) | grep " [0-9]\+[[:alpha:]] "
 ```
 Here's a breakdown:
 
@@ -1247,7 +1247,6 @@ minishell 12114 lbrusa 1u CHR 136,2 0t0 5 /dev/pts/2
 - `/dev/pts/2`: This is the name of the file.
 
 In this case, it shows that your `minishell` process has the terminal `/dev/pts/2` open for both input and output.
-
 
 ## Error handling and error codes
 
