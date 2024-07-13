@@ -30,18 +30,13 @@ void	save_fds(t_data *data)
 
 /*
  * Restores the original file descriptors
- * the only time we needd to restore is when executing a single builtin command
+ * the only time we need to restore is when executing a single builtin command
  * because in the other cases we always fork and exec
  * yes I think we need to close the original fds
  * https://stackoverflow.com/a/11042581/9497800
 */
 
-// void	retore_stdin()
-// {
-// 	data
-// }
-
-void	restore_fds(t_data *data)
+static void	restore_stdin(t_data *data)
 {
 	if (data->original_stdin != -1)
 	{
@@ -59,6 +54,10 @@ void	restore_fds(t_data *data)
 			perror("minishell: close");
 		}
 	}
+}
+
+static void	restore_stdout(t_data *data)
+{
 	if (data->original_stdout != -1)
 	{
 		// if (data->original_stdout != STDOUT_FILENO)
@@ -75,7 +74,11 @@ void	restore_fds(t_data *data)
 			perror("minishell: close");
 		}
 	}
-		if (data->original_stderr != -1)
+}
+
+static void	restore_stderr(t_data *data)
+{
+	if (data->original_stderr != -1)
 	{
 		// if (data->original_stderr != STDERR_FILENO)
 		// {
@@ -91,6 +94,13 @@ void	restore_fds(t_data *data)
 			perror("minishell: close");
 		}
 	}
+}
+
+void	restore_fds(t_data *data)
+{
+	restore_stdin(data);
+	restore_stdout(data);
+	restore_stderr(data);
 	data->original_stdout = -1;
 	data->original_stdin = -1;
 	data->original_stderr = -1;
