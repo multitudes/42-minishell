@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 15:50:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,9 +118,9 @@ int	execute_list(t_ast_node *ast, t_data *data)
 	t_tokentype	tokentype;
 
 	debug("NODE_LIST || &&");
-	restore_fds(data);
+	// restore_fds(data);
 	status = execute_ast(ast->left, data);
-	restore_fds(data);
+	// restore_fds(data);
 	tokentype = ((t_token *)ast->tokenlist->content)->type;
 	if (status == 0 && tokentype == AND_IF)
 	{

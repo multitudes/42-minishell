@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/10 11:52:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 15:50:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,7 +365,7 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	// check if I have more than three token when a minus token is there
 	if (lexeme && ft_isnumstring(lexeme) && tokenlist->next)
 		return (print_minishell_error_status("exit: too many arguments", 1));
-	restore_fds(data);
+	// restore_fds(data);
 	write(1, "exit\n", 5);
 	if (lexeme && ft_isnumstring(lexeme))
 		status = (unsigned int)ft_atoi(lexeme) % 256;

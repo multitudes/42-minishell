@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 14:04:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 15:47:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ t_ast_node	*parse_list(t_list **tokenlist)
 	{
 		break_list(tokenlist);
 		tmp = *tokenlist;
+		debug("parse_list %s", get_token_lexeme(tmp));
 		if (get_token_type(tmp) == AND_IF || get_token_type(tmp) == OR_IF || \
 		get_token_type(tmp) == EXPRESSION)
 		{

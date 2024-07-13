@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 12:21:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 15:59:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,7 @@ int loop()
 					if (data->ast)
 					{
 						data->exit_status = execute_ast(data->ast, data);
-						restore_fds(data);
+						// restore_fds(data);
 						debug("Exit status: %i", data->exit_status);
 						free_ast(&(data->ast));
 					}

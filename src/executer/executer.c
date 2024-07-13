@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 15:50:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,6 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			update_dollar_underscore(data->env_arr, ast->tokenlist);
 			status = execute_command(ast->tokenlist, data);
 		}
-		// restore_fds(data);
 		break ;
 	}
 	return (status);
