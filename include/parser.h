@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 12:00:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 12:14:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ bool		tokenlist_has_astnode(t_list *new_tokenlist);
 bool		is_not_control_token(t_token *token);
 int			count_list(t_list *input_tokens);
 void		break_list(t_list **input_tokens);
-bool		only_flags(t_list *input_tokens);
 
 #  ifdef __cplusplus
 

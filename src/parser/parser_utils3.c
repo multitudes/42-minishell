@@ -6,28 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 12:14:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
-
-/*
-Checks if tokens in tokenlist are only of type flag or NULL.
-Used for heredoc functionality to check 
-for arguments of tokens of type COMMAND or TERMINAL.
-*/
-
-bool	only_flags(t_list *input_tokens)
-{
-	while (input_tokens)
-	{
-		if (get_token_type(input_tokens) != FLAGS)
-			return (false);
-		input_tokens = input_tokens->next;
-	}
-	return (true);
-}
 
 /*
 JUST a check for the type of token - not currently used!
