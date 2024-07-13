@@ -91,22 +91,6 @@ void	restore_fds(t_data *data)
 			perror("minishell: close");
 		}
 	}
-
-
-	// if ((data->original_stdout == STDOUT_FILENO || dup2(data->original_stdout, STDOUT_FILENO) == -1) && (data->original_stdin == STDIN_FILENO ) \
-	// && (data->original_stderr == STDERR_FILENO || dup2(data->original_stderr, STDERR_FILENO) == -1))
-	// {
-	// 	data->exit_status = 1;
-	// 	perror("minishell: dup2");
-	// }
-	// debug("Restored STDIN: %i, STDOUT: %i, STDERR: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
-	// // still need to close the original fds
-	// if (close(data->original_stdout) == -1 || close(data->original_stdin) == -1 || close(data->original_stderr) == -1)
-	// {
-	// 	data->exit_status = 1;
-	// 	perror("minishell: close");
-	// }
-	// // this way if any part of our program try to reuse the original fds, it will fail
 	data->original_stdout = -1;
 	data->original_stdin = -1;
 	data->original_stderr = -1;
