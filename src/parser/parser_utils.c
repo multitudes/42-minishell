@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:28:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 13:48:22 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 /*
 */
 t_ast_node	*new_node(t_nodetype type, t_ast_node *left, t_ast_node *right, \
-t_list *tokenlist)
+						t_list *tokenlist)
 {
 	t_ast_node	*node;
 

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 09:40:56 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 16:31:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 11:14:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ debug("argc: %d", argc);
 int	main(int argc, char **argv)
 {
 	if (argc == 3 && strcmp(argv[1], "-c") == 0)	
-		return (single_command(argv[2]));
+		return (single_command_loop(argv[2]));
 	else
 		return (loop());
 }

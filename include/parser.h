@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 12:14:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ extern "C" {
 t_ast_node * create_ast(t_list * tokenlist);
 t_ast_node	*new_node(t_nodetype type, t_ast_node *left, t_ast_node *right, \
 			t_list *expr_tokenlist);
-bool		consume_token_and_break(t_list **input_tokens);
+bool		movetonexttoken_andbreak(t_list **input_tokens);
 bool		consume_token_and_connect(t_list **input_tokens);
 t_ast_node	*parse_list(t_list **input_tokens);
 t_ast_node	*parse_pipeline(t_list **input_tokens);
@@ -74,7 +74,6 @@ bool		tokenlist_has_astnode(t_list *new_tokenlist);
 bool		is_not_control_token(t_token *token);
 int			count_list(t_list *input_tokens);
 void		break_list(t_list **input_tokens);
-bool		only_flags(t_list *input_tokens);
 
 #  ifdef __cplusplus
 

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/28 18:54:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 12:59:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ returns the next token but also breaks the list before the node
 performing the necessary checks
 TODO check for leaks
 */
-bool	consume_token_and_break(t_list **input_tokens)
+bool	movetonexttoken_andbreak(t_list **input_tokens)
 {
 	// t_list	*tofree;
 
@@ -55,52 +55,10 @@ bool	consume_token_and_break(t_list **input_tokens)
 	if (*input_tokens == NULL)
 		return (false);
 	*input_tokens = (*input_tokens)->next;
-	break_list(input_tokens);
-	// ft_lstdelone(tofree, free_tokennode); // this seems to introduce a problem with one of the parser tree tests
+	break_list(input_tokens); // thius maybe not needed?
 	if (!input_tokens || !*input_tokens)
 		return (false);
 	return (true);
-}
-
-/*
-safely get the current token
-*/
-t_token	*get_curr_token(t_list *input_tokens)
-{
-	t_token	*token;
-
-	if (!input_tokens)
-		return (NULL);
-	token = input_tokens->content;
-	return (token);
-}
-
-/*
-safely get the lexeme of the current token
-*/
-char	*get_token_lexeme(t_list *input_tokens)
-{
-	t_token	*token;
-
-	if (!input_tokens || !input_tokens->content)
-		return (NULL);
-	token = input_tokens->content;
-	return (token->lexeme);
-}
-
-/*
-safely get the type of the current token
-*/
-t_tokentype	get_token_type(t_list *input_tokens)
-{
-	t_token	*token;
-
-	if (!input_tokens || !input_tokens->content)
-		return (NULL_TOKEN);
-	token = input_tokens->content;
-	if (!token->lexeme)
-		return (NULL_TOKEN);
-	return (token->type);
 }
 
 bool	token_followed_by_space(t_list *input_tokens)

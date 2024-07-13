@@ -6,11 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 14:04:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "libft.h"
 
 /*
 follows the grammar
@@ -20,7 +21,8 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 	t_ast_node	*a;
 	t_list		*head;
 	bool		expr_has_node;
-
+	
+	debug("parse_terminal %s", get_token_lexeme(*input_tokens));
 	a = NULL;
 	expr_has_node = false;
 	head = *input_tokens;
@@ -28,6 +30,7 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 		return (NULL);
 	while (is_not_control_token(get_curr_token(*input_tokens)))
 	{
+		debug("parse_terminal %s", get_token_lexeme(*input_tokens));
 		if (extract_expression(&head, input_tokens))
 			expr_has_node = true;
 		if (head == NULL)
@@ -62,11 +65,11 @@ bool	is_pipe_token(t_list *input_tokens)
 t_ast_node	*parse_pipeline(t_list **tokenlist)
 {
 	t_ast_node	*a;
-	t_token		*token;
 	t_ast_node	*b;
+	t_ast_node	*tmpnode;
+	t_list		*tmp;
 
 	a = NULL;
-	token = NULL;
 	if (tokenlist == NULL || *tokenlist == NULL)
 		return (NULL);
 	a = parse_terminal(tokenlist);
@@ -74,15 +77,27 @@ t_ast_node	*parse_pipeline(t_list **tokenlist)
 		return (NULL);
 	while (is_pipe_token(*tokenlist))
 	{
-		token = get_curr_token(*tokenlist);
-		if (!consume_token_and_break(tokenlist))
-			return (NULL);
+		tmp = *tokenlist;
+		if (!movetonexttoken_andbreak(tokenlist))
+		{
+			ft_lstdelone(tmp, free_tokennode);
+			return (free_ast(&a));
+		}
 		b = parse_terminal(tokenlist);
 		if (b == NULL)
+		{
+			ft_lstdelone(tmp, free_tokennode);
 			return (free_ast(&a));
-		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
-		if (a == NULL)
-			return (free_ast(&a));
+		}
+		tmpnode = new_node(NODE_PIPELINE, a, b, tmp);
+		if (tmpnode == NULL)
+		{
+			ft_lstdelone(tmp, free_tokennode);
+			free_ast(&a);
+			free_ast(&b);
+			return (NULL);
+		}
+		a = tmpnode;
 	}
 	return (a);
 }
@@ -92,13 +107,12 @@ Parsing sequence of pipelines separated by operators "&&", "||"
 */
 t_ast_node	*parse_list(t_list **tokenlist)
 {
-	t_token		*token;
+	t_list		*tmp;
 	t_ast_node	*a;
 	t_ast_node	*b;
 
 	a = NULL;
 	b = NULL;
-	token = NULL;
 	if (tokenlist == NULL || *tokenlist == NULL)
 		return (NULL);
 	a = parse_pipeline(tokenlist);
@@ -106,16 +120,23 @@ t_ast_node	*parse_list(t_list **tokenlist)
 		return (NULL);
 	while (*tokenlist)
 	{
-		token = get_curr_token(*tokenlist);
-		if (token->type == AND_IF || token->type == OR_IF || \
-		token->type == EXPRESSION)
+		break_list(tokenlist);
+		tmp = *tokenlist;
+		if (get_token_type(tmp) == AND_IF || get_token_type(tmp) == OR_IF || \
+		get_token_type(tmp) == EXPRESSION)
 		{
-			if (token->type != EXPRESSION && !consume_token_and_break(tokenlist))
-				return (NULL);
+			if (get_token_type(tmp) != EXPRESSION && !movetonexttoken_andbreak(tokenlist))
+			{
+	 			ft_lstdelone(tmp, free_tokennode);
+				return (free_ast(&a));
+			}
 			b = parse_pipeline(tokenlist);
 			if (b == NULL)
+			{
+	 			ft_lstdelone(tmp, free_tokennode);
 				return (free_ast(&a));
-			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
+			}
+			a = new_node(NODE_LIST, a, b, tmp);
 			if (a == NULL)
 				return (free_ast(&a));
 		}
