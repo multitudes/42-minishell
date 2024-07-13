@@ -18,6 +18,7 @@
 #include "heredoc.h"
 #include "darray.h"
 #include "scanner.h"
+#include "fd.h"
 
 /*
 posix compliant use of the environ variable but wecan discuss this
@@ -107,6 +108,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 	tokenlist = ast->tokenlist;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);
+	init_fds(data);
 	analyse_expand(ast, data);
 	while (1)
 	{
@@ -117,6 +119,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 		else if (contains_redirection(ast->tokenlist))
 		{
 			// debug("contains redirection (check)");
+			save_fds(data);
 			status = execute_redirection(&ast); // double pointer should not be needed here.
 			debug("Status after execute redirection: %i", status);
 			if (status == 0)
@@ -137,6 +140,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			update_dollar_underscore(data->env_arr, ast->tokenlist);
 			status = execute_command(ast->tokenlist, data);
 		}
+		restore_fds(data);
 		break ;
 	}
 	return (status);

@@ -150,7 +150,7 @@ static bool init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
                 if (!get_token_lexeme(tokenlist))
                 {
                     free_heredoc(heredoc);
-                    return (false);
+                    return (false_and_print("minishell: error heredoc setup"));
                 }
                 heredoc->file[heredoc->delim_count] = ft_strdup(((t_token *)(tokenlist->content))->lexeme);
                 ((t_token *)(tokenlist->content))->type = HEREDOC_FILE;
@@ -211,10 +211,10 @@ bool    contains_heredoc(t_list *tokenlist)
 
 bool set_up_heredocs(t_data *data)
 {
-    if (contains_heredoc(data->tokenlist) && execute_heredoc(data))
-        return (true);
+    if (contains_heredoc(data->tokenlist))
+        return (execute_heredoc(data));
     else
-        return (false);
+        return (true);
     // t_list      *tokenlist;
     // t_tokentype tokentype;
 

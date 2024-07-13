@@ -96,8 +96,8 @@ bool		init_env_darray(t_darray **env_array);
 void		free_data(t_data **data);
 int			single_command_loop(const char *input);
 int			set_up_std_signals(void);
-void		save_fds(t_data *data);
-void		restore_fds(t_data *data);
+// void		save_fds(t_data *data);
+// void		restore_fds(t_data *data);
 void		single_command_innerloop(t_data *data);
 
 #  ifdef __cplusplus

@@ -15,6 +15,7 @@
 
 #include "minishell.h"
 
+void	init_fds(t_data *data);
 void	save_fds(t_data *data);
 void	restore_fds(t_data *data);
 

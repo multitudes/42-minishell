@@ -158,7 +158,7 @@ int loop()
 	data = NULL;
 	if (!init_data(&data))
 		return (EXIT_FAILURE);
-	save_fds(data);
+	// save_fds(data);
 	load_history(data->env_arr);
 	set_up_std_signals(); //check return value / status?
 	while (true)
@@ -170,7 +170,6 @@ int loop()
 			{
 				handle_history(data);
 				data->tokenlist = tokenizer(data->input);
-				debug("Back to loop after heredoc set up");
 				if (data->tokenlist != NULL && set_up_heredocs(data))
 				{
 					data->ast = create_ast(data->tokenlist);
@@ -243,7 +242,7 @@ int single_command_loop(const char *input)
 		return (EXIT_FAILURE);
 	debug("single command init_data done");
 	debug("input: %s", input);
-	save_fds(data);
+	// save_fds(data);
 	set_up_std_signals();		
 	data->input = ft_strdup(input);
 	if (!exit_condition(data))

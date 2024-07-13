@@ -55,3 +55,10 @@ void	restore_fds(t_data *data)
 	data->original_stdin = -1;
 	data->original_stderr = -1;
 }
+
+void	init_fds(t_data *data)
+{
+	data->original_stdin = -1;
+	data->original_stdout = -1;
+	data->original_stderr = -1;
+}

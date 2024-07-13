@@ -16,6 +16,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include "fd.h"
 
 static void check_return(int new_fd, char *filename, uint8_t *status)
 {

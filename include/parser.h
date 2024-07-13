@@ -44,6 +44,9 @@ typedef struct s_ast_node {
 	struct s_ast_node	*left;
 	struct s_ast_node	*right;
 	t_list				*tokenlist;
+	int					original_stdout;
+	int					original_stdin;
+	int					original_stderr;
 }						t_ast_node;
 
 // needed for the tests - leave it here - norminette allows it I think 
