@@ -22,13 +22,13 @@
 Changes type of all tokens in string_tokens to WORD,
 except for those $-tokens that our shell expands in a double quoted string
 */
-
 static void	token_sanitization(t_list *string_tokens)
 {
 	while (string_tokens)
 	{
 
-		if (get_token_type(string_tokens) != VAR_EXPANSION && get_token_type(string_tokens) != DOLLAR_QUESTION)
+		if (get_token_type(string_tokens) != VAR_EXPANSION \
+			&& get_token_type(string_tokens) != DOLLAR_QUESTION)
 			((t_token *)(string_tokens->content))->type = WORD;
 		string_tokens = string_tokens->next;
 	}
@@ -49,24 +49,22 @@ void	which_ast_node(t_ast_node *ast)
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return ;
 	token = (t_token *)tokenlist->content;
-	debug("which ast node (ast-type before check: %i)", ast->type);
 	if (token->type == BUILTIN)
 	{
 		ast->type = NODE_BUILTIN;
 		return ;
 	}
 	// provisionally
-	else if (token->type == PATHNAME || token->type == WORD || token->type == COMMAND)
+	else if (token->type == PATHNAME \
+			|| token->type == WORD || token->type == COMMAND)
 	{
 		ast->type = NODE_COMMAND;
 		return ;
 	}
-	else if (token->type == TRUETOK || token->type == FALSETOK)
-	{
-		debug("NODE_TRUE or NODE_FALSE");
-	}
-	// else
-	// 	debug("not TERMINAL");
+	// else if (token->type == TRUETOK || token->type == FALSETOK)
+	// {
+	// 	debug("NODE_TRUE or NODE_FALSE");
+	// }
 }
 
 
@@ -106,7 +104,6 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 	char	*back;
 	char	*temp;
 
-	debug("replace_tilde_in_str: %s with home: %s", lexeme, home);
 	i = 0;
 	new_lexeme = ft_strdup(lexeme);
 	if (flags->equal_status == 1)
@@ -147,8 +144,29 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, char *home, t_exp_fl
 			flags->equal_status = 2;
 		i++;
 	}
-	debug("New lexeme: %s", new_lexeme);
+	debug("replace_tilde_in_str %s with home: %s, new lexeme: %s", lexeme, home, new_lexeme);
 	return (new_lexeme);
+}
+
+static char	*retrieve_home_from_cwd(char *cwd)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (cwd && cwd[i])
+	{
+		if (cwd[i] == '/')
+			count++;
+		i++;
+		if (count == 3)
+			break ;
+	}
+	if (count == 3 || (count == 2 && cwd[i] == '\0'))
+		return (ft_strndup(cwd, i - 1));
+	return (NULL);
+	
 }
 
 /*
@@ -168,25 +186,39 @@ but both need to be freed!
 char	*get_home(t_darray *env_arr)
 {
 	char	*home;
+	char	buf[PATH_MAX];
+	char	*cwd;
 
 	home = mini_get_env(env_arr, "HOME");
-	debug("HOME from env: %s", home);
-	if (home)
+	cwd = NULL;
+	if (home && debug("HOME from env"))
 		return (ft_strdup(home));
-	if (getenv("USER"))
+	else if (getenv("USER")  && debug("home from USER"))
 		return (ft_strjoin("/home/", getenv("USER")));
-	if (getcwd(home, sizeof(home)) != NULL) 
+	else
+	{
+		cwd = getcwd(buf, PATH_MAX);
+		if (cwd && count_char_in_str(cwd, '/') > 1 && debug("HOME from cwd"))
+			home = retrieve_home_from_cwd(cwd);
+	}
+	if (home)
 		return (home);
+	debug("HOME manually set to /home");
 	return (ft_strdup("/home"));
 }
 
+/*
+Checks if tilde expansion is valid based on next char in lexeme or next token
+*/
 bool	valid_tilde_expansion(t_list *tokenlist, int index)
 {
 	if (!tokenlist->next)
 		return (true);
 	else if (token_followed_by_space(tokenlist))
 		return (true);
-	else if (!token_followed_by_space(tokenlist) && peek_is_valid_path(get_token_lexeme(tokenlist)[index + 1]) && peek_is_valid_path((get_token_lexeme(tokenlist->next))[0]))
+	else if (!token_followed_by_space(tokenlist) \
+				&& peek_is_valid_path(get_token_lexeme(tokenlist)[index + 1]) \
+				&& peek_is_valid_path((get_token_lexeme(tokenlist->next))[0]))
 		return (true);
 	return (false);
 }
@@ -200,12 +232,12 @@ void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 	char	*home;
 	t_token	*token;
 
-	debug("expand_path");
 	token = get_curr_token(tokenlist);
 	if (!token)
 		return ;
 	home = get_home(env_arr);
-	if (token->type == TILDE && flags->equal_status == 1 && valid_tilde_expansion(tokenlist, 0))
+	if (token->type == TILDE && flags->equal_status == 1 \
+		&& valid_tilde_expansion(tokenlist, 0))
 		lexeme = home;
 	else
 	{
@@ -216,7 +248,7 @@ void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 	token->type = WORD;
 	free(token->lexeme);
 	token->lexeme = lexeme;
-	debug("Expanded token: %s", token->lexeme);
+	debug("Expanded path token: %s", token->lexeme);
 }
 
 /*
@@ -236,7 +268,8 @@ char	*get_key(char *str)
 	end = str + 1;
 	if (end && (*end == ' ' || *end == '\0'))
 		return (NULL);
-	if (end && (*end == '?') && (*(end + 1) == '\0' || ((end + 1) && *(end + 1) == ' ')))
+	if (end && (*end == '?') && (*(end + 1) == '\0' \
+			|| ((end + 1) && *(end + 1) == ' ')))
 		return (ft_strdup("?"));
 	if (end && (ft_isalnum(*end) || *end == '_'))
 		end++;
@@ -260,15 +293,12 @@ char	*replace_dollar_vars(t_data *data, char *lexeme)
 	char	*key;
 	char	*temp[3];
 
-	debug("replace dollar vars in lexeme: %s", lexeme);
 	i = 0;
 	new_lexeme = ft_strdup(lexeme);
-	debug("new lexeme: %s ============================", new_lexeme);
 	key = NULL;
 	while (new_lexeme && new_lexeme[i])
 	{
 		key = get_key(new_lexeme + i);
-		debug("Extracted key: %s", key);
 		if (key != NULL)
 		{
 			if (ft_strlen(key) == 0)
@@ -277,7 +307,6 @@ char	*replace_dollar_vars(t_data *data, char *lexeme)
 				key_value = ft_itoa(data->exit_status);
 			else
 				key_value = mini_get_env(data->env_arr, key);
-			debug("key_value: %s ==================================", key_value);
 			temp[0] = ft_strndup(new_lexeme, i);
 			temp[1] = ft_strdup(new_lexeme + i + ft_strlen(key) + 1);
 			temp[2] = new_lexeme;
@@ -293,18 +322,15 @@ char	*replace_dollar_vars(t_data *data, char *lexeme)
 		}
 		i++;
 	}
-	debug("new lexeme: %s", new_lexeme);
 	return (new_lexeme);
 }
 
 /*
-Used to expand variables, indicated by "$".
+Used to expand variables indicated by "$".
 */
 void	expand_dollar(t_data *data, t_token *token)
 {
 	char	*var;
-
-	debug("expand_dollar %s", token->lexeme);
 
 	if (!token || !token->lexeme)
 		return ;
@@ -317,14 +343,15 @@ void	expand_dollar(t_data *data, t_token *token)
 		token->lexeme = var;
 		token->type = EXPANDED;
 	}
-	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
+	debug("Expand dollar, new token: %s, type: %i", token->lexeme, token->type);
 }
-
+/*
+Expands $? to exit status
+*/
 void	expand_exit_status(t_data *data, t_token *token)
 {
 	char	*temp;
 
-	debug("expand_exit_status");
 	if (data)
 		temp = ft_itoa(data->exit_status);
 	else
@@ -337,14 +364,12 @@ void	expand_exit_status(t_data *data, t_token *token)
 	}
 	else
 		free(temp);
-	debug("expanded status: %s", temp);
 }
 
 void	expand_single_quotes(t_token *token)
 {
 	char	*lexeme;
 
-	debug("extract_string");
 	if (token && token->lexeme)
 	{
 		lexeme = ft_strtrim(token->lexeme, "'"); 
@@ -352,7 +377,7 @@ void	expand_single_quotes(t_token *token)
 		token->lexeme = lexeme;
 		token->type = QUOTE_EXPANDED;
 	}
-	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
+	debug("Single quotes expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
 void	expand_double_quotes(t_data *data, t_token *token)
@@ -362,7 +387,6 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	t_list	*string_tokens;
 	t_list	*ptr_tokenlist;
 
-	debug("expand_string double quotes %s", token->lexeme);
 	unquoted_lexeme = NULL;
 	if (!token)
 		return ;
@@ -374,11 +398,9 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		token->lexeme = unquoted_lexeme;
 		return ;
 	}
-	debug("unquoted lexeme: %s ********************", unquoted_lexeme);
 	string_tokens = tokenizer(unquoted_lexeme);
 	free(unquoted_lexeme);
 	token_sanitization(string_tokens);
-	debug("First string token: %s type %d", get_token_lexeme(string_tokens), get_token_type(string_tokens));
 	ptr_tokenlist = string_tokens;
 	while (string_tokens)
 	{
@@ -394,25 +416,26 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	}
 	ft_lstclear(&ptr_tokenlist, free_tokennode);
 	token->type = QUOTE_EXPANDED;
-	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
+	debug("Double quotes expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
 void	execute_expansion_by_type(t_data *data, t_list **tokenlist, t_exp_flags *flags)
 {
+	t_tokentype	type;
+
 	// debug("Check and execute expansion by type (token type: %s)", get_token_type(tokenlist));
-	if (get_token_type(*tokenlist) == S_QUOTED_STRING)
+	type = get_token_type(*tokenlist);
+	if (type == S_QUOTED_STRING)
 		expand_single_quotes(get_curr_token(*tokenlist));
-	else if (get_token_type(*tokenlist) == QUOTED_STRING)
+	else if (type == QUOTED_STRING)
 		expand_double_quotes(data, get_curr_token(*tokenlist));
-	else if (get_token_type(*tokenlist) == VAR_EXPANSION || get_token_type(*tokenlist) == DOLLAR || get_token_type(*tokenlist) == DOLLAR_QUESTION)
+	else if (type == VAR_EXPANSION || type == DOLLAR \
+			|| type == DOLLAR_QUESTION)
 		expand_dollar(data, get_curr_token(*tokenlist));
-	else if (ft_strchr(get_token_lexeme(*tokenlist), '~'))
+	else if (ft_strchr(get_token_lexeme(*tokenlist), '~') \
+			&& type != QUOTE_EXPANDED)
 		expand_path(data->env_arr, *tokenlist, flags);
-//	else if (get_token_type(tokenlist) == TILDE || get_token_type(tokenlist) == PATHNAME)
-//		expand_path(data->env_arr, tokenlist, flags);
-	// else if (get_token_type(*tokenlist) == DOLLAR_QUESTION)
-	// 	expand_exit_status(data, get_curr_token(*tokenlist));
-	else if (get_token_type(*tokenlist) == GLOBBING)
+	else if (type == GLOBBING)
 		expand_globbing(tokenlist);
 }
 
@@ -428,31 +451,30 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 	{
 		if (!get_curr_token(tokenlist))
 		{
-			data->exit_status = print_error_status("minishell: system error: missing token", 1);
+			data->exit_status = \
+				print_error_status("minishell: system error: missing token", 1);
 			return ;
 		}
-		debug("Token to check for expansion - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
 		set_flags(tokenlist, &flags);
 		execute_expansion_by_type(data, &tokenlist, &flags);
 		if (token_followed_by_space(tokenlist))
 			reset_flags(&flags);
-		debug("Token expanded - token type: %d, lexeme: %s", get_token_type(tokenlist), get_token_lexeme(tokenlist));
 		tokenlist = tokenlist->next;
 	}
 }
 
 static bool	separated_token_types(t_list *tokenlist)
 {
-	t_tokentype	type_token_1;
-	t_tokentype	type_token_2;
+	t_tokentype	type_1;
+	t_tokentype	type_2;
 
 	if (!tokenlist || !tokenlist->next)
 		return (true);
-	type_token_1 = get_token_type(tokenlist);
-	type_token_2 = get_token_type(tokenlist->next);
-	if (is_redirection_token(type_token_1) || is_redirection_token(type_token_2))
+	type_1 = get_token_type(tokenlist);
+	type_2 = get_token_type(tokenlist->next);
+	if (is_redirection_token(type_1) || is_redirection_token(type_2))
 		return (true);
-	else if (is_heredoc_token(type_token_1) || is_heredoc_token(type_token_2))
+	else if (is_heredoc_token(type_1) || is_heredoc_token(type_2))
 		return (true);
 	return (false);
 
@@ -485,5 +507,5 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 			tokenlist = tokenlist->next;
 	}
 	which_ast_node(ast);
-	debug("First lexeme in merged tokenlist: -%s-, type: %i, ast-node type: %i", get_token_lexeme(ast->tokenlist), get_token_type(ast->tokenlist),  ast->type);
+	debug("First lexeme in expanded and merged tokenlist: -%s-, type: %i, ast-node type: %i", get_token_lexeme(ast->tokenlist), get_token_type(ast->tokenlist),  ast->type);
 }

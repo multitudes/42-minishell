@@ -53,7 +53,6 @@ char	*get_history_file_path(t_darray *env_arr)
 	char	*home;
 
 	home = get_home(env_arr);
-	debug("HOME from bash env: %s", home);
 	if (home == NULL)
 	{
 		debug("HOME not set in env, trying to get from /etc/passwd");
