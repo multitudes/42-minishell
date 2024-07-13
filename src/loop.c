@@ -171,7 +171,7 @@ int loop()
 				handle_history(data);
 				data->tokenlist = tokenizer(data->input);
 				debug("Back to loop after heredoc set up");
-				if (data->tokenlist != NULL && !set_up_heredocs(data))
+				if (data->tokenlist != NULL && set_up_heredocs(data))
 				{
 					data->ast = create_ast(data->tokenlist);
 					if (data->ast)
