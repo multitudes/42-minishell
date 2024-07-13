@@ -45,14 +45,14 @@ void	restore_fds(t_data *data)
 {
 	if (data->original_stdin != -1)
 	{
-		if (data->original_stdin != STDIN_FILENO)
-		{
-			if (dup2(data->original_stdin, STDIN_FILENO == -1))
+		// if (data->original_stdin != STDIN_FILENO)
+		// {
+			if (dup2(data->original_stdin, STDIN_FILENO) == -1)
 			{
 				data->exit_status = 1;
 				perror("minishell: dup2");
 			}
-		}
+		// }
 		if (close(data->original_stdin) == -1)
 		{
 			data->exit_status = 1;
@@ -61,14 +61,14 @@ void	restore_fds(t_data *data)
 	}
 	if (data->original_stdout != -1)
 	{
-		if (data->original_stdout != STDOUT_FILENO)
-		{
-			if (dup2(data->original_stdout, STDOUT_FILENO == -1))
+		// if (data->original_stdout != STDOUT_FILENO)
+		// {
+			if (dup2(data->original_stdout, STDOUT_FILENO) == -1)
 			{
 				data->exit_status = 1;
 				perror("minishell: dup2");
 			}
-		}
+		// }
 		if (close(data->original_stdout) == -1)
 		{
 			data->exit_status = 1;
@@ -77,14 +77,14 @@ void	restore_fds(t_data *data)
 	}
 		if (data->original_stderr != -1)
 	{
-		if (data->original_stderr != STDERR_FILENO)
-		{
-			if (dup2(data->original_stderr, STDERR_FILENO == -1))
+		// if (data->original_stderr != STDERR_FILENO)
+		// {
+			if (dup2(data->original_stderr, STDERR_FILENO) == -1)
 			{
 				data->exit_status = 1;
 				perror("minishell: dup2");
 			}
-		}
+		// }
 		if (close(data->original_stderr) == -1)
 		{
 			data->exit_status = 1;
