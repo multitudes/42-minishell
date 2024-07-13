@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 13:28:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 13:37:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,9 @@ bool	is_pipe_token(t_list *input_tokens)
 t_ast_node	*parse_pipeline(t_list **tokenlist)
 {
 	t_ast_node	*a;
-	t_token		*token;
 	t_ast_node	*b;
+	t_token		*token;
+	t_list		*tmp;
 
 	a = NULL;
 	token = NULL;
@@ -75,13 +76,14 @@ t_ast_node	*parse_pipeline(t_list **tokenlist)
 		return (NULL);
 	while (is_pipe_token(*tokenlist))
 	{
+		tmp = *tokenlist;
 		token = get_curr_token(*tokenlist);
 		if (!movetonexttoken_andbreak(tokenlist))
 			return (NULL);
 		b = parse_terminal(tokenlist);
 		if (b == NULL)
 			return (free_ast(&a));
-		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
+		a = new_node(NODE_PIPELINE, a, b, tmp);
 		if (a == NULL)
 			return (free_ast(&a));
 	}
