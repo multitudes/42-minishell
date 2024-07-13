@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 11:10:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 11:13:32 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,11 +230,10 @@ void	single_command_innerloop(t_data *data)
 	}
 }
 
-
 /*
 invoqued using the -c flag
 */
-int single_command(const char *input)
+int single_command_loop(const char *input)
 {
 	uint8_t	status;	
 	t_data	*data;
