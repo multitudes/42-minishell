@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 12:00:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 12:08:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ t_ast_node	*parse_list(t_list **tokenlist)
 		token->type == EXPRESSION)
 		{
 			if (token->type != EXPRESSION && !movetonexttoken_andbreak(tokenlist))
-				return (NULL);
+				return (free_ast(&a));
 			b = parse_pipeline(tokenlist);
 			if (b == NULL)
 				return (free_ast(&a));
