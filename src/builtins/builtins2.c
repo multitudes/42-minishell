@@ -92,6 +92,8 @@ int merge_tokens(t_list *tokenlist)
     free(token_2->lexeme);
     token_1->folldbyspace = token_2->folldbyspace;
     token_1->lexeme = new_lexeme;
+    if (ft_strlen(token_1->lexeme) == 0)
+        token_1->type = token_2->type;
     tokenlist->next = tokenlist->next->next;
     if (tokenlist->next)
         tokenlist->next->prev = tokenlist;
