@@ -6,11 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:07:56 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:46:41 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 11:34:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
+#include "minishell.h"
 
 /*
 why returning true. I want to tell the scanner that the 
@@ -36,6 +37,9 @@ Each node's content is a token which
 void	free_tokennode(void *content)
 {
 	if (content)
+	{
+		debug("freeing token node content lexeme %s", ((t_token *)content)->lexeme);
 		free(((t_token *)content)->lexeme);
+	}
 	free(content);
 }

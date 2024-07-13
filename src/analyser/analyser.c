@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 10:06:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 11:25:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -392,7 +392,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		free(temp_lexeme);
 		string_tokens = string_tokens->next;
 	}
-	ft_lstclear(&ptr_tokenlist, free_tokennode); //free_tokennode function is from scanner.h
+	ft_lstclear(&ptr_tokenlist, free_tokennode);
 	token->type = QUOTE_EXPANDED;
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }

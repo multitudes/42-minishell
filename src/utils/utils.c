@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:37:46 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/08 17:24:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 11:41:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "splash_error.h"
 #include "scanner.h"
 #include <stdbool.h>
-
 
 /*
  The strndup() function is similar to ft_strdup, but copies at most n bytes. 

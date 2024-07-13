@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 11:13:32 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 11:18:44 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,6 @@ int single_command_loop(const char *input)
 		return (EXIT_FAILURE);
 	debug("single command init_data done");
 	debug("input: %s", input);
-	shlvl_init(data);
 	save_fds(data);
 	set_up_std_signals();		
 	data->input = ft_strdup(input);

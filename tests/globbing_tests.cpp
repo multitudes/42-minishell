@@ -6,8 +6,8 @@
 #include "../include/minishell.h"
 #include "../include/globbing.h"
 
-void	ft_lstdelone(t_list *lst, void (*del)(void*));
-void	ft_lstclear(t_list **lst, void (*del)(void*));
+void	ft_lstdelone_test(t_list *lst, void (*del)(void*));
+void	ft_lstclear_test(t_list **lst, void (*del)(void*));
 
 const char *test_globbing_get_files()
 {
@@ -85,7 +85,7 @@ RUN_TESTS(all_tests);
 
 
 //avoiding adding the whole libft only for this
-void	ft_lstdelone(t_list *lst, void (*del)(void*))
+void	ft_lstdelone_test(t_list *lst, void (*del)(void*))
 {
 	if (lst == NULL)
 		return ;
@@ -93,7 +93,7 @@ void	ft_lstdelone(t_list *lst, void (*del)(void*))
 	free(lst);
 }
 
-void	ft_lstclear(t_list **lst, void (*del)(void*))
+void	ft_lstclear_test(t_list **lst, void (*del)(void*))
 {
 	t_list	**l;
 	t_list	*temp;
@@ -105,9 +105,9 @@ void	ft_lstclear(t_list **lst, void (*del)(void*))
 	while ((*lst)->next)
 	{
 		*lst = (*lst)->next;
-		ft_lstdelone(temp, del);
+		ft_lstdelone_test(temp, del);
 		temp = *lst;
 	}
-	ft_lstdelone(temp, del);
+	ft_lstdelone_test(temp, del);
 	*l = NULL;
 }

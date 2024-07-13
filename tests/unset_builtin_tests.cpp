@@ -7,8 +7,8 @@
 
 
 // needed for the tests
-void	ft_lstdelone(t_list *lst, void (*del)(void*));
-void	ft_lstclear(t_list **lst, void (*del)(void*));
+void	ft_lstdelone_test(t_list *lst, void (*del)(void*));
+void	ft_lstclear_test(t_list **lst, void (*del)(void*));
 
 extern char **environ;
 
@@ -50,7 +50,7 @@ const char *test_unset()
 	debug("result %d", result);
 
 	// free tokens
-	ft_lstclear(&tokenlist, free_tokennode);
+	ft_lstclear_test(&tokenlist, free_tokennode);
 	// free env darray
 	darray_clear_destroy(env_arr);
 
@@ -75,7 +75,7 @@ RUN_TESTS(all_tests);
 
 
 //avoiding adding the whole libft only for this
-void	ft_lstdelone(t_list *lst, void (*del)(void*))
+void	ft_lstdelone_test(t_list *lst, void (*del)(void*))
 {
 	if (lst == NULL)
 		return ;
@@ -83,7 +83,7 @@ void	ft_lstdelone(t_list *lst, void (*del)(void*))
 	free(lst);
 }
 
-void	ft_lstclear(t_list **lst, void (*del)(void*))
+void	ft_lstclear_test(t_list **lst, void (*del)(void*))
 {
 	t_list	**l;
 	t_list	*temp;
@@ -95,10 +95,10 @@ void	ft_lstclear(t_list **lst, void (*del)(void*))
 	while ((*lst)->next)
 	{
 		*lst = (*lst)->next;
-		ft_lstdelone(temp, del);
+		ft_lstdelone_test(temp, del);
 		temp = *lst;
 	}
-	ft_lstdelone(temp, del);
+	ft_lstdelone_test(temp, del);
 	*l = NULL;
 }
 
