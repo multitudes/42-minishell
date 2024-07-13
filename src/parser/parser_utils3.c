@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 12:14:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 14:01:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,17 +68,19 @@ return -1?
 bool	replace_expression_tokens(t_list **head, t_list **input_tokens)
 {
 	t_list	*expr_node;
-	t_token	*curr_token;
 	t_list	*new_tokenlist;
+	char 	*newlexeme;
 	bool	has_node;
 
 	has_node = false;
 	expr_node = *input_tokens;
-	curr_token = get_curr_token(expr_node);
-	new_tokenlist = tokenizer(ft_substr(curr_token->lexeme, 1, \
-	ft_strlen(curr_token->lexeme) - 2));
+	newlexeme = ft_substr(get_token_lexeme(expr_node), 1, ft_strlen(get_token_lexeme(expr_node)) - 2);
+	new_tokenlist = tokenizer(newlexeme);
 	if (new_tokenlist == NULL)
+	{	
+		free(newlexeme);
 		return (false);
+	}
 	has_node = tokenlist_has_astnode(new_tokenlist);
 	*input_tokens = (*input_tokens)->next;
 	if (*input_tokens)
@@ -93,9 +95,8 @@ bool	replace_expression_tokens(t_list **head, t_list **input_tokens)
 	}
 	else
 		*head = new_tokenlist;
-	free(curr_token->lexeme);
-	free(curr_token);
-	free(expr_node);
+	free(newlexeme);
+	ft_lstdelone(expr_node, free_tokennode);
 	return (has_node);
 }
 

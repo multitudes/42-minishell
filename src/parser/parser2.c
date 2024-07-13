@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 13:39:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 13:47:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 	t_ast_node	*a;
 	t_list		*head;
 	bool		expr_has_node;
+	
 	debug("parse_terminal %s", get_token_lexeme(*input_tokens));
 	a = NULL;
 	expr_has_node = false;
@@ -29,6 +30,7 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 		return (NULL);
 	while (is_not_control_token(get_curr_token(*input_tokens)))
 	{
+		debug("parse_terminal %s", get_token_lexeme(*input_tokens));
 		if (extract_expression(&head, input_tokens))
 			expr_has_node = true;
 		if (head == NULL)
@@ -64,6 +66,7 @@ t_ast_node	*parse_pipeline(t_list **tokenlist)
 {
 	t_ast_node	*a;
 	t_ast_node	*b;
+	t_ast_node	*tmpnode;
 	t_token		*token;
 	t_list		*tmp;
 
@@ -89,9 +92,15 @@ t_ast_node	*parse_pipeline(t_list **tokenlist)
 			ft_lstdelone(tmp, free_tokennode);
 			return (free_ast(&a));
 		}
-		a = new_node(NODE_PIPELINE, a, b, tmp);
-		if (a == NULL)
-			return (free_ast(&a));
+		tmpnode = new_node(NODE_PIPELINE, a, b, tmp);
+		if (tmpnode == NULL)
+		{
+			ft_lstdelone(tmp, free_tokennode);
+			free_ast(&a);
+			free_ast(&b);
+			return (NULL);
+		}
+		a = tmpnode;
 	}
 	return (a);
 }
