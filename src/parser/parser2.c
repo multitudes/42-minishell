@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 13:37:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 13:39:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,16 @@ t_ast_node	*parse_pipeline(t_list **tokenlist)
 		tmp = *tokenlist;
 		token = get_curr_token(*tokenlist);
 		if (!movetonexttoken_andbreak(tokenlist))
-			return (NULL);
+		{
+			ft_lstdelone(tmp, free_tokennode);
+			return (free_ast(&a));
+		}
 		b = parse_terminal(tokenlist);
 		if (b == NULL)
+		{
+			ft_lstdelone(tmp, free_tokennode);
 			return (free_ast(&a));
+		}
 		a = new_node(NODE_PIPELINE, a, b, tmp);
 		if (a == NULL)
 			return (free_ast(&a));
