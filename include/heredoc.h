@@ -40,7 +40,7 @@ extern "C" {
 
 bool	set_up_heredocs(t_data *data);
 bool	contains_heredoc(t_list *tokenlist);
-int		execute_heredoc(t_data *data);
+bool	execute_heredoc(t_data *data);
 void	free_heredoc(t_heredoc *heredoc);
 void	set_up_heredoc_signals(void);
 bool	process_heredoc(t_heredoc *heredoc, t_data *data);

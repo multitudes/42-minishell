@@ -170,18 +170,16 @@ TBC
 Executes heredoc and then passes heredoc to stdin of system command
 or calls builtin functions depending on ast node type.
 */
-int execute_heredoc(t_data *data)
+bool execute_heredoc(t_data *data)
 {
     t_heredoc   heredoc;
-    int         status;
 
     debug("execute heredoc");
     set_up_heredoc_signals();
-    status = 1;
     if (!init_heredoc(data->tokenlist, &heredoc) || !process_delim_quotes(&heredoc) || !process_heredoc(&heredoc, data))
     {
         set_up_std_signals();
-        return (status);
+        return (false);
     }
     // if ((ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL) && only_flags(ast->tokenlist->next) && heredoc.buffer)
     //     status = redirect_and_execute_heredoc(ast, data, &heredoc);
@@ -190,7 +188,7 @@ int execute_heredoc(t_data *data)
     // else if (ast->type == NODE_BUILTIN)
 	// 	status = execute_builtin(ast->tokenlist, data);
     set_up_std_signals();
-    return (status);
+    return (true);
 }
 
 /*
