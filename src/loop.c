@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 11:18:44 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 12:21:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,7 @@ int loop()
 						free_ast(&(data->ast));
 					}
 					else
-						debug("syntax parse error");
+						data->exit_status = print_error_status("syntax parse error", 1);
 				}
 				else
 					data->exit_status = 2;

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 12:05:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 13:00:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,23 +22,22 @@ a left and a right node, and a list of tokens as a t_list.
 */
 t_ast_node	*create_ast(t_list *tokenlist)
 {
-	t_ast_node	*root;
+	t_ast_node	*rootnode;
 	t_list		*tmp;
 
-	root = NULL;
+	rootnode = NULL;
 	tmp = tokenlist;
+	debug("in rootnode create_ast tokenlist :");
 	if (tokenlist == NULL)
 		return (NULL);
 	while (tmp)
 	{
-		root = parse_list(&tmp);
-		if (!root)
-		{
-			ft_lstclear(&tokenlist, free_tokennode);
+		debug("in while loop create_ast tokenlist :%s", ((t_token *)tmp->content)->lexeme);
+		rootnode = parse_list(&tmp);
+		if (!rootnode)
 			return (NULL);
-		}
 	}
-	return (root);
+	return (rootnode);
 }
 
 /*
