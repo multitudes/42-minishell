@@ -73,6 +73,7 @@ Increases buffer for heredoc if addition of next line would surpass buffer size.
 
 /*
 Read and save content of final heredoc.
+ // add check for ()syntax errorTODO
 */
 static bool read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 {

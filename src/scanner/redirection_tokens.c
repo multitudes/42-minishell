@@ -23,6 +23,7 @@ bool	is_heredoc_token(t_tokentype tokentype)
 /*
 Check if assigned type is a valid heredoc delimiter, in which case
 the type is changed to DLESS_DELIM before returning result of check.
+ADD MORE VALID TOKENTYPES TODO
 */
 bool	is_heredoc_delim(t_list *tokenlist)
 {

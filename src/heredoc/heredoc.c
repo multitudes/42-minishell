@@ -81,6 +81,7 @@ static void remove_quotes(char *string)
 
 /*
 Checks for and handles single/double quotes in heredoc delimiter.
+TODO handle inner quotes like bash
 */
 static bool process_delim_quotes(t_heredoc *heredoc)
 {
@@ -147,7 +148,10 @@ static bool init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
                 ((t_token *)(tokenlist->content))->lexeme = get_heredoc_filename();
                 free(temp);
                 if (!get_token_lexeme(tokenlist))
+                {
+                    free_heredoc(heredoc);
                     return (false);
+                }
                 heredoc->file[heredoc->delim_count] = ft_strdup(((t_token *)(tokenlist->content))->lexeme);
                 ((t_token *)(tokenlist->content))->type = HEREDOC_FILE;
                 heredoc->delim_count++;
@@ -191,6 +195,7 @@ int execute_heredoc(t_data *data)
 
 /*
 Checks for heredoc token in tokenlist.
+CONSIDER TODO valid_syntax_and_heredoc()
 */
 bool    contains_heredoc(t_list *tokenlist)
 {
@@ -206,12 +211,12 @@ bool    contains_heredoc(t_list *tokenlist)
     return (false);
 }
 
-
-void set_up_heredocs(t_data *data)
+bool set_up_heredocs(t_data *data)
 {
-    if (contains_heredoc(data->tokenlist))
-        execute_heredoc(data);
-
+    if (contains_heredoc(data->tokenlist) && execute_heredoc(data))
+        return (true);
+    else
+        return (false);
     // t_list      *tokenlist;
     // t_tokentype tokentype;
 
