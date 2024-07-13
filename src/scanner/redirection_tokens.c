@@ -54,6 +54,8 @@ bool	is_redirection_token(t_tokentype tokentype)
 		return (true);
 	else if (tokentype == DGREAT)
 		return (true);
+	else if (tokentype == DLESS || tokentype == DLESSDASH)
+		return (true);
 	return (false);
 }
 
