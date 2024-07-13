@@ -15,7 +15,7 @@
 
 bool	is_heredoc_token(t_tokentype tokentype)
 {
-	if (tokentype == DLESS || tokentype == DLESSDASH)
+	if (tokentype == DLESS || tokentype == DLESSDASH || tokentype == HEREDOC_FILE)
 		return (true);
 	return (false);
 }

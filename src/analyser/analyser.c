@@ -452,8 +452,8 @@ static bool	separated_token_types(t_list *tokenlist)
 	type_token_2 = get_token_type(tokenlist->next);
 	if (is_redirection_token(type_token_1) || is_redirection_token(type_token_2))
 		return (true);
-	// else if (is_heredoc_token(type_token_1) || is_heredoc_token(type_token_2))
-	// 	return (true);
+	else if (is_heredoc_token(type_token_1) || is_heredoc_token(type_token_2))
+		return (true);
 	return (false);
 
 }
