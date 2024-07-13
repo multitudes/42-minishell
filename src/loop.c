@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 11:10:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,100 +52,6 @@ void	free_data(t_data **data)
 	free(*data);
 	*data = NULL;
 	debug("data freed");
-}
-
-
-/*
-to move to utilities header
-*/
-char 	*add_newline(char *input);
-// bool	contains_heredoc(const char *input, char **here_delimiter);
-
-
-/*
-functions to be moved to utilities!
-
-check if the input contains a << DLESS operator and change 
-the prompt to indicate that it expects more...
-*/
-// bool	contains_heredoc(const char *input, char **here_delimiter)
-// {
-// 	int	i;
-// 	int start;
-
-// 	i = 0;
-// 	while (input[i])
-// 	{
-// 		if (input[i] == '<' && input[i + 1] && input[i + 1] == '<')
-// 		{
-// 			i += 2;
-// 			while (is_space(input[i]))
-// 				i++;
-// 			if (input[i] == '\0')
-// 			{
-// 				debug("DLESS delimiter is missing\n");
-// 				here_delimiter = NULL;
-// 				return (true);
-// 			}
-// 			start = i;
-// 			while (!filename_delimiter(input[i]))
-// 				i++;
-// 			if (i == start)
-// 				here_delimiter = NULL;
-// 			else
-// 				*here_delimiter = ft_substr(input, start, i - start);
-// 			printf("DLESS delimiter: %s\n", *here_delimiter);
-// 			return (true);
-// 		}
-// 		i++;	
-// 	}
-// 	return (false);
-// }
-
-/*
-in case the input contains a << DLESS operator, we need to check if the
-input contains the delimiter string
-if not we need to keep reading the input until we find it
-*/
-// bool contains_string(char *here_content, char *DLESS_delimiter)
-// {
-// 	// the DLESS can be any string
-// 	int i = 0;
-// 	int j = 0;
-// 	int k = 0;
-// 	while (here_content[i])
-// 	{
-// 		if (here_content[i] == DLESS_delimiter[0])
-// 		{
-// 			k = i;
-// 			while (here_content[k] && DLESS_delimiter[j] && here_content[k] == DLESS_delimiter[j])
-// 			{
-// 				// debug("here_content[k] == DLESS_delimiter[j] %c %c\n", here_content[k], DLESS_delimiter[j]);	
-// 				k++;
-// 				j++;
-// 			}
-// 			if ((int)ft_strlen(DLESS_delimiter) == j)
-// 			{
-// 				debug("they are equal\n");
-// 				return (true);
-// 			}	
-// 		}
-// 		j = 0;
-// 		i++;
-// 	}
-// 	return (false);
-// }
-
-/*
-used for a DLESS test but not implemented yet
-*/
-char *add_newline(char *input)
-{
-	char *here_content;
-
-	here_content = ft_strjoin(input, "\n");
-	free(input);
-	return (here_content);
 }
 
 /*
@@ -226,13 +132,6 @@ void	exit_minishell(t_data *data)
 	free_data(&data);
 }
 
-void	update_env_exit_status_with(uint8_t exit_status, t_data *data)
-{
-	if (!update_env(data->env_arr, "?", ft_itoa(exit_status)))
-		print_error_status("update_env", 1);
-	
-}
-
 bool exit_condition(t_data *data)
 {
 	if (data->input == NULL )
@@ -299,14 +198,38 @@ int loop()
 	status = data->exit_status;
 	free((char *)(data->input));
 	free_data(&data);
-
-	debug("exit_minishell");
 	debug("Exit status: %i", status);
-
 	write(1, "exit\n", 5);
-		
 	return (status); 
 }
+
+/*
+
+*/
+void	single_command_innerloop(t_data *data)
+{
+	sanitize_input(data->input);
+	data->tokenlist = tokenizer(data->input);
+	if (data->tokenlist != NULL)
+	{
+		data->ast = create_ast(data->tokenlist);
+		if (data->ast)
+		{
+			data->exit_status = execute_ast(data->ast, data);
+			debug("Exit status: %i", data->exit_status);
+			free_ast(&(data->ast));
+		}
+		else
+			data->exit_status = print_error_status("syntax parse error", 1);
+	}
+	else
+	{
+		free((char *)(data->input));
+		free_data(&data);
+		exit(2);
+	}
+}
+
 
 /*
 invoqued using the -c flag
@@ -327,33 +250,10 @@ int single_command(const char *input)
 	set_up_std_signals();		
 	data->input = ft_strdup(input);
 	if (!exit_condition(data))
-	{
-		sanitize_input(data->input);
-		data->tokenlist = tokenizer(data->input);
-		if (data->tokenlist != NULL)
-		{
-			data->ast = create_ast(data->tokenlist);
-			if (data->ast)
-			{
-				data->exit_status = execute_ast(data->ast, data);
-				debug("Exit status: %i", data->exit_status);
-				free_ast(&(data->ast));
-			}
-			else
-				debug("syntax parse error");
-		}
-		else
-		{
-			free((char *)(data->input));
-			free_data(&data);
-			exit(2);
-		}
-	}
+		single_command_innerloop(data);
 	status = data->exit_status;
 	free((char *)(data->input));
 	free_data(&data);
-	debug("exit_minishell");
 	debug("Exit status: %i", status);
-
 	return (status); 
 }
