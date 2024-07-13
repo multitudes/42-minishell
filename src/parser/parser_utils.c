@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:28:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/06 14:39:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 13:48:22 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 /*
 */
 t_ast_node	*new_node(t_nodetype type, t_ast_node *left, t_ast_node *right, \
-t_list *token_list)
+						t_list *tokenlist)
 {
 	t_ast_node	*node;
 
-	if (token_list == NULL)
+	if (tokenlist == NULL)
 		return (NULL);
 	node = malloc(sizeof(t_ast_node));
 	if (node == NULL)
@@ -29,7 +29,7 @@ t_list *token_list)
 	node->parent = NULL;
 	node->left = left;
 	node->right = right;
-	node->token_list = token_list;
+	node->tokenlist = tokenlist;
 	if (left != NULL)
 		left->parent = node;
 	if (right != NULL)

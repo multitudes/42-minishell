@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 18:41:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 20:25:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,32 +20,64 @@
 #include <sys/stat.h>
 
 /*
-when I need to free a string array like the envpaths
+resolve_command_path will check if the command is in the PATH
+or if it is an absolute path. 
+if it cannot be resolved it will return 1
 */
-int	free_array(char **envpaths)
+int	resolve_command_path(char **argv, char *path_env)
 {
-	int	i;
+	struct stat	statbuf;
+	int			is_relative_path;
 
-	i = 0;
-	while (envpaths[i])
-	{
-		free(envpaths[i]);
-		i++;
-	}
-	free(envpaths);
+	if (!find_path(argv, path_env))
+		return (print_error_status2(argv[0], " command not found", 127));
+	if (access(argv[0], F_OK) == -1)
+		return (status_perror2("minishell: ", argv[0], 127));
+	if (stat(argv[0], &statbuf))
+		return (status_perror2("minishell: ", argv[0], 1));
+	if (S_ISDIR(statbuf.st_mode))
+		return (print_error_status2(argv[0], ": is a directory", 126));
+	is_relative_path = ft_strncmp(argv[0], "./", 2) == 0 || \
+						ft_strcmp(argv[0], "..") != 0;
+	if (is_relative_path && access(argv[0], X_OK) == -1)
+		return (status_perror2("minishell: ", argv[0], 126));
 	return (0);
 }
 
 /*
+ * used by resolve_command_path when I get a simple command like "ls"
+ * I need to check if the command is in the PATH
+*/
+bool	find_path(char **argv, char *path_env)
+{
+	char		*cmd;
 
+	cmd = NULL;
+	if (ft_strchr(argv[0], '/') == NULL)
+	{
+		cmd = create_path(argv[0], path_env);
+		if (!cmd || ft_strcmp(argv[0], "..") == 0)
+		{
+			free(cmd);
+			return (false);
+		}
+		argv[0] = cmd;
+	}
+	return (true);
+}
+
+/*
+ * used by find_path to create the path to the command
+ * 
 */
 char	*create_path(char *base, char *path_env)
 {
 	int		i;
-	char	*commandpath;
 	char	**envpaths;
+	char	*commandpath;
 
 	i = 0;
+	commandpath = NULL;
 	if (!path_env || !base)
 		return (NULL);
 	envpaths = ft_split(path_env, ':');
@@ -65,30 +97,21 @@ char	*create_path(char *base, char *path_env)
 	return (NULL);
 }
 
-int	count_tokens(t_list *tokenlist)
-{
-	int	count;
-
-	count = 0;
-	while (tokenlist) 
-	{
-		count++;
-		tokenlist = tokenlist->next;
-	}
-	return (count);
-}
-
 /*
-sometimes you need to know where you heat is at
+when I need to free a string array like the envpaths
 */
-t_list	*get_head(t_list *tokenlist)
+int	free_array(char **envpaths)
 {
-	t_list	*head;
+	int	i;
 
-	head = tokenlist;
-	while (head->prev)
-		head = head->prev;
-	return (head);
+	i = 0;
+	while (envpaths[i])
+	{
+		free(envpaths[i]);
+		i++;
+	}
+	free(envpaths);
+	return (0);
 }
 
 /*
@@ -99,36 +122,28 @@ and creates a new token for each word
 */
 void	check_for_spaces(t_list **tokenlist)
 {
-	char *lex = NULL;
-	t_list *new;
-	t_list *head;
+	char	*lex;
+	t_list	*new;
+	t_list	*head;
 
+	lex = NULL;
+	new = NULL;
 	head = *tokenlist;
-	debug("head: -%s-  -%s-", get_token_lexeme(head), get_token_lexeme(head->next));
 	while (*tokenlist)
 	{
 		lex = get_token_lexeme(*tokenlist);
 		if (ft_strchr(lex, ' ') && get_token_type(*tokenlist) == EXPANDED)
 		{
-			debug("======================== > found space in token: %s", lex);
 			new = tokenizer(lex);
-			debug("new tokenlist: -%s- -%s-", get_token_lexeme(new), get_token_lexeme(new->next));
-
-		
 			replace_token_with_tokenlist(tokenlist, new);
-			debug("new tokenlist: -%s- -%s- ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
 		}
-		debug("new tokenlist: -%s- -%s- ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
 		if (!(*tokenlist)->next)
-			break;	
+			break ;
 		*tokenlist = (*tokenlist)->next;
 	}
-	debug("about to ...");
 	head = get_head(*tokenlist);
-	debug("head: -%s- -%s-", get_token_lexeme(head), get_token_lexeme(head->next));
 	*tokenlist = head;
 }
-
 
 /*
 Since until now we store the token as linked list
@@ -137,9 +152,9 @@ we convert it to a char array for the execve function
 char	**get_argv_from_tokenlist(t_list **tokenlist)
 {
 	int		i;
-	char **argv;
 	int		count;
-	
+	char	**argv;
+
 	i = 0;
 	check_for_spaces(tokenlist);
 	count = count_tokens(*tokenlist);
@@ -155,101 +170,4 @@ char	**get_argv_from_tokenlist(t_list **tokenlist)
 	}
 	argv[i] = NULL;
 	return (argv);
-}
-
-/*
-resolve_command_path will check if the command is in the PATH
-or if it is an absolute path. 
-if it cannot be resolved it will return 1
-*/
-int	resolve_command_path(char **argv, char *path_env)
-{
-	char	*cmd;
-	struct stat statbuf;
-	
-	cmd = NULL;
-
-	// if starts with a .slash it is a exec in curr dir
-	// or starting a relative path
-	if (ft_strncmp(argv[0], "./", 2) == 0)
-	{
-		// check if there is a file or dir with that name
-		if (access(argv[0], F_OK) != -1) 
-		{
-			debug("file exists but is a directory? ----------");
-			if (stat(argv[0], &statbuf) == 0) 
-			{
-				if (S_ISDIR(statbuf.st_mode))
-				{
-					debug("is a directory!");
-					return ((int)print_error_status2(argv[0], ": is a directory", (uint8_t)126));
-				} 
-				else if (S_ISREG(statbuf.st_mode))
-				{
-					// check if it is executable
-					if (access(argv[0], X_OK) == -1)
-						return ((int)status_perror2("minishell: ", argv[0], (uint8_t)126));
-					else
-						return (0);
-				}
-
-			}
-		}
-		else 
-		{
-			//No such file or directory
-			return (print_error_status2(argv[0], ": No such file or directory", 127));
-		}
-	}
-
-	// just the name of file without a path is always a command even if there is a 
-	// file with that name in the current directory
-	if (ft_strchr(argv[0], '/') == NULL)
-	{
-		debug("file does not exist in current directory - no slash in name - look for command in PATH"); 
-		cmd = create_path(argv[0], path_env);
-		if (!cmd || ft_strcmp(argv[0], "..") == 0 || ft_strcmp(argv[0], ".") == 0)
-		{
-			free(cmd);
-			return (print_error_status2(argv[0], " command not found", 127));
-		}
-		argv[0] = cmd;
-	} 
-	// else
-	// {
-	// 	return (print_error_status2(argv[0], " command not found", 127));
-	// }
-
-	// if file is /usr/bin/ls
-	// but if src check for existence and also if not a dir
-	// .. is considered a command?
-	if (access(argv[0], F_OK) != -1 && ft_strcmp(argv[0], "..") != 0)
-	{
-		// file might exist
-        // Check if it's not a directory
-		debug("file might exists but is a directory? ----------");
-		if (stat(argv[0], &statbuf) == 0)
-		{
-			if (!S_ISDIR(statbuf.st_mode))
-			{
-				debug("file exists - no dir ---------- ");
-				// check if it is executable
-				if (access(argv[0], X_OK) == -1)
-					return (status_perror2("minishell: ", argv[0], 126));
-				else
-					return (0);
-			}
-			else
-			{
-				return (print_error_status2(argv[0], ": is a directory", 126));
-			}
-		}
-		else
-		{
-			return (status_perror2("minishell: ", argv[0], 1));
-		}
-	}
-	else if (access(argv[0], F_OK) == -1 && ft_strcmp(argv[0], "..") != 0)
-		return (status_perror2("minishell: ", argv[0], 127));
-	return (0);
 }

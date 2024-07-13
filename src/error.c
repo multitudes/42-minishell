@@ -13,6 +13,7 @@
 #include "splash_error.h"
 #include <stdint.h>
 #include <libft.h>
+#include <stdbool.h>
 
 /*
 Used to return from the program with an error message passing

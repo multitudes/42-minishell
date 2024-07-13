@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 14:38:05 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/10 11:54:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,16 @@
 Your shell should:
 - Have a working history.
 */
-void	load_history(void)
+void	load_history(t_darray *env_arr)
 {
 	int		fd;
 	char	*path;
 	char	*line;
 
-	path = get_history_file_path();
+	path = get_history_file_path(env_arr);
 	fd = open(path, O_CREAT, 0644);
 	free(path);
-	if (fd == -1 && status_and_perror("open", 1))
+	if (fd == -1)
 		return ;
 	line = get_next_line(fd);
 	while (line != NULL)
@@ -47,29 +47,26 @@ void	load_history(void)
 this is different than the get_home function because it is called before we create 
 our minienv array. So we cannot use the mini_get_env function. 
 */
-char	*get_history_file_path(void)
+char	*get_history_file_path(t_darray *env_arr)
 {
 	char	*path;
 	char	*home;
 
-	home = getenv("HOME");
+	home = get_home(env_arr);
 	debug("HOME from bash env: %s", home);
-	if (home)
-		home = ft_strdup(home);
-	else
+	if (home == NULL)
 	{
 		debug("HOME not set in env, trying to get from /etc/passwd");
         char *username = getenv("USER");
 		debug("Username: %s", username);
 		if (username)
 			home = ft_strjoin("/home/", username);
-		else
-			home = ft_strdup("/home");
     }
 	if (home == NULL)
 		return (NULL);
 	debug("history home: %s", home);
 	path = ft_strjoin(home, MINIHISTFILEPATH);
+	free(home);
 	debug("path: %s", path);
 	if (path == NULL)
 		print_minishell_error_status("history file path missing", 1);
@@ -91,11 +88,9 @@ readline loop~!
 bool	handle_history(t_data *data)
 {
 	sanitize_input(data->input);
-	if (!add_to_hist_file(data->input))
+	if (!add_to_hist_file(data->input, data->env_arr))
 		return (false);
 	add_history(data->input);
-	if (update_env(data->env_arr, "_", "") == FALSE)
-		perror("in update_env for _ ");
 	debug("env _ is reset to -%s-", mini_get_env(data->env_arr, "_"));
 	return (0);
 }
@@ -106,20 +101,15 @@ s an env var containing the path to the history file
 and if it doesnt exist I will creat it. 644 are permission for the file
 read only for others and W/R for the owner.
 */
-bool	add_to_hist_file(const char *input)
+bool	add_to_hist_file(const char *input, t_darray *env_arr)
 {
 	int		fd;
 	char	*path;
 
-	path = get_history_file_path();
+	path = get_history_file_path(env_arr);
 	if (path == NULL)
 		return (false);
 	fd = open(path, O_CREAT | O_APPEND | O_WRONLY, 0644);
-	if (fd == -1)
-	{
-		free(path);
-		return (false);
-	}
 	free(path);
 	if (fd == -1)
 		return (false);
@@ -139,12 +129,12 @@ s an env var containing the path to the history file
 and if it doesnt exist I will creat it. 644 are permission for the file
 read only for others and W/R for the owner.
 */
-int	clear_hist_file(void)
+int	clear_hist_file(t_darray *env_arr)
 {
 	int		fd;
 	char	*path;
 
-	path = get_history_file_path();
+	path = get_history_file_path(env_arr);
 	fd = open(path, O_WRONLY | O_TRUNC);
 	free(path);
 	if (fd == -1)

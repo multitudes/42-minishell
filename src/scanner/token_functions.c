@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 11:18:07 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 20:34:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,39 +40,39 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
 		return (false);
 }
 
-char *return_lexeme_malloc(const char *lex)
+char	*return_lexeme_malloc(const char *lex)
 {
-	char *result;
-	const char *p;
-	char *q;
+	const char	*oldlex;
+	char		*newlex;
+	char		*result;
 
 	if (!lex) 
-		return NULL;
+		return (NULL);
 	result = ft_calloc(ft_strlen(lex) + 1, sizeof(char));
-    if (!result) 
-		return NULL;
-    p = lex;
-	q = result;
-    while (*p) 
+	if (!result) 
+		return (NULL);
+	oldlex = lex;
+	newlex = result;
+	while (*oldlex) 
 	{
-        if (*p == '\\' && *(p + 1) == '\\')
-        {
-            *q++ = *p;
-            p += 2;
-        }
+		if (*oldlex == '\\' && *(oldlex + 1) == '\\')
+		{
+			*newlex++ = *oldlex;
+			oldlex += 2;
+		}
 		else
-            *q++ = *p++;
-    }
-    *q = '\0';
-	debug("return_lexeme_malloc: %s", result);
-    return result;
+			*newlex++ = *oldlex++;
+	}
+	*newlex = '\0';
+	return (result);
 }
 
 /*
 creates a simple t_list node - the token is in the content of the node
 in form of a string that will need to be freed
 */
-t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i, bool folldbyspace)
+t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i, \
+						bool folldbyspace)
 {
 	t_token	*token;
 	t_list	*new_node;
@@ -104,7 +104,8 @@ otherwise it would keep on looking for the token
 * defensive programming. passing a string literal to add_token will
 never fail but I still check for NULL lexemes!
 */
-bool	add_token(t_mini_data *data, int *i, const char *lexem, t_tokentype type)
+bool	add_token(t_mini_data *data, int *i, const char *lexem, \
+					t_tokentype type)
 {
 	t_list	*token;
 
@@ -114,9 +115,10 @@ bool	add_token(t_mini_data *data, int *i, const char *lexem, t_tokentype type)
 	{
 		token = new_toknode(type, lexem, i, false);
 		if (token)
-			ft_lstadd_back(&data->token_list, token);
+			ft_lstadd_back(&data->tokenlist, token);
 		else
-			scanner_error(data, "minishell: error: malloc in new_toknode failed");
+			scanner_error(data, "minishell: error: malloc \
+			in new_toknode failed");
 	}
 	return (true);
 }
@@ -127,7 +129,8 @@ character in the while loop. I might need is_digit for numbers or
 is_alnum for identifiers etc
 This works for easy tokens.
 */
-bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), t_tokentype type)
+bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), \
+						t_tokentype type)
 {
 	int		start;
 	char	*tmp;

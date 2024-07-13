@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 15:30:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ Checks if tokenlist contains a redirection token.
 static bool	contains_redirection(t_list *tokenlist)
 {
 	t_tokentype	tokentype;
+	
 	while (tokenlist)
 	{
 		tokentype = get_token_type(tokenlist);
@@ -98,24 +99,22 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 {
 	int			status;
 	t_list		*tokenlist;
-	t_nodetype	astnodetype;
 
 	status = 0;
-	if (ast == NULL || ast->token_list == NULL)
+	if (ast == NULL || ast->tokenlist == NULL)
 		return (0);
 	debug("\nexecute ast (node type: %d)", ast->type);;
-	tokenlist = ast->token_list;
+	tokenlist = ast->tokenlist;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);
 	analyse_expand(ast, data);
-	astnodetype = ast->type;
 	while (1)
 	{
-		if (astnodetype == NODE_LIST)
+		if (ast->type == NODE_LIST)
 			status = execute_list(ast, data);
-		else if (astnodetype == NODE_PIPELINE)
+		else if (ast->type == NODE_PIPELINE)
 			status = execute_pipeline(ast, data);
-		else if (contains_redirection(ast->token_list))
+		else if (contains_redirection(ast->tokenlist))
 		{
 			// debug("contains redirection (check)");
 			status = execute_redirection(&ast); // double pointer should not be needed here.
@@ -123,20 +122,20 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			if (status == 0)
 				continue ;
 		}
-		else if (is_heredoc(ast->token_list))
-		{
-			debug("is heredoc"); // TODO look for updating $_ somewhere
-			status = execute_heredoc(ast, data);
-		}
-		else if (astnodetype == NODE_BUILTIN)
+		// else if (is_heredoc(ast->tokenlist))
+		// {
+		// 	debug("is heredoc"); // TODO look for updating $_ somewhere
+		// 	status = execute_heredoc(ast, data);
+		// }
+		else if (ast->type == NODE_BUILTIN)
 		{	
-			update_dollar_underscore(data->env_arr, ast->token_list);
-			status = execute_builtin(ast->token_list, data);
+			update_dollar_underscore(data->env_arr, ast->tokenlist);
+			status = execute_builtin(ast->tokenlist, data);
 		}
-		else if (astnodetype == NODE_COMMAND || astnodetype == NODE_TERMINAL)
+		else if (ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL)
 		{
-			update_dollar_underscore(data->env_arr, ast->token_list);
-			status = execute_command(ast->token_list, data);
+			update_dollar_underscore(data->env_arr, ast->tokenlist);
+			status = execute_command(ast->tokenlist, data);
 		}
 		// restore_fds(data);
 		break ;

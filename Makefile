@@ -22,19 +22,19 @@ SRC_DIR			= 	src/
 LIBFTDIR 		= 	lib/libft
 
 # the files to compile
-SRCS 			= 	$(addprefix $(SRC_DIR), main.c loop.c history/history.c history/history2.c \
+SRCS 			= 	$(addprefix $(SRC_DIR), init.c fd.c main.c loop.c history/history.c history/history2.c \
 scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
-scanner/token_functions.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
+scanner/token_functions.c scanner/token_functions2.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
 scanner/token_operators.c scanner/history_tokens.c scanner/token_blocks.c scanner/token_blocks2.c \
 scanner/redirection_tokens.c environment/environment.c environment/environment2.c \
-parser/parser.c parser/parser2.c parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c \
+parser/parser.c parser/parser2.c parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c parser/parser_utils4.c \
 analyser/analyser.c analyser/analyser2.c utils/utils.c utils/utils2.c globbing/globbing.c globbing/globbing1.c \
 error.c error2.c darray/darray.c darray/darray2.c darray/darray3.c \
 builtins/builtins.c builtins/builtins2.c executer/executer.c executer/executer2.c executer/executer3.c \
 executer/executer4.c heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c)
 OBJS 			=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
-HDRS 			=	$(addprefix include/, minishell.h scanner.h environment.h \
+HDRS 			=	$(addprefix include/, init.h fd.h minishell.h scanner.h environment.h \
 parser.h analyser.h executer.h splash_error.h darray.h builtins.h globbing.h debug.h heredoc.h) 
 
 # linker flags and libraries

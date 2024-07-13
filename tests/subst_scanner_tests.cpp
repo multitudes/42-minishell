@@ -5,8 +5,8 @@
 #include <sys/wait.h>
 #include "../include/scanner.h"
 
-void	ft_lstdelone(t_list *lst, void (*del)(void*));
-void	ft_lstclear(t_list **lst, void (*del)(void*));
+void	ft_lstdelone_test(t_list *lst, void (*del)(void*));
+void	ft_lstclear_test(t_list **lst, void (*del)(void*));
 
 /*
 testing for     
@@ -79,13 +79,13 @@ const char* test_scanner_dollar() {
 	result = process_token(&current, &i, "a", WORD);
 	result = process_token(&current, &i, "$-", DOLLAR_HYPHEN);
 	result = process_token(&current, &i, "a", WORD);
-	result = process_token(&current, &i, "$0", VAR_EXPANSION);
+	result = process_token(&current, &i, "$0", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "$", DOLLAR);
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -123,7 +123,7 @@ const char* test_scanner_subst_dollar() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -140,40 +140,42 @@ const char* test_scanner_subst_dollar_digit() {
 	int i = 0;
 
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$0", VAR_EXPANSION);
+	result = process_token(&current, &i, "$0", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$1", VAR_EXPANSION);
+	result = process_token(&current, &i, "$1", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$2", VAR_EXPANSION);
+	result = process_token(&current, &i, "$2", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$3", VAR_EXPANSION);
+	result = process_token(&current, &i, "$3", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$4", VAR_EXPANSION);
+	result = process_token(&current, &i, "$4", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$5", VAR_EXPANSION);
+	result = process_token(&current, &i, "$5", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$6", VAR_EXPANSION);
+	result = process_token(&current, &i, "$6", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$7", VAR_EXPANSION);
+	result = process_token(&current, &i, "$7", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$8", VAR_EXPANSION);
+	result = process_token(&current, &i, "$8", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$9", VAR_EXPANSION);
+	result = process_token(&current, &i, "$9", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "w", WORD);
-	result = process_token(&current, &i, "$10", VAR_EXPANSION);
+	result = process_token(&current, &i, "$1", DOLLAR_DIGIT);
+	result = process_token(&current, &i, "0", NUMBER);
+	
 
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 
 	return result;
 }
@@ -204,7 +206,7 @@ const char* test_scanner_history_exp() {
 
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	
 	return result;
 }
@@ -229,7 +231,7 @@ RUN_TESTS(all_tests);
 
 
 //avoiding adding the whole libft only for this
-void	ft_lstdelone(t_list *lst, void (*del)(void*))
+void	ft_lstdelone_test(t_list *lst, void (*del)(void*))
 {
 	if (lst == NULL)
 		return ;
@@ -237,7 +239,7 @@ void	ft_lstdelone(t_list *lst, void (*del)(void*))
 	free(lst);
 }
 
-void	ft_lstclear(t_list **lst, void (*del)(void*))
+void	ft_lstclear_test(t_list **lst, void (*del)(void*))
 {
 	t_list	**l;
 	t_list	*temp;
@@ -249,9 +251,9 @@ void	ft_lstclear(t_list **lst, void (*del)(void*))
 	while ((*lst)->next)
 	{
 		*lst = (*lst)->next;
-		ft_lstdelone(temp, del);
+		ft_lstdelone_test(temp, del);
 		temp = *lst;
 	}
-	ft_lstdelone(temp, del);
+	ft_lstdelone_test(temp, del);
 	*l = NULL;
 }

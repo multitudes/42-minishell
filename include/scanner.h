@@ -6,20 +6,15 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 11:17:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/12 07:46:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SCANNER_H
 # define SCANNER_H
 
-# ifdef __cplusplus
-
-extern "C" {
-# endif
-
-#include <stdbool.h>
-#include <libft.h>
+# include <stdbool.h>
+# include <libft.h>
 
 /*
 to make the code more clear I add these two defines 
@@ -30,7 +25,6 @@ and FUZZY it means I will look for the match with anything after it
 
 # define EXACT true
 # define FUZZY false
-
 
 /*
 > This operator redirects the output of a command to a file. 
@@ -81,11 +75,13 @@ typedef enum e_tokentype {
 	EXPR_EXPANSION,
 	QUOTED_STRING,
 	S_QUOTED_STRING,
+	DOLLAR_DIGIT,
 	TRUETOK,
 	FALSETOK,
 	DGREAT,
 	DLESS,
 	DLESS_DELIM,
+	HEREDOC_FILE,
 	REDIRECT_OUT,
 	REDIRECT_IN,
 	REDIRECT_BOTH,
@@ -95,6 +91,7 @@ typedef enum e_tokentype {
 	TILDE,
 	COMMAND,
 	EXPANDED,
+	QUOTE_EXPANDED,
 	NULL_TOKEN,
 	SEMI,
 	SEMI_AND,
@@ -152,33 +149,37 @@ typedef enum e_tokentype {
 	DOLLAR,
 	CARET,
 	PERCENT,
-} t_tokentype;
+}	t_tokentype;
 
-struct						s_mini_data
+typedef struct s_mini_data
 {
-	const char				*input;
-	t_list					*token_list;
-	bool					scanner_error;
-	char					*scanner_err_str;
-};
+	const char		*input;
+	t_list			*tokenlist;
+	bool			scanner_error;
+	char			*scanner_err_str;
+}						t_mini_data;
 
-typedef struct s_mini_data	t_mini_data;
-
-struct						s_token
+typedef struct s_token
 {
-	t_tokentype				type;
-	char					*lexeme;
-	bool					folldbyspace;
-};
-typedef struct s_token		t_token;
+	t_tokentype			type;
+	char				*lexeme;
+	bool				folldbyspace;
+}						t_token;
 
-int		init_scanner_data(t_mini_data *data, const char *input);
-t_list	*new_toknode(t_tokentype type, const char *lexeme, int *start, bool folldbyspace);
+// for testing - leave here
+# ifdef __cplusplus
+
+extern "C" {
+# endif
+
+int init_scanner_data(t_mini_data * data, const char *input);
+t_list	*new_toknode(t_tokentype type, const char *lexeme, \
+						int *start, bool folldbyspace);
 t_list	*tokenizer(const char *input);
 t_list	*string_tokenizer(const char *input);
 bool	peek(const char *input, const char *identifier, bool end_space);
 void	advance(int *i);
-int		skip_space(t_list *tokenlist, const char* input, int *i);
+int		skip_space(t_list *tokenlist, const char *input, int *i);
 bool	is_space(const char c);
 int		ft_strncicmp(char const *a, char const *b, int n);
 bool	cmp_char_case_insensitive(const char a, const char b);
@@ -194,12 +195,13 @@ bool	is_reserved(t_mini_data *data, char *identifier, int *start);
 bool	is_true_false(t_mini_data *data, char *str, int *start);
 bool	is_builtin(t_mini_data *data, char *identifier, int *start);
 bool	add_token(t_mini_data *data, int *i, const char *lxm, t_tokentype type);
-void	print_token_list(t_list *token_list);
+void	print_tokenlist(t_list *tokenlist);
 bool	is_io_number(const char *identifier);
 bool	str_is_number(const char *identifier);
 bool	str_is_alphanum(const char *identifier);
 bool	filename_delimiter(const char ch);
 bool	not_implemented_builtin(const char *identifier);
+bool	not_implemented_builtin2(const char *id);
 void	free_tokennode(void *content);
 bool	scanner_error(t_mini_data *data, char *err_str);
 bool	got_tokens(t_mini_data *data, int *i);
@@ -215,7 +217,8 @@ bool	is_simple_operator(t_mini_data *data, int *i);
 bool	is_a_redirection(t_mini_data *data, int *i);
 bool	is_a_aggregate_redirection(t_mini_data *data, int *i);
 bool	is_a_simple_redirection(t_mini_data *data, int *i);
-bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), t_tokentype type);
+bool	process_token(t_mini_data *data, int *i, bool (*cnd)(char), \
+						t_tokentype type);
 bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type);
 bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int typ);
 bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type);
@@ -229,7 +232,10 @@ bool	is_a_string_thing(t_mini_data *data, int *i);
 bool	is_a_redirection(t_mini_data *data, int *i);
 bool	is_a_globbing(t_mini_data *data, const char *tmp, int *start);
 bool	is_redirection_token(t_tokentype tokentype);
+bool	is_heredoc_delim(t_list *tokenlist);
 bool	is_heredoc_token(t_tokentype tokentype);
+t_list	*get_head(t_list *tokenlist);
+int		count_tokens(t_list *tokenlist);
 
 #  ifdef __cplusplus
 

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/07 17:37:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-
-// refactor the redirect functions into one with one or two supporting functions
 
 static void check_return(int new_fd, char *filename, uint8_t *status)
 {
@@ -53,7 +51,7 @@ static int  open_fd_by_redirect_type(t_tokentype type, char *filename, uint8_t *
     fd = -1;
     if (type == REDIRECT_OUT || type == REDIRECT_BOTH || type == GREATAND || type == CLOBBER) // || type == REDIRECT_ERR
         fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-    else if (type == REDIRECT_IN)
+    else if (type == REDIRECT_IN || type == DLESS || type == DLESSDASH)
         fd = open(filename, O_RDONLY);
     else if (type == REDIRECT_BOTH_APP || type == DGREAT) // || type == REDIRECT_ERRAPP
         fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
@@ -76,7 +74,7 @@ uint8_t setup_redirect(t_list **tokenlist, t_tokentype type)
     status = 0;
     consume_token_and_connect(tokenlist);
     if (!(*tokenlist))
-        return (print_minishell_error_status("minishell: syntax error near unexpected token ", 2)); // add token lexeme 'newline'
+        return (print_minishell_error_status("minishell: redirect syntax error", 2)); // add token lexeme 'newline'
     filename = get_token_lexeme(*tokenlist);
     fd = open_fd_by_redirect_type(type, filename, &status);
     if (status != 0)
@@ -86,6 +84,8 @@ uint8_t setup_redirect(t_list **tokenlist, t_tokentype type)
         close(fd);
         return (status);
     }
+    if (is_heredoc_token(type))
+        unlink(filename);
     consume_token_and_connect(tokenlist);
     close(fd);
     return (0);
@@ -120,7 +120,7 @@ uint8_t	execute_redirection(t_ast_node **ast)
     debug("ast type before redirection: %i", (*ast)->type);
     status = 0;
     token_counter = 0;
-	tokenlist = (*ast)->token_list;
+	tokenlist = (*ast)->tokenlist;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);
     while (tokenlist)
@@ -130,18 +130,19 @@ uint8_t	execute_redirection(t_ast_node **ast)
         {
             status = setup_redirect(&tokenlist, type);
             if (token_counter == 0)
-                (*ast)->token_list = tokenlist;
+                (*ast)->tokenlist = tokenlist;
+            if (status != 0)
+                return (status);
+            else
+                continue ;
         }
         else
             token_counter++;
-        if (status != 0)
-            return (status);
-        if (tokenlist)
-            tokenlist = tokenlist->next;
+        tokenlist = tokenlist->next;
     }
     if (tokenlist == NULL && token_counter == 0)
     {
-        (*ast)->token_list = NULL;
+        (*ast)->tokenlist = NULL;
         (*ast)->type = NODE_NULL;
     }
     debug("ast type after redirection: %i", (*ast)->type);

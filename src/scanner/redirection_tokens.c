@@ -11,12 +11,38 @@
 /* ************************************************************************** */
 
 #include "scanner.h"
+#include "parser.h"
 
 bool	is_heredoc_token(t_tokentype tokentype)
 {
-	if (tokentype == DLESS)
+	if (tokentype == DLESS || tokentype == DLESSDASH)
 		return (true);
 	return (false);
+}
+
+/*
+Check if assigned type is a valid heredoc delimiter, in which case
+the type is changed to DLESS_DELIM before returning result of check.
+ADD MORE VALID TOKENTYPES TODO
+*/
+bool	is_heredoc_delim(t_list *tokenlist)
+{
+	t_tokentype	tokentype;
+	bool		heredoc_delim;
+
+	if (!tokenlist)
+		return (false);
+	tokentype = get_token_type(tokenlist);
+	if (tokentype == DLESS_DELIM || tokentype == DLESSDASH)
+		return (true);
+	else if (tokentype == TILDE)
+		heredoc_delim = true;
+	else if (tokentype == VAR_EXPANSION)
+		heredoc_delim = true;
+	else
+		heredoc_delim = false;
+	((t_token *)(tokenlist->content))->type = DLESS_DELIM;
+	return (heredoc_delim);
 }
 
 bool	is_redirection_token(t_tokentype tokentype)

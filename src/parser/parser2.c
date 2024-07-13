@@ -6,11 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 14:10:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 14:04:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "libft.h"
 
 /*
 follows the grammar
@@ -20,7 +21,8 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 	t_ast_node	*a;
 	t_list		*head;
 	bool		expr_has_node;
-
+	
+	debug("parse_terminal %s", get_token_lexeme(*input_tokens));
 	a = NULL;
 	expr_has_node = false;
 	head = *input_tokens;
@@ -28,6 +30,7 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 		return (NULL);
 	while (is_not_control_token(get_curr_token(*input_tokens)))
 	{
+		debug("parse_terminal %s", get_token_lexeme(*input_tokens));
 		if (extract_expression(&head, input_tokens))
 			expr_has_node = true;
 		if (head == NULL)
@@ -59,30 +62,42 @@ bool	is_pipe_token(t_list *input_tokens)
 	return (false);
 }
 
-t_ast_node	*parse_pipeline(t_list **token_list)
+t_ast_node	*parse_pipeline(t_list **tokenlist)
 {
 	t_ast_node	*a;
-	t_token		*token;
 	t_ast_node	*b;
+	t_ast_node	*tmpnode;
+	t_list		*tmp;
 
 	a = NULL;
-	token = NULL;
-	if (token_list == NULL || *token_list == NULL)
+	if (tokenlist == NULL || *tokenlist == NULL)
 		return (NULL);
-	a = parse_terminal(token_list);
+	a = parse_terminal(tokenlist);
 	if (a == NULL)
 		return (NULL);
-	while (is_pipe_token(*token_list))
+	while (is_pipe_token(*tokenlist))
 	{
-		token = get_curr_token(*token_list);
-		if (!consume_token_and_break(token_list))
-			return (NULL);
-		b = parse_terminal(token_list);
+		tmp = *tokenlist;
+		if (!movetonexttoken_andbreak(tokenlist))
+		{
+			ft_lstdelone(tmp, free_tokennode);
+			return (free_ast(&a));
+		}
+		b = parse_terminal(tokenlist);
 		if (b == NULL)
+		{
+			ft_lstdelone(tmp, free_tokennode);
 			return (free_ast(&a));
-		a = new_node(NODE_PIPELINE, a, b, ft_lstnew(token));
-		if (a == NULL)
-			return (free_ast(&a));
+		}
+		tmpnode = new_node(NODE_PIPELINE, a, b, tmp);
+		if (tmpnode == NULL)
+		{
+			ft_lstdelone(tmp, free_tokennode);
+			free_ast(&a);
+			free_ast(&b);
+			return (NULL);
+		}
+		a = tmpnode;
 	}
 	return (a);
 }
@@ -90,41 +105,47 @@ t_ast_node	*parse_pipeline(t_list **token_list)
 /*
 Parsing sequence of pipelines separated by operators "&&", "||"
 */
-t_ast_node	*parse_list(t_list **token_list)
+t_ast_node	*parse_list(t_list **tokenlist)
 {
-	t_token		*token;
+	t_list		*tmp;
 	t_ast_node	*a;
 	t_ast_node	*b;
 
 	a = NULL;
 	b = NULL;
-	token = NULL;
-	if (token_list == NULL || *token_list == NULL)
+	if (tokenlist == NULL || *tokenlist == NULL)
 		return (NULL);
-	a = parse_pipeline(token_list);
+	a = parse_pipeline(tokenlist);
 	if (a == NULL)
 		return (NULL);
-	while (*token_list)
+	while (*tokenlist)
 	{
-		token = get_curr_token(*token_list);
-		if (token->type == AND_IF || token->type == OR_IF || \
-		token->type == EXPRESSION)
+		break_list(tokenlist);
+		tmp = *tokenlist;
+		if (get_token_type(tmp) == AND_IF || get_token_type(tmp) == OR_IF || \
+		get_token_type(tmp) == EXPRESSION)
 		{
-			if (token->type != EXPRESSION && !consume_token_and_break(token_list))
-				return (NULL);
-			b = parse_pipeline(token_list);
-			if (b == NULL)
+			if (get_token_type(tmp) != EXPRESSION && !movetonexttoken_andbreak(tokenlist))
+			{
+	 			ft_lstdelone(tmp, free_tokennode);
 				return (free_ast(&a));
-			a = new_node(NODE_LIST, a, b, ft_lstnew(token));
+			}
+			b = parse_pipeline(tokenlist);
+			if (b == NULL)
+			{
+	 			ft_lstdelone(tmp, free_tokennode);
+				return (free_ast(&a));
+			}
+			a = new_node(NODE_LIST, a, b, tmp);
 			if (a == NULL)
 				return (free_ast(&a));
 		}
-		else if (*token_list)
+		else if (*tokenlist)
 		{
 			debug("extraneus tken: %d, %s", \
-			get_token_type(*token_list), \
-			get_token_lexeme(*token_list));
-			*token_list = (*token_list)->next;
+			get_token_type(*tokenlist), \
+			get_token_lexeme(*tokenlist));
+			*tokenlist = (*tokenlist)->next;
 		}
 	}
 	return (a);

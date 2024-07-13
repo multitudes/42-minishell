@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/08 18:52:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 11:25:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	which_ast_node(t_ast_node *ast)
 	t_list *tokenlist;
 	t_token *token;
 
-	tokenlist = ast->token_list;
+	tokenlist = ast->tokenlist;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return ;
 	token = (t_token *)tokenlist->content;
@@ -172,18 +172,12 @@ char	*get_home(t_darray *env_arr)
 	home = mini_get_env(env_arr, "HOME");
 	debug("HOME from env: %s", home);
 	if (home)
-		home = ft_strdup(home);
-	else
-	{
-		debug("HOME not set in env, trying to get from /etc/passwd");
-        char *username = getenv("USER");
-		debug("Username: %s", username);
-		if (username)
-			home = ft_strjoin("/home/", username);
-		else
-			home = ft_strdup("/home");
-    }
-	return (home);
+		return (ft_strdup(home));
+	if (getenv("USER"))
+		return (ft_strjoin("/home/", getenv("USER")));
+	if (getcwd(home, sizeof(home)) != NULL) 
+		return (home);
+	return (ft_strdup("/home"));
 }
 
 bool	valid_tilde_expansion(t_list *tokenlist, int index)
@@ -356,7 +350,7 @@ void	expand_single_quotes(t_token *token)
 		lexeme = ft_strtrim(token->lexeme, "'"); 
 		free(token->lexeme);
 		token->lexeme = lexeme;
-		token->type = WORD;
+		token->type = QUOTE_EXPANDED;
 	}
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
@@ -366,7 +360,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	char	*unquoted_lexeme;
 	char	*temp_lexeme;
 	t_list	*string_tokens;
-	t_list	*ptr_token_list;
+	t_list	*ptr_tokenlist;
 
 	debug("expand_string double quotes %s", token->lexeme);
 	unquoted_lexeme = NULL;
@@ -385,7 +379,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	free(unquoted_lexeme);
 	token_sanitization(string_tokens);
 	debug("First string token: %s type %d", get_token_lexeme(string_tokens), get_token_type(string_tokens));
-	ptr_token_list = string_tokens;
+	ptr_tokenlist = string_tokens;
 	while (string_tokens)
 	{
 		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR_QUESTION)
@@ -398,8 +392,8 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		free(temp_lexeme);
 		string_tokens = string_tokens->next;
 	}
-	ft_lstclear(&ptr_token_list, free_tokennode); //free_tokennode function is from scanner.h
-	token->type = WORD;
+	ft_lstclear(&ptr_tokenlist, free_tokennode);
+	token->type = QUOTE_EXPANDED;
 	debug("Expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
@@ -458,8 +452,8 @@ static bool	separated_token_types(t_list *tokenlist)
 	type_token_2 = get_token_type(tokenlist->next);
 	if (is_redirection_token(type_token_1) || is_redirection_token(type_token_2))
 		return (true);
-	else if (is_heredoc_token(type_token_1) || is_heredoc_token(type_token_2))
-		return (true);
+	// else if (is_heredoc_token(type_token_1) || is_heredoc_token(type_token_2))
+	// 	return (true);
 	return (false);
 
 }
@@ -477,7 +471,7 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 
 	if (ast == NULL)
 		return ;
-	tokenlist = ast->token_list;
+	tokenlist = ast->tokenlist;
 	if (!tokenlist)
 		return ;
 	expand_tokenlist(data, tokenlist);
@@ -488,7 +482,7 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 			merge_tokens(tokenlist);
 			continue ;
 		}
-		else if (ft_strlen(get_token_lexeme(tokenlist)) == 0 && !token_followed_by_space(tokenlist))
+		else if (ft_strlen(get_token_lexeme(tokenlist)) == 0 && get_token_type(tokenlist) != QUOTE_EXPANDED)
 		{
 			tokentype = ((t_token *)(tokenlist->next->content))->type;
 			merge_tokens(tokenlist);
@@ -499,5 +493,5 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	}
 	which_ast_node(ast);
 	debug("ast-node type after check: %i)", ast->type);
-	// debug("First lexeme in merged tokenlist: -%s- of type: %i", get_token_lexeme(ast->token_list), get_token_type(ast->token_list));
+	// debug("First lexeme in merged tokenlist: -%s- of type: %i", get_token_lexeme(ast->tokenlist), get_token_type(ast->tokenlist));
 }

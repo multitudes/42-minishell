@@ -5,8 +5,8 @@
 #include <sys/wait.h>
 #include "../include/scanner.h"
 
-void	ft_lstdelone(t_list *lst, void (*del)(void*));
-void	ft_lstclear(t_list **lst, void (*del)(void*));
+void	ft_lstdelone_test(t_list *lst, void (*del)(void*));
+void	ft_lstclear_test(t_list **lst, void (*del)(void*));
 
 /*
 I am still looking for a way to make this function common to all tests files
@@ -59,7 +59,7 @@ const char* test_scanner_identifiers() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -79,7 +79,7 @@ const char* test_scanner_identifiers2() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);	
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -97,7 +97,7 @@ const char* test_scanner_identifiers3() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);	
 	
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -117,7 +117,7 @@ const char* test_scanner_identifiers4() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 
 	return result;
 }
@@ -163,7 +163,7 @@ const char *test_scanner_identifiers5() {
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -198,7 +198,7 @@ const char *test_scanner_identifiers6()
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -233,7 +233,7 @@ const char *test_scanner_identifiers7()
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -251,7 +251,7 @@ const char *test_scanner_true_false()
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -271,7 +271,7 @@ const char *test_scanner_true_false2()
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -299,7 +299,7 @@ const char* test_all_tokens() {
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
     return result;
 }
 
@@ -354,7 +354,7 @@ const char* test_all_tokens2() {
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
     return result;
 }
 
@@ -390,7 +390,7 @@ const char* test_all_tokens3() {
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
     return result;
 }
 
@@ -428,7 +428,7 @@ const char* test_all_tokens4() {
 	result = process_token(&current, &i, "$#", DOLLAR_HASH);
 	result = process_token(&current, &i, "$!", DOLLAR_BANG);
 	result = process_token(&current, &i, "$-", DOLLAR_HYPHEN);
-	result = process_token(&current, &i, "$0", VAR_EXPANSION);
+	result = process_token(&current, &i, "$0", DOLLAR_DIGIT);
 	result = process_token(&current, &i, "$", DOLLAR);
 	result = process_token(&current, &i, "$a", VAR_EXPANSION);
 
@@ -437,7 +437,7 @@ const char* test_all_tokens4() {
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
     return result;
 }
 
@@ -487,7 +487,7 @@ const char* test_all_tokens5() {
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 
     return result;
 }
@@ -520,7 +520,7 @@ const char *test_all_tokens6() {
 	// this is how I check for the end of the list  
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 
-	ft_lstclear(&lexemes, free_tokennode);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -556,7 +556,7 @@ RUN_TESTS(all_tests);
 
 
 //avoiding adding the whole libft only for this
-void	ft_lstdelone(t_list *lst, void (*del)(void*))
+void	ft_lstdelone_test(t_list *lst, void (*del)(void*))
 {
 	if (lst == NULL)
 		return ;
@@ -564,7 +564,7 @@ void	ft_lstdelone(t_list *lst, void (*del)(void*))
 	free(lst);
 }
 
-void	ft_lstclear(t_list **lst, void (*del)(void*))
+void	ft_lstclear_test(t_list **lst, void (*del)(void*))
 {
 	t_list	**l;
 	t_list	*temp;
@@ -576,9 +576,9 @@ void	ft_lstclear(t_list **lst, void (*del)(void*))
 	while ((*lst)->next)
 	{
 		*lst = (*lst)->next;
-		ft_lstdelone(temp, del);
+		ft_lstdelone_test(temp, del);
 		temp = *lst;
 	}
-	ft_lstdelone(temp, del);
+	ft_lstdelone_test(temp, del);
 	*l = NULL;
 }

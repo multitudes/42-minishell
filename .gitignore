@@ -64,3 +64,12 @@ tests/tmp/world.c
 compile_commands.json
 .non-read_file
 minishell_bonus
+aa/a
+.noaccess_file
+READMEadds.md
+x
+y
+z
+tokenizer
+.tmp/heredoc_0
+.tmp/heredoc_1

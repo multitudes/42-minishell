@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:37:46 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/08 17:24:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 11:41:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <libft.h>
 #include "splash_error.h"
 #include "scanner.h"
-
+#include <stdbool.h>
 
 /*
  The strndup() function is similar to ft_strdup, but copies at most n bytes. 
@@ -134,4 +134,23 @@ void	replace_node_with_newlist(t_list **node, t_list *newlist)
 	ft_lstdelone(*node, free_tokennode);
 	if (!prev)
 		*node = tmp;
+}
+
+/*
+wrapper for the system write function to simplify syntax
+and perform write return value checking.
+Returns false if write call returns error.
+*/
+bool	ft_write(int fd, char *str)
+{
+	ssize_t	write_return;
+
+	write_return = 0;
+	write_return = write(fd, str, ft_strlen(str));
+	if (write_return == -1 || write_return != (ssize_t)ft_strlen(str))
+	{
+		perror("write");
+		return (false);
+	}
+	return (true);
 }

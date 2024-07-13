@@ -6,11 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:40:02 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 15:46:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/11 20:37:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
+#include "libft.h"
+
 
 /*
  mh.. just checked again in the bash and maybe the function below is not 
@@ -83,31 +85,49 @@ help history jobs kill let local logout mapfile popd printf pushd read
 readonly return set shift shopt source suspend test times trap type 
 typeset ulimit umask unalias wait readarray"
 */
+bool	not_implemented_builtin2(const char *id)
+{
+	if (!ft_strcmp(id, "local") || !ft_strcmp(id, "logout") || \
+	!ft_strcmp(id, "mapfile") || !ft_strcmp(id, "popd") || \
+	!ft_strcmp(id, "printf") || !ft_strcmp(id, "pushd") || \
+	!ft_strcmp(id, "read") || !ft_strcmp(id, "readonly") || \
+	!ft_strcmp(id, "return") || !ft_strcmp(id, "set") || \
+	!ft_strcmp(id, "shift") || !ft_strcmp(id, "shopt") || \
+	!ft_strcmp(id, "source") || !ft_strcmp(id, "suspend") || \
+	!ft_strcmp(id, "test") || !ft_strcmp(id, "times") || \
+	!ft_strcmp(id, "trap") || !ft_strcmp(id, "type") || \
+	!ft_strcmp(id, "typeset") || !ft_strcmp(id, "ulimit") || \
+	!ft_strcmp(id, "umask") || !ft_strcmp(id, "unalias") || \
+	!ft_strcmp(id, "wait") || !ft_strcmp(id, "readarray"))
+		return (true);
+	return (false);
+}
+
+/*
+bash builtins which we do not implement are in this list (taken from the 
+bash manual but enhanced by copilot)
+"alias bg bind break builtin caller command compgen 
+. : complete continue declare dirs disown enable eval exec fc fg getopts hash 
+help history jobs kill let local logout mapfile popd printf pushd read 
+readonly return set shift shopt source suspend test times trap type 
+typeset ulimit umask unalias wait readarray"
+*/
 bool	not_implemented_builtin(const char *id)
 {
-	if (!ft_strncmp(id, "bg", 3) || !ft_strncmp(id, "fc", 2) || !ft_strncmp(id, \
-	":", 2) || !ft_strncmp(id, "bind", 5) || !ft_strncmp(id, "break", 6) || \
-	!ft_strncmp(id, "builtin", 8) || !ft_strncmp(id, "caller", 6) || \
-	!ft_strncmp(id, "command", 7) || !ft_strncmp(id, "compgen", 7) || \
-	!ft_strncmp(id, ".", 2) || !ft_strncmp(id, "complete", 9) || !ft_strncmp(id, \
-	"continue", 8) || !ft_strncmp(id, "declare", 7) || !ft_strncmp(id, "dirs", \
-	4) || !ft_strncmp(id, "disown", 6) || !ft_strncmp(id, "enable", 6) || \
-	!ft_strncmp(id, "eval", 4) || !ft_strncmp(id, "exec", 4) || !ft_strncmp(id, \
-	"alias", 6) || !ft_strncmp(id, "fg", 2) || !ft_strncmp(id, "getopts", 7) || \
-	!ft_strncmp(id, "hash", 4) || !ft_strncmp(id, "help", 4) || !ft_strncmp(id, \
-	"history", 7) || !ft_strncmp(id, "jobs", 4) || !ft_strncmp(id, "kill", 4) || \
-	!ft_strncmp(id, "let", 3) || !ft_strncmp(id, "local", 5) || !ft_strncmp(id, \
-	"logout", 6) || !ft_strncmp(id, "mapfile", 7) || !ft_strncmp(id, "popd", 4) \
-	|| !ft_strncmp(id, "printf", 6) || !ft_strncmp(id, "pushd", 5) || \
-	!ft_strncmp(id, "read", 4) || !ft_strncmp(id, "readonly", 8) || \
-	!ft_strncmp(id, "return", 6) || !ft_strncmp(id, "set", 3) || \
-	!ft_strncmp(id, "shift", 5) || !ft_strncmp(id, "shopt", 5) || \
-	!ft_strncmp(id, "source", 6) || !ft_strncmp(id, "suspend", 7) || \
-	!ft_strncmp(id, "test", 5) || !ft_strncmp(id, "times", 5) || \
-	!ft_strncmp(id, "trap", 4) || !ft_strncmp(id, "type", 4) || \
-	!ft_strncmp(id, "typeset", 7) || !ft_strncmp(id, "ulimit", 6) || \
-	!ft_strncmp(id, "umask", 5) || !ft_strncmp(id, "unalias", 7) || \
-	!ft_strncmp(id, "wait", 4) || !ft_strncmp(id, "readarray", 9))
+	if (!ft_strcmp(id, "bg") || !ft_strcmp(id, "fc") || !ft_strcmp(id, ":") \
+	|| !ft_strcmp(id, "bind") || !ft_strcmp(id, "break") || \
+	!ft_strcmp(id, "builtin") || !ft_strcmp(id, "caller") || \
+	!ft_strcmp(id, "command") || !ft_strcmp(id, "compgen") || \
+	!ft_strcmp(id, ".") || !ft_strcmp(id, "complete") || \
+	!ft_strcmp(id, "continue") || !ft_strcmp(id, "declare") || \
+	!ft_strcmp(id, "dirs") || !ft_strcmp(id, "disown") || \
+	!ft_strcmp(id, "enable") || !ft_strcmp(id, "eval") || \
+	!ft_strcmp(id, "exec") || !ft_strcmp(id, "alias") || \
+	!ft_strcmp(id, "fg") || !ft_strcmp(id, "getopts") || \
+	!ft_strcmp(id, "hash") || !ft_strcmp(id, "help") || \
+	!ft_strcmp(id,"history") || !ft_strcmp(id, "jobs") || \
+	!ft_strcmp(id, "kill") || !ft_strcmp(id, "let") || \
+	not_implemented_builtin2(id))
 		return (true);
 	return (false);
 }
