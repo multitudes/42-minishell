@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:48:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:46:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 19:31:41 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,28 +21,6 @@ bool	is_space(const char c)
 {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' \
 	|| c == '\r');
-}
-
-/*
-string n compare but case insensitive
-*/
-int	ft_strncicmp(char const *a, char const *b, int n)
-{
-	int	d;
-
-	if (n == 0)
-		return (0);
-	if (a == NULL || b == NULL || n < 0)
-		return (-1);
-	while (*a && *b && n--)
-	{
-		d = ft_tolower(*a) - ft_tolower(*b);
-		if (d != 0)
-			return (d);
-		a++;
-		b++;
-	}
-	return (*a - *b);
 }
 
 /* Returns 'true' if the character is a delimiter. Because an identifier

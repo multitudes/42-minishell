@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 07:46:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 19:33:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,13 +176,10 @@ int init_scanner_data(t_mini_data * data, const char *input);
 t_list	*new_toknode(t_tokentype type, const char *lexeme, \
 						int *start, bool folldbyspace);
 t_list	*tokenizer(const char *input);
-t_list	*string_tokenizer(const char *input);
 bool	peek(const char *input, const char *identifier, bool end_space);
 void	advance(int *i);
 int		skip_space(t_list *tokenlist, const char *input, int *i);
 bool	is_space(const char c);
-int		ft_strncicmp(char const *a, char const *b, int n);
-bool	cmp_char_case_insensitive(const char a, const char b);
 bool	is_delimiter(const char ch);
 bool	is_not_delimiter(const char ch);
 bool	is_digit(const char c);

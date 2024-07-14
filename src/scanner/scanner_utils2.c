@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:52:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/17 07:54:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 19:33:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,3 @@ bool	char_is_in_pathname(const char c)
 	return (is_alnum(c) || c != '.');
 }
 
-/*
-compare two chars case insensitive - used in peek!
-*/
-
-bool	cmp_char_case_insensitive(const char a, const char b)
-{
-	if (is_alpha(a) && is_alpha(b))
-		return (ft_tolower(a) == ft_tolower(b));
-	else
-		return (a == b);
-}
