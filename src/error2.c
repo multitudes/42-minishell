@@ -113,45 +113,29 @@ I need this to print on stderr and return 0
 */
 uint8_t	zero_and_printerr(const char *msg)
 {
-	// ssize_t	result;
-
-	// result = 0;
 	if (msg)
 		ft_write(2, msg);
 	else
 		ft_write(2, "minishell: error");
 	ft_write(2, "\n");
-	// {
-	// 	write(2, msg, ft_strlen(msg));
-	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
-	// 		perror("write");
-	// 	result = write(2, "\n", 1);
-	// 	if (result == -1 || result != 1) 
-	// 		perror("write");
-	// }
 	return (0);
 }
 
 /*
-I need this to print on stderr and return 0
+Write "minishell: msg" to standard error and return boolian.
+If msg is NULL, "minishell: error is printed."
+If write fails false is returned.
 */
-bool	false_and_print(const char *msg)
+bool	stderr_and_bool(const char *msg, bool boolian)
 {
-	// ssize_t	result;
+	char	*error_msg;
 
-	// result = 0;
 	if (msg)
-		ft_write(2, msg);
+		error_msg = ft_strjoin("minishell: ", msg);
 	else
-		ft_write(2, "minishell: error");
-	ft_write(2, "\n");
-	// {
-	// 	result = write(2, msg, ft_strlen(msg));
-	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
-	// 		perror("write");
-	// 	result = write(2, "\n", 1);
-	// 	if (result == -1 || result != 1) 
-	// 		perror("write");
-	// }
-	return (false);
+		error_msg = ft_strdup("minishell error");
+	if (!ft_write(2, error_msg) || !ft_write(2, "\n"))
+		boolian = false;
+	free(error_msg);
+	return (boolian);
 }

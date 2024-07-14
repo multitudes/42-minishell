@@ -34,7 +34,7 @@ static char *get_heredoc_filename()
         return (null_on_err("minishell: heredoc set up"));
     new_filename = ft_strjoin(".tmp/heredoc_", index);
     if (!new_filename)
-        perror("minishell: heredoc set_up");
+        perror_minishell("heredoc set_up");
     free(index);
     return (new_filename);
 }
@@ -97,7 +97,7 @@ static bool process_delim_quotes(t_heredoc *heredoc)
         count_single_quotes = count_char_in_str(heredoc->delim[i], '\'');
         count_double_quotes = count_char_in_str(heredoc->delim[i], '"');
         if (count_single_quotes % 2 || count_double_quotes % 2)
-            return (false_and_print("minishell: heredoc: invalid delimiter"));
+            return (stderr_and_bool("heredoc: invalid delimiter", false));
         else if (count_single_quotes > 1 || count_double_quotes > 1)
         {
             remove_quotes(heredoc->delim[i]);
@@ -118,13 +118,9 @@ Set up heredoc(s). Up to 20 heredocs/delimiters are supported.
 */
 static bool init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
 {
-    // t_list  *tokenlist;
-    // char    *lexeme;
     char    *temp;
 
-    // heredoc->buffer_size = HEREDOC_BUFFER;
     heredoc->delim_count = 0;
-    // heredoc->heredoc_len = 0;
     while (tokenlist)
     {
         if (is_heredoc_token(get_token_type(tokenlist)))
@@ -136,13 +132,9 @@ static bool init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
 				if (!heredoc->delim[heredoc->delim_count])
 				{
 					free_heredoc(heredoc);
-					return (false_and_print("minishell: heredoc memory error"));
+					return (stderr_and_bool("heredoc memory error", false));
 				}
 				debug("Set delimiter %i: %s", heredoc->delim_count, heredoc->delim[heredoc->delim_count]);
-                // temp = ((t_token *)(tokenlist->content))->lexeme;
-                // ((t_token *)(tokenlist->content))->lexeme = ft_strdup("<");
-                // free(temp);
-                // ((t_token *)(tokenlist->content))->type = REDIRECT_IN;
                 tokenlist = tokenlist->next;
                 temp = ((t_token *)(tokenlist->content))->lexeme;
                 ((t_token *)(tokenlist->content))->lexeme = get_heredoc_filename();
@@ -150,14 +142,14 @@ static bool init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
                 if (!get_token_lexeme(tokenlist))
                 {
                     free_heredoc(heredoc);
-                    return (false_and_print("minishell: error heredoc setup"));
+                    return (stderr_and_bool("heredoc setup error", false));
                 }
                 heredoc->file[heredoc->delim_count] = ft_strdup(((t_token *)(tokenlist->content))->lexeme);
                 ((t_token *)(tokenlist->content))->type = HEREDOC_FILE;
                 heredoc->delim_count++;
             }
             else
-                return (false_and_print("minishell: syntax error: unexpected heredoc token"));
+                return (stderr_and_bool("syntax error: unexpected heredoc token", false));
         }
         tokenlist = tokenlist->next;
     }
@@ -176,17 +168,12 @@ bool execute_heredoc(t_data *data)
 
     debug("execute heredoc");
     set_up_heredoc_signals();
-    if (!init_heredoc(data->tokenlist, &heredoc) || !process_delim_quotes(&heredoc) || !process_heredoc(&heredoc, data))
+    if (!init_heredoc(data->tokenlist, &heredoc) \
+        || !process_delim_quotes(&heredoc) || !process_heredoc(&heredoc, data))
     {
         set_up_std_signals();
         return (false);
     }
-    // if ((ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL) && only_flags(ast->tokenlist->next) && heredoc.buffer)
-    //     status = redirect_and_execute_heredoc(ast, data, &heredoc);
-    // else if (ast->type == NODE_COMMAND || ast->type == NODE_TERMINAL)
-    //     status = execute_command(ast->tokenlist, data);
-    // else if (ast->type == NODE_BUILTIN)
-	// 	status = execute_builtin(ast->tokenlist, data);
     set_up_std_signals();
     return (true);
 }
