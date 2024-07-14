@@ -104,7 +104,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 	status = 0;
 	if (ast == NULL || ast->tokenlist == NULL)
 		return (0);
-	debug("\nexecute ast (node type: %d)", ast->type);;
+	debug("====== execute ast (node type: %d) ======", ast->type);;
 	tokenlist = ast->tokenlist;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);

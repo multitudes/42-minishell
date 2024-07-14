@@ -38,7 +38,7 @@ void	free_tokennode(void *content)
 {
 	if (content)
 	{
-		debug("freeing token node content lexeme %s", ((t_token *)content)->lexeme);
+		// debug("freeing token node content lexeme %s", ((t_token *)content)->lexeme);
 		free(((t_token *)content)->lexeme);
 	}
 	free(content);

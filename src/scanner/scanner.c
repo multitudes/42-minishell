@@ -19,10 +19,9 @@
 int skip_space(t_list *tokenlist, const char* input, int *i)
 {
 	debug("skip_space");
-
 	t_list	*last;
-
 	t_token	*lasttok;
+
  	last = ft_lstlast(tokenlist);
 	if (*i > 0 && last)
 	{
@@ -66,7 +65,7 @@ t_list	*tokenizer(const char *input)
 		ft_lstclear(&data.tokenlist, free_tokennode);
 		return (NULL);
 	}
-	debug("token list successfully tokenized === ");
+	debug("====== token list successfully tokenized ====== ");
 	return (data.tokenlist);
 }
 

@@ -22,7 +22,6 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 	t_list		*head;
 	bool		expr_has_node;
 	
-	debug("parse_terminal %s", get_token_lexeme(*input_tokens));
 	a = NULL;
 	expr_has_node = false;
 	head = *input_tokens;
@@ -30,7 +29,7 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 		return (NULL);
 	while (is_not_control_token(get_curr_token(*input_tokens)))
 	{
-		debug("parse_terminal %s", get_token_lexeme(*input_tokens));
+		// debug("parse_terminal %s", get_token_lexeme(*input_tokens));
 		if (extract_expression(&head, input_tokens))
 			expr_has_node = true;
 		if (head == NULL)
@@ -122,7 +121,7 @@ t_ast_node	*parse_list(t_list **tokenlist)
 	{
 		break_list(tokenlist);
 		tmp = *tokenlist;
-		debug("parse_list %s", get_token_lexeme(tmp));
+		// debug("parse_list %s", get_token_lexeme(tmp));
 		if (get_token_type(tmp) == AND_IF || get_token_type(tmp) == OR_IF || \
 		get_token_type(tmp) == EXPRESSION)
 		{
@@ -143,7 +142,7 @@ t_ast_node	*parse_list(t_list **tokenlist)
 		}
 		else if (*tokenlist)
 		{
-			debug("extraneus tken: %d, %s", \
+			debug("extraneus token: %d, %s", \
 			get_token_type(*tokenlist), \
 			get_token_lexeme(*tokenlist));
 			*tokenlist = (*tokenlist)->next;

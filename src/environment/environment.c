@@ -88,7 +88,7 @@ char *mini_get_env(t_darray *env_arr, const char *key)
 			return (position + 1);
 		i++;
 	}
-	debug("key not found");
+	// debug("key not found");
 	return (NULL);
 }
 

@@ -63,10 +63,9 @@ char	*get_history_file_path(t_darray *env_arr)
     }
 	if (home == NULL)
 		return (NULL);
-	debug("history home: %s", home);
 	path = ft_strjoin(home, MINIHISTFILEPATH);
 	free(home);
-	debug("path: %s", path);
+	debug("history path: %s", path);
 	if (path == NULL)
 		print_minishell_error_status("history file path missing", 1);
 	return (path);
@@ -90,7 +89,7 @@ bool	handle_history(t_data *data)
 	if (!add_to_hist_file(data->input, data->env_arr))
 		return (false);
 	add_history(data->input);
-	debug("env _ is reset to -%s-", mini_get_env(data->env_arr, "_"));
+	debug("env _ is set to -%s-", mini_get_env(data->env_arr, "_"));
 	return (0);
 }
 

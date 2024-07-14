@@ -193,7 +193,7 @@ char	*get_home(t_darray *env_arr)
 	cwd = NULL;
 	if (home && debug("HOME from env"))
 		return (ft_strdup(home));
-	else if (getenv("USER")  && debug("home from USER"))
+	else if (getenv("USER") && debug("home from USER"))
 		return (ft_strjoin("/home/", getenv("USER")));
 	else
 	{
@@ -507,5 +507,5 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 			tokenlist = tokenlist->next;
 	}
 	which_ast_node(ast);
-	debug("First lexeme in expanded and merged tokenlist: -%s-, type: %i, ast-node type: %i", get_token_lexeme(ast->tokenlist), get_token_type(ast->tokenlist),  ast->type);
+	// debug("First lexeme in expanded and merged tokenlist: -%s-, type: %i, ast-node type: %i", get_token_lexeme(ast->tokenlist), get_token_type(ast->tokenlist),  ast->type);
 }

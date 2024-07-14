@@ -27,12 +27,12 @@ t_ast_node	*create_ast(t_list *tokenlist)
 
 	rootnode = NULL;
 	tmp = tokenlist;
-	debug("in rootnode create_ast tokenlist :");
+	// debug("in rootnode create_ast tokenlist: ");
 	if (tokenlist == NULL)
 		return (NULL);
 	while (tmp)
 	{
-		debug("in while loop create_ast tokenlist :%s", ((t_token *)tmp->content)->lexeme);
+		// debug("in while loop create_ast tokenlist: %s", ((t_token *)tmp->content)->lexeme);
 		rootnode = parse_list(&tmp);
 		if (!rootnode)
 			return (NULL);
@@ -54,7 +54,6 @@ t_token* to free the lexeme string and the token itself.
 */
 void	*free_ast(t_ast_node **ast)
 {
-	debug("free_ast");
 	if (ast == NULL || *ast == NULL)
 		return (NULL);
 	if ((*ast)->left)
@@ -65,7 +64,7 @@ void	*free_ast(t_ast_node **ast)
 		ft_lstclear(&((*ast)->tokenlist), free_tokennode);
 	free(*ast);
 	*ast = NULL;
-	debug("free_ast finished");
+	// debug("free_ast finished");
 	return (NULL);
 }
 
