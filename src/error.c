@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "splash_error.h"
+#include "utils.h"
 #include <stdint.h>
 #include <libft.h>
 #include <stdbool.h>
@@ -36,23 +37,25 @@ TODO change a variadic function
 */
 uint8_t	status_perror2(const char *msg_1, const char *msg_2, uint8_t status)
 {
-	ssize_t	result;
+	// ssize_t	result;
 
-	if (msg_1)
-	{
-		result = write(2, msg_1, ft_strlen(msg_1));
-		if (result == -1 || result != (ssize_t)ft_strlen(msg_1))
-			status = status_and_perror("write", 1);
-	}
-	if (msg_2)
-	{
-		result = write(2, msg_2, ft_strlen(msg_2));
-		if (result == -1 || result != (ssize_t)ft_strlen(msg_2))
-			status = status_and_perror("write", 1);
-	}
-	result = write(2, ": ", 2);
-	if (result == -1 || result != 2)
-		status = status_and_perror("write", 1);
+	if (msg_1 && !ft_write(2, msg_1))
+		status = 1;
+	// {
+	// 	result = write(2, msg_1, ft_strlen(msg_1));
+	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg_1))
+	// 		status = status_and_perror("write", 1);
+	// }
+	if (msg_2 && !ft_write(2, msg_2))
+		status = 1;
+	// {
+	// 	result = write(2, msg_2, ft_strlen(msg_2));
+	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg_2))
+	// 		status = status_and_perror("write", 1);
+	// }
+	// result = write(2, ": ", 2);
+	// if (result == -1 || result != 2)
+	// 	status = status_and_perror("write", 1);
 	perror("");
 	return (status);
 }
@@ -71,18 +74,22 @@ I need this to print on stderr and return 0
 */
 uint8_t	zero_and_printerr(const char *msg)
 {
-	ssize_t	result;
+	// ssize_t	result;
 
-	result = 0;
+	// result = 0;
 	if (msg)
-	{
-		write(2, msg, ft_strlen(msg));
-		if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
-			perror("write");
-		result = write(2, "\n", 1);
-		if (result == -1 || result != 1) 
-			perror("write");
-	}
+		ft_write(2, msg);
+	else
+		ft_write(2, "minishell: error");
+	ft_write(2, "\n");
+	// {
+	// 	write(2, msg, ft_strlen(msg));
+	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
+	// 		perror("write");
+	// 	result = write(2, "\n", 1);
+	// 	if (result == -1 || result != 1) 
+	// 		perror("write");
+	// }
 	return (0);
 }
 
@@ -91,17 +98,21 @@ I need this to print on stderr and return 0
 */
 bool	false_and_print(const char *msg)
 {
-	ssize_t	result;
+	// ssize_t	result;
 
-	result = 0;
+	// result = 0;
 	if (msg)
-	{
-		result = write(2, msg, ft_strlen(msg));
-		if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
-			perror("write");
-		result = write(2, "\n", 1);
-		if (result == -1 || result != 1) 
-			perror("write");
-	}
+		ft_write(2, msg);
+	else
+		ft_write(2, "minishell: error");
+	ft_write(2, "\n");
+	// {
+	// 	result = write(2, msg, ft_strlen(msg));
+	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
+	// 		perror("write");
+	// 	result = write(2, "\n", 1);
+	// 	if (result == -1 || result != 1) 
+	// 		perror("write");
+	// }
 	return (false);
 }

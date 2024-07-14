@@ -30,7 +30,7 @@ int	resolve_command_path(char **argv, char *path_env)
 	int			is_relative_path;
 
 	if (!find_path(argv, path_env))
-		return (print_error_status2(argv[0], " command not found", 127));
+		return (print_error_status2(argv[0], ": command not found", 127));
 	if (access(argv[0], F_OK) == -1)
 		return (status_perror2("minishell: ", argv[0], 127));
 	if (stat(argv[0], &statbuf))
