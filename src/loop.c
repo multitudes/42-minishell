@@ -172,7 +172,7 @@ int loop()
 			{
 				handle_history(data);
 				data->tokenlist = tokenizer(data->input);
-				if (data->tokenlist != NULL && set_up_heredocs(data))
+				if (data->tokenlist != NULL && syntax_check_and_heredoc(data))
 				{
 					data->ast = create_ast(data->tokenlist);
 					if (data->ast)

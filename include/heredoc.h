@@ -35,7 +35,7 @@ typedef struct s_heredoc
 extern "C" {
 # endif
 
-bool set_up_heredocs(t_data * data);
+bool syntax_check_and_heredoc(t_data * data);
 bool	contains_heredoc(t_list *tokenlist);
 bool	execute_heredoc(t_data *data);
 void	free_heredoc(t_heredoc *heredoc);

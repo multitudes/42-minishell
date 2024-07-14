@@ -122,7 +122,7 @@ uint8_t	zero_and_printerr(const char *msg)
 }
 
 /*
-Write "minishell: msg" to standard error and return boolian.
+Writes "minishell: msg" to standard error and return boolian.
 If msg is NULL, "minishell: error is printed."
 If write fails false is returned.
 */

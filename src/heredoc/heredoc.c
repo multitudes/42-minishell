@@ -183,24 +183,34 @@ bool execute_heredoc(t_data *data)
 Checks for heredoc token in tokenlist.
 CONSIDER TODO valid_syntax_and_heredoc()
 */
-bool    contains_heredoc(t_list *tokenlist)
+bool    contains_heredoc(t_list **tokenlist)
 {
     t_tokentype tokentype;
+    bool        contains_heredoc;
+    t_list      *tmp;
 
-    while (tokenlist)
+    contains_heredoc = false;
+    while (*tokenlist)
     {
-        tokentype = get_token_type(tokenlist);
+        tokentype = get_token_type(*tokenlist);
         if (is_heredoc_token(tokentype))
-            return (true);
-        tokenlist = tokenlist->next;
+            contains_heredoc = true;
+        else if (tokentype == COMMENT)
+        {
+            tmp = (*tokenlist)->prev;
+            ft_lstclear(tokenlist, free_tokennode);
+            if (tmp)
+                tmp->next = NULL;
+            break ;
+        }
+        *tokenlist = (*tokenlist)->next;
     }
-    return (false);
+    return (contains_heredoc);
 }
 
-bool set_up_heredocs(t_data *data)
+bool syntax_check_and_heredoc(t_data *data)
 {
-    if (contains_heredoc(data->tokenlist))
+    if (contains_heredoc(&(data->tokenlist)))
         return (execute_heredoc(data));
-    else
-        return (true);
+    return (true);
 }
