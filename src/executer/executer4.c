@@ -24,7 +24,8 @@ static void check_return(int new_fd, char *filename, uint8_t *status)
         *status = status_perror2("minishell: ", filename, 1);
 }
 
-static uint8_t dup2_by_redirect_type(t_tokentype type, char *filename, int *fd, uint8_t *status)
+static uint8_t dup2_by_redirect_type(t_tokentype type, \
+                char *filename, int *fd, uint8_t *status)
 {
     int new_fd;
 
@@ -34,7 +35,8 @@ static uint8_t dup2_by_redirect_type(t_tokentype type, char *filename, int *fd, 
         new_fd = dup2(*fd, STDOUT_FILENO);
     else if (type == REDIRECT_IN || type == DLESS || type == DLESSDASH)
         new_fd = dup2(*fd, STDIN_FILENO);
-    else if (type == REDIRECT_BOTH || type == REDIRECT_BOTH_APP || type == GREATAND)
+    else if (type == REDIRECT_BOTH || type == REDIRECT_BOTH_APP \
+            || type == GREATAND)
     {
         new_fd = dup2(*fd, STDOUT_FILENO);
         new_fd = dup2(*fd, STDERR_FILENO);
@@ -63,6 +65,7 @@ static int  open_fd_by_redirect_type(t_tokentype type, char *filename, uint8_t *
 /*
 Opens and duplicates file used for redirection.
 Deletes redirection and filename token.
+Deletes files that were created for heredocs.
 */
 uint8_t setup_redirect(t_list **tokenlist, t_tokentype type)
 {
@@ -108,7 +111,8 @@ static bool supported_redirect_token(t_tokentype type)
 
 /*
 Execute commands that contain basic redirection:
-'<', '>', '>>'
+'<', '>', '>>' and also heredocs << after preprocessing.
+Heredocs are handled similar to stdin redirection.
 */
 uint8_t	execute_redirection(t_ast_node **ast)
 {
@@ -147,6 +151,5 @@ uint8_t	execute_redirection(t_ast_node **ast)
         (*ast)->type = NODE_NULL;
     }
     debug("ast type after redirection: %i", (*ast)->type);
-	//execute_ast
     return (status);
 }
