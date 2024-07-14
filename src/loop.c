@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 20:30:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 21:28:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,9 +172,9 @@ int loop()
 			{
 				handle_history(data);
 				data->tokenlist = tokenizer(data->input);
-				if (data->tokenlist != NULL && syntax_check_and_heredoc(data))
+				if (syntax_check_and_heredoc(data) && data->tokenlist != NULL)
 				{
-					debug("tokenlist now first lex is %s", get_token_lexeme(data->tokenlist->content));
+					
 					data->ast = create_ast(data->tokenlist);
 					if (data->ast)
 					{
@@ -186,8 +186,6 @@ int loop()
 					else
 						data->exit_status = print_error_status("syntax parse error", 1);
 				}
-				else
-					data->exit_status = 2;
 			}
 			free((char *)(data->input));
 			debug("Back to loop()");
@@ -211,7 +209,7 @@ void	single_command_innerloop(t_data *data)
 {
 	sanitize_input(data->input);
 	data->tokenlist = tokenizer(data->input);
-	if (data->tokenlist != NULL)
+	if (syntax_check_and_heredoc(data) && data->tokenlist != NULL)
 	{
 		data->ast = create_ast(data->tokenlist);
 		if (data->ast)

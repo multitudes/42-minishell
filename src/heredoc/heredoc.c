@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/14 20:48:05 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 21:16:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,31 +191,30 @@ bool    contains_heredoc(t_list **tokenlist)
 
 	tmp = NULL;
     contains_heredoc = false;
-    while (*tokenlist)
+	t_list *curr = *tokenlist;
+    while (curr)
     {
-        tokentype = get_token_type(*tokenlist);
+        tokentype = get_token_type(curr);
         if (is_heredoc_token(tokentype))
             contains_heredoc = true;
         else if (tokentype == COMMENT)
         {
 			debug("comment token found");
-            tmp = (*tokenlist)->prev;
+            tmp = (curr)->prev;
+			ft_lstclear(&curr, free_tokennode);
+			debug("tokenlist is freed");
+			if (tmp)
+				tmp->next = NULL;
+			else
+				*tokenlist = NULL;
 			break ;
         }
-        *tokenlist = (*tokenlist)->next;
+        curr = curr->next;
     }
-	if (tmp)
-	{
-		debug("tmp is %s", get_token_lexeme(tmp));
-		ft_lstclear(tokenlist, free_tokennode);
-		debug("tokenlist is freed");
-		if (tmp)
-			tmp->next = NULL;
-	}
-	debug("tmp is %s", get_token_lexeme(tmp));
-	debug("head is %s", get_token_lexeme(get_head(tmp)));
-	*tokenlist = get_head(tmp);
-	debug("tokenlist head is %s", get_token_lexeme((*tokenlist)));
+	// debug("tmp is %s", get_token_lexeme(tmp));
+	// debug("head is %s", get_token_lexeme(get_head(tmp)));
+
+	// debug("tokenlist head is %s", get_token_lexeme((*tokenlist)));
     return (contains_heredoc);
 }
 
@@ -231,6 +230,12 @@ bool syntax_check_and_heredoc(t_data *data)
         return (execute_heredoc(data));
     }
     else
-        data->tokenlist = tokenlist;
-    return (true);
+	{
+		debug("no heredoc found");
+		debug("tokenlist head is %s", get_token_lexeme(tokenlist));
+		data->tokenlist = tokenlist;
+	}
+	debug("no heredoc found");
+
+	return (true);
 }
