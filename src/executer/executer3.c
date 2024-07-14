@@ -115,9 +115,7 @@ int	execute_list(t_ast_node *ast, t_data *data)
 	t_tokentype	tokentype;
 
 	debug("NODE_LIST || &&");
-	// restore_fds(data);
 	status = execute_ast(ast->left, data);
-	// restore_fds(data);
 	tokentype = ((t_token *)ast->tokenlist->content)->type;
 	if (status == 0 && tokentype == AND_IF)
 	{
@@ -136,13 +134,13 @@ int	execute_list(t_ast_node *ast, t_data *data)
 int	handle_first_child_process(t_data *data, t_ast_node *ast)
 {
 	if (close(data->pipe_fd[0]) == -1)
-		exit_and_print_err("minishell: error: 1st child close read end of pipe", 1);
+		perror_and_exit_with_status("child close read end of pipe", 1);
 	if (data->pipe_fd[1] != STDOUT_FILENO)
 	{
 		if (dup2(data->pipe_fd[1], STDOUT_FILENO) == -1)
-			exit_and_print_err("minishell: error: 1st child dup2 write end of pipe", 1);
+			perror_and_exit_with_status("child dup2 write end of pipe", 1);
 		if (close(data->pipe_fd[1]) == -1)
-			exit_and_print_err("minishell: error: 1st child close write end of pipe", 1);
+			perror_and_exit_with_status("child close write end of pipe", 1);
 	}
 	exit(execute_ast(ast->left, data));
 }
@@ -150,13 +148,13 @@ int	handle_first_child_process(t_data *data, t_ast_node *ast)
 int	handle_second_child_process(t_data *data, t_ast_node *ast)
 {
 	if (close(data->pipe_fd[1]) == -1)
-		exit_and_print_err("minishell: error: 2nd child close write end of the pipe", 1);
+		perror_and_exit_with_status("child close write end of pipe", 1);
 	if (data->pipe_fd[0] != STDIN_FILENO)
 	{
 		if (dup2(data->pipe_fd[0], STDIN_FILENO) == -1)
-			exit_and_print_err("minishell: error: 2nd child dup2 read end of pipe", 1);
+			perror_and_exit_with_status("child dup2 read end of pipe", 1);
 		if (close(data->pipe_fd[0]) == -1)
-			exit_and_print_err("minishell: error: 2nd child close read end of the pipe", 1);
+			perror_and_exit_with_status("child close read end of pipe", 1);
 	}
 	exit(execute_ast(ast->right, data));
 }

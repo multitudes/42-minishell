@@ -146,7 +146,8 @@ uint8_t	execute_echo_builtin(t_list *tokenlist)
 	status = 0;
 	new_line = 1;
 	tokenlist = tokenlist->next;
-	while (tokenlist && get_token_type(tokenlist) == FLAGS && allowed_flags(get_token_lexeme(tokenlist), "n"))
+	while (tokenlist && get_token_type(tokenlist) == FLAGS \
+					&& allowed_flags(get_token_lexeme(tokenlist), "n"))
 	{
 		new_line = 0;
 		tokenlist = tokenlist->next;

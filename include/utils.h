@@ -24,5 +24,6 @@ int		count_char_in_str(char *str, char c);
 void	replace_node_with_newlist(t_list **node, t_list *newlist);
 void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, t_list *new_tokenlist);
 bool	ft_write(int fd, const char *str);
+bool    write_data(int fd, const void *str, uint8_t *status);
 
 #endif  // UTILS_H_
