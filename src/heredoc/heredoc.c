@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/14 20:42:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 20:48:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,15 +200,18 @@ bool    contains_heredoc(t_list **tokenlist)
         {
 			debug("comment token found");
             tmp = (*tokenlist)->prev;
-			debug("tmp is %s", get_token_lexeme(tmp));
-            ft_lstclear(tokenlist, free_tokennode);
-			debug("tokenlist is freed");
-            if (tmp)
-                tmp->next = NULL;
-            break ;
+			break ;
         }
         *tokenlist = (*tokenlist)->next;
     }
+	if (tmp)
+	{
+		debug("tmp is %s", get_token_lexeme(tmp));
+		ft_lstclear(tokenlist, free_tokennode);
+		debug("tokenlist is freed");
+		if (tmp)
+			tmp->next = NULL;
+	}
 	debug("tmp is %s", get_token_lexeme(tmp));
 	debug("head is %s", get_token_lexeme(get_head(tmp)));
 	*tokenlist = get_head(tmp);
