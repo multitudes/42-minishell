@@ -107,12 +107,8 @@ Write to fd and update status in case of write failure.
 */
 bool	write_data(int fd, const void *str, uint8_t *status)
 {
-	ssize_t	result;
-
-	result = write(fd, str, ft_strlen(str));
-	if (result == -1 || result != (ssize_t)ft_strlen(str))
+	if (!ft_write(fd, str))
 	{
-		perror("write");
 		*status = EXIT_FAILURE;
 		return (false);
 	}
