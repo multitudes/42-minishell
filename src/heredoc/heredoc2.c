@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 02:19:34 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/06 18:03:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 20:02:42 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,17 +103,15 @@ Prompt for each delimiter and advancing to next heredoc/delimiter.
 static bool advance_to_final_delim(t_heredoc *heredoc, t_data *data)
 {
     int     i;
-    // char    *line;
 
     i = 0;
-	// set_up_std_signals2();
     debug("advance to final delim");
     while (i < heredoc->delim_count)
     {
         if (!read_heredoc(heredoc, data, i))
             return (false);
         i++;
-    }
+	}
     return (true);
 }
 

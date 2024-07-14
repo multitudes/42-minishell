@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 19:40:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 19:47:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_list	*tokenizer(const char *input)
 			continue ;
 		else if (!is_space(data.input[i]))
 			scanner_error(&data, "minishell: syntax error");
-		else// here I need to advance the pointer and insert a space true in the previous position
+		else
 			skip_space(data.tokenlist, data.input, &i);
 	}
 	if (data.scanner_error)
