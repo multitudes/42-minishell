@@ -332,19 +332,24 @@ void	expand_dollar(t_data *data, t_token *token)
 {
 	char	*var;
 
+	var = token->lexeme;
 	if (!token || !token->lexeme)
 		return ;
 	if (ft_strlen(token->lexeme) == 1 && token->lexeme[0] == '$')
-		token->type = EXPANDED;
-	else if (ft_strchr(token->lexeme, '$'))
 	{
-		var = replace_dollar_vars(data, token->lexeme);
-		free(token->lexeme);
-		token->lexeme = var;
 		token->type = EXPANDED;
+		return ;
 	}
+	else if (ft_strcmp(token->lexeme, "$0") == 0)
+		var = ft_strdup("splash");
+	else if (ft_strchr(token->lexeme, '$'))
+		var = replace_dollar_vars(data, token->lexeme);
+	free(token->lexeme);
+	token->lexeme = var;
+	token->type = EXPANDED;
 	debug("Expand dollar, new token: %s, type: %i", token->lexeme, token->type);
 }
+
 /*
 Expands $? to exit status
 */
@@ -423,14 +428,14 @@ void	execute_expansion_by_type(t_data *data, t_list **tokenlist, t_exp_flags *fl
 {
 	t_tokentype	type;
 
-	// debug("Check and execute expansion by type (token type: %s)", get_token_type(tokenlist));
+	debug("Check and execute expansion by type (token type: %i)", get_token_type(*tokenlist));
 	type = get_token_type(*tokenlist);
 	if (type == S_QUOTED_STRING)
 		expand_single_quotes(get_curr_token(*tokenlist));
 	else if (type == QUOTED_STRING)
 		expand_double_quotes(data, get_curr_token(*tokenlist));
 	else if (type == VAR_EXPANSION || type == DOLLAR \
-			|| type == DOLLAR_QUESTION)
+			|| type == DOLLAR_QUESTION || type == DOLLAR_DIGIT)
 		expand_dollar(data, get_curr_token(*tokenlist));
 	else if (ft_strchr(get_token_lexeme(*tokenlist), '~') \
 			&& type != QUOTE_EXPANDED)

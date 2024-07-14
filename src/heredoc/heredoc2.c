@@ -183,6 +183,6 @@ bool	process_heredoc(t_heredoc *heredoc, t_data *data)
 	}
     debug("True return to process heredoc");
 	free_heredoc(heredoc);
-    debug("Return to proecess heredoc after freeing");
+    debug("Return to process heredoc after freeing");
     return (true);
 }
