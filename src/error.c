@@ -86,9 +86,16 @@ uint8_t	perror_and_status2(const char *msg_1, const char *msg_2, uint8_t status)
 /*
 will exit the program with an error message
 */
-uint8_t	exit_and_print_err(const char *msg, uint8_t status)
+uint8_t	perror_and_exit_with_status(const char *msg, uint8_t status)
 {
-	perror(msg);
+	char	*perror_msg;
+
+	if (msg)
+		perror_msg = ft_strjoin("minishell: ", msg);
+	else
+		perror_msg = ft_strdup("minishell error");
+	perror(perror_msg);
+	free(perror_msg);
 	exit(status);
 }
 
