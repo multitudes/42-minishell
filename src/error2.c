@@ -49,18 +49,10 @@ Print error to standard error and return passed status.
 */
 uint8_t	print_error_status(const char *message, uint8_t status)
 {
-	// ssize_t	result;
-// 
 	if (message)
 	{
 		if (!ft_write(2, message) || !ft_write(2, "\n"))
 			return (1);
-		// result = write(2, message, ft_strlen(message));
-		// if (result == -1 || result != (ssize_t)ft_strlen(message)) 
-		// 	status = perror_and_status("write", 1);
-		// result = write(2, "\n", 1);
-		// if (result == -1 || result != 1) 
-		// 	status = perror_and_status("write", 1);
 	}
 	else
 	{
@@ -75,36 +67,18 @@ Print minishell error to standard error and return status.
 */
 uint8_t	print_minishell_error_status(const char *message, uint8_t status)
 {
-	// ssize_t	result;
-
-	// result = 0;
 	if (message)
 	{
 		if (!ft_write(2, "minishell: ") || !ft_write(2, message))
 			return (1);
 	}
-	// if (message)
-	// {
-	// 	result = write(2, "minishell: ", 12);
-	// 	if (result == -1 || result != 12) 
-	// 		status = perror_and_status("write", 1);
-	// 	result = write(2, message, ft_strlen(message));
-	// 	if (result == -1 || result != (ssize_t)ft_strlen(message)) 
-	// 		status = perror_and_status("write", 1);
-	// }
 	else
 	{
 		if (!ft_write(2, "minishell error"))
 			return (1);
-		// result = write(2, "minishell", 10);
-		// if (result == -1 || result != 10) 
-		// 	status = perror_and_status("write", 1);
 	}
 	if (!ft_write(2, "\n"))
 		return (1);
-	// result = write(2, "\n", 1);
-	// if (result == -1 || result != 1) 
-	// 	status = perror_and_status("write", 1);
 	return (status);
 }
 
