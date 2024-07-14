@@ -221,8 +221,16 @@ bool    contains_heredoc(t_list **tokenlist)
 
 bool syntax_check_and_heredoc(t_data *data)
 {
-	print_tokenlist(data->tokenlist);
-    if (contains_heredoc(&(data->tokenlist)))
+    t_list  *tokenlist;
+
+    tokenlist = data->tokenlist;
+    print_tokenlist(tokenlist);
+    if (contains_heredoc(&tokenlist))
+    {
+        data->tokenlist = tokenlist;
         return (execute_heredoc(data));
+    }
+    else
+        data->tokenlist = tokenlist;
     return (true);
 }
