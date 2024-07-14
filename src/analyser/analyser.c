@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 11:25:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 17:53:54 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -461,7 +461,9 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 			return ;
 		}
 		set_flags(tokenlist, &flags);
+		debug("lexeme: %s, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 		execute_expansion_by_type(data, &tokenlist, &flags);
+		debug("lexeme after expansion: %s, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 		if (token_followed_by_space(tokenlist))
 			reset_flags(&flags);
 		tokenlist = tokenlist->next;
@@ -500,7 +502,10 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	tokenlist = ast->tokenlist;
 	if (!tokenlist)
 		return ;
+	debug("First lexeme in tokenlist: -%s-, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 	expand_tokenlist(data, tokenlist);
+	
+	// debug("First lexeme in expanded tokenlist: -%s-, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 	while (tokenlist && tokenlist->next)
 	{
 		if ((!token_followed_by_space(tokenlist) \

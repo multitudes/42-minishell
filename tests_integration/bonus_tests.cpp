@@ -45,7 +45,133 @@ const char* test_and()
 
     debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "ls -lae\n", "output is not correct\n");
-	my_assert(exit_status == 0, "exit status is not 2\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+exit hello
+*/
+const char* test_and2() 
+{
+    fflush(stdout);
+
+	// make sure thet the file is created if not exists
+	createFileIfNotExists("a", "ls -la");
+
+    std::ostringstream result;
+	std::string arg = "(cat <a && echo e) | echo hello";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "hello\n", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+exit hello
+*/
+const char* test_and3() 
+{
+    fflush(stdout);
+
+	// make sure thet the file is created if not exists
+	createFileIfNotExists("a", "hello");
+
+    std::ostringstream result;
+	std::string arg = "cat <a";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "hello", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+exit hello
+*/
+const char* test_redir4() 
+{
+    fflush(stdout);
+
+	// make sure thet the file is created if not exists
+	createFileIfNotExists("a", "ls -la");
+	createFileIfNotExists("ab", "hello");
+
+    std::ostringstream result;
+	std::string arg = "cat ab > a && cat a";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "hello", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+
+/*
+exit hello
+*/
+const char* test_redir5() 
+{
+    fflush(stdout);
+
+	// make sure thet the file is created if not exists
+	createFileIfNotExists("a", "ls -la");
+	createFileIfNotExists("ab", "hello");
+	createFileIfNotExists("ab2", "dont care");
+    std::ostringstream result;
+	std::string arg = "cat ab > ab2 > a && cat a";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "hello", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
+
+/*
+file not found
+*/
+const char* test_redir6() 
+{
+    fflush(stdout);
+
+	// make sure thet the file is created if not exists
+	createFileIfNotExists("ab2", "dont care");
+
+	if (std::remove("ab2") != 0) {
+		perror("Error deleting file");
+	}
+    std::ostringstream result;
+	std::string arg = "cat < ab2";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
+	return NULL;
+}
+
+
+/*
+file not found
+*/
+const char* test_redir7() 
+{
+    fflush(stdout);
+
+	createFileIfNotExists("a", "ls -la");
+    
+	std::ostringstream result;
+	std::string arg = "cat a > b > c && cat c";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "ls -la\n", "output is not correct\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
 
@@ -56,7 +182,12 @@ const char *all_tests()
 	
 	// run the tests
 	run_test(test_and);
-
+	run_test(test_and2);
+	run_test(test_and3);
+	run_test(test_redir4);
+	run_test(test_redir5);
+	run_test(test_redir6);
+	
 
 	return NULL;
 }

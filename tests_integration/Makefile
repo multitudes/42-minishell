@@ -64,7 +64,7 @@ TESTS		=	$(patsubst %.cpp,%,$(TEST_SRCS))
 # the target build
 all: tests
 	
-tests: $(TESTS) runtests
+tests: $(TESTS) runtests 
 
 $(TESTS): $(SUT_OBJS) $(TEST_SRCS) $(SUT_HDRS)
 	@$(CXX) $(CFLAGS) $(CXXFLAGS) $(INCLUDES) $(SUT_OBJS) $@.cpp $(LDLIBS) -o $@
