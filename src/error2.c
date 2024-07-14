@@ -109,18 +109,49 @@ uint8_t	print_minishell_error_status(const char *message, uint8_t status)
 }
 
 /*
-Write to fd and update status in case of write failure.
+I need this to print on stderr and return 0
 */
-bool	write_data(int fd, const void *str, uint8_t *status)
+uint8_t	zero_and_printerr(const char *msg)
 {
-	ssize_t	result;
+	// ssize_t	result;
 
-	result = write(fd, str, ft_strlen(str));
-	if (result == -1 || result != (ssize_t)ft_strlen(str))
-	{
-		perror("write");
-		*status = EXIT_FAILURE;
-		return (false);
-	}
-	return (true);
+	// result = 0;
+	if (msg)
+		ft_write(2, msg);
+	else
+		ft_write(2, "minishell: error");
+	ft_write(2, "\n");
+	// {
+	// 	write(2, msg, ft_strlen(msg));
+	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
+	// 		perror("write");
+	// 	result = write(2, "\n", 1);
+	// 	if (result == -1 || result != 1) 
+	// 		perror("write");
+	// }
+	return (0);
+}
+
+/*
+I need this to print on stderr and return 0
+*/
+bool	false_and_print(const char *msg)
+{
+	// ssize_t	result;
+
+	// result = 0;
+	if (msg)
+		ft_write(2, msg);
+	else
+		ft_write(2, "minishell: error");
+	ft_write(2, "\n");
+	// {
+	// 	result = write(2, msg, ft_strlen(msg));
+	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
+	// 		perror("write");
+	// 	result = write(2, "\n", 1);
+	// 	if (result == -1 || result != 1) 
+	// 		perror("write");
+	// }
+	return (false);
 }

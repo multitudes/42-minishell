@@ -32,10 +32,9 @@ void	perror_minishell(const char *msg)
 }
 
 /*
-Write to perror in the format "minishell: msg" with msg and
-bool return value passed as arguments.
+Write to perror in the format "minishell: msg" and return boolian.
 */
-bool	perror_and_bool(const char *msg, bool return_value)
+bool	perror_and_bool(const char *msg, bool boolian)
 {
 	char	*perror_msg;
 
@@ -45,12 +44,12 @@ bool	perror_and_bool(const char *msg, bool return_value)
 		perror_msg = ft_strdup("minishell error");
 	perror(perror_msg);
 	free(perror_msg);
-	return (return_value);
+	return (boolian);
 }
 
 /*
-Write to perror in the format "minishell: msg" with msg and
-status return value passed as arguments.
+Write to perror in the format "minishell: msg" and
+return status.
 */
 uint8_t	perror_and_status(const char *msg, uint8_t status)
 {
@@ -84,7 +83,8 @@ uint8_t	perror_and_status2(const char *msg_1, const char *msg_2, uint8_t status)
 }
 
 /*
-will exit the program with an error message
+"minishell: msg" to perror and exit with status.
+(used for child processes)
 */
 uint8_t	perror_and_exit_with_status(const char *msg, uint8_t status)
 {
@@ -97,52 +97,4 @@ uint8_t	perror_and_exit_with_status(const char *msg, uint8_t status)
 	perror(perror_msg);
 	free(perror_msg);
 	exit(status);
-}
-
-/*
-I need this to print on stderr and return 0
-*/
-uint8_t	zero_and_printerr(const char *msg)
-{
-	// ssize_t	result;
-
-	// result = 0;
-	if (msg)
-		ft_write(2, msg);
-	else
-		ft_write(2, "minishell: error");
-	ft_write(2, "\n");
-	// {
-	// 	write(2, msg, ft_strlen(msg));
-	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
-	// 		perror("write");
-	// 	result = write(2, "\n", 1);
-	// 	if (result == -1 || result != 1) 
-	// 		perror("write");
-	// }
-	return (0);
-}
-
-/*
-I need this to print on stderr and return 0
-*/
-bool	false_and_print(const char *msg)
-{
-	// ssize_t	result;
-
-	// result = 0;
-	if (msg)
-		ft_write(2, msg);
-	else
-		ft_write(2, "minishell: error");
-	ft_write(2, "\n");
-	// {
-	// 	result = write(2, msg, ft_strlen(msg));
-	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg)) 
-	// 		perror("write");
-	// 	result = write(2, "\n", 1);
-	// 	if (result == -1 || result != 1) 
-	// 		perror("write");
-	// }
-	return (false);
 }
