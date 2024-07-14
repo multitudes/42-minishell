@@ -996,7 +996,9 @@ const char* test_pipe3()
 	my_assert(exit_status == 127, "exit status is not 0\n");
 	return NULL;
 }
-	namespace fs = std::filesystem;
+
+namespace fs = std::filesystem;
+
 const char* test_resolve_path_func() 
 {
 	fflush(stdout);
@@ -1011,9 +1013,6 @@ const char* test_resolve_path_func()
 		perror("getcwd() error");
 		return "getcwd() error";
 	}
-
-
-
 
 	bool created = fs::create_directory("abc");
 	if (created) {
@@ -1066,7 +1065,39 @@ const char* test_resolve_path_func()
 	return NULL;
 }
 
+const char* test_dollardigit() 
+{
+	fflush(stdout);
 
+	std::ostringstream result;
+	setenv("var", "$0", 1);
+	std::string arg = "echo $var";	
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "splash\n", "output is not correct test_dollardigit\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	fflush(stdout);
+	result.str("");
+	arg = "echo $1";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "\n", "output is not correct test_dollardigit\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	result.str("");
+	arg = "echo $1 && echo $2 && echo $3 && echo $4 && echo $5 && echo $6 && echo $7 && echo $8 && echo $9";	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "\n\n\n\n\n\n\n\n\n", "output is not correct test_dollardigit \n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	result.str("");
+	arg = "echo $11 && echo $22 && echo $33 && echo $44 && echo $55 && echo $66 && echo $77 && echo $88 && echo $99";	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "1\n2\n3\n4\n5\n6\n7\n8\n9\n", "output is not correct test_dollardigit \n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	return NULL;
+}
 
 
 const char *all_tests()
@@ -1132,6 +1163,8 @@ const char *all_tests()
 	run_test(test_pipe3);
 
 	run_test(test_resolve_path_func);
+
+	run_test(test_dollardigit);
 
 
 	return NULL;
