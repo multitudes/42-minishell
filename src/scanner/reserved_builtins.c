@@ -6,13 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:40:02 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 20:37:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 19:42:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 #include "libft.h"
-
 
 /*
  mh.. just checked again in the bash and maybe the function below is not 
