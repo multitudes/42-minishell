@@ -115,6 +115,7 @@ static bool process_delim_quotes(t_heredoc *heredoc)
 
 /*
 Set up heredoc(s). Up to 20 heredocs/delimiters are supported.
+TODO Add syntax check on tokenlist.
 */
 static bool init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
 {
