@@ -76,7 +76,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 			argv = argv_awk;
 		}
 		execve(argv[0], argv, (char **)data->env_arr->contents);
-		status = status_perror2("minishell: ", argv[0], 126);
+		status = perror_and_status(argv[0], 126);
 		exit(status);
 	}
 	else if (pid == -1)

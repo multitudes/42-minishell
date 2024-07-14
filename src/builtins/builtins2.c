@@ -51,7 +51,7 @@ uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 			}
 		}
 		else if (*lexeme && chdir(get_token_lexeme(tokenlist)))
-            return (status_perror2("minishell: cd: ", get_token_lexeme(tokenlist), 1));
+            return (perror_and_status2("cd: ", get_token_lexeme(tokenlist), 1));
     }
     else // no args
 	{
