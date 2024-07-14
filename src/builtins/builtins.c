@@ -193,13 +193,11 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 	uint8_t	status;
 	char	*key;
 	char	*value;
-	char	*err_msg;
 
 	debug("export builtin");
 	status = 0;
-	// print_env(env_arr);
 	tokenlist = tokenlist->next;
-	if (!tokenlist) // || !get_token_lexeme(tokenlist))
+	if (!tokenlist)
 		return (print_env_export(env_arr));
 	while (tokenlist)
 	{
@@ -212,32 +210,16 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		value = get_var_value(get_token_lexeme(tokenlist));
 		debug("Key: %s, Value: %s", key, value);
 		if (no_valid_identifier(key))
-		{
-			// TODO instead the str3join do maybe a variadic func?
-			err_msg = ft_strjoin3("export `", get_token_lexeme(tokenlist), "': not a valid identifier");
-			status = stderr_and_status(err_msg, 1);
-			free(err_msg);
-		}
+			status = stderr_and_status3("export `", get_token_lexeme(tokenlist), "': not a valid identifier", 1);
 		else if (read_only_variable(key))
-		{
-			err_msg = ft_strjoin3("export: ", key, ": readonly variable");
-			status = stderr_and_status(err_msg, 1);
-			free(err_msg);
-		}
+			status = stderr_and_status3("export: ", key, ": readonly variable", 1);
 		else if (key && value)
 		{
 			if (!update_env(env_arr, key, value))
-			{
-				err_msg = ft_strjoin3("export: ", value, ": adding to environment failed");
-				stderr_and_status(err_msg, 0);
-				free(err_msg);
-			}
+				stderr_and_status3("export: ", value, ": adding to environment failed", 0);
 		}
 		free(key);
 		free(value);
-		// if VAR wigh '=' and nothing else, update VAR if it already exists, else add as VAR=
-		// else update value if key exists
-		//else add argument as new entry in env arr
 		tokenlist = tokenlist->next;
 	}
 	return (status);
@@ -265,11 +247,9 @@ Do we only work with our local environmental variables or also those of the syst
 uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	uint8_t	status;
-	char	*err_msg;
 	char	*lexeme;
 
 	status = 0;
-	err_msg = NULL;
 	debug("unset builtin");
 	tokenlist = tokenlist->next;
 	if (!tokenlist)
@@ -280,11 +260,7 @@ uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 		if (ft_strchr(lexeme, '='))
 			;
 		else if (read_only_variable(lexeme))
-		{
-			err_msg = ft_strjoin3("unset: ", lexeme, ": cannot unset: readonly variable");
-			status = stderr_and_status(err_msg, 1);
-			free(err_msg);
-		}
+			status = stderr_and_status3("unset: ", lexeme, ": cannot unset: readonly variable", 1);
 		else if (lexeme != NULL && ft_strlen(lexeme) != 0)
 			status = delete_env_entry(env_arr, lexeme);
 		else
@@ -353,29 +329,20 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 {
 	uint8_t	status;
 	char	*lexeme;
-	char	*message;
 
 	t_list *head = tokenlist;
 	debug("exit builtin %s =============", get_token_lexeme(tokenlist));
-
 	tokenlist = tokenlist->next;
-	// merge in case I have a minus token
 	merge_sign_token(&tokenlist);
 	head->next = tokenlist;
 	lexeme = get_token_lexeme(tokenlist);
-	// check if I have more than three token when a minus token is there
 	if (lexeme && ft_isnumstring(lexeme) && tokenlist->next)
 		return (stderr_and_status("exit: too many arguments", 1));
-	// restore_fds(data);
 	write(1, "exit\n", 5);
 	if (lexeme && ft_isnumstring(lexeme))
 		status = (unsigned int)ft_atoi(lexeme) % 256;
 	else if (lexeme && !ft_isnumstring(lexeme))
-	{
-		message = ft_strjoin3("exit: ", lexeme, ": numeric argument required");
-		status = stderr_and_status(message, 2);
-		free(message);
-	}
+		status = stderr_and_status3("exit: ", lexeme, ": numeric argument required", 2);
 	else
 		status = data->exit_status;
 	free_ast(&(data->ast));
