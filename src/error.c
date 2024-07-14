@@ -20,17 +20,17 @@
 Writes "minishell: msg" to perror.
 If msg argument is NULL, "minishell error" is passed to perror.
 */
-void	perror_minishell(const char *msg)
-{
-	char	*perror_msg;
+// void	perror_minishell(const char *msg)
+// {
+// 	char	*perror_msg;
 
-	if (msg)
-		perror_msg = ft_strjoin("minishell: ", msg);
-	else
-		perror_msg = ft_strdup("minishell error");
-	perror(perror_msg);
-	free(perror_msg);
-}
+// 	if (msg)
+// 		perror_msg = ft_strjoin("minishell: ", msg);
+// 	else
+// 		perror_msg = ft_strdup("minishell error");
+// 	perror(perror_msg);
+// 	free(perror_msg);
+// }
 
 /*
 Writes "minishell: msg" to perror and returns boolian.

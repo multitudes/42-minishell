@@ -95,7 +95,7 @@ uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 		return (status);
 	getcwd = execute_getcwd(dir);
 	if (!getoldcwd || !getcwd)
-		perror_minishell("getcwd");
+		perror_and_null("getcwd");
 	else if (!update_env(env_arr, "PWD", dir) || !update_env(env_arr, "OLDPWD", old_dir))
 		stderr_and_status("cd: env update failed", 0);
 	return (status);
