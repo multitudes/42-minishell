@@ -104,9 +104,9 @@ Print minishell error to standard error and return status.
 */
 uint8_t	print_minishell_error_status(const char *message, uint8_t status)
 {
-	ssize_t	result;
+	// ssize_t	result;
 
-	result = 0;
+	// result = 0;
 	if (message)
 	{
 		if (!ft_write(2, "minishell: ") || !ft_write(2, message))
