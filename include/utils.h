@@ -23,6 +23,6 @@ char	*ft_strjoin3(const char *s1, const char *s2, const char *s3);
 int		count_char_in_str(char *str, char c);
 void	replace_node_with_newlist(t_list **node, t_list *newlist);
 void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, t_list *new_tokenlist);
-bool	ft_write(int fd, char *str);
+bool	ft_write(int fd, const char *str);
 
 #endif  // UTILS_H_
