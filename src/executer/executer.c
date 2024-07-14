@@ -21,7 +21,7 @@
 #include "fd.h"
 
 /*
-posix compliant use of the environ variable but wecan discuss this
+posix compliant use of the environ variable
 */
 extern char	**environ;
 
@@ -73,8 +73,10 @@ void	update_dollar_underscore(t_darray *env_arr, t_list *tokenlist)
 
 	if (count_tokens(tokenlist) == 1)
 	{
-		cmd = create_path(get_token_lexeme(tokenlist), mini_get_env(env_arr, "PATH"));
-		if (cmd == NULL || (ft_strncmp(get_token_lexeme(tokenlist), "env", 3) == 0))
+		cmd = create_path(get_token_lexeme(tokenlist), \
+							mini_get_env(env_arr, "PATH"));
+		if (cmd == NULL \
+			|| (ft_strncmp(get_token_lexeme(tokenlist), "env", 3) == 0))
 		{
 			if (cmd != NULL)
 				free(cmd);
@@ -88,13 +90,13 @@ void	update_dollar_underscore(t_darray *env_arr, t_list *tokenlist)
 	else 
 	{
 		last = ft_lstlast(tokenlist);
-		debug("last token to be added in $_: %s", ((t_token *)last->content)->lexeme);
-		if (update_env(env_arr, "_", ((t_token *)last->content)->lexeme) == FALSE)
+		debug("last token to be added in $_: %s", \
+				((t_token *)last->content)->lexeme);
+		if (update_env(env_arr, "_", \
+			((t_token *)last->content)->lexeme) == FALSE)
 			perror("in update_env for _ ");
 	}	
 }
-
-
 
 /*
 Traverse the ast and execute the commands node by node 
@@ -122,18 +124,12 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 			status = execute_pipeline(ast, data);
 		else if (contains_redirection(ast->tokenlist))
 		{
-			// debug("contains redirection (check)");
 			save_fds(data);
-			status = execute_redirection(&ast); // double pointer should not be needed here.
+			status = execute_redirection(&ast);
 			debug("Status after execute redirection: %i", status);
 			if (status == 0)
 				continue ;
 		}
-		// else if (is_heredoc(ast->tokenlist))
-		// {
-		// 	debug("is heredoc"); // TODO look for updating $_ somewhere
-		// 	status = execute_heredoc(ast, data);
-		// }
 		else if (ast->type == NODE_BUILTIN)
 		{	
 			update_dollar_underscore(data->env_arr, ast->tokenlist);
