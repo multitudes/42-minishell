@@ -447,10 +447,14 @@ void	execute_expansion_by_type(t_data *data, t_list **tokenlist, t_exp_flags *fl
 /*
 Identify if and which expansion needed and call the appropriate expansion function.
 */
-void	expand_tokenlist(t_data *data, t_list *tokenlist)
+void	expand_tokenlist(t_data *data, t_ast_node *ast)
 {
 	t_exp_flags	flags;
+	int			count;
+	t_list		*tokenlist;
 
+	count = 0;
+	tokenlist = ast->tokenlist;
 	reset_flags(&flags);
 	while (tokenlist)
 	{
@@ -463,10 +467,13 @@ void	expand_tokenlist(t_data *data, t_list *tokenlist)
 		set_flags(tokenlist, &flags);
 		debug("lexeme: %s, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 		execute_expansion_by_type(data, &tokenlist, &flags);
+		if (count == 0)
+			ast->tokenlist = tokenlist;
 		debug("lexeme after expansion: %s, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 		if (token_followed_by_space(tokenlist))
 			reset_flags(&flags);
 		tokenlist = tokenlist->next;
+		count++;
 	}
 }
 
@@ -503,8 +510,8 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	if (!tokenlist)
 		return ;
 	debug("First lexeme in tokenlist: -%s-, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
-	expand_tokenlist(data, tokenlist);
-	
+	expand_tokenlist(data, ast);
+	tokenlist = ast->tokenlist;
 	// debug("First lexeme in expanded tokenlist: -%s-, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 	while (tokenlist && tokenlist->next)
 	{
