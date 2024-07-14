@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:03:58 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 17:31:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 21:51:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,9 @@ void	print_tokenlist(t_list *tokenlist)
 	while (current != NULL)
 	{
 		token = (t_token *)(current)->content;
-		printf("-%s- ", token->lexeme);
+		debug("-%s- ", token->lexeme);
 		current = current->next;
 	}
-	printf("\n");
 	return ;
 }
 
