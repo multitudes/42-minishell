@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 19:40:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,6 @@
 #include "debug.h"
 #include "utils.h"
 #include "parser.h"
-
-//peek(data.input + i, "#", FUZZY))
-int skip_space(t_list *tokenlist, const char* input, int *i)
-{
-	debug("skip_space");
-	t_list	*last;
-	t_token	*lasttok;
-
- 	last = ft_lstlast(tokenlist);
-	if (*i > 0 && last)
-	{
-		lasttok = get_curr_token(last);
-		lasttok->folldbyspace = true;
-	}
-	while (is_space(input[*i]))
-		advance(i);
-	return (1);
-}
 
 /*
 scanning function
@@ -69,64 +51,22 @@ t_list	*tokenizer(const char *input)
 	return (data.tokenlist);
 }
 
-/*
-Function tokenizes $-indicated variables,
-all preceding and subsequent characters are returned
-as non-interpreted tokens of type WORD.
-Function enables expansion of '"'-delimited strings.
-*/
-t_list	*string_tokenizer(const char *input)
+//peek(data.input + i, "#", FUZZY))
+int skip_space(t_list *tokenlist, const char* input, int *i)
 {
-	int			i;
-	int			start;
-	char		*temp_lexeme;
-	t_mini_data	data;
+	debug("skip_space");
+	t_list	*last;
+	t_token	*lasttok;
 
-	i = 0;
-	start = 0;
-	if (!init_scanner_data(&data, input))
-		return (NULL);
-	while (i < (int)ft_strlen(data.input) && data.scanner_error == 0)
+ 	last = ft_lstlast(tokenlist);
+	if (*i > 0 && last)
 	{
-		if (peek(data.input + i, "$", FUZZY))
-		{
-			if (i > start)
-			{
-				temp_lexeme = ft_strndup(data.input + start, i - start);
-				if (temp_lexeme)
-					add_token(&data, &start, temp_lexeme, WORD);
-				else
-					scanner_error(&data, "minishell: error: malloc token creation");
-				free(temp_lexeme);
-			}
-			if (is_a_dollar_exp(&data, &i))
-			{
-				start = i;
-				continue ;
-			}
-		}
-		if ((data.input)[i + 1] == '\0')
-		{
-			if (i > start)
-			{
-				temp_lexeme = ft_strndup(data.input + start, i - start + 1);
-				if (temp_lexeme)
-					add_token(&data, &start, temp_lexeme, WORD);
-				else
-					scanner_error(&data, "minishell: error: malloc token creation");//change error message? perror?
-				free(temp_lexeme);
-			}
-			i++;
-		}
-		else
-			i++;
+		lasttok = get_curr_token(last);
+		lasttok->folldbyspace = true;
 	}
-	if (data.scanner_error)
-	{
-		ft_lstclear(&data.tokenlist, free_tokennode);
-		return (NULL);
-	}
-	return (data.tokenlist);
+	while (is_space(input[*i]))
+		advance(i);
+	return (1);
 }
 
 /*
