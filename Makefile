@@ -27,7 +27,7 @@ scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scann
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/token_functions2.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
 scanner/token_operators.c scanner/history_tokens.c scanner/token_blocks.c scanner/token_blocks2.c \
-scanner/redirection_tokens.c environment/environment.c environment/environment2.c \
+scanner/redirection_tokens.c scanner/redirection_tokens2.c environment/environment.c environment/environment2.c \
 parser/parser.c parser/parser2.c parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c parser/parser_utils4.c \
 analyser/analyser.c analyser/analyser2.c utils/utils.c utils/utils2.c globbing/globbing.c globbing/globbing1.c \
 error.c error2.c darray/darray.c darray/darray2.c darray/darray3.c \
