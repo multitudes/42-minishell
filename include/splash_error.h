@@ -29,7 +29,8 @@ uint8_t	print_error_status(const char *message, uint8_t status);
 uint8_t	print_minishell_error_status(const char *message, uint8_t status);
 uint8_t	zero_and_printerr(const char *msg);
 void	*null_on_err(const char *message);
-bool	false_and_perr(const char *msg);
+void	perror_minishell(char *msg);
+bool	perror_and_bool(const char *msg, bool return_value);
 bool	false_and_print(const char *msg);
 uint8_t	print_error_status2(const char *message, const char *message2, \
 							uint8_t status);

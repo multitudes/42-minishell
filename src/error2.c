@@ -14,14 +14,7 @@
 #include "utils.h"
 #include <libft.h>
 
-/*
-I need this to print on stderr and return 0
-*/
-bool	false_and_perr(const char *msg)
-{
-	perror(msg);
-	return (false);
-}
+
 
 /*
 I sometimes need to return NULL on error

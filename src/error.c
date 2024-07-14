@@ -17,6 +17,38 @@
 #include <stdbool.h>
 
 /*
+Prepends "minishell: " to msg before calling perror.
+*/
+void	perror_minishell(char *msg)
+{
+	char	*perror_msg;
+
+	if (msg)
+		perror_msg = ft_strjoin("minishell: ", msg);
+	else
+		perror_msg = ft_strdup("minishell error");
+	perror(msg);
+	free(perror_msg);
+}
+
+/*
+Write to perror in the format "minishell: msg" with msg and
+bool return value passed as arguments.
+*/
+bool	perror_and_bool(const char *msg, bool return_value)
+{
+	char	*perror_msg;
+
+	if (msg)
+		perror_msg = ft_strjoin("minishell: ", msg);
+	else
+		perror_msg = ft_strdup("minishell error");
+	perror(msg);
+	free(perror_msg);
+	return (return_value);
+}
+
+/*
 Used to return from the program with an error message passing
 the exit error code. It is used in the executer and the parser.
 I dont need to pass the data struct because when used in the child 

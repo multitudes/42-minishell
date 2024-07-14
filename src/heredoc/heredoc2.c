@@ -85,7 +85,7 @@ static bool read_heredoc(t_heredoc *heredoc, t_data *data, int i)
     debug("Filename used for heredoc: %s", heredoc->file[i]);
     temp_fd = open(heredoc->file[i], O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (temp_fd < 0)
-        return (false_and_perr("minishell: setup heredoc"));
+        return (perror_and_bool("setup heredoc", false));
     line = readline("> ");
     while (line && ft_strcmp(heredoc->delim[i], line))
     {
