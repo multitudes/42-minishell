@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 19:47:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 20:03:25 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,7 @@ t_list	*tokenizer(const char *input)
 		return (NULL);
 	while (i < (int)ft_strlen(data.input) && !data.scanner_error)
 	{
-		if (peek(data.input + i, "#", FUZZY))
-			break ;
-		else if (got_tokens(&data, &i))
+		if (got_tokens(&data, &i))
 			continue ;
 		else if (!is_space(data.input[i]))
 			scanner_error(&data, "minishell: syntax error");
