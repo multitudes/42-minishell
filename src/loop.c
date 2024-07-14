@@ -49,7 +49,7 @@ void	free_data(t_data **data)
 		return ;
 	debug("freeing env darray");
 	darray_clear_destroy((*data)->env_arr);
-	free((*data)->homepath);
+	free((void *)((*data)->homepath));
 	(*data)->homepath = NULL;
 	free(*data);
 	*data = NULL;
