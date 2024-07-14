@@ -113,6 +113,7 @@ static bool advance_to_final_delim(t_heredoc *heredoc, t_data *data)
         if (!read_heredoc(heredoc, data, i))
             return (false);
         i++;
+    }
     return (true);
 }
 
