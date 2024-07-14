@@ -397,12 +397,12 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		return ;
 	unquoted_lexeme = ft_strtrim(token->lexeme, "\""); // this does not behave well, when we have strings like "\"djklfjsdl\"" or ""dkldfj" as escape characters and unclosed quotes are not handled ;
 	free(token->lexeme);
-	token->lexeme = ft_strdup("");
 	if (!ft_strchr(unquoted_lexeme, '$'))
 	{
 		token->lexeme = unquoted_lexeme;
 		return ;
 	}
+	token->lexeme = ft_strdup("");
 	string_tokens = tokenizer(unquoted_lexeme);
 	free(unquoted_lexeme);
 	token_sanitization(string_tokens);
