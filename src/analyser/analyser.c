@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 17:53:54 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 22:01:41 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -421,7 +421,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	}
 	ft_lstclear(&ptr_tokenlist, free_tokennode);
 	token->type = QUOTE_EXPANDED;
-	debug("Double quotes expanded token: %s, type: %i", token->lexeme, token->type);
+	debug("Double quotes expanded token: -%s-, type: %i", token->lexeme, token->type);
 }
 
 void	execute_expansion_by_type(t_data *data, t_list **tokenlist, t_exp_flags *flags)

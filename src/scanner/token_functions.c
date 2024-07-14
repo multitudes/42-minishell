@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 20:34:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 22:20:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i, \
 		return (NULL);
 	token->type = type;
 	token->folldbyspace = folldbyspace;
+	token->howmany = 0;
 	token->lexeme = return_lexeme_malloc(lexeme);
 	*i = *i + ft_strlen(token->lexeme);
 	debug("token created type %d -%s-", token->type, token->lexeme);

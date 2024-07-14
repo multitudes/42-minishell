@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 20:03:25 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 22:21:59 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ or redirections like
 t_list	*tokenizer(const char *input)
 {
 	int			i;
-
 	t_mini_data	data;
 
 	i = 0;
@@ -61,6 +60,7 @@ int skip_space(t_list *tokenlist, const char* input, int *i)
 	{
 		lasttok = get_curr_token(last);
 		lasttok->folldbyspace = true;
+		lasttok->howmany += 1;
 	}
 	while (is_space(input[*i]))
 		advance(i);

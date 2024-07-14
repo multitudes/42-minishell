@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 20:04:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 22:20:44 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,7 @@ typedef struct s_token
 	t_tokentype			type;
 	char				*lexeme;
 	bool				folldbyspace;
+	int 				howmany;	
 }						t_token;
 
 // for testing - leave here

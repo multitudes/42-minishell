@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:47:55 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 19:00:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 22:09:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ bool	add_here_and_delim(t_mini_data *data, int *i)
 	add_token(data, i, "<<", DLESS);
 	while (data->input[*i] && is_space(data->input[*i]))
 		advance(i);
-	if (data->input[*i] == '\0' || is_delimiter(data->input[*i]))
-		return (scanner_error(data, "minishell: syntax error"));
+	// if (data->input[*i] == '\0' || is_delimiter(data->input[*i]))
+	// 	return (scanner_error(data, "minishell: syntax error"));
 	start = *i;
 	while ((data->input + *i) && !is_delimiter(data->input[*i]))
 		advance(i);
