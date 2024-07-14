@@ -139,13 +139,16 @@ void	replace_node_with_newlist(t_list **node, t_list *newlist)
 /*
 wrapper for the system write function to simplify syntax
 and perform write return value checking.
-Returns false if write call returns error.
+Returns FALSE if write call returns error.
+Returns TRUE if empty string is passed as argument so that !
 */
 bool	ft_write(int fd, const char *str)
 {
 	ssize_t	write_return;
 
 	write_return = 0;
+	if (!str)
+		return (true);
 	write_return = write(fd, str, ft_strlen(str));
 	if (write_return == -1 || write_return != (ssize_t)ft_strlen(str))
 	{
