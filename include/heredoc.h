@@ -36,7 +36,7 @@ extern "C" {
 # endif
 
 bool syntax_check_and_heredoc(t_data * data);
-bool	contains_heredoc(t_list *tokenlist);
+bool	contains_heredoc(t_list **tokenlist);
 bool	execute_heredoc(t_data *data);
 void	free_heredoc(t_heredoc *heredoc);
 void	set_up_heredoc_signals(void);
