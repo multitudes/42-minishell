@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:43:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:59:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 20:15:41 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ bool	is_a_control_operator(t_mini_data *data, int *i)
 		add_token(data, i, ";&", SEMI_AND);
 	else if (peek(data->input + *i, "|", FUZZY))
 		add_token(data, i, "|", PIPE);
+	else if (peek(data->input + *i, "#", FUZZY))
+		add_token(data, i, "#", COMMENT);	
 	else
 		return (false);
 	return (true);

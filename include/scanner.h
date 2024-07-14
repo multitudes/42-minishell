@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 19:33:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 20:04:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ typedef enum e_tokentype {
 	AND_IF,
 	OR_IF,
 	EXPRESSION,
+	COMMENT,
 	COM_EXPANSION,
 	VAR_EXPANSION,
 	EXPR_EXPANSION,
