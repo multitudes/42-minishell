@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/14 18:40:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 20:42:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,7 @@ bool    contains_heredoc(t_list **tokenlist)
     bool        contains_heredoc;
     t_list      *tmp;
 
+	tmp = NULL;
     contains_heredoc = false;
     while (*tokenlist)
     {
@@ -197,19 +198,27 @@ bool    contains_heredoc(t_list **tokenlist)
             contains_heredoc = true;
         else if (tokentype == COMMENT)
         {
+			debug("comment token found");
             tmp = (*tokenlist)->prev;
+			debug("tmp is %s", get_token_lexeme(tmp));
             ft_lstclear(tokenlist, free_tokennode);
+			debug("tokenlist is freed");
             if (tmp)
                 tmp->next = NULL;
             break ;
         }
         *tokenlist = (*tokenlist)->next;
     }
+	debug("tmp is %s", get_token_lexeme(tmp));
+	debug("head is %s", get_token_lexeme(get_head(tmp)));
+	*tokenlist = get_head(tmp);
+	debug("tokenlist head is %s", get_token_lexeme((*tokenlist)));
     return (contains_heredoc);
 }
 
 bool syntax_check_and_heredoc(t_data *data)
 {
+	print_tokenlist(data->tokenlist);
     if (contains_heredoc(&(data->tokenlist)))
         return (execute_heredoc(data));
     return (true);

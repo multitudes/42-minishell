@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 17:56:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 20:30:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,7 @@ int loop()
 				data->tokenlist = tokenizer(data->input);
 				if (data->tokenlist != NULL && syntax_check_and_heredoc(data))
 				{
+					debug("tokenlist now first lex is %s", get_token_lexeme(data->tokenlist->content));
 					data->ast = create_ast(data->tokenlist);
 					if (data->ast)
 					{
