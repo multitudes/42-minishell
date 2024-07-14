@@ -56,7 +56,7 @@ bool	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 	{
 		gl.full_path = ft_strjoin3(gl.cwd, "/", gl.dir_entry->d_name);
 		if (!gl.full_path)
-			result = false_and_print("strjoin3");
+			result = stderr_and_bool("strjoin3 malloc", false);
 		if (stat(gl.full_path, &gl.path_stat) == 0)
 		{
 			if (S_ISREG(gl.path_stat.st_mode))

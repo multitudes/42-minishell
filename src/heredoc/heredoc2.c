@@ -55,23 +55,6 @@ void    free_heredoc(t_heredoc *heredoc)
 }
 
 /*
-Increases buffer for heredoc if addition of next line would surpass buffer size.
-*/
-// static bool increase_heredoc_size(t_heredoc *heredoc, int len)
-// {
-//     char    *new_buffer;
-
-//     heredoc->buffer_size = heredoc->buffer_size + len + HEREDOC_BUFFER;
-//     new_buffer = ft_calloc(heredoc->buffer_size, sizeof(char));
-//     if (!new_buffer)
-//         return(false_and_print("minishell: error: heredoc memory allocation"));
-//     ft_strlcpy(new_buffer, heredoc->buffer, heredoc->buffer_size);
-//     free(heredoc->buffer);
-//     heredoc->buffer = new_buffer;
-//     return (true);
-// }
-
-/*
 Read and save content of final heredoc.
  // add check for ()syntax errorTODO
 */
@@ -101,21 +84,6 @@ static bool read_heredoc(t_heredoc *heredoc, t_data *data, int i)
             free(line);
             return (false);
         }
-        // if (heredoc->heredoc_len + ft_strlen(line) + 1 >= heredoc->buffer_size)
-        // {
-        //     if (!increase_heredoc_size(heredoc, (int)ft_strlen(line)))
-        //     {
-        //         free(line);
-        //         return (false);
-        //     }
-        // }
-        // if (ft_strlen(line) > 0 && (heredoc->heredoc_len + ft_strlen(line) + 1 < heredoc->buffer_size))
-        // {
-        //     ft_strlcpy(heredoc->buffer + heredoc->heredoc_len, line, heredoc->buffer_size - heredoc->heredoc_len);
-        //     ft_strlcat(heredoc->buffer, "\n", heredoc->buffer_size);
-        //     heredoc->heredoc_len = heredoc->heredoc_len + ft_strlen(line) + 1;
-        // }
-
         free(line);
         if (g_signal == SIGINT)
             return (false);
@@ -123,7 +91,7 @@ static bool read_heredoc(t_heredoc *heredoc, t_data *data, int i)
         line = readline("> ");
     }
 	if (line == NULL)
-			ft_write(2, "minishell: warning: here-document delimited by end-of-file\n");
+		ft_write(2, "minishell: warning: here-document delimited by end-of-file\n");
     free(line);
     close(temp_fd);
     return (true);
@@ -145,19 +113,6 @@ static bool advance_to_final_delim(t_heredoc *heredoc, t_data *data)
         if (!read_heredoc(heredoc, data, i))
             return (false);
         i++;
-        // line = readline("> ");
-        // if (g_signal == SIGINT)
-        // {
-        //     free (line);
-        //     return (false);
-        // }
-        // debug("Difference between delimiter and line: %i", ft_strcmp(heredoc->delim[i], line));
-        // if (line == NULL || !ft_strcmp(heredoc->delim[i], line))
-        //     i++;
-		// if (line == NULL)
-		// 	write(2, "minishell: warning: here-document delimited by end-of-file\n", 60);
-        // free (line);
-    }
     return (true);
 }
 
@@ -168,12 +123,6 @@ gets saved and passed to stdin of any commands.
 bool	process_heredoc(t_heredoc *heredoc, t_data *data)
 {
     debug("Process heredoc");
-    // heredoc->buffer = ft_calloc(heredoc->buffer_size, sizeof(char));
-    // if (!heredoc->buffer)
-	// {
-	// 	free_heredoc(heredoc);
-    //     return(false_and_print("minishell: error: heredoc memory allocation"));
-	// }
     if (!advance_to_final_delim(heredoc, data))
 	{
         debug("False return to process heredoc");
