@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 18:40:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,15 +215,4 @@ bool set_up_heredocs(t_data *data)
         return (execute_heredoc(data));
     else
         return (true);
-    // t_list      *tokenlist;
-    // t_tokentype tokentype;
-
-    // tokenlist = data->tokenlist;
-    // while (tokenlist)
-    // {
-    //     tokentype = get_token_type(tokenlist);
-    //     if (is_heredoc_token(tokentype))
-    //         execute_heredoc(data);
-    //     tokenlist = tokenlist->next;
-    // }
 }

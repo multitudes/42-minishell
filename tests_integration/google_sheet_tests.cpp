@@ -931,7 +931,7 @@ const char* test_parsing12()
 	fflush(stdout);
 
 	std::ostringstream result;
-	std::string arg = "export \"test=var\"=helloworld && echo $test";	
+	std::string arg = "export test=var=helloworld && echo $test";	
 
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
@@ -1132,12 +1132,12 @@ const char *all_tests()
 	run_test(test_exit);
 	// run_test(test_exit2); //works n minishell
 	// run_test(test_exit3); // works in minishell
-	// run_test(test_exit4);
+	run_test(test_exit4);
 	// run_test(test_exit5); // not working because of quotes and popen probably
 
 	// run_test(test_export);
 	// run_test(test_export2);
-	//run_test(test_export3);
+	// run_test(test_export3);
 	// run_test(test_export4); // cant make it work under thuis config
 	// run_test(test_export5); // test returns 0 for unknown reason but minishell interactive is correct?
 	run_test(test_export6);
@@ -1155,7 +1155,7 @@ const char *all_tests()
 	// run_test(test_parsing9);
 	// run_test(test_parsing10);
 	run_test(test_parsing11);
-	// run_test(test_parsing12);
+	run_test(test_parsing12);
 
 	// run_test(test_pipe); // to difficult to test with popen and with pipes... skip
 
