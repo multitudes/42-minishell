@@ -31,8 +31,12 @@ int	copy_env_darray(t_darray **new_array, t_darray *source_arr)
 	{ 
 		env = ft_strdup(source_arr->contents[i++]);
 		if (!ft_strncmp(env, "_=", 2) || env == NULL)
+		{
+			free(env);
 			continue ;
-		else if (darray_push(*new_array, env) == -1 && darray_clear_destroy(*new_array))
+		}
+		else if (darray_push(*new_array, env) == -1 \
+					&& darray_clear_destroy(*new_array))
 			return (1);
 	}
 	darray_push(*new_array, NULL);
@@ -68,14 +72,16 @@ int		get_var_index(t_darray *env_arr, const char *key)
 	int		i;
 	char	*var;
 
-	// debug("get var index for key: %s and key length: %i", key, (int)ft_strlen(key));
+	// debug("get var index for key: %s and key length: %i", key, \
+				// (int)ft_strlen(key));
 	i = 0;
 	while (i < env_arr->end && i < env_arr->end - 1)
 	{
 		var = env_arr->contents[i];
 		if (!var)
 			;
-		else if (!ft_strncmp(var, key, ft_strlen(key)) && (var[ft_strlen(key)] == '='))
+		else if (!ft_strncmp(var, key, ft_strlen(key)) \
+					&& (var[ft_strlen(key)] == '='))
 			return (i);
 		i++;
 	}

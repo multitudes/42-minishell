@@ -56,8 +56,8 @@ int	ft_isascii(const int c)
 }
 
 /*
-This function joins three strings together. The first string should not be NULL
-but could be an ampty string.
+This function joins three strings together.
+The first string should not be NULL but could be an empty string.
 */
 char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 {
@@ -75,7 +75,7 @@ char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 }
 
 /*
-Counts the number of occurances of a char c in a string
+Counts the number of occurances of a char c in a string.
 */
 int	count_char_in_str(char *str, char c)
 {
@@ -91,4 +91,27 @@ int	count_char_in_str(char *str, char c)
 		i++;
 	}
 	return (count);
+}
+
+/*
+Returns true if all chars in str are an ascii digit.
+Initial char can be '+' or '-'.
+Returns falls if str is NULL.
+*/
+bool	ft_isnumstring(const char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str)
+		return (false);
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (false);
+		i++;
+	}
+	return (true);
 }

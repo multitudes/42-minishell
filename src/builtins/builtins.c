@@ -169,7 +169,7 @@ Executes 'export' builtin. No options interpreted.
 
 - when a string with newline characters is assigned to a variable in BASH
 (e.g. VAR="first\nsecond\nthird" - single or double quotes give the same result),
-and export, then `export` and `env` list the variable with displayed \n-characters, in env case without quotes, in export case with quotes
+and export, then `export` and `env` list the variable with displayed \n-characters, in env case without quotes, in export case with quotes and escape charaters
 but echo on the variable will actually execute the newlines
 
 - If no value is provided export does not assigne a value to `name` and simply displays it as `name` unless the variable already exists, then it is left unchanged
@@ -241,8 +241,8 @@ uint8_t	execute_pwd_builtin(void)
 }
 
 /*
-read-only environment variables cannot be unset. How do we manage this?
-Do we only work with our local environmental variables or also those of the system?
+Builtin function to unset variables.
+Checks for specific read-only variables, which cannot be unset.
 */
 uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 {
@@ -260,7 +260,8 @@ uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 		if (ft_strchr(lexeme, '='))
 			;
 		else if (read_only_variable(lexeme))
-			status = stderr_and_status3("unset: ", lexeme, ": cannot unset: readonly variable", 1);
+			status = stderr_and_status3("unset: ", lexeme, \
+									": cannot unset: readonly variable", 1);
 		else if (lexeme != NULL && ft_strlen(lexeme) != 0)
 			status = delete_env_entry(env_arr, lexeme);
 		else
@@ -301,12 +302,15 @@ void merge_sign_token(t_list **tokenlist)
 	old_lexeme = get_token_lexeme(*tokenlist);
 	if (!old_lexeme)
 		return ;
-	debug("merge_minus_token old lex %s and length %zu", old_lexeme, ft_strlen(old_lexeme));
-	if ((old_lexeme[0] == '-' || old_lexeme[0] == '+') && ft_strlen(old_lexeme) == 1)
+	debug("merge_minus_token old lex %s and length %zu", old_lexeme, \
+			ft_strlen(old_lexeme));
+	if ((old_lexeme[0] == '-' || old_lexeme[0] == '+') \
+		&& ft_strlen(old_lexeme) == 1)
 	{
 		sign = remove_sign_token(tokenlist);
 		old_lexeme = get_token_lexeme(*tokenlist);
-		debug("new tokenlist: %s > %s ", get_token_lexeme(*tokenlist), get_token_lexeme((*tokenlist)->next));
+		debug("new tokenlist: %s > %s ", get_token_lexeme(*tokenlist), \
+				get_token_lexeme((*tokenlist)->next));
 		if (sign)
 			new_lexeme = ft_strjoin("-", old_lexeme);	
 		else
@@ -342,7 +346,8 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	if (lexeme && ft_isnumstring(lexeme))
 		status = (unsigned int)ft_atoi(lexeme) % 256;
 	else if (lexeme && !ft_isnumstring(lexeme))
-		status = stderr_and_status3("exit: ", lexeme, ": numeric argument required", 2);
+		status = stderr_and_status3("exit: ", lexeme, \
+									": numeric argument required", 2);
 	else
 		status = data->exit_status;
 	free_ast(&(data->ast));
@@ -350,22 +355,4 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	free_data(&data);
 	free(data);
 	exit(status);
-}
-
-bool	ft_isnumstring(const char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str)
-		return (false);
-	if (str[i] == '-' || str[i] == '+')
-		i++;
-	while (str[i])
-	{
-		if (!ft_isdigit(str[i]))
-			return (false);
-		i++;
-	}
-	return (true);
 }
