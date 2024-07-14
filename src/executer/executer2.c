@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 20:25:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 20:34:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ void	check_for_spaces(t_list **tokenlist)
 		if (ft_strchr(lex, ' ') && get_token_type(*tokenlist) == EXPANDED)
 		{
 			new = tokenizer(lex);
-			replace_token_with_tokenlist(tokenlist, new);
+			replace_token_with_tokenlist(&head, tokenlist, new);
 		}
 		if (!(*tokenlist)->next)
 			break ;

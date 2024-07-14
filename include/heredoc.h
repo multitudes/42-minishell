@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 21:02:07 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/11 07:50:58 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 19:14:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,6 @@ typedef struct s_heredoc
 	char	*delim[20];
 	char	*file[20];
 	bool	expansion[20];
-	// char	*buffer;
-	// size_t	buffer_size;
-	// size_t	heredoc_len;
 }	t_heredoc;
 
 # ifdef __cplusplus
@@ -38,7 +35,7 @@ typedef struct s_heredoc
 extern "C" {
 # endif
 
-bool	set_up_heredocs(t_data *data);
+bool set_up_heredocs(t_data * data);
 bool	contains_heredoc(t_list *tokenlist);
 bool	execute_heredoc(t_data *data);
 void	free_heredoc(t_heredoc *heredoc);

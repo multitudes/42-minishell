@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 17:37:39 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/10 12:39:09 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 20:31:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,25 +37,25 @@
 util function to replace a token with a new 
 tokenlist
 */
-void	replace_token_with_tokenlist(t_list **tokenlist, t_list *new_tokenlist)
+void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, t_list *new_tokenlist)
 {
 	t_list	*next;
-	t_list	*head;
+	t_list	*prev;
 	t_list	*last;
-	t_list *current_pos;
+	t_list	*current_pos;
 
 	current_pos = *tokenlist;
     if (!tokenlist || !*tokenlist || !new_tokenlist) 
 		return;
 	next = (*tokenlist)->next;
-	head = (*tokenlist)->prev;
-	if (head)
+	prev = (*tokenlist)->prev;
+	if (prev)
 	{
-		head->next = new_tokenlist;
-		new_tokenlist->prev = head;
+		prev->next = new_tokenlist;
+		new_tokenlist->prev = prev;
 	}
 	else
-		head = new_tokenlist;
+		*head = new_tokenlist;
 	current_pos = new_tokenlist;
 	last = ft_lstlast(new_tokenlist);
 	last->next = next;

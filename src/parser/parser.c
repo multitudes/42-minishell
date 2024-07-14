@@ -6,19 +6,20 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 13:00:18 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 11:23:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
 /*
-Creates ast node(s) from tokens.
-Question: is tmp variable needed or could iteration be done directly on &input_tokens?
-
-introducing a new node type for the tree, t_ast_node.
-The tree will be composed of nodes, each node will have a type,
-a left and a right node, and a list of tokens as a t_list.
+ * Creates ast node(s) from tokens.
+ * Question: is tmp variable needed or could iteration be done directly 
+ * on &input_tokens?
+ *
+ * introducing a new node type for the tree, t_ast_node.
+ * The tree will be composed of nodes, each node will have a type,
+ * a left and a right node, and a list of tokens as a t_list.
 */
 t_ast_node	*create_ast(t_list *tokenlist)
 {

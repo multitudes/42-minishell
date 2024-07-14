@@ -6,34 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 14:01:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 20:17:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
-
-/*
-JUST a check for the type of token - not currently used!
-*/
-bool	is_redirection(t_list *input_tokens)
-{
-	t_list	*tmp;
-	t_token	*token;
-
-	tmp = input_tokens;
-	token = NULL;
-	if (input_tokens == NULL)
-		return (0);
-	while (tmp)
-	{
-		token = (t_token *)tmp->content;
-		if (token->type == REDIRECT_OUT || token->type == REDIRECT_IN || \
-		token->type == DGREAT || token->type == DLESS)
-			return (1);
-		tmp = tmp->next;
-	}
-	return (0);
-}
 
 /*
 when I extract tokens from a parenthesis or expression
@@ -69,15 +46,15 @@ bool	replace_expression_tokens(t_list **head, t_list **input_tokens)
 {
 	t_list	*expr_node;
 	t_list	*new_tokenlist;
-	char 	*newlexeme;
+	char	*newlexeme;
 	bool	has_node;
 
-	has_node = false;
 	expr_node = *input_tokens;
-	newlexeme = ft_substr(get_token_lexeme(expr_node), 1, ft_strlen(get_token_lexeme(expr_node)) - 2);
+	newlexeme = ft_substr(get_token_lexeme(expr_node), 1, \
+					ft_strlen(get_token_lexeme(expr_node)) - 2);
 	new_tokenlist = tokenizer(newlexeme);
 	if (new_tokenlist == NULL)
-	{	
+	{
 		free(newlexeme);
 		return (false);
 	}

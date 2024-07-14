@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 11:40:17 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 13:00:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 12:02:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ bool	init_data(t_data **data)
 bool	init_data2(t_data **data)
 {
 	(*data)->input = "no input";
+	(*data)->homepath = NULL;
 	(*data)->tokenlist = NULL;
 	(*data)->ast = NULL;
 	(*data)->exit_status = 0;

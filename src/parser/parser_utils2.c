@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 12:59:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/13 19:23:40 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ bool	consume_token_and_connect(t_list **input_tokens)
 {
 	t_list	*ptr_to_next;
 
-	debug("consume token and connect, token to delete: %s", ((t_token *)((*input_tokens)->content))->lexeme);
+	debug("consume token and connect, token to delete: %s", \
+				((t_token *)((*input_tokens)->content))->lexeme);
 	ptr_to_next = (*input_tokens)->next;
 	if (*input_tokens == NULL)
 		return (false);
@@ -36,26 +37,21 @@ bool	consume_token_and_connect(t_list **input_tokens)
 	(*input_tokens)->content = NULL;
 	free(*input_tokens);
 	*input_tokens = ptr_to_next;
-	// ft_lstdelone(tofree, free_tokennode);
 	if (!input_tokens || !*input_tokens)
 		return (false);
 	return (true);
 }
 
 /*
-returns the next token but also breaks the list before the node 
-performing the necessary checks
-TODO check for leaks
+ * returns the next token but also breaks the list before the node 
+ * performing the necessary checks
 */
 bool	movetonexttoken_andbreak(t_list **input_tokens)
 {
-	// t_list	*tofree;
-
-	// tofree = *input_tokens;
 	if (*input_tokens == NULL)
 		return (false);
 	*input_tokens = (*input_tokens)->next;
-	break_list(input_tokens); // thius maybe not needed?
+	break_list(input_tokens);
 	if (!input_tokens || !*input_tokens)
 		return (false);
 	return (true);

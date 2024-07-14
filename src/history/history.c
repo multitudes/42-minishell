@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/10 11:54:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 12:19:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,9 @@ readline loop~!
 bool	handle_history(t_data *data)
 {
 	sanitize_input(data->input);
-	if (!add_to_hist_file(data->input, data->env_arr))
-		return (false);
+	if (data->homepath == NULL)
+		data->homepath = get_history_file_path(data->env_arr);
+	add_to_hist_file(data->homepath, data->input);
 	add_history(data->input);
 	debug("env _ is set to -%s-", mini_get_env(data->env_arr, "_"));
 	return (0);
@@ -99,16 +100,11 @@ s an env var containing the path to the history file
 and if it doesnt exist I will creat it. 644 are permission for the file
 read only for others and W/R for the owner.
 */
-bool	add_to_hist_file(const char *input, t_darray *env_arr)
+bool	add_to_hist_file(const char *path, const char *input)
 {
 	int		fd;
-	char	*path;
 
-	path = get_history_file_path(env_arr);
-	if (path == NULL)
-		return (false);
 	fd = open(path, O_CREAT | O_APPEND | O_WRONLY, 0644);
-	free(path);
 	if (fd == -1)
 		return (false);
 	if (write(fd, input, ft_strlen(input)) == -1 || write(fd, "\n", 1) == -1)
@@ -127,14 +123,16 @@ s an env var containing the path to the history file
 and if it doesnt exist I will creat it. 644 are permission for the file
 read only for others and W/R for the owner.
 */
-int	clear_hist_file(t_darray *env_arr)
+int	clear_hist_file(const char *path)
 {
 	int		fd;
-	char	*path;
 
-	path = get_history_file_path(env_arr);
+	if (path == NULL)
+	{
+		fprintf(stderr, "Error: Path is NULL\n");
+		return (1);
+	}
 	fd = open(path, O_WRONLY | O_TRUNC);
-	free(path);
 	if (fd == -1)
 	{
 		perror("open");

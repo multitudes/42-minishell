@@ -1231,8 +1231,9 @@ The `paste -sd, -` command concatenates these PIDs into a comma-separated list.
 
 The output will be like:
 ```
-minishell 12114 lbrusa 0u CHR 136,2 0t0 5 /dev/pts/2 
-minishell 12114 lbrusa 1u CHR 136,2 0t0 5 /dev/pts/2
+minishell 180339 lbrusa    0u   CHR  136,1      0t0        4 /dev/pts/1
+minishell 180339 lbrusa    1u   CHR  136,1      0t0        4 /dev/pts/1
+minishell 180339 lbrusa    2u   CHR  136,1      0t0        4 /dev/pts/1
 ```
 
 
