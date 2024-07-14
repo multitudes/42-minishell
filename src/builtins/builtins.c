@@ -49,7 +49,8 @@ uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 		status = 0;
 	else if (ft_strncmp(get_token_lexeme(tokenlist), "false", 6) == 0)
 		status = 1;
-	else if (ft_strncmp(data->input, "history -c", 11) == 0 || ft_strncmp(data->input, "history --clear", 16) == 0)
+	else if (ft_strncmp(data->input, "history -c", 11) == 0 \
+			|| ft_strncmp(data->input, "history --clear", 16) == 0)
 	{
 		clear_hist_file(data->homepath);
 		rl_clear_history();
@@ -96,7 +97,8 @@ uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 	getcwd = execute_getcwd(dir);
 	if (!getoldcwd || !getcwd)
 		perror_and_null("getcwd");
-	else if (!update_env(env_arr, "PWD", dir) || !update_env(env_arr, "OLDPWD", old_dir))
+	else if (!update_env(env_arr, "PWD", dir) \
+			|| !update_env(env_arr, "OLDPWD", old_dir))
 		stderr_and_status("cd: env update failed", 0);
 	return (status);
 }
@@ -104,9 +106,6 @@ uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 /*
 Writes contents of environment to standard output.
 No options or arguments implemented.
-TODO:
-- adding extra arguments after env on the command line changes behavior significantly in BASH
--- e.g. env $HOME, env echo $HOME (mostly 'env' gets ignored in these cases)
 */
 uint8_t	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 {
@@ -115,7 +114,7 @@ uint8_t	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 	debug("env builtin");
 	status = 0;
 	if (get_token_lexeme(tokenlist->next))
-		status = stderr_and_status("env: too many arguments", 1); // include lexeme of argument used
+		status = stderr_and_status("env: too many arguments", 1);
 	else
 		status = print_env(env_arr);
 	return (status);
@@ -210,13 +209,16 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		value = get_var_value(get_token_lexeme(tokenlist));
 		debug("Key: %s, Value: %s", key, value);
 		if (no_valid_identifier(key))
-			status = stderr_and_status3("export `", get_token_lexeme(tokenlist), "': not a valid identifier", 1);
+			status = stderr_and_status3("export `", \
+				get_token_lexeme(tokenlist), "': not a valid identifier", 1);
 		else if (read_only_variable(key))
-			status = stderr_and_status3("export: ", key, ": readonly variable", 1);
+			status = stderr_and_status3("export: ", key, \
+										": readonly variable", 1);
 		else if (key && value)
 		{
 			if (!update_env(env_arr, key, value))
-				stderr_and_status3("export: ", value, ": adding to environment failed", 0);
+				stderr_and_status3("export: ", value, \
+									": adding to environment failed", 0);
 		}
 		free(key);
 		free(value);

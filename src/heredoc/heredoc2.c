@@ -29,7 +29,8 @@ static void remove_backslash(char **str)
     debug("remove backslash");
     if (*str && (*str)[0] != '\\')
         return ;
-    else if (*str && (*str)[0] == '\\' && ((*str)[1] == '\0' || (*str)[1] == '$'))
+    else if (*str && (*str)[0] == '\\' \
+            && ((*str)[1] == '\0' || (*str)[1] == '$'))
     {
         temp = ft_strdup((*str) + 1);
         free (*str);
@@ -66,13 +67,15 @@ static bool read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 
     debug("read heredoc");
     debug("Filename used for heredoc: %s", heredoc->file[i]);
-    temp_fd = open(heredoc->file[i], O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    temp_fd = open(heredoc->file[i], O_WRONLY | O_CREAT | O_TRUNC, \
+                            S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (temp_fd < 0)
         return (perror_and_bool("setup heredoc", false));
     line = readline("> ");
     while (line && ft_strcmp(heredoc->delim[i], line))
     {
-        if (line && heredoc->expansion[i] == true && ft_strchr(line, '$') && line[0] != '\\')
+        if (line && heredoc->expansion[i] == true && ft_strchr(line, '$') \
+                && line[0] != '\\')
         {
             temp = replace_dollar_vars(data, line);
             free(line);
@@ -91,7 +94,8 @@ static bool read_heredoc(t_heredoc *heredoc, t_data *data, int i)
         line = readline("> ");
     }
 	if (line == NULL)
-		ft_write(2, "minishell: warning: here-document delimited by end-of-file\n");
+		ft_write(1, \
+            "minishell: warning: here-document delimited by end-of-file\n");
     free(line);
     close(temp_fd);
     return (true);

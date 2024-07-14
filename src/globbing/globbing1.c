@@ -47,9 +47,11 @@ bool	is_glob_match(const char *pattern, const char *file_name)
 		if (is_glob_match(pattern + 1, file_name))
 			result = true;
 		else
-			result = *file_name != '\0' && is_glob_match(pattern, file_name + 1);
+			result = *file_name != '\0' \
+						&& is_glob_match(pattern, file_name + 1);
 	}
 	else 
-		result = *pattern == *file_name && is_glob_match(pattern + 1, file_name + 1);
+		result = *pattern == *file_name \
+					&& is_glob_match(pattern + 1, file_name + 1);
 	return (result);
 }

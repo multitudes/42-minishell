@@ -31,7 +31,6 @@ If msg argument is NULL, "minishell error" is passed to perror.
 // 	perror(perror_msg);
 // 	free(perror_msg);
 // }
-
 /*
 Writes "minishell: msg" to perror and returns boolian.
 If msg argument is NULL, "minishell error" is passed to perror.

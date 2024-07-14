@@ -213,7 +213,6 @@ bool    contains_heredoc(t_list **tokenlist)
     }
 	// debug("tmp is %s", get_token_lexeme(tmp));
 	// debug("head is %s", get_token_lexeme(get_head(tmp)));
-
 	// debug("tokenlist head is %s", get_token_lexeme((*tokenlist)));
     return (contains_heredoc);
 }

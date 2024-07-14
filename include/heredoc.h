@@ -20,8 +20,6 @@
 # include "minishell.h"
 # include <fcntl.h>
 
-// # define HEREDOC_BUFFER 1024
-
 typedef struct s_heredoc
 {
 	int		delim_count;
@@ -41,8 +39,6 @@ bool	execute_heredoc(t_data *data);
 void	free_heredoc(t_heredoc *heredoc);
 void	set_up_heredoc_signals(void);
 bool	process_heredoc(t_heredoc *heredoc, t_data *data);
-// int		redirect_and_execute_heredoc(t_ast_node *ast, t_data *data,
-// 										t_heredoc *heredoc);
 
 #  ifdef __cplusplus
 

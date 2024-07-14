@@ -16,6 +16,10 @@
 #include "utils.h"
 #include "splash_error.h"
 
+/*
+Update / add a variable to the environment given a key and corresponding value.
+*/
+
 bool update_env(t_darray *env_arr, const char *key, const char *value)
 {
 	char		*env_str;
@@ -41,7 +45,7 @@ bool update_env(t_darray *env_arr, const char *key, const char *value)
 }
 
 /*
-function prints the environment variables
+Function prints the environment variables
 stored in environment array
 */
 int	print_env(t_darray *env_arr)
@@ -63,9 +67,8 @@ int	print_env(t_darray *env_arr)
 }
 
 /*
-in c and c++ :getenv("_"); will return the value of the last command
-for us this function will return the value of the env variable 
-given the key..
+Returns the value of an environment variable given a key.
+The returned value is not allocated.
 */
 char *mini_get_env(t_darray *env_arr, const char *key)
 {
@@ -84,17 +87,17 @@ char *mini_get_env(t_darray *env_arr, const char *key)
 		position = ft_strchr(env_str, '=');
 		if (!position)
 			return (NULL);
-		if (ft_strncmp(env_str, key, position - env_str) == 0 && (position - env_str) == (int)ft_strlen(key))
+		if (ft_strncmp(env_str, key, position - env_str) == 0 \
+				&& (position - env_str) == (int)ft_strlen(key))
 			return (position + 1);
 		i++;
 	}
-	// debug("key not found");
 	return (NULL);
 }
 
 /*
-print the environment variables when `export` command is used:
-Sorted, quoted strings, last command omitted
+Prints the environment variables when `export` command is used:
+Quoted strings, last command is omitted.
 */
 int	print_env_export(t_darray *env_arr)
 {
@@ -115,7 +118,8 @@ int	print_env_export(t_darray *env_arr)
 	{
 		key = get_var_key(export_arr->contents[i++]);
 		value = mini_get_env(export_arr, key);
-		if (key && (printf("declare -x %s=%c%s%c\n", key, '"', value, '"') < 0))
+		if (key \
+			&& (printf("declare -x %s=%c%s%c\n", key, '"', value, '"') < 0))
 			status = perror_and_status("printf export", 1);
 		free(key);
 	}
