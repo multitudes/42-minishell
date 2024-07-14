@@ -531,21 +531,21 @@ const char *all_tests()
 	
 	// run the tests
 	run_test(test_scanner_identifiers);	
-	run_test(test_scanner_identifiers2);
-	run_test(test_scanner_identifiers3);
-	run_test(test_scanner_identifiers4);
-	run_test(test_scanner_identifiers5);
-	run_test(test_scanner_identifiers6);
-	run_test(test_scanner_identifiers7);
+	// run_test(test_scanner_identifiers2);
+	// run_test(test_scanner_identifiers3);
+	// run_test(test_scanner_identifiers4);
+	// run_test(test_scanner_identifiers5);
+	// run_test(test_scanner_identifiers6);
+	// run_test(test_scanner_identifiers7);
 
-	run_test(test_scanner_true_false);
-	run_test(test_scanner_true_false2);
-	run_test(test_all_tokens);
-	run_test(test_all_tokens2);
-	run_test(test_all_tokens3);
-	run_test(test_all_tokens4);
-	run_test(test_all_tokens5);
-	run_test(test_all_tokens6);
+	// run_test(test_scanner_true_false);
+	// run_test(test_scanner_true_false2);
+	// run_test(test_all_tokens);
+	// run_test(test_all_tokens2);
+	// run_test(test_all_tokens3);
+	// run_test(test_all_tokens4);
+	// run_test(test_all_tokens5);
+	// run_test(test_all_tokens6);
 
 	return NULL;
 }

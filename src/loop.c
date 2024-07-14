@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 12:22:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 16:37:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	free_data(t_data **data)
 		return ;
 	debug("freeing env darray");
 	darray_clear_destroy((*data)->env_arr);
-	free((*data)->homepath);
+	free((char *)(*data)->homepath);
 	(*data)->homepath = NULL;
 	free(*data);
 	*data = NULL;
