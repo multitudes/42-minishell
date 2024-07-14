@@ -27,7 +27,7 @@ void	perror_minishell(const char *msg)
 		perror_msg = ft_strjoin("minishell: ", msg);
 	else
 		perror_msg = ft_strdup("minishell error");
-	perror(msg);
+	perror(perror_msg);
 	free(perror_msg);
 }
 
@@ -43,7 +43,7 @@ bool	perror_and_bool(const char *msg, bool return_value)
 		perror_msg = ft_strjoin("minishell: ", msg);
 	else
 		perror_msg = ft_strdup("minishell error");
-	perror(msg);
+	perror(perror_msg);
 	free(perror_msg);
 	return (return_value);
 }
@@ -60,7 +60,7 @@ uint8_t	perror_and_status(const char *msg, uint8_t status)
 		perror_msg = ft_strjoin("minishell: ", msg);
 	else
 		perror_msg = ft_strdup("minishell error");
-	perror(msg);
+	perror(perror_msg);
 	free(perror_msg);
 	return (status);
 }
@@ -70,28 +70,16 @@ Joins two consecutive messages and passes the new message to perror,
 frees the joined string, and return the status
 TODO change a variadic function
 */
-uint8_t	status_perror2(const char *msg_1, const char *msg_2, uint8_t status)
+uint8_t	perror_and_status2(const char *msg_1, const char *msg_2, uint8_t status)
 {
-	// ssize_t	result;
+	char	*perror_msg;
 
-	if (msg_1 && !ft_write(2, msg_1))
-		status = 1;
-	// {
-	// 	result = write(2, msg_1, ft_strlen(msg_1));
-	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg_1))
-	// 		status = perror_and_status("write", 1);
-	// }
-	if (msg_2 && !ft_write(2, msg_2))
-		status = 1;
-	// {
-	// 	result = write(2, msg_2, ft_strlen(msg_2));
-	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg_2))
-	// 		status = perror_and_status("write", 1);
-	// }
-	// result = write(2, ": ", 2);
-	// if (result == -1 || result != 2)
-	// 	status = perror_and_status("write", 1);
-	perror("");
+	if (msg_1 || msg_2)
+		perror_msg = ft_strjoin3("minishell: ", msg_1, msg_2);
+	else
+		perror_msg = ft_strdup("minishell error");
+	perror(perror_msg);
+	free(perror_msg);
 	return (status);
 }
 

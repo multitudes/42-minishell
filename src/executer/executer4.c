@@ -21,7 +21,7 @@
 static void check_return(int new_fd, char *filename, uint8_t *status)
 {
     if (new_fd < 0)
-        *status = status_perror2("minishell: ", filename, 1);
+        *status = perror_and_status(filename, 1);
 }
 
 static uint8_t dup2_by_redirect_type(t_tokentype type, \
