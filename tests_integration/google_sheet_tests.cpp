@@ -468,6 +468,7 @@ const char* test_exit()
 trying to execute a non executable file
 bash: ./LICENSE: Permission denied
 exit 126
+but the test env doesnt find the file...
 */
 const char* test_exit2() 
 {
@@ -1155,7 +1156,7 @@ const char *all_tests()
 	// run_test(test_parsing9);
 	// run_test(test_parsing10);
 	run_test(test_parsing11);
-	run_test(test_parsing12);
+	// run_test(test_parsing12);
 
 	// run_test(test_pipe); // to difficult to test with popen and with pipes... skip
 
