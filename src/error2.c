@@ -14,8 +14,6 @@
 #include "utils.h"
 #include <libft.h>
 
-
-
 /*
 I sometimes need to return NULL on error
 */
@@ -46,10 +44,10 @@ uint8_t	print_error_status2(const char *message, const char *message2, uint8_t s
 	}
 	// result = write(2, "minishell: ", 12);
 	// if (result == -1 || result != 12) 
-	// 	status = status_and_perror("write", 1);
+	// 	status = perror_and_status("write", 1);
 	// result = write(2, message, ft_strlen(message));
 	// if (result == -1 || result != (ssize_t)ft_strlen(message)) 
-		// status = status_and_perror("write", 1);
+		// status = perror_and_status("write", 1);
 	if (message2)
 	{
 		if (!ft_write(2, message2))
@@ -59,10 +57,10 @@ uint8_t	print_error_status2(const char *message, const char *message2, uint8_t s
 
 	// result = write(2, message2, ft_strlen(message2));
 	// if (result == -1 || result != (ssize_t)ft_strlen(message2)) 
-	// 	status = status_and_perror("write", 1);
+	// 	status = perror_and_status("write", 1);
 	// result = write(2, "\n", 1);
 	// if (result == -1 || result != 1) 
-	// 	status = status_and_perror("write", 1);
+	// 	status = perror_and_status("write", 1);
 	// return (status);
 }
 
@@ -79,10 +77,10 @@ uint8_t	print_error_status(const char *message, uint8_t status)
 			return (1);
 		// result = write(2, message, ft_strlen(message));
 		// if (result == -1 || result != (ssize_t)ft_strlen(message)) 
-		// 	status = status_and_perror("write", 1);
+		// 	status = perror_and_status("write", 1);
 		// result = write(2, "\n", 1);
 		// if (result == -1 || result != 1) 
-		// 	status = status_and_perror("write", 1);
+		// 	status = perror_and_status("write", 1);
 	}
 	else
 	{
@@ -109,10 +107,10 @@ uint8_t	print_minishell_error_status(const char *message, uint8_t status)
 	// {
 	// 	result = write(2, "minishell: ", 12);
 	// 	if (result == -1 || result != 12) 
-	// 		status = status_and_perror("write", 1);
+	// 		status = perror_and_status("write", 1);
 	// 	result = write(2, message, ft_strlen(message));
 	// 	if (result == -1 || result != (ssize_t)ft_strlen(message)) 
-	// 		status = status_and_perror("write", 1);
+	// 		status = perror_and_status("write", 1);
 	// }
 	else
 	{
@@ -120,13 +118,13 @@ uint8_t	print_minishell_error_status(const char *message, uint8_t status)
 			return (1);
 		// result = write(2, "minishell", 10);
 		// if (result == -1 || result != 10) 
-		// 	status = status_and_perror("write", 1);
+		// 	status = perror_and_status("write", 1);
 	}
 	if (!ft_write(2, "\n"))
 		return (1);
 	// result = write(2, "\n", 1);
 	// if (result == -1 || result != 1) 
-	// 	status = status_and_perror("write", 1);
+	// 	status = perror_and_status("write", 1);
 	return (status);
 }
 

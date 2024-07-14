@@ -251,9 +251,9 @@ uint8_t	execute_pwd_builtin(void)
 
 	debug("pwd builtin");
 	if (!getcwd(cur_dir, PATH_MAX))
-		return (status_and_perror("minishell: pwd", 1));
+		return (perror_and_status("pwd: getcwd", 1));
 	if (printf("%s\n", cur_dir) < 0)
-		return (status_and_perror("minishell: pwd: printf", 1));
+		return (perror_and_status("pwd: printf", 1));
 	return (0);
 }
 

@@ -36,13 +36,10 @@ uint8_t	get_wait_status(int status)
 {
 	debug("child exited with status %d", status);
 	if (WIFEXITED(status))
-	{
 		return (WEXITSTATUS(status));
-	}
 	else if (WIFSIGNALED(status))
 		return (WTERMSIG(status) + 128);
-	else
-		return (status_and_perror("minishell: error: child exit", 1));
+	return (perror_and_status("child exit", 1));
 }
 
 
@@ -83,7 +80,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 		exit(status);
 	}
 	else if (pid == -1)
-		return (status_and_perror("minishell: fork failed", EXIT_FAILURE));
+		return (perror_and_status("fork", EXIT_FAILURE));
 	else
 	{
 		waitpid(pid, &status, 0);
@@ -103,10 +100,10 @@ int	get_status_of_children(pid_t pid1, pid_t pid2)
 	
 	finalstatus = -1;
 	if (waitpid(pid1, &status, 0) == -1)
-		finalstatus = status_and_perror("waitpid 1", 1);
+		finalstatus = perror_and_status("waitpid", 1);
 	finalstatus = get_wait_status(status);
 	if (waitpid(pid2, &status, 0) == -1)
-		finalstatus = status_and_perror("waitpid 2", 1);
+		finalstatus = perror_and_status("waitpid", 1);
 	finalstatus = get_wait_status(status);
 	debug("status of my children %d", finalstatus);
 	return (finalstatus);

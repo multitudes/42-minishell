@@ -19,7 +19,7 @@
 /*
 Prepends "minishell: " to msg before calling perror.
 */
-void	perror_minishell(char *msg)
+void	perror_minishell(const char *msg)
 {
 	char	*perror_msg;
 
@@ -49,16 +49,19 @@ bool	perror_and_bool(const char *msg, bool return_value)
 }
 
 /*
-Used to return from the program with an error message passing
-the exit error code. It is used in the executer and the parser.
-I dont need to pass the data struct because when used in the child 
-process, any updates will be lost upon return. Therefore, I will
-keep it simple and just pass the message and the status.
-Updating the global makes sense when I am in the parent process.  
+Write to perror in the format "minishell: msg" with msg and
+status return value passed as arguments.
 */
-uint8_t	status_and_perror(const char *msg, uint8_t status)
+uint8_t	perror_and_status(const char *msg, uint8_t status)
 {
+	char	*perror_msg;
+
+	if (msg)
+		perror_msg = ft_strjoin("minishell: ", msg);
+	else
+		perror_msg = ft_strdup("minishell error");
 	perror(msg);
+	free(perror_msg);
 	return (status);
 }
 
@@ -76,18 +79,18 @@ uint8_t	status_perror2(const char *msg_1, const char *msg_2, uint8_t status)
 	// {
 	// 	result = write(2, msg_1, ft_strlen(msg_1));
 	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg_1))
-	// 		status = status_and_perror("write", 1);
+	// 		status = perror_and_status("write", 1);
 	// }
 	if (msg_2 && !ft_write(2, msg_2))
 		status = 1;
 	// {
 	// 	result = write(2, msg_2, ft_strlen(msg_2));
 	// 	if (result == -1 || result != (ssize_t)ft_strlen(msg_2))
-	// 		status = status_and_perror("write", 1);
+	// 		status = perror_and_status("write", 1);
 	// }
 	// result = write(2, ": ", 2);
 	// if (result == -1 || result != 2)
-	// 	status = status_and_perror("write", 1);
+	// 	status = perror_and_status("write", 1);
 	perror("");
 	return (status);
 }
