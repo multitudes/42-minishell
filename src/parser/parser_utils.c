@@ -24,7 +24,7 @@ t_ast_node	*new_node(t_nodetype type, t_ast_node *left, t_ast_node *right, \
 		return (NULL);
 	node = malloc(sizeof(t_ast_node));
 	if (node == NULL)
-		return (null_on_err("malloc failed in new_node"));
+		return (perror_and_null("malloc new_node"));
 	node->type = type;
 	node->parent = NULL;
 	node->left = left;

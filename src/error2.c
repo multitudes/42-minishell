@@ -15,43 +15,15 @@
 #include <libft.h>
 
 /*
-I sometimes need to return NULL on error
+Writes "minishell: msg\n" to standard error and returns status.
+If msg is NULL, "minishell: error\n" is printed.
 */
-void	*null_on_err(const char *message)
+uint8_t	stderr_and_status(const char *msg, uint8_t status)
 {
-	perror(message);
-	return (NULL);
-}
-
-/*
-Print error to standard error and return passed status.
-the format defaults to "minishell: " followed by the 
-argument or command like argv[0] and then the custom error message.
-*/
-uint8_t	print_error_status2(const char *message, \
-							const char *message2, uint8_t status)
-{
-	if (!message && !message2 && !ft_write(2, "minishell error"))
-			return (1);
-	if (!ft_write(2, "minishell: "))
-			return (1);
-	if (message && !ft_write(2, message))
-			return (1);
-	if (message2 && !ft_write(2, message2))
-			return (1);
-	if (!ft_write(2, "\n"))
-		return (1);
-	return (status);
-}
-
-/*
-Print error to standard error and return passed status.
-*/
-uint8_t	print_error_status(const char *message, uint8_t status)
-{
-	if (message)
+	if (msg)
 	{
-		if (!ft_write(2, message) || !ft_write(2, "\n"))
+		if (!ft_write(2, "minishell: ") || !ft_write(2, msg) \
+				|| !ft_write(2, "\n"))
 			return (1);
 	}
 	else
@@ -63,41 +35,51 @@ uint8_t	print_error_status(const char *message, uint8_t status)
 }
 
 /*
-Print minishell error to standard error and return status.
+Writes "minishell: msg_1: msg_2\n" to standard error and returns status.
+If msgs are NULL, "minishell: error\n" is printed.
 */
-uint8_t	print_minishell_error_status(const char *message, uint8_t status)
+uint8_t	stderr_and_status2(const char *msg_1, \
+							const char *msg_2, uint8_t status)
 {
-	if (message)
-	{
-		if (!ft_write(2, "minishell: ") || !ft_write(2, message))
+	if (!msg_1 && !msg_2 && !ft_write(2, "minishell error"))
 			return (1);
-	}
-	else
-	{
-		if (!ft_write(2, "minishell error"))
+	if (!ft_write(2, "minishell: "))
 			return (1);
-	}
+	if (msg_1 && !ft_write(2, msg_1))
+			return (1);
+	if (msg_2 && !ft_write(2, msg_2))
+			return (1);
 	if (!ft_write(2, "\n"))
 		return (1);
 	return (status);
 }
 
 /*
-I need this to print on stderr and return 0
+Writes "minishell: msg_1: msg_2: msg_3\n" to standard error and returns status.
+If msgs are NULL, "minishell: error\n" is printed.
 */
-uint8_t	zero_and_printerr(const char *msg)
+uint8_t	stderr_and_status3(const char *msg_1, \
+							const char *msg_2, const char *msg_3, \
+							uint8_t status)
 {
-	if (msg)
-		ft_write(2, msg);
-	else
-		ft_write(2, "minishell: error");
-	ft_write(2, "\n");
-	return (0);
+	if (!msg_1 && !msg_2 && !ft_write(2, "minishell error"))
+			return (1);
+	if (!ft_write(2, "minishell: "))
+			return (1);
+	if (msg_1 && !ft_write(2, msg_1))
+			return (1);
+	if (msg_2 && !ft_write(2, msg_2))
+			return (1);
+	if (msg_3 && !ft_write(2, msg_3))
+			return (1);
+	if (!ft_write(2, "\n"))
+		return (1);
+	return (status);
 }
 
 /*
-Writes "minishell: msg" to standard error and return boolian.
-If msg is NULL, "minishell: error is printed."
+Writes "minishell: msg\n" to standard error and returns boolian.
+If msg is NULL, "minishell: error\n" is printed.
 If write fails false is returned.
 */
 bool	stderr_and_bool(const char *msg, bool boolian)

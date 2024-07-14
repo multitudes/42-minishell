@@ -461,7 +461,7 @@ void	expand_tokenlist(t_data *data, t_ast_node *ast)
 		if (!get_curr_token(tokenlist))
 		{
 			data->exit_status = \
-				print_error_status("minishell: system error: missing token", 1);
+				stderr_and_status("system error: missing token", 1);
 			return ;
 		}
 		set_flags(tokenlist, &flags);

@@ -31,7 +31,7 @@ static char *get_heredoc_filename()
         i = 0;
     index = ft_itoa(i++);
     if (!index)
-        return (null_on_err("minishell: heredoc set up"));
+        return (perror_and_null("heredoc set up"));
     new_filename = ft_strjoin(".tmp/heredoc_", index);
     if (!new_filename)
         perror_minishell("heredoc set_up");

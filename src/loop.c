@@ -184,7 +184,7 @@ int loop()
 						free_ast(&(data->ast));
 					}
 					else
-						data->exit_status = print_error_status("syntax parse error", 1);
+						data->exit_status = stderr_and_status("syntax parse error", 1);
 				}
 			}
 			free((char *)(data->input));
@@ -219,7 +219,7 @@ void	single_command_innerloop(t_data *data)
 			free_ast(&(data->ast));
 		}
 		else
-			data->exit_status = print_error_status("syntax parse error", 1);
+			data->exit_status = stderr_and_status("syntax parse error", 1);
 	}
 	else
 	{

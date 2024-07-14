@@ -42,7 +42,7 @@ uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0) // one arg  '-'
 		{
 			if (!mini_get_env(env_arr, "OLDPWD"))
-				return (print_minishell_error_status("cd: OLDPWD not set", 1));
+				return (stderr_and_status("cd: OLDPWD not set", 1));
 			else
 			{
 				if (chdir(mini_get_env(env_arr, "OLDPWD")))
@@ -56,7 +56,7 @@ uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
     else // no args
 	{
         if (!home)
-			return (print_minishell_error_status("cd: HOME not set", 1));
+			return (stderr_and_status("cd: HOME not set", 1));
 		home = get_home(env_arr);
         debug("home is -%s--------------------", home);
 		if (home && *home != '\0' && chdir(home))

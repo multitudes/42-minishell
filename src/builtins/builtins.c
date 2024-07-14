@@ -57,7 +57,7 @@ uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 	else if (ft_strncmp(data->input, "history", 7) == 0)
 		status = print_history(data->env_arr);
 	else 
-		return (print_error_status("minishell: builtin not implemented", 2));
+		return (stderr_and_status("builtin not implemented", 2));
 	return (status);
 }
 
@@ -87,17 +87,17 @@ uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 	getcwd = NULL;
 	tokenlist = tokenlist->next;
 	if (tokenlist && tokenlist->next)
-		return (print_error_status("minishell: cd: too many arguments", 1));
-	getoldcwd = execute_getcwd(old_dir); //, "minishell: cd: get old cwd");
+		return (stderr_and_status("cd: too many arguments", 1));
+	getoldcwd = execute_getcwd(old_dir);
 	status = execute_cd_tokenlist(env_arr, tokenlist);
 	debug("status: %d", status);
 	if (status != 0)
 		return (status);
-	getcwd = execute_getcwd(dir); //, "minishell: cd: get new cwd");
+	getcwd = execute_getcwd(dir);
 	if (!getoldcwd || !getcwd)
-		perror("minishell: getcwd");
+		perror_minishell("getcwd");
 	else if (!update_env(env_arr, "PWD", dir) || !update_env(env_arr, "OLDPWD", old_dir))
-		print_error_status("minishell: cd: env update failed", 0);
+		stderr_and_status("cd: env update failed", 0);
 	return (status);
 }
 
@@ -115,7 +115,7 @@ uint8_t	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 	debug("env builtin");
 	status = 0;
 	if (get_token_lexeme(tokenlist->next))
-		status = print_minishell_error_status("env: too many arguments", 1); // include lexeme of argument used
+		status = stderr_and_status("env: too many arguments", 1); // include lexeme of argument used
 	else
 		status = print_env(env_arr);
 	return (status);
@@ -214,22 +214,22 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 		if (no_valid_identifier(key))
 		{
 			// TODO instead the str3join do maybe a variadic func?
-			err_msg = ft_strjoin3("minishell: export `", get_token_lexeme(tokenlist), "': not a valid identifier");
-			status = print_error_status(err_msg, 1);
+			err_msg = ft_strjoin3("export `", get_token_lexeme(tokenlist), "': not a valid identifier");
+			status = stderr_and_status(err_msg, 1);
 			free(err_msg);
 		}
 		else if (read_only_variable(key))
 		{
-			err_msg = ft_strjoin3("minishell: export: ", key, ": readonly variable");
-			status = print_error_status(err_msg, 1);
+			err_msg = ft_strjoin3("export: ", key, ": readonly variable");
+			status = stderr_and_status(err_msg, 1);
 			free(err_msg);
 		}
 		else if (key && value)
 		{
 			if (!update_env(env_arr, key, value))
 			{
-				err_msg = ft_strjoin3("minishell: export: ", value, ": adding to environment failed");
-				print_error_status(err_msg, 0);
+				err_msg = ft_strjoin3("export: ", value, ": adding to environment failed");
+				stderr_and_status(err_msg, 0);
 				free(err_msg);
 			}
 		}
@@ -281,14 +281,14 @@ uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 			;
 		else if (read_only_variable(lexeme))
 		{
-			err_msg = ft_strjoin3("minishell: unset: ", lexeme, ": cannot unset: readonly variable");
-			status = print_error_status(err_msg, 1);
+			err_msg = ft_strjoin3("unset: ", lexeme, ": cannot unset: readonly variable");
+			status = stderr_and_status(err_msg, 1);
 			free(err_msg);
 		}
 		else if (lexeme != NULL && ft_strlen(lexeme) != 0)
 			status = delete_env_entry(env_arr, lexeme);
 		else
-			status = print_error_status("minishell: unset: error", 1);
+			status = stderr_and_status("unset: error", 1);
 		tokenlist = tokenlist->next;
 	}
 	return (status);
@@ -365,7 +365,7 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	lexeme = get_token_lexeme(tokenlist);
 	// check if I have more than three token when a minus token is there
 	if (lexeme && ft_isnumstring(lexeme) && tokenlist->next)
-		return (print_minishell_error_status("exit: too many arguments", 1));
+		return (stderr_and_status("exit: too many arguments", 1));
 	// restore_fds(data);
 	write(1, "exit\n", 5);
 	if (lexeme && ft_isnumstring(lexeme))
@@ -373,7 +373,7 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	else if (lexeme && !ft_isnumstring(lexeme))
 	{
 		message = ft_strjoin3("exit: ", lexeme, ": numeric argument required");
-		status = print_minishell_error_status(message, 2);
+		status = stderr_and_status(message, 2);
 		free(message);
 	}
 	else

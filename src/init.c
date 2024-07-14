@@ -36,7 +36,7 @@ bool	init_data(t_data **data)
 		return (false);
 	*data = malloc(sizeof(t_data));
 	if (*data == NULL && darray_clear_destroy(env_array))
-		return (zero_and_printerr("malloc data"));
+		return (stderr_and_status("malloc data", 0));
 	(*data)->env_arr = env_array;
 	shlvl_init(*data);
 	return (init_data2(data));
@@ -66,14 +66,14 @@ bool	init_env_darray(t_darray **env_arr)
 	i = 0;
 	*env_arr = darray_create(sizeof(char *), 100);
 	if (*env_arr == NULL)
-		return (zero_and_printerr("env_array env"));
+		return (stderr_and_status("error setup env", 0));
 	while (environ && environ[i])
 	{
 		env = ft_strdup(environ[i++]);
 		if (env == NULL && darray_clear_destroy(*env_arr))
-			return (zero_and_printerr("malloc env"));
+			return (stderr_and_status("malloc env", 0));
 		if (darray_push(*env_arr, env) == -1 && darray_clear_destroy(*env_arr))
-			return (zero_and_printerr("darray_push"));
+			return (stderr_and_status("error setup env", 0));
 	}
 	darray_push(*env_arr, NULL);
 	return (true);

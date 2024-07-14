@@ -67,7 +67,7 @@ char	*get_history_file_path(t_darray *env_arr)
 	free(home);
 	debug("history path: %s", path);
 	if (path == NULL)
-		print_minishell_error_status("history file path missing", 1);
+		stderr_and_status("history file path missing", 1);
 	return (path);
 }
 

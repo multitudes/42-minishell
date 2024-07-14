@@ -17,7 +17,8 @@
 #include <stdbool.h>
 
 /*
-Prepends "minishell: " to msg before calling perror.
+Writes "minishell: msg" to perror.
+If msg argument is NULL, "minishell error" is passed to perror.
 */
 void	perror_minishell(const char *msg)
 {
@@ -32,7 +33,8 @@ void	perror_minishell(const char *msg)
 }
 
 /*
-Write to perror in the format "minishell: msg" and return boolian.
+Writes "minishell: msg" to perror and returns boolian.
+If msg argument is NULL, "minishell error" is passed to perror.
 */
 bool	perror_and_bool(const char *msg, bool boolian)
 {
@@ -48,8 +50,8 @@ bool	perror_and_bool(const char *msg, bool boolian)
 }
 
 /*
-Write to perror in the format "minishell: msg" and
-return status.
+Writes "minishell: msg" to perror and returns status.
+If msg argument is NULL, "minishell error" is passed to perror.
 */
 uint8_t	perror_and_status(const char *msg, uint8_t status)
 {
@@ -65,11 +67,11 @@ uint8_t	perror_and_status(const char *msg, uint8_t status)
 }
 
 /*
-Joins two consecutive messages and passes the new message to perror,
-frees the joined string, and return the status
-TODO change a variadic function
+Writes "minishell: msg_1: msg_2" to perror and returns status.
+If msg arguments are NULL, "minishell error" is passed to perror.
 */
-uint8_t	perror_and_status2(const char *msg_1, const char *msg_2, uint8_t status)
+uint8_t	perror_and_status2(const char *msg_1, const char *msg_2, \
+							uint8_t status)
 {
 	char	*perror_msg;
 
@@ -83,8 +85,9 @@ uint8_t	perror_and_status2(const char *msg_1, const char *msg_2, uint8_t status)
 }
 
 /*
-"minishell: msg" to perror and exit with status.
+Writes "minishell: msg" to perror and exits with status.
 (used for child processes)
+If msg argument is NULL, "minishell error" is passed to perror.
 */
 uint8_t	perror_and_exit_with_status(const char *msg, uint8_t status)
 {
@@ -97,4 +100,21 @@ uint8_t	perror_and_exit_with_status(const char *msg, uint8_t status)
 	perror(perror_msg);
 	free(perror_msg);
 	exit(status);
+}
+
+/*
+Writes "minishell: msg" to perror and returns NULL.
+If msg argument is NULL, "minishell error" is passed to perror.
+*/
+void	*perror_and_null(const char *msg)
+{
+	char	*perror_msg;
+
+	if (msg)
+		perror_msg = ft_strjoin("minishell: ", msg);
+	else
+		perror_msg = ft_strdup("minishell error");
+	perror(perror_msg);
+	free(perror_msg);
+	return (NULL);
 }

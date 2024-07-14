@@ -30,13 +30,13 @@ int	resolve_command_path(char **argv, char *path_env)
 	int			is_relative_path;
 
 	if (!find_path(argv, path_env))
-		return (print_error_status2(argv[0], ": command not found", 127));
+		return (stderr_and_status2(argv[0], ": command not found", 127));
 	if (access(argv[0], F_OK) == -1)
 		return (perror_and_status(argv[0], 127));
 	if (stat(argv[0], &statbuf))
 		return (perror_and_status(argv[0], 1));
 	if (S_ISDIR(statbuf.st_mode))
-		return (print_error_status2(argv[0], ": is a directory", 126));
+		return (stderr_and_status2(argv[0], ": is a directory", 126));
 	is_relative_path = ft_strncmp(argv[0], "./", 2) == 0 || \
 						ft_strcmp(argv[0], "..") != 0;
 	if (is_relative_path && access(argv[0], X_OK) == -1)

@@ -56,16 +56,8 @@ int	ft_isascii(const int c)
 }
 
 /*
-This function will join three strings together
-This pattern is often used 
-(see man page for strlcpy and strlcat)
-
-size_t n = ft_strlcpy(result, s1, total_length)
-if (n > total_length)
-	return (NULL); 
-
-but since in this function I know the total length of the string
-because I allocate it such checks are not needed
+This function joins three strings together. The first string should not be NULL
+but could be an ampty string.
 */
 char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 {
@@ -75,7 +67,7 @@ char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 	total_length = ft_strlen(s1) + ft_strlen(s2) + ft_strlen(s3) + 1;
 	result = malloc(total_length);
 	if (!result)
-		return (null_on_err("malloc ft_strjoin3"));
+		return (perror_and_null("malloc ft_strjoin3"));
 	ft_strlcpy(result, s1, total_length);
 	ft_strlcat(result, s2, total_length);
 	ft_strlcat(result, s3, total_length);

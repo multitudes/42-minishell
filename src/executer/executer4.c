@@ -78,7 +78,7 @@ uint8_t setup_redirect(t_list **tokenlist, t_tokentype type)
     status = 0;
     consume_token_and_connect(tokenlist);
     if (!(*tokenlist))
-        return (print_minishell_error_status("redirect syntax error", 2));
+        return (stderr_and_status("redirect syntax error", 2));
     filename = get_token_lexeme(*tokenlist);
     fd = open_fd_by_redirect_type(type, filename, &status);
     if (status != 0)
