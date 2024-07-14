@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 16:37:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/14 17:56:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	free_data(t_data **data)
 		return ;
 	debug("freeing env darray");
 	darray_clear_destroy((*data)->env_arr);
-	free((char *)(*data)->homepath);
+	free((void *)((*data)->homepath));
 	(*data)->homepath = NULL;
 	free(*data);
 	*data = NULL;
@@ -110,18 +110,18 @@ whichy is added to 128 and gives 130, the exit code for ctrl-c
 int	set_up_std_signals(void)
 {
 	if (isatty(STDIN_FILENO) == -1)
-		return (status_and_perror("is atty failed", 1));
+		return (perror_and_status("is atty", 1));
 	else if (isatty(STDIN_FILENO))
 	{
 		if ((signal(SIGINT, sigint_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-		return (status_and_perror("SIG_ERR signal failed", 1));
+		return (perror_and_status("SIG_ERR", 1));
 	}
 	else 
 	{
 		if ((signal(SIGINT, sigint_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-		return (status_and_perror("SIG_ERR signal failed", 1));
+		return (perror_and_status("SIG_ERR signal", 1));
 	}
 	rl_catch_signals = 1;
 	return (0);

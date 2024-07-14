@@ -46,7 +46,7 @@ uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 			else
 			{
 				if (chdir(mini_get_env(env_arr, "OLDPWD")))
-					return (status_and_perror("minishell: cd", 1));
+					return (perror_and_status("cd", 1));
 				execute_pwd_builtin();
 			}
 		}
@@ -62,7 +62,7 @@ uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 		if (home && *home != '\0' && chdir(home))
 		{
 			free(home);
-			return (status_and_perror("minishell: cd", 1));
+			return (perror_and_status("cd", 1));
 		}
 		free(home);
 	}

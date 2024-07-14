@@ -31,14 +31,14 @@ bool	init(t_globbing *gl)
 {
 	gl->dirp = opendir(".");
 	if (!gl->dirp)
-		return (false_and_perr("opendir"));
+		return (perror_and_bool("opendir", false));
 	errno = 0;
 	gl->dir_entry = readdir(gl->dirp);
 	if (!gl->dir_entry && errno)
-		return (false_and_perr("readdir"));
+		return (perror_and_bool("readdir", false));
 	gl->full_path = NULL;
 	if (getcwd(gl->cwd, PATH_MAX) == NULL)
-		return (false_and_perr("getcwd"));
+		return (perror_and_bool("getcwd", false));
 	return (true);
 }
 
@@ -66,12 +66,12 @@ bool	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 			}
 		}
 		else
-			result = false_and_perr("stat");
+			result = perror_and_bool("stat", false);
 		free(gl.full_path);
 		errno = 0;
 		gl.dir_entry = readdir(gl.dirp);
 		if (!gl.dir_entry && errno)
-			result = false_and_perr("readdir");
+			result = perror_and_bool("readdir", false);
 	}
 	return (result && files->end > 0);
 }

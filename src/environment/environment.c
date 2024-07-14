@@ -56,7 +56,7 @@ int	print_env(t_darray *env_arr)
 		if (env_arr->contents[i] == NULL)
 			;
 		else if (printf("%s\n", (char *)darray_get(env_arr, i)) < 0)
-			status = status_and_perror("printf environment", 1);
+			status = perror_and_status("printf environment", 1);
 		i++;
 	}
 	return (status);
@@ -116,7 +116,7 @@ int	print_env_export(t_darray *env_arr)
 		key = get_var_key(export_arr->contents[i++]);
 		value = mini_get_env(export_arr, key);
 		if (key && (printf("declare -x %s=%c%s%c\n", key, '"', value, '"') < 0))
-			status = status_and_perror("printf", 1);
+			status = perror_and_status("printf export", 1);
 		free(key);
 	}
 	darray_clear_destroy(export_arr);

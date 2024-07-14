@@ -25,7 +25,7 @@ int	print_history(t_darray *env_arr)
 	fd = open(path, O_RDONLY);
 	free(path);
 	if (fd == -1)
-		return (status_and_perror("minishell: error print history", EXIT_FAILURE));
+		return (perror_and_status("print history", EXIT_FAILURE));
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
