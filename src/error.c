@@ -72,11 +72,14 @@ TODO change a variadic function
 */
 uint8_t	perror_and_status2(const char *msg_1, const char *msg_2, uint8_t status)
 {
-	if (msg_1 && !ft_write(2, msg_1))
-		status = 1;
-	if (msg_2 && !ft_write(2, msg_2))
-		status = 1;
-	perror("");
+	char	*perror_msg;
+
+	if (msg_1 || msg_2)
+		perror_msg = ft_strjoin3("minishell: ", msg_1, msg_2);
+	else
+		perror_msg = ft_strdup("minishell error");
+	perror(perror_msg);
+	free(perror_msg);
 	return (status);
 }
 
