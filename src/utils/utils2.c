@@ -17,7 +17,8 @@
 util function to replace a token with a new 
 tokenlist
 */
-void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, t_list *new_tokenlist)
+void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, \
+										t_list *new_tokenlist)
 {
 	t_list	*next;
 	t_list	*prev;
@@ -25,8 +26,8 @@ void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, t_list *new
 	t_list	*current_pos;
 
 	current_pos = *tokenlist;
-    if (!tokenlist || !*tokenlist || !new_tokenlist) 
-		return;
+	if (!tokenlist || !*tokenlist || !new_tokenlist) 
+		return ;
 	next = (*tokenlist)->next;
 	prev = (*tokenlist)->prev;
 	if (prev)
@@ -56,11 +57,11 @@ void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, t_list *new
 */
 void	replace_node_with_newlist(t_list **node, t_list *newlist)
 {
-	t_list *prev;
-	t_list *next;
-	t_list *last;
-	t_list *tmp;
-	
+	t_list	*prev;
+	t_list	*next;
+	t_list	*last;
+	t_list	*tmp;
+
 	if (!node || !newlist)
 		return ;
 	tmp = *node;
