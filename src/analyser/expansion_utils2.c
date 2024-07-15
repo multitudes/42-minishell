@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   analyser2.c                                        :+:      :+:    :+:   */
+/*   expansion_utils2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:22:07 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/07 20:14:02 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 13:14:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,27 +30,20 @@ void	reset_flags(t_exp_flags *flags)
 }
 
 /*
-Checks ast node is a builtin or a command.
+ * Checks ast node is a builtin or a command.
 */
 void	which_ast_node(t_ast_node *ast)
 {
-	t_list  *tokenlist;
-	t_token *token;
+	t_list	*tokenlist;
 
 	tokenlist = ast->tokenlist;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return ;
-	token = (t_token *)tokenlist->content;
-	if (token->type == BUILTIN)
-	{
+	if (get_token_type(tokenlist) == BUILTIN)
 		ast->type = NODE_BUILTIN;
-		return ;
-	}
-	// provisionally
-	else if (token->type == PATHNAME \
-			|| token->type == WORD || token->type == COMMAND)
-	{
+	else if (get_token_type(tokenlist) == PATHNAME || \
+			get_token_type(tokenlist) == WORD || \
+			get_token_type(tokenlist) == COMMAND)
 		ast->type = NODE_COMMAND;
-		return ;
-	}
+	return ;
 }

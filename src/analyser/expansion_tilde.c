@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_tilde.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:02:17 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/14 16:02:20 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/15 13:15:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "analyser.h"
 #include "scanner.h"
 #include "utils.h"
@@ -91,7 +92,6 @@ char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, \
 			flags->equal_status = 2;
 		i++;
 	}
-	debug("replace_tilde_in_str %s with home: %s, new lexeme: %s", lexeme, home, new_lexeme);
 	return (new_lexeme);
 }
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_stderr.c                                      :+:      :+:    :+:   */
+/*   error_stderr.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 19:33:34 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 16:28:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 13:06:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ uint8_t	stderr_and_status(const char *msg, uint8_t status)
 	}
 	else
 	{
-		if(!ft_write(2, "minishell error"))
+		if (!ft_write(2, "minishell error"))
 			return (1);
 	}
 	return (status);
@@ -42,13 +42,13 @@ uint8_t	stderr_and_status2(const char *msg_1, \
 							const char *msg_2, uint8_t status)
 {
 	if (!msg_1 && !msg_2 && !ft_write(2, "minishell error"))
-			return (1);
+		return (1);
 	if (!ft_write(2, "minishell: "))
-			return (1);
+		return (1);
 	if (msg_1 && !ft_write(2, msg_1))
-			return (1);
+		return (1);
 	if (msg_2 && !ft_write(2, msg_2))
-			return (1);
+		return (1);
 	if (!ft_write(2, "\n"))
 		return (1);
 	return (status);
@@ -63,15 +63,15 @@ uint8_t	stderr_and_status3(const char *msg_1, \
 							uint8_t status)
 {
 	if (!msg_1 && !msg_2 && !ft_write(2, "minishell error"))
-			return (1);
+		return (1);
 	if (!ft_write(2, "minishell: "))
-			return (1);
+		return (1);
 	if (msg_1 && !ft_write(2, msg_1))
-			return (1);
+		return (1);
 	if (msg_2 && !ft_write(2, msg_2))
-			return (1);
+		return (1);
 	if (msg_3 && !ft_write(2, msg_3))
-			return (1);
+		return (1);
 	if (!ft_write(2, "\n"))
 		return (1);
 	return (status);
