@@ -395,9 +395,6 @@ void	expand_single_quotes(t_token *token)
 void	expand_double_quotes(t_data *data, t_token *token)
 {
 	char	*unquoted_lexeme;
-	// char	*temp_lexeme;
-	// t_list	*string_tokens;
-	// t_list	*ptr_tokenlist;
 
 	unquoted_lexeme = NULL;
 	if (!token)
@@ -405,33 +402,12 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	unquoted_lexeme = ft_strtrim(token->lexeme, "\""); // this does not behave well, when we have strings like "\"djklfjsdl\"" or ""dkldfj" as escape characters and unclosed quotes are not handled ;
 	free(token->lexeme);
 	if (!ft_strchr(unquoted_lexeme, '$') || single_dollar(unquoted_lexeme))
-	{
-		token->lexeme = unquoted_lexeme;
-		return ;
-	}
+		token->lexeme = ft_strdup(unquoted_lexeme);
 	else if (ft_strcmp(unquoted_lexeme, "$0") == 0)
 		token->lexeme = ft_strdup("splash");
 	else
 		token->lexeme = replace_dollar_vars(data, unquoted_lexeme);
 	free(unquoted_lexeme);
-	// token->lexeme = ft_strdup("");
-	// string_tokens = tokenizer(unquoted_lexeme);
-	// free(unquoted_lexeme);
-	// token_sanitization(string_tokens);
-	// ptr_tokenlist = string_tokens;
-	// while (string_tokens)
-	// {
-	// 	if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR_QUESTION)
-	// 		expand_dollar(data, get_curr_token(string_tokens));
-	// 	temp_lexeme = token->lexeme;
-	// 	if (((t_token *)(string_tokens->content))->folldbyspace == true)
-	// 		token->lexeme = ft_strjoin3(temp_lexeme, ((t_token *)string_tokens->content)->lexeme, " ");
-	// 	else
-	// 		token->lexeme = ft_strjoin(temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
-	// 	free(temp_lexeme);
-	// 	string_tokens = string_tokens->next;
-	// }
-	// ft_lstclear(&ptr_tokenlist, free_tokennode);
 	token->type = QUOTE_EXPANDED;
 	debug("Double quotes expanded token: -%s-, type: %i", token->lexeme, token->type);
 }
@@ -508,7 +484,7 @@ static bool	separated_token_types(t_list *tokenlist)
 
 /*
 Expansion of nodes containing single quotes, double quotes, variables,
-~ / paths, Special Parameters (only $? implemented)
+~ / paths, Special Parameters ($?, $0 implemented)
 Could be extended to also include other Special Parameters ($!, etc.),
 $(..) ${..} $'..' $".."
 */
