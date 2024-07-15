@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 14:33:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 16:56:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,23 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 	init_fds(data);
 	analyse_expand(ast, data);
 	status = execute_loop(ast, data);
+	return (status);
+}
+
+/*
+ * This function will execute the list.
+ * There are two cses for a list node: AND_IF and OR_IF.
+ */
+int	execute_list(t_ast_node *ast, t_data *data)
+{
+	uint8_t		status;
+	t_tokentype	tokentype;
+
+	status = execute_ast(ast->left, data);
+	tokentype = ((t_token *)ast->tokenlist->content)->type;
+	if (status == 0 && tokentype == AND_IF)
+		status = execute_ast(ast->right, data);
+	else if (status != 0 && tokentype == OR_IF)
+		status = execute_ast(ast->right, data);
 	return (status);
 }
