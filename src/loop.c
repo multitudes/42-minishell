@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 21:28:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 11:50:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,11 +134,37 @@ void	exit_minishell(t_data *data)
 	free_data(&data);
 }
 
-bool exit_condition(t_data *data)
+void	tokenize_and_parse(t_data *data)
 {
-	if (data->input == NULL )
-		return (true);
-	return false;
+	handle_history(data);
+	data->tokenlist = tokenizer(data->input);
+	if (syntax_check_and_heredoc(data) && data->tokenlist != NULL)
+	{	
+		data->ast = create_ast(data->tokenlist);
+		if (data->ast)
+		{
+			data->exit_status = execute_ast(data->ast, data);
+			free_ast(&data->ast);
+		}
+		else
+			data->exit_status = stderr_and_status("syntax parse error", 1);
+	}
+}
+
+void	mainloop(t_data *data)
+{
+	while (true)
+	{
+		data->input = readline("minishell $ ");
+		if (data->input != NULL)
+		{
+			if (ft_strncmp(data->input, "", 1) != 0)
+				tokenize_and_parse(data);
+			free((char *)(data->input));
+			continue ;
+		}
+		return ;
+	}
 }
 
 /*
@@ -160,40 +186,9 @@ int loop()
 	data = NULL;
 	if (!init_data(&data))
 		return (EXIT_FAILURE);
-	// save_fds(data);
 	load_history(data->env_arr);
 	set_up_std_signals(); //check return value / status?
-	while (true)
-	{
-		data->input = readline("minishell $ ");
-		if (!exit_condition(data))
-		{
-			if (ft_strncmp(data->input, "", 1) != 0)
-			{
-				handle_history(data);
-				data->tokenlist = tokenizer(data->input);
-				if (syntax_check_and_heredoc(data) && data->tokenlist != NULL)
-				{
-					
-					data->ast = create_ast(data->tokenlist);
-					if (data->ast)
-					{
-						data->exit_status = execute_ast(data->ast, data);
-						// restore_fds(data);
-						debug("Exit status: %i", data->exit_status);
-						free_ast(&(data->ast));
-					}
-					else
-						data->exit_status = stderr_and_status("syntax parse error", 1);
-				}
-			}
-			free((char *)(data->input));
-			debug("Back to loop()");
-			continue ;
-		}
-		debug("Break from loop()");
-		break ;
-	}
+	mainloop(data);
 	status = data->exit_status;
 	free((char *)(data->input));
 	free_data(&data);
@@ -246,7 +241,7 @@ int single_command_loop(const char *input)
 	// save_fds(data);
 	set_up_std_signals();		
 	data->input = ft_strdup(input);
-	if (!exit_condition(data))
+	if (data->input != NULL)
 		single_command_innerloop(data);
 	status = data->exit_status;
 	free((char *)(data->input));

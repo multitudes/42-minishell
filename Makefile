@@ -19,6 +19,7 @@ INCLUDES 		= 	-I./lib/libft -I./include
 # directories
 OBJ_DIR			= 	obj/
 SRC_DIR			= 	src/
+TMP_DIR			= 	.tmp/
 LIBFTDIR 		= 	lib/libft
 
 # the files to compile
@@ -52,6 +53,7 @@ endif
 
 # target
 all: $(LIBFT) $(NAME) tests tests_integration copy_bonus
+	mkdir -p $(TMP_DIR)
 
 # Static pattern rule for compilation - adding the .o files in the obj folder 
 # with includes for the libft that will allow the <libft.h> notation 
