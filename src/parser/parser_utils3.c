@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 17:34:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 18:33:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,40 +34,31 @@ bool	tokenlist_has_astnode(t_list *new_tokenlist)
 	return (false);
 }
 
-bool	get_new_tokenlist(t_list *expr_node, t_list **new_tokenlist, \
-							bool *has_node)
-{
-	char	*newlexeme;
-
-	newlexeme = ft_substr(get_token_lexeme(expr_node), 1, \
-					ft_strlen(get_token_lexeme(expr_node)) - 2);
-	*new_tokenlist = tokenizer(newlexeme);
-	*has_node = tokenlist_has_astnode(*new_tokenlist);
-	free(newlexeme);
-	if (new_tokenlist == NULL)
-		return (false);
-	return (true);
-}
-
 /*
- * Used in the ast fuctions to create a terminal node
- * it returns a boolean to notify if I need to create a new node
- * in the ast tree the return value is true if the new_tokenlist 
- * contains a node like a pipe or a list && ||
- * new_tokenlist from the tokenizer is the new list of tokens
- * NOTE: I do not change head if there is a node before the expression
- * I dont take care of empty expressions or parenthesis
- */
+I now take care of empty expressions in the scanner
+NOTE: I do not change head if there is a node before the expression
+new_tokenlist from the tokenizer is the new list of tokens
+and if that is null I already have the scanner error message 
+on stderr and do not need to print anothererror... I will continue?
+return -1?
+*/
 bool	replace_expression_tokens(t_list **head, t_list **input_tokens)
 {
 	t_list	*expr_node;
 	t_list	*new_tokenlist;
+	char	*newlexeme;
 	bool	has_node;
 
-	has_node = false;
 	expr_node = *input_tokens;
-	if (!get_new_tokenlist(expr_node, &new_tokenlist, &has_node))
+	newlexeme = ft_substr(get_token_lexeme(expr_node), 1, \
+					ft_strlen(get_token_lexeme(expr_node)) - 2);
+	new_tokenlist = tokenizer(newlexeme);
+	if (new_tokenlist == NULL)
+	{
+		free(newlexeme);
 		return (false);
+	}
+	has_node = tokenlist_has_astnode(new_tokenlist);
 	*input_tokens = (*input_tokens)->next;
 	if (*input_tokens)
 	{
@@ -81,16 +72,17 @@ bool	replace_expression_tokens(t_list **head, t_list **input_tokens)
 	}
 	else
 		*head = new_tokenlist;
+	free(newlexeme);
 	ft_lstdelone(expr_node, free_tokennode);
 	return (has_node);
 }
 
 /*
- *I get a t_list node in input with my token as expression type
- *and want to substitute it with the content of the expression
- *it is like cut and paste a linked list
- *if I have an expression and cant replace it then I keep on running?
- */
+I get a t_list node in input with my token as expression type
+and want to substitute it with the content of the expression
+it is like cut and paste a linked list
+if I have an expression and cant replace it then I keep on running?
+*/
 bool	extract_expression(t_list **head, t_list **input_tokens)
 {
 	if (get_token_type(*input_tokens) == EXPRESSION)
