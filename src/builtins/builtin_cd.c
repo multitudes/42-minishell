@@ -46,7 +46,8 @@ static uint8_t	exec_cd_with_argument(t_darray *env_arr, t_list *tokenlist)
 			execute_pwd_builtin();
 		}
 	}
-	else if ((get_token_lexeme(tokenlist))[0] && chdir(get_token_lexeme(tokenlist)))
+	else if ((get_token_lexeme(tokenlist))[0] \
+				&& chdir(get_token_lexeme(tokenlist)))
 		return (perror_and_status2("cd", get_token_lexeme(tokenlist), 1));
 	return (0);
 }
