@@ -26,5 +26,6 @@ void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, \
                                         t_list *new_tokenlist);
 bool	ft_write(int fd, const char *str);
 bool    write_data(int fd, const void *str, uint8_t *status);
+bool	ft_isnumstring(const char *str);
 
 #endif  // UTILS_H_

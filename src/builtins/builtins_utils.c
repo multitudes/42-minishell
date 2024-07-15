@@ -1,22 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins2.c                                        :+:      :+:    :+:   */
+/*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/28 22:50:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:18:10 by lbrusa           ###   ########.fr       */
+/*   Created: 2024/07/15 13:54:22 by rpriess           #+#    #+#             */
+/*   Updated: 2024/07/15 13:54:24 by rpriess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "splash.h"
-#include "builtins.h"
-#include "libft.h"
-#include "scanner.h"
-#include "environment.h"
-#include "history.h"
-#include <unistd.h>
-#include "splash_error.h"
-#include "analyser.h"
 

@@ -62,64 +62,6 @@ uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 	return (status);
 }
 
-/*
-Minishell builtin for "cd" command.
-Relative and absolute path as arguments.
-Updates PWD and OLDPWD environment variables.
-TODOs:
-- interpret errors from called getcwd system function.
-- Implement additional functionality:
--- if invalid name is given output is "bash: cd: ARGUMENT_GIVEN: No such file or directory" with exit code 1
-(from The Open Group Base Specifications Issue 7, 2018 edition:
-"When a <hyphen-minus> is used as the operand,
-this shall be equivalent to the command: cd "$OLDPWD" && pwd")
-*/
-uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
-{
-	uint8_t	status;
-	char	dir[PATH_MAX];
-	char	old_dir[PATH_MAX];
-	char	*getoldcwd;
-	char	*getcwd;
-
-	debug("cd builtin");
-	status = 0;
-	getoldcwd = NULL;
-	getcwd = NULL;
-	tokenlist = tokenlist->next;
-	if (tokenlist && tokenlist->next)
-		return (stderr_and_status("cd: too many arguments", 1));
-	getoldcwd = execute_getcwd(old_dir);
-	status = execute_cd_tokenlist(env_arr, tokenlist);
-	debug("status: %d", status);
-	if (status != 0)
-		return (status);
-	getcwd = execute_getcwd(dir);
-	if (!getoldcwd || !getcwd)
-		status = perror_and_status("getcwd", 0);
-	else if (!update_env(env_arr, "PWD", dir) \
-			|| !update_env(env_arr, "OLDPWD", old_dir))
-		status = stderr_and_status("cd: env update failed", 0);
-	return (status);
-}
-
-/*
-Writes contents of environment to standard output.
-No options or arguments implemented.
-*/
-uint8_t	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
-{
-	uint8_t	status;
-
-	debug("env builtin");
-	status = 0;
-	if (get_token_lexeme(tokenlist->next))
-		status = stderr_and_status("env: too many arguments", 1);
-	else
-		status = print_env(env_arr);
-	return (status);
-}
-
 bool	allowed_flags(const char *flag_lexem, const char *allowed_flags)
 {
 	flag_lexem++;
@@ -133,228 +75,48 @@ bool	allowed_flags(const char *flag_lexem, const char *allowed_flags)
 }
 
 /*
-Executes builtin "echo" function with and without '-n' option
-which suppresses the trailing newline.
+Function merges the current and next token in a tokenlist:
+- type of the first token gets preserved
+- the token lexemes are joined together in a new lexeme
+- the folldbyspace info from the second token is preserved
+- the second token get deleted and the list node pointed to the following node in the list
 */
-uint8_t	execute_echo_builtin(t_list *tokenlist)
+int merge_tokens(t_list *tokenlist)
 {
-	uint8_t	status;
-	int		new_line;
+    t_token *token_1;
+    t_token *token_2;
+    t_list	*tofree;
+    char    *new_lexeme;
 
-	debug("echo builtin");
-	status = 0;
-	new_line = 1;
-	tokenlist = tokenlist->next;
-	while (tokenlist && get_token_type(tokenlist) == FLAGS \
-					&& allowed_flags(get_token_lexeme(tokenlist), "n"))
-	{
-		new_line = 0;
-		tokenlist = tokenlist->next;
-	}
-	while (tokenlist)
-	{
-		write_data(1, get_token_lexeme(tokenlist), &status);
-		if (tokenlist->next != NULL && token_followed_by_space(tokenlist))
-			write_data(1, " ", &status);
-		tokenlist = tokenlist->next;
-	}
-	if (new_line)
-		write_data(1, "\n", &status);
-	return (status);
+    debug("Token merge");
+    token_1 = get_curr_token(tokenlist);
+    token_2 = get_curr_token(tokenlist->next);
+    tofree = tokenlist->next;
+    new_lexeme = ft_strjoin(token_1->lexeme, token_2->lexeme);
+    free(token_1->lexeme);
+    free(token_2->lexeme);
+    token_1->folldbyspace = token_2->folldbyspace;
+    token_1->lexeme = new_lexeme;
+    if (ft_strlen(token_1->lexeme) == 0)
+        token_1->type = token_2->type;
+    tokenlist->next = tokenlist->next->next;
+    if (tokenlist->next)
+        tokenlist->next->prev = tokenlist;
+    free(token_2);
+	free(tofree);
+    if (tokenlist->next && !token_followed_by_space(tokenlist))
+        merge_tokens(tokenlist);
+    return (0);
 }
 
-/*
-Executes 'export' builtin. No options interpreted.
-
-- when a string with newline characters is assigned to a variable in BASH
-(e.g. VAR="first\nsecond\nthird" - single or double quotes give the same result),
-and export, then `export` and `env` list the variable with displayed \n-characters, in env case without quotes, in export case with quotes and escape charaters
-but echo on the variable will actually execute the newlines
-
-- If no value is provided export does not assigne a value to `name` and simply displays it as `name` unless the variable already exists, then it is left unchanged
-- if export is executed without values but with `export name=` then `export` displays this variable as `name='' (i.e. assigns an empty string)
-- while env without arguments does not display the variable at all
-- it is possible to assign multiple values to a variable `export VAR=1:2:3:"string" (in this case the quotes are not shown (neither with env nor with export))
-- it can also end with a ':'
-- export `VAR=2=3` gets added to the environment as `VAR='2=3'` (env would display this variable as `VAR=2=3`)
-- export `VAR=` gets added as `VAR=""` (empty string)
-- export `VAR==2` gets added as `VAR="=2"
-- export VAR="$HOME", VAR=$HOME do not work at the moment (no value assigned at all)
-- export VAR="string", VAR="string=string" do not work, the latter assigns a variable with name string and value string
-- export var13= "detached string" should return error: bash: export: `detached string': not a valid identifier
-- export "var14"=value would assign value to var14
-- export "VAR=rew"u=iqorye
-QUESTION:
-- where do we want to store our local variables?
-*/
-uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
+bool    read_only_variable(const char *key)
 {
-	uint8_t	status;
-	char	*key;
-	char	*value;
-
-	debug("export builtin");
-	status = 0;
-	tokenlist = tokenlist->next;
-	if (!tokenlist)
-		return (print_env_export(env_arr));
-	while (tokenlist)
-	{
-		key = NULL;
-		value = NULL;
-		debug("followed by space? %s", (get_curr_token(tokenlist))->folldbyspace ? "true" : "false");
-		if (tokenlist->next && !token_followed_by_space(tokenlist))
-			status = merge_tokens(tokenlist);
-		key = get_var_key(get_token_lexeme(tokenlist));
-		value = get_var_value(get_token_lexeme(tokenlist));
-		debug("Key: %s, Value: %s", key, value);
-		if (no_valid_identifier(key))
-			status = stderr_and_status3("export `", \
-				get_token_lexeme(tokenlist), "': not a valid identifier", 1);
-		else if (read_only_variable(key))
-			status = stderr_and_status3("export: ", key, \
-										": readonly variable", 1);
-		else if (key && value)
-		{
-			if (!update_env(env_arr, key, value))
-				stderr_and_status3("export: ", value, \
-									": adding to environment failed", 0);
-		}
-		free(key);
-		free(value);
-		tokenlist = tokenlist->next;
-	}
-	return (status);
-}
-
-/*
-Executes builtin 'pwd' command.
-*/
-uint8_t	execute_pwd_builtin(void)
-{
-	char	cur_dir[PATH_MAX];
-
-	debug("pwd builtin");
-	if (!getcwd(cur_dir, PATH_MAX))
-		return (perror_and_status("pwd: getcwd", 1));
-	if (printf("%s\n", cur_dir) < 0)
-		return (perror_and_status("pwd: printf", 1));
-	return (0);
-}
-
-/*
-Builtin function to unset variables.
-Checks for specific read-only variables, which cannot be unset.
-*/
-uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
-{
-	uint8_t	status;
-	char	*lexeme;
-
-	status = 0;
-	debug("unset builtin");
-	tokenlist = tokenlist->next;
-	if (!tokenlist)
-		return (0);
-	while (tokenlist)
-	{
-		lexeme = get_token_lexeme(tokenlist);
-		if (ft_strchr(lexeme, '='))
-			;
-		else if (read_only_variable(lexeme))
-			status = stderr_and_status3("unset: ", lexeme, \
-									": cannot unset: readonly variable", 1);
-		else if (lexeme != NULL && ft_strlen(lexeme) != 0)
-			status = delete_env_entry(env_arr, lexeme);
-		else
-			status = stderr_and_status("unset: error", 1);
-		tokenlist = tokenlist->next;
-	}
-	return (status);
-}
-
-bool remove_sign_token(t_list **tokenlist)
-{
-    t_list *tmp;
-	t_list *prev;
-	char 	sign;
-
-	sign = false;
-    if (tokenlist == NULL || *tokenlist == NULL)
-		return (false);
-	if (ft_strncmp(get_token_lexeme(*tokenlist), "-", 1) == 0)
-		sign = true;
-    tmp = *tokenlist;
-	prev = tmp->prev;
-    *tokenlist = tmp->next;
-	if (tmp->next)
-		tmp->next->prev = prev;
-    free_tokennode(tmp->content);
-	free(tmp);
-	return (sign);
-}
-
-void merge_sign_token(t_list **tokenlist)
-{
-	char	*old_lexeme;
-	char	*new_lexeme;
-	bool	sign;
-
-	sign = false;
-	old_lexeme = get_token_lexeme(*tokenlist);
-	if (!old_lexeme)
-		return ;
-	debug("merge_minus_token old lex %s and length %zu", old_lexeme, \
-			ft_strlen(old_lexeme));
-	if ((old_lexeme[0] == '-' || old_lexeme[0] == '+') \
-		&& ft_strlen(old_lexeme) == 1)
-	{
-		sign = remove_sign_token(tokenlist);
-		old_lexeme = get_token_lexeme(*tokenlist);
-		debug("new tokenlist: %s > %s ", get_token_lexeme(*tokenlist), \
-				get_token_lexeme((*tokenlist)->next));
-		if (sign)
-			new_lexeme = ft_strjoin("-", old_lexeme);	
-		else
-			new_lexeme = ft_strjoin("+", old_lexeme);			
-		free(old_lexeme);
-		if (!new_lexeme)
-			return ;
-		((t_token *)(*tokenlist)->content)->lexeme = new_lexeme;
-	}
-	return ;
-}
-
-/*
-Now updated as follows
-if I have a "exit -100" I will have the 3 tokens exit - 100
-so I do atoi of 100 and multiply to -1 and cast to unsigned int 
-modulo 256 to get the same result as bash
-*/
-uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
-{
-	uint8_t	status;
-	char	*lexeme;
-
-	t_list *head = tokenlist;
-	debug("exit builtin %s =============", get_token_lexeme(tokenlist));
-	tokenlist = tokenlist->next;
-	merge_sign_token(&tokenlist);
-	head->next = tokenlist;
-	lexeme = get_token_lexeme(tokenlist);
-	if (lexeme && ft_isnumstring(lexeme) && tokenlist->next)
-		return (stderr_and_status("exit: too many arguments", 1));
-	ft_write(1, "exit\n");
-	if (lexeme && ft_isnumstring(lexeme))
-		status = (unsigned int)ft_atoi(lexeme) % 256;
-	else if (lexeme && !ft_isnumstring(lexeme))
-		status = stderr_and_status3("exit: ", lexeme, \
-									": numeric argument required", 2);
+	if (ft_strncmp(key, "PPID", 5) == 0)
+		return (true);
+	else if (ft_strncmp(key, "EUID", 5) == 0)
+		return (true);
+	else if (ft_strncmp(key, "UID", 4) == 0)
+		return (true);
 	else
-		status = data->exit_status;
-	free_ast(&(data->ast));
-	free((char *)(data->input));
-	free_data(&data);
-	free(data);
-	exit(status);
+		return (false);
 }

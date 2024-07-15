@@ -27,7 +27,8 @@ error/error_perror.c error/error_stderr.c darray/darray.c darray/darray2.c darra
 globbing/globbing.c globbing/globbing1.c \
 analyser/analyser.c analyser/expansion_utils.c analyser/expansion_utils2.c \
 analyser/expansion_quotes.c analyser/expansion_dollar.c analyser/expansion_tilde.c \
-builtins/builtins.c builtins/builtins2.c \
+builtins/builtins.c builtins/builtin_cd.c builtins/builtin_echo.c builtins/builtin_env.c \
+builtins/builtin_exit.c builtins/builtin_export.c builtins/builtin_pwd.c builtins/builtin_unset.c \
 executer/executer.c executer/executer2.c executer/executer3.c executer/executer4.c \
 heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c)
 SUT_HDRS 	= 	$(addprefix ../include/, splash.h fd.h scanner.h environment.h \
