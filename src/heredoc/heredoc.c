@@ -84,15 +84,16 @@ TODO handle inner quotes like bash
 */
 static bool	process_delim_quotes(t_heredoc *heredoc)
 {
+	int	i;
 	int	count_single_quotes;
 	int	count_double_quotes;
-	int	i;
 
+	i = 0;
 	count_single_quotes = 0;
 	count_double_quotes = 0;
-	i = 0;
 	while (i < heredoc->delim_count)
 	{
+		heredoc->expansion[i] = true;
 		count_single_quotes = count_char_in_str(heredoc->delim[i], '\'');
 		count_double_quotes = count_char_in_str(heredoc->delim[i], '"');
 		if (count_single_quotes % 2 || count_double_quotes % 2)
@@ -102,13 +103,10 @@ static bool	process_delim_quotes(t_heredoc *heredoc)
 			remove_quotes(heredoc->delim[i]);
 			heredoc->expansion[i] = false;
 		}
-		else
-			heredoc->expansion[i] = true;
 		i++;
 		count_single_quotes = 0;
 		count_double_quotes = 0;
 	}
-	i = 0;
 	return (true);
 }
 
@@ -197,10 +195,9 @@ bool	execute_heredoc(t_data *data)
 }
 
 /*
-Checks for heredoc token in tokenlist.
-CONSIDER TODO valid_syntax_and_heredoc()
+Checks for tokenlist syntax and heredoc token.
 */
-bool	contains_heredoc(t_list **tokenlist)
+static bool	syntax_check(t_list **tokenlist)
 {
 	t_tokentype	tokentype;
 	bool		contains_heredoc;
@@ -235,7 +232,7 @@ bool	syntax_check_and_heredoc(t_data *data)
 	t_list	*tokenlist;
 
 	tokenlist = data->tokenlist;
-	if (contains_heredoc(&tokenlist))
+	if (syntax_check(&tokenlist))
 	{
 		data->tokenlist = tokenlist;
 		return (execute_heredoc(data));
