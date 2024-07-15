@@ -344,7 +344,7 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	lexeme = get_token_lexeme(tokenlist);
 	if (lexeme && ft_isnumstring(lexeme) && tokenlist->next)
 		return (stderr_and_status("exit: too many arguments", 1));
-	write(1, "exit\n", 5);
+	ft_write(1, "exit\n");
 	if (lexeme && ft_isnumstring(lexeme))
 		status = (unsigned int)ft_atoi(lexeme) % 256;
 	else if (lexeme && !ft_isnumstring(lexeme))

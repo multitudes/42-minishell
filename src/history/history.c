@@ -14,6 +14,7 @@
 #include "splash_error.h"
 #include "analyser.h"
 #include "splash_error.h"
+#include "utils.h"
 
 /*
 Your shell should:
@@ -107,7 +108,7 @@ bool	add_to_hist_file(const char *path, const char *input)
 	fd = open(path, O_CREAT | O_APPEND | O_WRONLY, 0644);
 	if (fd == -1)
 		return (false);
-	if (write(fd, input, ft_strlen(input)) == -1 || write(fd, "\n", 1) == -1)
+	if (!ft_write(fd, input) || !ft_write(fd, "\n"))
 	{
 		close(fd);
 		return (false);

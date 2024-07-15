@@ -18,6 +18,7 @@
 #include <signal.h>
 #include <fcntl.h>
 #include "init.h"
+#include "utils.h"
 
 /*
  * central function of the loop.c file
@@ -80,7 +81,7 @@ int	loop(void)
 	free((char *)(data->input));
 	free_data(&data);
 	debug("Exit status: %i", status);
-	write(1, "exit\n", 5);
+	ft_write(1, "exit\n");
 	return (status); 
 }
 
