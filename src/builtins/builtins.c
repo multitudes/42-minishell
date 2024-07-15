@@ -20,7 +20,8 @@
 #include "splash_error.h"
 #include "utils.h"
 
-static bool	execute_other_builtins(t_data *data, t_list *tokenlist, uint8_t *status)
+static bool	execute_other_builtins(t_data *data, t_list *tokenlist, \
+									uint8_t *status)
 {
 	if (ft_strcmp(get_token_lexeme(tokenlist), "true") == 0)
 	{
@@ -57,7 +58,6 @@ uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 	uint8_t	status;
 
 	status = 0;
-	debug("Execute builtin. token lexeme: %s, ast type: %i", get_token_lexeme(tokenlist), data->ast->type);
 	update_dollar_underscore(data->env_arr, data->ast->tokenlist);
 	if (!tokenlist)
 		return (EXIT_FAILURE);

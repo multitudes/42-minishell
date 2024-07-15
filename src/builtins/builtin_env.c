@@ -33,4 +33,3 @@ uint8_t	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 		status = print_env(env_arr);
 	return (status);
 }
-
