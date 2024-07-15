@@ -20,25 +20,22 @@
 
 /*
 Changes type of all tokens in string_tokens to WORD,
-except for those $-tokens that our shell expands in a double quoted string
+except for those $-tokens that our shell expands in a double quoted string.
 */
-static void	token_sanitization(t_list *string_tokens)
-{
-	while (string_tokens)
-	{
+// static void	token_sanitization(t_list *string_tokens)
+// {
+// 	while (string_tokens)
+// 	{
 
-		if (get_token_type(string_tokens) != VAR_EXPANSION \
-			&& get_token_type(string_tokens) != DOLLAR_QUESTION)
-			((t_token *)(string_tokens->content))->type = WORD;
-		string_tokens = string_tokens->next;
-	}
-}
+// 		if (get_token_type(string_tokens) != VAR_EXPANSION \
+// 			&& get_token_type(string_tokens) != DOLLAR_QUESTION)
+// 			((t_token *)(string_tokens->content))->type = WORD;
+// 		string_tokens = string_tokens->next;
+// 	}
+// }
 
 /*
-it checks if the terminal ast node is a builtin or a command
-but this could be already done in the parser 🧐🤨
-This function is probably just for debug purposes
-need to check that the parser interprets the tokens correctly
+Checks ast node is a builtin or a command.
 */
 void	which_ast_node(t_ast_node *ast)
 {
@@ -69,7 +66,7 @@ void	which_ast_node(t_ast_node *ast)
 
 
 /*
-We dont expand tilde if the next char after the tilde is not a valid path
+We dont expand tilde if the next char after the tilde is not a valid path.
 */
 bool	peek_is_valid_path(char c)
 {
@@ -326,6 +323,16 @@ char	*replace_dollar_vars(t_data *data, char *lexeme)
 }
 
 /*
+Returns true if string only has one '$' as char.
+*/
+static bool	single_dollar(char *str)
+{
+	if (ft_strlen(str) == 1 && str[0] == '$')
+		return (true);
+	return (false);
+}
+
+/*
 Used to expand variables indicated by "$".
 */
 void	expand_dollar(t_data *data, t_token *token)
@@ -335,7 +342,7 @@ void	expand_dollar(t_data *data, t_token *token)
 	var = token->lexeme;
 	if (!token || !token->lexeme)
 		return ;
-	if (ft_strlen(token->lexeme) == 1 && token->lexeme[0] == '$')
+	if (single_dollar(token->lexeme))
 	{
 		token->type = EXPANDED;
 		return ;
@@ -388,43 +395,48 @@ void	expand_single_quotes(t_token *token)
 void	expand_double_quotes(t_data *data, t_token *token)
 {
 	char	*unquoted_lexeme;
-	char	*temp_lexeme;
-	t_list	*string_tokens;
-	t_list	*ptr_tokenlist;
+	// char	*temp_lexeme;
+	// t_list	*string_tokens;
+	// t_list	*ptr_tokenlist;
 
 	unquoted_lexeme = NULL;
 	if (!token)
 		return ;
 	unquoted_lexeme = ft_strtrim(token->lexeme, "\""); // this does not behave well, when we have strings like "\"djklfjsdl\"" or ""dkldfj" as escape characters and unclosed quotes are not handled ;
 	free(token->lexeme);
-	if (!ft_strchr(unquoted_lexeme, '$'))
+	if (!ft_strchr(unquoted_lexeme, '$') || single_dollar(unquoted_lexeme))
 	{
 		token->lexeme = unquoted_lexeme;
 		return ;
 	}
-	token->lexeme = ft_strdup("");
-	string_tokens = tokenizer(unquoted_lexeme);
+	else if (ft_strcmp(unquoted_lexeme, "$0") == 0)
+		token->lexeme = ft_strdup("splash");
+	else
+		token->lexeme = replace_dollar_vars(data, unquoted_lexeme);
 	free(unquoted_lexeme);
-	token_sanitization(string_tokens);
-	ptr_tokenlist = string_tokens;
-	while (string_tokens)
-	{
-		if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR_QUESTION)
-			expand_dollar(data, get_curr_token(string_tokens));
-		temp_lexeme = token->lexeme;
-		if (((t_token *)(string_tokens->content))->folldbyspace == true)
-			token->lexeme = ft_strjoin3(temp_lexeme, ((t_token *)string_tokens->content)->lexeme, " ");
-		else
-			token->lexeme = ft_strjoin(temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
-		free(temp_lexeme);
-		string_tokens = string_tokens->next;
-	}
-	ft_lstclear(&ptr_tokenlist, free_tokennode);
+	// token->lexeme = ft_strdup("");
+	// string_tokens = tokenizer(unquoted_lexeme);
+	// free(unquoted_lexeme);
+	// token_sanitization(string_tokens);
+	// ptr_tokenlist = string_tokens;
+	// while (string_tokens)
+	// {
+	// 	if (get_token_type(string_tokens) == VAR_EXPANSION || get_token_type(string_tokens) == DOLLAR_QUESTION)
+	// 		expand_dollar(data, get_curr_token(string_tokens));
+	// 	temp_lexeme = token->lexeme;
+	// 	if (((t_token *)(string_tokens->content))->folldbyspace == true)
+	// 		token->lexeme = ft_strjoin3(temp_lexeme, ((t_token *)string_tokens->content)->lexeme, " ");
+	// 	else
+	// 		token->lexeme = ft_strjoin(temp_lexeme, ((t_token *)string_tokens->content)->lexeme);
+	// 	free(temp_lexeme);
+	// 	string_tokens = string_tokens->next;
+	// }
+	// ft_lstclear(&ptr_tokenlist, free_tokennode);
 	token->type = QUOTE_EXPANDED;
 	debug("Double quotes expanded token: -%s-, type: %i", token->lexeme, token->type);
 }
 
-void	execute_expansion_by_type(t_data *data, t_list **tokenlist, t_exp_flags *flags)
+static void	execute_expansion_by_type(t_data *data, t_list **tokenlist, t_exp_flags *flags)
 {
 	t_tokentype	type;
 
@@ -447,7 +459,7 @@ void	execute_expansion_by_type(t_data *data, t_list **tokenlist, t_exp_flags *fl
 /*
 Identify if and which expansion needed and call the appropriate expansion function.
 */
-void	expand_tokenlist(t_data *data, t_ast_node *ast)
+static void	expand_tokenlist(t_data *data, t_ast_node *ast)
 {
 	t_exp_flags	flags;
 	int			count;
