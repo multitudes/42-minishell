@@ -110,7 +110,6 @@ static bool	process_delim_quotes(t_heredoc *heredoc)
 	return (true);
 }
 
-
 static bool	create_heredoc_file(t_list *tokenlist, t_heredoc *heredoc)
 {
 	char	*temp;
@@ -164,7 +163,7 @@ static bool	init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
 				heredoc->delim_count++;
 			}
 			else
-				return (stderr_and_bool( \
+				return (stderr_and_bool(\
 						"syntax error: unexpected heredoc token", false));
 		}
 		tokenlist = tokenlist->next;
