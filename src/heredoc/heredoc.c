@@ -112,14 +112,45 @@ static bool	process_delim_quotes(t_heredoc *heredoc)
 	return (true);
 }
 
+
+static bool	create_heredoc_file(t_list *tokenlist, t_heredoc *heredoc)
+{
+	char	*temp;
+
+	temp = ((t_token *)(tokenlist->content))->lexeme;
+	((t_token *)(tokenlist->content))->lexeme = get_heredoc_filename();
+	free(temp);
+	if (!get_token_lexeme(tokenlist))
+	{
+		free_heredoc(heredoc);
+		return (stderr_and_bool("heredoc setup error", false));
+	}
+	heredoc->file[heredoc->delim_count] = \
+		ft_strdup(((t_token *)(tokenlist->content))->lexeme);
+	((t_token *)(tokenlist->content))->type = HEREDOC_FILE;
+	return (true);
+}
+
+static bool	save_heredoc_delimiter(t_list *tokenlist, t_heredoc *heredoc)
+{
+	remove_leading_backslash((t_token *)(tokenlist->next->content));
+	heredoc->delim[heredoc->delim_count] = \
+		ft_strdup(get_token_lexeme(tokenlist->next));
+	if (!heredoc->delim[heredoc->delim_count])
+	{
+		free_heredoc(heredoc);
+		return (stderr_and_bool("heredoc memory error", false));
+	}
+	debug("Set delimiter %i: %s", heredoc->delim_count, heredoc->delim[heredoc->delim_count]);
+	return (true);
+}
+
 /*
 Set up heredoc(s). Up to 20 heredocs/delimiters are supported.
 TODO Add syntax check on tokenlist.
 */
 static bool	init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
 {
-	char	*temp;
-
 	heredoc->delim_count = 0;
 	while (tokenlist)
 	{
@@ -127,29 +158,16 @@ static bool	init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
 		{
 			if (is_heredoc_delim(tokenlist->next))
 			{
-				remove_leading_backslash((t_token *)(tokenlist->next->content));
-				heredoc->delim[heredoc->delim_count] = ft_strdup(get_token_lexeme(tokenlist->next));
-				if (!heredoc->delim[heredoc->delim_count])
-				{
-					free_heredoc(heredoc);
-					return (stderr_and_bool("heredoc memory error", false));
-				}
-				debug("Set delimiter %i: %s", heredoc->delim_count, heredoc->delim[heredoc->delim_count]);
+				if (!save_heredoc_delimiter(tokenlist, heredoc))
+					return (false);
 				tokenlist = tokenlist->next;
-				temp = ((t_token *)(tokenlist->content))->lexeme;
-				((t_token *)(tokenlist->content))->lexeme = get_heredoc_filename();
-				free(temp);
-				if (!get_token_lexeme(tokenlist))
-				{
-					free_heredoc(heredoc);
-					return (stderr_and_bool("heredoc setup error", false));
-				}
-				heredoc->file[heredoc->delim_count] = ft_strdup(((t_token *)(tokenlist->content))->lexeme);
-				((t_token *)(tokenlist->content))->type = HEREDOC_FILE;
+				if (!create_heredoc_file(tokenlist, heredoc))
+					return (false);
 				heredoc->delim_count++;
 			}
 			else
-				return (stderr_and_bool("syntax error: unexpected heredoc token", false));
+				return (stderr_and_bool( \
+						"syntax error: unexpected heredoc token", false));
 		}
 		tokenlist = tokenlist->next;
 	}
@@ -191,7 +209,7 @@ bool	contains_heredoc(t_list **tokenlist)
 
 	tmp = NULL;
 	contains_heredoc = false;
-	curr = tokenlist;
+	curr = *tokenlist;
 	while (curr)
 	{
 		tokentype = get_token_type(curr);
@@ -199,10 +217,8 @@ bool	contains_heredoc(t_list **tokenlist)
 			contains_heredoc = true;
 		else if (tokentype == COMMENT)
 		{
-			debug("comment token found");
 			tmp = (curr)->prev;
 			ft_lstclear(&curr, free_tokennode);
-			debug("tokenlist is freed");
 			if (tmp)
 				tmp->next = NULL;
 			else
@@ -211,9 +227,6 @@ bool	contains_heredoc(t_list **tokenlist)
 		}
 		curr = curr->next;
 	}
-	// debug("tmp is %s", get_token_lexeme(tmp));
-	// debug("head is %s", get_token_lexeme(get_head(tmp)));
-	// debug("tokenlist head is %s", get_token_lexeme((*tokenlist)));
 	return (contains_heredoc);
 }
 
@@ -222,7 +235,6 @@ bool	syntax_check_and_heredoc(t_data *data)
 	t_list	*tokenlist;
 
 	tokenlist = data->tokenlist;
-	print_tokenlist(tokenlist);
 	if (contains_heredoc(&tokenlist))
 	{
 		data->tokenlist = tokenlist;
