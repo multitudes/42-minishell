@@ -1541,6 +1541,19 @@ and in another window do `tail -f errorlogfile"
 
 But also open a new window and get the terminal file name with `tty` and `./minishell > /dev/pts/5`
 
+## Final notes
+The line count for the project counting the c and h files is at the end stage before submission 12763:
+```bash
+find . -name '*.c' -o -name '*.h' | xargs wc -l
+```
+
+and including the cpp and hpp files 20385:
+
+```bash
+find . -name '*.c' -o -name '*.h' -o -name '*.cpp' -o -name '*.hpp' | xargs wc -l
+```
+
+
 
 ## links
 The Bash reference manual:  

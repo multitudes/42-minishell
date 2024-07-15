@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 19:16:09 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 08:14:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 17:12:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
  * I need to read the files in my directory and check if they match the pattern
  * this function will push a list of files in my darray and return true if it 
  * was successful
-*/
+ */
 bool	match_files_in_directory(t_darray *files, const char *pattern)
 {
 	t_globbing	gl;
@@ -34,10 +34,10 @@ bool	match_files_in_directory(t_darray *files, const char *pattern)
 /*
  * This recursive function will check if the pattern matches the file name
  * it will return true if it does
-*/
+ */
 bool	is_glob_match(const char *pattern, const char *file_name)
 {
-	bool result;
+	bool	result;
 
 	result = false;
 	if (*pattern == '\0')
