@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:23:18 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/10 17:34:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:53:44 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ extern "C" {
 
 // void	perror_minishell(const char *msg);
 void	*perror_and_null(const char *msg);
-bool	perror_and_bool(const char *msg, bool boolian);
+bool	perror_and_bool(const char *msg, bool boolean);
 uint8_t perror_and_status(const char *msg, uint8_t status);
 uint8_t	perror_and_status2(const char *msg_1, const char *msg_2, \
 							uint8_t status);
@@ -36,7 +36,7 @@ uint8_t	stderr_and_status2(const char *msg_1, const char *msg_2, \
 uint8_t	stderr_and_status3(const char *msg_1, \
 							const char *msg_2, const char *msg_3, \
 							uint8_t status);
-bool	stderr_and_bool(const char *msg, bool boolian);
+bool	stderr_and_bool(const char *msg, bool boolean);
 
 
 #  ifdef __cplusplus

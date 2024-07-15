@@ -78,11 +78,11 @@ uint8_t	stderr_and_status3(const char *msg_1, \
 }
 
 /*
-Writes "minishell: msg\n" to standard error and returns boolian.
+Writes "minishell: msg\n" to standard error and returns boolean.
 If msg is NULL, "minishell: error\n" is printed.
 If write fails false is returned.
 */
-bool	stderr_and_bool(const char *msg, bool boolian)
+bool	stderr_and_bool(const char *msg, bool boolean)
 {
 	char	*error_msg;
 
@@ -91,7 +91,7 @@ bool	stderr_and_bool(const char *msg, bool boolian)
 	else
 		error_msg = ft_strdup("minishell error");
 	if (!ft_write(2, error_msg) || !ft_write(2, "\n"))
-		boolian = false;
+		boolean = false;
 	free(error_msg);
-	return (boolian);
+	return (boolean);
 }

@@ -32,10 +32,10 @@ If msg argument is NULL, "minishell error" is passed to perror.
 // 	free(perror_msg);
 // }
 /*
-Writes "minishell: msg" to perror and returns boolian.
+Writes "minishell: msg" to perror and returns boolean.
 If msg argument is NULL, "minishell error" is passed to perror.
 */
-bool	perror_and_bool(const char *msg, bool boolian)
+bool	perror_and_bool(const char *msg, bool boolean)
 {
 	char	*perror_msg;
 
@@ -45,7 +45,7 @@ bool	perror_and_bool(const char *msg, bool boolian)
 		perror_msg = ft_strdup("minishell error");
 	perror(perror_msg);
 	free(perror_msg);
-	return (boolian);
+	return (boolean);
 }
 
 /*

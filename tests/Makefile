@@ -23,7 +23,7 @@ scanner/redirection_tokens.c scanner/redirection_tokens2.c scanner/token_blocks2
 environment/environment.c environment/environment2.c \
 parser/parser.c parser/parser2.c parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c \
 utils/utils.c utils/utils2.c parser/parser_utils4.c\
-error/error_perror.c error/error_perror.c darray/darray.c darray/darray2.c darray/darray3.c \
+error/error_perror.c error/error_stderr.c darray/darray.c darray/darray2.c darray/darray3.c \
 globbing/globbing.c globbing/globbing1.c \
 analyser/analyser.c analyser/expansion_utils.c analyser/expansion_utils2.c \
 analyser/expansion_quotes.c analyser/expansion_dollar.c analyser/expansion_tilde.c \
