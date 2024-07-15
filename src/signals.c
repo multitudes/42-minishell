@@ -36,7 +36,7 @@ available on any POSIX-compliant system.
 according to the linux programming language by kerrisk (page 127), using
 the environ variable is better than getting it in main.. (not posix compliant)
 */
-extern char **environ;
+extern char	**environ;
 
 /*
 for signals
@@ -60,17 +60,13 @@ the terminal.
 */
 static void	sigint_handler(int sig)
 {
-    if (sig == SIGINT)
-    {	
-		// g_signal = sig;
-        ft_write(1, "\n");
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
-		// ft_write(1,"got signal\n");
-    }
-	// else
-	// 	g_signal = sig;
+	if (sig == SIGINT)
+	{
+		ft_write(1, "\n");
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
 	return ;
 }
 
@@ -97,13 +93,13 @@ int	set_up_std_signals(void)
 	{
 		if ((signal(SIGINT, sigint_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-		return (perror_and_status("SIG_ERR", 1));
+			return (perror_and_status("SIG_ERR", 1));
 	}
 	else 
 	{
 		if ((signal(SIGINT, sigint_handler) == SIG_ERR) || \
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
-		return (perror_and_status("SIG_ERR signal", 1));
+			return (perror_and_status("SIG_ERR signal", 1));
 	}
 	rl_catch_signals = 1;
 	return (0);
