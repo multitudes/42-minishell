@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:15:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/04 16:44:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 13:26:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,11 +99,11 @@ int	darray_resize(t_darray *array, size_t newsize, size_t old_size)
 	contents = ft_realloc(array->contents, array->max * sizeof(void *), \
 	old_size * sizeof(void *));
 	if (!contents)
-    {
-        array->max = old_size;
+	{
+		array->max = old_size;
 		return (-1);
-    }
-    array->contents = contents;
+	}
+	array->contents = contents;
 	return (0);
 }
 

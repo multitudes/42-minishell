@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 22:50:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 12:06:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 13:18:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,32 +106,32 @@ int merge_tokens(t_list *tokenlist)
 
 bool    read_only_variable(const char *key)
 {
-    if (ft_strncmp(key, "PPID", 5) == 0)
-        return (true);
-    else if (ft_strncmp(key, "EUID", 5) == 0)
-        return (true);
-    else if (ft_strncmp(key, "UID", 4) == 0)
-        return (true);
-    else
-        return (false);
+	if (ft_strncmp(key, "PPID", 5) == 0)
+		return (true);
+	else if (ft_strncmp(key, "EUID", 5) == 0)
+		return (true);
+	else if (ft_strncmp(key, "UID", 4) == 0)
+		return (true);
+	else
+		return (false);
 }
 
-bool    no_valid_identifier(const char *key)
+bool	no_valid_identifier(const char *key)
 {
-    int i;
+	int	i;
 
-    debug("check if valid identifier");
-    if (key && (!ft_isalpha(key[0]) || key[0] == '_'))
-        return (true);
-    debug("First key check passed");
-    i = 1;
-    while (key[i] != '\0')
-    {
-        if (!ft_isalnum(key[i]) && key[i] != '_')
-            return (true);
-        i++;
-    }
-    if (key[i] != '\0')
-        return (true);
-    return (false);
+	debug("check if valid identifier");
+	if (key && (!ft_isalpha(key[0]) || key[0] == '_'))
+		return (true);
+	debug("First key check passed");
+	i = 1;
+	while (key[i] != '\0')
+	{
+		if (!ft_isalnum(key[i]) && key[i] != '_')
+			return (true);
+		i++;
+	}
+	if (key[i] != '\0')
+		return (true);
+	return (false);
 }
