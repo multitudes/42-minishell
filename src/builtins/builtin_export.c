@@ -18,7 +18,6 @@
 #include "splash_error.h"
 #include "debug.h"
 
-
 static bool	no_valid_identifier(const char *key)
 {
 	int	i;
@@ -39,7 +38,7 @@ static bool	no_valid_identifier(const char *key)
 	return (false);
 }
 
-static uint8_t process_export_arguments(t_list *tokenlist, t_darray *env_arr)
+static uint8_t	process_export_arguments(t_list *tokenlist, t_darray *env_arr)
 {
 	char	*key;
 	char	*value;
@@ -74,8 +73,10 @@ static uint8_t process_export_arguments(t_list *tokenlist, t_darray *env_arr)
 Executes 'export' builtin. No options interpreted.
 
 - when a string with newline characters is assigned to a variable in BASH
-(e.g. VAR="first\nsecond\nthird" - single or double quotes give the same result),
-and export, then `export` and `env` list the variable with displayed \n-characters,
+(e.g. VAR="first\nsecond\nthird"
+	- single or double quotes give the same result),
+and export, then `export` and `env`
+list the variable with displayed \n-characters,
 in env case without quotes, in export case with quotes and escape charaters
 but echo on the variable will actually execute the newlines
 

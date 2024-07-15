@@ -19,7 +19,7 @@
 #include "debug.h"
 #include "builtins.h"
 
-static char *execute_getcwd(char old_dir[]) // char *message)
+static char *execute_getcwd(char old_dir[])
 {
 	char	*retval;
 
@@ -28,7 +28,7 @@ static char *execute_getcwd(char old_dir[]) // char *message)
 	return (retval);
 }
 
-static uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
+static uint8_t	execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 {
 	char	*home;
 	char	*lexeme;
@@ -38,7 +38,7 @@ static uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 	lexeme = get_token_lexeme(tokenlist);
 	if (tokenlist && lexeme) 
 	{
-		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0) // one arg  '-'
+		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0)
 		{
 			if (!mini_get_env(env_arr, "OLDPWD"))
 				return (stderr_and_status("cd: OLDPWD not set", 1));
@@ -52,7 +52,7 @@ static uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 		else if (*lexeme && chdir(get_token_lexeme(tokenlist)))
 			return (perror_and_status2("cd: ", get_token_lexeme(tokenlist), 1));
 	}
-	else // no args
+	else
 	{
 		if (!home)
 			return (stderr_and_status("cd: HOME not set", 1));
@@ -75,7 +75,8 @@ Updates PWD and OLDPWD environment variables.
 TODOs:
 - interpret errors from called getcwd system function.
 - Implement additional functionality:
--- if invalid name is given output is "bash: cd: ARGUMENT_GIVEN: No such file or directory" with exit code 1
+-- if invalid name is given output is "bash: cd: ARGUMENT_GIVEN:
+	No such file or directory" with exit code 1
 (from The Open Group Base Specifications Issue 7, 2018 edition:
 "When a <hyphen-minus> is used as the operand,
 this shall be equivalent to the command: cd "$OLDPWD" && pwd")
@@ -108,4 +109,3 @@ uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 		status = stderr_and_status("cd: env update failed", 0);
 	return (status);
 }
-
