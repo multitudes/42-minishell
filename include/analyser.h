@@ -36,6 +36,7 @@ extern "C" {
 
 void analyse_expand(t_ast_node * ast, t_data * data);
 void	expand_dollar(t_data *data, t_token *token);
+bool	single_dollar(char *str);
 char	*get_key(char *str);
 char	*replace_dollar_vars(t_data *data, char *lexeme);
 void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags);
