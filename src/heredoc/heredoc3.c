@@ -14,6 +14,7 @@
 #include "parser.h"
 #include "executer.h"
 #include "splash_error.h"
+#include "utils.h"
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
@@ -22,7 +23,7 @@ static void	sigint_handler2(int sig)
 {
     if (sig == SIGINT)
     {
-        write(1, "^C", 2);
+        ft_write(1, "^C");
         ioctl(0, TIOCSTI, "\n");
 		g_signal = sig;
     }

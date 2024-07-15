@@ -18,6 +18,7 @@
 #include <signal.h>
 #include <fcntl.h>
 #include "init.h"
+#include "utils.h"
 
 /*
 Allowed global variable for signals only. 
@@ -62,11 +63,11 @@ static void	sigint_handler(int sig)
     if (sig == SIGINT)
     {	
 		// g_signal = sig;
-        write(1, "\n", 1);
+        ft_write(1, "\n");
         rl_on_new_line();
         rl_replace_line("", 0);
         rl_redisplay();
-		// write(1,"got signal\n",12);
+		// ft_write(1,"got signal\n");
     }
 	// else
 	// 	g_signal = sig;
