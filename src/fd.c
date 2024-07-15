@@ -43,15 +43,15 @@ static void	restore_stdin(t_data *data)
 {
 	if (data->original_stdin != -1)
 	{
-		// if (data->original_stdin != STDIN_FILENO)
-		// {
+		if (data->original_stdin != STDIN_FILENO)
+		{
 			if (dup2(data->original_stdin, STDIN_FILENO) == -1)
 			{
 				data->exit_status = 1;
 				perror_and_null("dup2");
 			}
-		// }
-		if (close(data->original_stdin) == -1)
+		}
+		else if (close(data->original_stdin) == -1)
 		{
 			data->exit_status = 1;
 			perror_and_null("close");
@@ -66,15 +66,15 @@ static void	restore_stdout(t_data *data)
 {
 	if (data->original_stdout != -1)
 	{
-		// if (data->original_stdout != STDOUT_FILENO)
-		// {
+		if (data->original_stdout != STDOUT_FILENO)
+		{
 			if (dup2(data->original_stdout, STDOUT_FILENO) == -1)
 			{
 				data->exit_status = 1;
 				perror_and_null("dup2");
 			}
-		// }
-		if (close(data->original_stdout) == -1)
+		}
+		else if (close(data->original_stdout) == -1)
 		{
 			data->exit_status = 1;
 			perror_and_null("close");
@@ -89,15 +89,15 @@ static void	restore_stderr(t_data *data)
 {
 	if (data->original_stderr != -1)
 	{
-		// if (data->original_stderr != STDERR_FILENO)
-		// {
+		if (data->original_stderr != STDERR_FILENO)
+		{
 			if (dup2(data->original_stderr, STDERR_FILENO) == -1)
 			{
 				data->exit_status = 1;
 				perror_and_null("dup2");
 			}
-		// }
-		if (close(data->original_stderr) == -1)
+		}
+		else if (close(data->original_stderr) == -1)
 		{
 			data->exit_status = 1;
 			perror_and_null("close");
