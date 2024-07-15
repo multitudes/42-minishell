@@ -19,22 +19,6 @@
 #include "builtins.h"
 
 /*
-Changes type of all tokens in string_tokens to WORD,
-except for those $-tokens that our shell expands in a double quoted string.
-*/
-// static void	token_sanitization(t_list *string_tokens)
-// {
-// 	while (string_tokens)
-// 	{
-
-// 		if (get_token_type(string_tokens) != VAR_EXPANSION \
-// 			&& get_token_type(string_tokens) != DOLLAR_QUESTION)
-// 			((t_token *)(string_tokens->content))->type = WORD;
-// 		string_tokens = string_tokens->next;
-// 	}
-// }
-
-/*
 Checks ast node is a builtin or a command.
 */
 void	which_ast_node(t_ast_node *ast)
@@ -63,7 +47,6 @@ void	which_ast_node(t_ast_node *ast)
 	// 	debug("NODE_TRUE or NODE_FALSE");
 	// }
 }
-
 
 /*
 We dont expand tilde if the next char after the tilde is not a valid path.
