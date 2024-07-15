@@ -21,24 +21,24 @@
 
 static bool remove_sign_token(t_list **tokenlist)
 {
-    t_list *tmp;
+	t_list *tmp;
 	t_list *prev;
 	char 	sign;
 
 	sign = false;
-    if (tokenlist == NULL || *tokenlist == NULL)
+	if (tokenlist == NULL || *tokenlist == NULL)
 		return (false);
 	if (ft_strncmp(get_token_lexeme(*tokenlist), "-", 1) == 0)
 		sign = true;
-    tmp = *tokenlist;
+	tmp = *tokenlist;
 	prev = tmp->prev;
-    *tokenlist = tmp->next;
+	*tokenlist = tmp->next;
 	if (tmp->next)
 		tmp->next->prev = prev;
-    free_tokennode(tmp->content);
+	free_tokennode(tmp->content);
 	free(tmp);
 	return (sign);
-}
+	}
 
 static void merge_sign_token(t_list **tokenlist)
 {

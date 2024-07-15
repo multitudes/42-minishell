@@ -80,37 +80,38 @@ Function merges the current and next token in a tokenlist:
 - type of the first token gets preserved
 - the token lexemes are joined together in a new lexeme
 - the folldbyspace info from the second token is preserved
-- the second token get deleted and the list node pointed to the following node in the list
+- the second token get deleted and the list node
+pointed to the following node in the list
 */
-int merge_tokens(t_list *tokenlist)
+int	merge_tokens(t_list *tokenlist)
 {
-    t_token *token_1;
-    t_token *token_2;
-    t_list	*tofree;
-    char    *new_lexeme;
+	t_token	*token_1;
+	t_token	*token_2;
+	t_list	*tofree;
+	char	*new_lexeme;
 
-    debug("Token merge");
-    token_1 = get_curr_token(tokenlist);
-    token_2 = get_curr_token(tokenlist->next);
-    tofree = tokenlist->next;
-    new_lexeme = ft_strjoin(token_1->lexeme, token_2->lexeme);
-    free(token_1->lexeme);
-    free(token_2->lexeme);
-    token_1->folldbyspace = token_2->folldbyspace;
-    token_1->lexeme = new_lexeme;
-    if (ft_strlen(token_1->lexeme) == 0)
-        token_1->type = token_2->type;
-    tokenlist->next = tokenlist->next->next;
-    if (tokenlist->next)
-        tokenlist->next->prev = tokenlist;
-    free(token_2);
+	debug("Token merge");
+	token_1 = get_curr_token(tokenlist);
+	token_2 = get_curr_token(tokenlist->next);
+	tofree = tokenlist->next;
+	new_lexeme = ft_strjoin(token_1->lexeme, token_2->lexeme);
+	free(token_1->lexeme);
+	free(token_2->lexeme);
+	token_1->folldbyspace = token_2->folldbyspace;
+	token_1->lexeme = new_lexeme;
+	if (ft_strlen(token_1->lexeme) == 0)
+		token_1->type = token_2->type;
+	tokenlist->next = tokenlist->next->next;
+	if (tokenlist->next)
+		tokenlist->next->prev = tokenlist;
+	free(token_2);
 	free(tofree);
-    if (tokenlist->next && !token_followed_by_space(tokenlist))
-        merge_tokens(tokenlist);
-    return (0);
+	if (tokenlist->next && !token_followed_by_space(tokenlist))
+		merge_tokens(tokenlist);
+	return (0);
 }
 
-bool    read_only_variable(const char *key)
+bool	read_only_variable(const char *key)
 {
 	if (ft_strncmp(key, "PPID", 5) == 0)
 		return (true);
