@@ -26,9 +26,12 @@ void	expand_single_quotes(t_token *token)
 		token->lexeme = lexeme;
 		token->type = QUOTE_EXPANDED;
 	}
-	debug("Single quotes expanded token: %s, type: %i", token->lexeme, token->type);
 }
 
+/*
+TODO: this may  not behave well, when we have strings like "\"djklfjsdl\""
+or ""dkldfj" as escape characters and unclosed quotes are not handled ;
+*/
 void	expand_double_quotes(t_data *data, t_token *token)
 {
 	char	*unquoted_lexeme;
@@ -36,7 +39,7 @@ void	expand_double_quotes(t_data *data, t_token *token)
 	unquoted_lexeme = NULL;
 	if (!token)
 		return ;
-	unquoted_lexeme = ft_strtrim(token->lexeme, "\""); // this does not behave well, when we have strings like "\"djklfjsdl\"" or ""dkldfj" as escape characters and unclosed quotes are not handled ;
+	unquoted_lexeme = ft_strtrim(token->lexeme, "\"");
 	free(token->lexeme);
 	if (!ft_strchr(unquoted_lexeme, '$') || single_dollar(unquoted_lexeme))
 		token->lexeme = ft_strdup(unquoted_lexeme);
@@ -46,5 +49,4 @@ void	expand_double_quotes(t_data *data, t_token *token)
 		token->lexeme = replace_dollar_vars(data, unquoted_lexeme);
 	free(unquoted_lexeme);
 	token->type = QUOTE_EXPANDED;
-	debug("Double quotes expanded token: -%s-, type: %i", token->lexeme, token->type);
 }

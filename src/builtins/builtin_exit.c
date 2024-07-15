@@ -19,17 +19,18 @@
 #include <libft.h>
 #include <stdbool.h>
 
-static bool	remove_sign_token(t_list **tokenlist)
+static char	*remove_sign_token(t_list **tokenlist)
 {
 	t_list	*tmp;
 	t_list	*prev;
-	char	sign;
+	char	*sign;
 
-	sign = false;
 	if (tokenlist == NULL || *tokenlist == NULL)
 		return (false);
 	if (ft_strncmp(get_token_lexeme(*tokenlist), "-", 1) == 0)
-		sign = true;
+		sign = ft_strdup("-");
+	else
+		sign = ft_strdup("+");
 	tmp = *tokenlist;
 	prev = tmp->prev;
 	*tokenlist = tmp->next;
@@ -44,9 +45,8 @@ static void	merge_sign_token(t_list **tokenlist)
 {
 	char	*old_lexeme;
 	char	*new_lexeme;
-	bool	sign;
+	char	*sign;
 
-	sign = false;
 	old_lexeme = get_token_lexeme(*tokenlist);
 	if (!old_lexeme)
 		return ;
@@ -59,10 +59,8 @@ static void	merge_sign_token(t_list **tokenlist)
 		old_lexeme = get_token_lexeme(*tokenlist);
 		debug("new tokenlist: %s > %s ", get_token_lexeme(*tokenlist), \
 				get_token_lexeme((*tokenlist)->next));
-		if (sign)
-			new_lexeme = ft_strjoin("-", old_lexeme);
-		else
-			new_lexeme = ft_strjoin("+", old_lexeme);
+		new_lexeme = ft_strjoin(sign, old_lexeme);
+		free(sign);
 		free(old_lexeme);
 		if (!new_lexeme)
 			return ;
