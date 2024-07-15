@@ -28,3 +28,29 @@ void	reset_flags(t_exp_flags *flags)
 	flags->equal_status = 1;
 	flags->starts_var_exp = false;
 }
+
+/*
+Checks ast node is a builtin or a command.
+*/
+void	which_ast_node(t_ast_node *ast)
+{
+	t_list  *tokenlist;
+	t_token *token;
+
+	tokenlist = ast->tokenlist;
+	if (tokenlist == NULL || tokenlist->content == NULL)
+		return ;
+	token = (t_token *)tokenlist->content;
+	if (token->type == BUILTIN)
+	{
+		ast->type = NODE_BUILTIN;
+		return ;
+	}
+	// provisionally
+	else if (token->type == PATHNAME \
+			|| token->type == WORD || token->type == COMMAND)
+	{
+		ast->type = NODE_COMMAND;
+		return ;
+	}
+}
