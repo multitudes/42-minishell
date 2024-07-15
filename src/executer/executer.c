@@ -83,7 +83,7 @@ void	update_dollar_underscore(t_darray *env_arr, t_list *tokenlist)
 			cmd = ft_strdup(get_token_lexeme(tokenlist));
 		}
 		if (update_env(env_arr, "_", cmd) == FALSE)
-			perror("in update_env for _ ");
+			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         perror("in update_env for _ ");
 		debug("cmd: %s ===================================", cmd);
 		free(cmd);
 	}
@@ -94,7 +94,7 @@ void	update_dollar_underscore(t_darray *env_arr, t_list *tokenlist)
 				((t_token *)last->content)->lexeme);
 		if (update_env(env_arr, "_", \
 			((t_token *)last->content)->lexeme) == FALSE)
-			perror("in update_env for _ ");
+			perror_and_null("update_env for '_'");
 	}	
 }
 
