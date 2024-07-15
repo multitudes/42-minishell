@@ -13,7 +13,7 @@
 #include <unistd.h>
 #include "fd.h"
 #include "splash.h"
-#include "unistd.h"
+#include "splash_error.h"
 
 void	save_fds(t_data *data)
 {
@@ -24,7 +24,7 @@ void	save_fds(t_data *data)
 	if (data->original_stdout == -1 || data->original_stdin == -1 || data->original_stderr == -1)
 	{
 		data->exit_status = 1;
-		perror("minishell: dup");
+		perror_and_null("dup");
 	}
 }
 
@@ -45,13 +45,13 @@ static void	restore_stdin(t_data *data)
 			if (dup2(data->original_stdin, STDIN_FILENO) == -1)
 			{
 				data->exit_status = 1;
-				perror("minishell: dup2");
+				perror_and_null("dup2");
 			}
 		// }
 		if (close(data->original_stdin) == -1)
 		{
 			data->exit_status = 1;
-			perror("minishell: close");
+			perror_and_null("close");
 		}
 	}
 }
@@ -65,13 +65,13 @@ static void	restore_stdout(t_data *data)
 			if (dup2(data->original_stdout, STDOUT_FILENO) == -1)
 			{
 				data->exit_status = 1;
-				perror("minishell: dup2");
+				perror_and_null("dup2");
 			}
 		// }
 		if (close(data->original_stdout) == -1)
 		{
 			data->exit_status = 1;
-			perror("minishell: close");
+			perror_and_null("close");
 		}
 	}
 }
@@ -85,13 +85,13 @@ static void	restore_stderr(t_data *data)
 			if (dup2(data->original_stderr, STDERR_FILENO) == -1)
 			{
 				data->exit_status = 1;
-				perror("minishell: dup2");
+				perror_and_null("dup2");
 			}
 		// }
 		if (close(data->original_stderr) == -1)
 		{
 			data->exit_status = 1;
-			perror("minishell: close");
+			perror_and_null("close");
 		}
 	}
 }

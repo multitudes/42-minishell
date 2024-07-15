@@ -12,6 +12,7 @@
 
 #include "scanner.h"
 #include "utils.h"
+#include "splash_error.h"
 
 /*
 util function to replace a token with a new 
@@ -97,7 +98,7 @@ bool	ft_write(int fd, const char *str)
 	write_return = write(fd, str, ft_strlen(str));
 	if (write_return == -1 || write_return != (ssize_t)ft_strlen(str))
 	{
-		perror("minishell: write");
+		perror_and_null("write");
 		return (false);
 	}
 	return (true);

@@ -33,7 +33,7 @@ void	set_up_heredoc_signals(void)
 {
     rl_catch_signals = 0;
 	if (signal(SIGINT, sigint_handler2) == SIG_ERR)
-		return (perror("SIG_ERR signal failed"));
+		return (perror("minishell: SIG_ERR"));
 	return ;
 }
 

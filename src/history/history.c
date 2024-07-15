@@ -135,7 +135,7 @@ int	clear_hist_file(const char *path)
 	fd = open(path, O_WRONLY | O_TRUNC);
 	if (fd == -1)
 	{
-		perror("open");
+		perror_and_null("open");
 		return (1);
 	}
 	close(fd);
