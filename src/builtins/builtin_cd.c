@@ -38,7 +38,7 @@ static uint8_t	execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 	lexeme = get_token_lexeme(tokenlist);
 	if (tokenlist && lexeme) 
 	{
-		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0)
+		if (ft_strcmp(get_token_lexeme(tokenlist), "-") == 0)
 		{
 			if (!mini_get_env(env_arr, "OLDPWD"))
 				return (stderr_and_status("cd: OLDPWD not set", 1));
@@ -61,7 +61,7 @@ static uint8_t	execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 		if (home && *home != '\0' && chdir(home))
 		{
 			free(home);
-			return (perror_and_status("cd", 1));
+			return (perror_and_status2("cd: ", get_token_lexeme(tokenlist), 1));
 		}
 		free(home);
 	}
