@@ -19,6 +19,38 @@
 #include "debug.h"
 #include "builtins.h"
 
+static uint8_t	exec_cd_without_argument(t_darray *env_arr, t_list *tokenlist)
+{
+	char	*home;
+
+	home = mini_get_env(env_arr, "HOME");
+	if (!home)
+		return (stderr_and_status("cd: HOME not set", 1));
+	// home = get_home(env_arr);
+	debug("home is -%s--------------------", home);
+	if (home && *home != '\0' && chdir(home))
+		return (perror_and_status2("cd: ", get_token_lexeme(tokenlist), 1));
+	return (0);
+}
+
+static uint8_t	exec_cd_with_argument(t_darray *env_arr, t_list *tokenlist)
+{
+	if (ft_strcmp(get_token_lexeme(tokenlist), "-") == 0)
+	{
+		if (!mini_get_env(env_arr, "OLDPWD"))
+			return (stderr_and_status("cd: OLDPWD not set", 1));
+		else
+		{
+			if (chdir(mini_get_env(env_arr, "OLDPWD")))
+				return (perror_and_status("cd", 1));
+			execute_pwd_builtin();
+		}
+	}
+	else if ((get_token_lexeme(tokenlist))[0] && chdir(get_token_lexeme(tokenlist)))
+		return (perror_and_status2("cd", get_token_lexeme(tokenlist), 1));
+	return (0);
+}
+
 static char	*execute_getcwd(char old_dir[])
 {
 	char	*retval;
@@ -30,42 +62,15 @@ static char	*execute_getcwd(char old_dir[])
 
 static uint8_t	execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 {
-	char	*home;
-	char	*lexeme;
+	uint8_t	status;
 
 	debug("execute_cd_tokenlist with lexeme %s", get_token_lexeme(tokenlist));
-	home = mini_get_env(env_arr, "HOME");
-	lexeme = get_token_lexeme(tokenlist);
-	if (tokenlist && lexeme) 
-	{
-		if (ft_strcmp(get_token_lexeme(tokenlist), "-") == 0)
-		{
-			if (!mini_get_env(env_arr, "OLDPWD"))
-				return (stderr_and_status("cd: OLDPWD not set", 1));
-			else
-			{
-				if (chdir(mini_get_env(env_arr, "OLDPWD")))
-					return (perror_and_status("cd", 1));
-				execute_pwd_builtin();
-			}
-		}
-		else if (*lexeme && chdir(get_token_lexeme(tokenlist)))
-			return (perror_and_status2("cd: ", get_token_lexeme(tokenlist), 1));
-	}
+	status = 0;
+	if (tokenlist && get_token_lexeme(tokenlist))
+		status = exec_cd_with_argument(env_arr, tokenlist);
 	else
-	{
-		if (!home)
-			return (stderr_and_status("cd: HOME not set", 1));
-		home = get_home(env_arr);
-		debug("home is -%s--------------------", home);
-		if (home && *home != '\0' && chdir(home))
-		{
-			free(home);
-			return (perror_and_status2("cd: ", get_token_lexeme(tokenlist), 1));
-		}
-		free(home);
-	}
-	return (0);
+		status = exec_cd_without_argument(env_arr, tokenlist);
+	return (status);
 }
 
 /*
