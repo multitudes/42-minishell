@@ -20,6 +20,34 @@
 #include "splash_error.h"
 #include "utils.h"
 
+static bool	execute_other_builtins(t_data *data, t_list *tokenlist, uint8_t *status)
+{
+	if (ft_strcmp(get_token_lexeme(tokenlist), "true") == 0)
+	{
+		*status = 0;
+		return (true);
+	}
+	else if (ft_strcmp(get_token_lexeme(tokenlist), "false") == 0)
+	{
+		*status = 1;
+		return (true);
+	}
+	else if (ft_strcmp(data->input, "history -c") == 0 \
+			|| ft_strcmp(data->input, "history --clear") == 0)
+	{
+		clear_hist_file(data->homepath);
+		rl_clear_history();
+		*status = 0;
+		return (true);
+	}
+	else if (ft_strcmp(data->input, "history") == 0)
+	{
+		*status = print_history(data->env_arr);
+		return (true);
+	}
+	return (false);
+}
+
 /*
 Function to call to execute minishell builtin functions + history, true, false.
 Returns exit status of executed builtin.
@@ -29,36 +57,27 @@ uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 	uint8_t	status;
 
 	status = 0;
+	debug("Execute builtin. token lexeme: %s, ast type: %i", get_token_lexeme(tokenlist), data->ast->type);
 	update_dollar_underscore(data->env_arr, data->ast->tokenlist);
 	if (!tokenlist)
 		return (EXIT_FAILURE);
-	if (ft_strncmp(get_token_lexeme(tokenlist), "echo", 5) == 0)
-		status = execute_echo_builtin(tokenlist);
-	else if (ft_strncmp(get_token_lexeme(tokenlist), "cd", 3) == 0)
-		status = execute_cd_builtin(data->env_arr, tokenlist);
-	else if (ft_strncmp(get_token_lexeme(tokenlist), "pwd", 4) == 0)
-		status = execute_pwd_builtin();
-	else if (ft_strncmp(get_token_lexeme(tokenlist), "export", 7) == 0)
-		status = execute_export_builtin(data->env_arr, tokenlist);
-	else if (ft_strncmp(get_token_lexeme(tokenlist), "unset", 6) == 0)
-		status = execute_unset_builtin(data->env_arr, tokenlist);
-	else if (ft_strncmp(get_token_lexeme(tokenlist), "env", 4) == 0)
-		status = execute_env_builtin(data->env_arr, tokenlist);
-	else if (ft_strncmp(get_token_lexeme(tokenlist), "exit", 5) == 0)
-		status = execute_exit_builtin(data, tokenlist);
-	else if (ft_strncmp(get_token_lexeme(tokenlist), "true", 5) == 0)
-		status = 0;
-	else if (ft_strncmp(get_token_lexeme(tokenlist), "false", 6) == 0)
-		status = 1;
-	else if (ft_strncmp(data->input, "history -c", 11) == 0 \
-			|| ft_strncmp(data->input, "history --clear", 16) == 0)
-	{
-		clear_hist_file(data->homepath);
-		rl_clear_history();
-	}
-	else if (ft_strncmp(data->input, "history", 7) == 0)
-		status = print_history(data->env_arr);
-	else 
+	if (ft_strcmp(get_token_lexeme(tokenlist), "echo") == 0)
+		return (execute_echo_builtin(tokenlist));
+	else if (ft_strcmp(get_token_lexeme(tokenlist), "cd") == 0)
+		return (execute_cd_builtin(data->env_arr, tokenlist));
+	else if (ft_strcmp(get_token_lexeme(tokenlist), "pwd") == 0)
+		return (execute_pwd_builtin());
+	else if (ft_strcmp(get_token_lexeme(tokenlist), "export") == 0)
+		return (execute_export_builtin(data->env_arr, tokenlist));
+	else if (ft_strcmp(get_token_lexeme(tokenlist), "unset") == 0)
+		return (execute_unset_builtin(data->env_arr, tokenlist));
+	else if (ft_strcmp(get_token_lexeme(tokenlist), "env") == 0)
+		return (execute_env_builtin(data->env_arr, tokenlist));
+	else if (ft_strcmp(get_token_lexeme(tokenlist), "exit") == 0)
+		return (execute_exit_builtin(data, tokenlist));
+	else if (execute_other_builtins(data, tokenlist, &status))
+		return (status);
+	else if (get_token_type(tokenlist) == BUILTIN)
 		return (stderr_and_status("builtin not implemented", 2));
 	return (status);
 }
