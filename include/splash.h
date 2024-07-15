@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   splash.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 12:02:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:10:32 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef SPLASH_H
+# define SPLASH_H
 
 // stdio.h below is definitely needed by macos because of the 
 // alternative brew readline library used in the project
@@ -94,12 +94,12 @@ int loop();
 bool		init_data(t_data **data);
 bool		init_data2(t_data **data);
 bool		init_env_darray(t_darray **env_array);
-void		free_data(t_data **data);
-int			single_command_loop(const char *input);
 int			set_up_std_signals(void);
-// void		save_fds(t_data *data);
-// void		restore_fds(t_data *data);
+void		mainloop(t_data *data);
+void		tokenize_and_parse(t_data *data);
+int			single_command_loop(const char *input);
 void		single_command_innerloop(t_data *data);
+void		free_data(t_data **data);
 
 #  ifdef __cplusplus
 

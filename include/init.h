@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 11:41:47 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 19:14:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:05:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define INIT_H
 
 # include "darray.h"
-# include "minishell.h"
+# include "splash.h"
 
 bool	init_data(t_data **data);
 bool	init_data2(t_data **data);

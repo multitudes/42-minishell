@@ -6,11 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/14 12:19:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:06:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "splash.h"
 #include "builtins.h"
 #include "libft.h"
 #include "scanner.h"

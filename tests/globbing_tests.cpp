@@ -3,7 +3,7 @@
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
-#include "../include/minishell.h"
+#include "../include/splash.h"
 #include "../include/globbing.h"
 
 void	ft_lstdelone_test(t_list *lst, void (*del)(void*));

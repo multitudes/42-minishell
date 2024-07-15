@@ -14,7 +14,7 @@ OBJ_DIR		= 	../obj/
 SRC_DIR		= 	../src/
 
 # the file to tests (SUT = System Under Test)
-SUT_SRCS 	= 	$(addprefix $(SRC_DIR), init.c fd.c loop.c history/history.c history/history2.c \
+SUT_SRCS 	= 	$(addprefix $(SRC_DIR), init.c fd.c loop.c signals.c history/history.c history/history2.c \
 scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/token_functions2.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
@@ -25,7 +25,7 @@ error.c error2.c darray/darray.c darray/darray2.c darray/darray3.c globbing/glob
 analyser/analyser.c analyser/analyser2.c builtins/builtins.c builtins/builtins2.c \
 executer/executer.c executer/executer2.c executer/executer3.c executer/executer4.c \
 heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c)
-SUT_HDRS 	= 	$(addprefix ../include/, minishell.h fd.h scanner.h environment.h \
+SUT_HDRS 	= 	$(addprefix ../include/, splash.h fd.h scanner.h environment.h \
 parser.h analyser.h executer.h splash_error.h darray.h builtins.h globbing.h heredoc.h) 
 
 # will be compiled into object files

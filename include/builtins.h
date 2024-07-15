@@ -13,7 +13,7 @@
 #ifndef BUILTINS_H
 # define BUILTINS_H
 
-# include "minishell.h"
+# include "splash.h"
 # include "libft.h"
 # include "scanner.h"
 # include "environment.h"

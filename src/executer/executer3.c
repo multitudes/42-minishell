@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/13 15:50:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:06:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <limits.h>
 #include "debug.h"
 #include "parser.h"
-#include "minishell.h"
+#include "splash.h"
 #include "splash_error.h"
 #include "libft.h"
 

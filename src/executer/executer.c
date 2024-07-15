@@ -6,12 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 15:50:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:06:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executer.h"
-#include "minishell.h"
+#include "splash.h"
 #include "splash_error.h"
 #include "builtins.h"
 #include "analyser.h"

@@ -6,13 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 12:48:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 16:34:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:06:14 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "fd.h"
-#include "minishell.h"
+#include "splash.h"
 #include "unistd.h"
 
 void	save_fds(t_data *data)
