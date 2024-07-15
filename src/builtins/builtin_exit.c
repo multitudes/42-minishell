@@ -19,11 +19,11 @@
 #include <libft.h>
 #include <stdbool.h>
 
-static bool remove_sign_token(t_list **tokenlist)
+static bool	remove_sign_token(t_list **tokenlist)
 {
-	t_list *tmp;
-	t_list *prev;
-	char 	sign;
+	t_list	*tmp;
+	t_list	*prev;
+	char	sign;
 
 	sign = false;
 	if (tokenlist == NULL || *tokenlist == NULL)
@@ -38,9 +38,9 @@ static bool remove_sign_token(t_list **tokenlist)
 	free_tokennode(tmp->content);
 	free(tmp);
 	return (sign);
-	}
+}
 
-static void merge_sign_token(t_list **tokenlist)
+static void	merge_sign_token(t_list **tokenlist)
 {
 	char	*old_lexeme;
 	char	*new_lexeme;
@@ -60,9 +60,9 @@ static void merge_sign_token(t_list **tokenlist)
 		debug("new tokenlist: %s > %s ", get_token_lexeme(*tokenlist), \
 				get_token_lexeme((*tokenlist)->next));
 		if (sign)
-			new_lexeme = ft_strjoin("-", old_lexeme);	
+			new_lexeme = ft_strjoin("-", old_lexeme);
 		else
-			new_lexeme = ft_strjoin("+", old_lexeme);			
+			new_lexeme = ft_strjoin("+", old_lexeme);
 		free(old_lexeme);
 		if (!new_lexeme)
 			return ;
@@ -81,8 +81,9 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 {
 	uint8_t	status;
 	char	*lexeme;
+	t_list	*head;
 
-	t_list *head = tokenlist;
+	head = tokenlist;
 	debug("exit builtin %s =============", get_token_lexeme(tokenlist));
 	tokenlist = tokenlist->next;
 	merge_sign_token(&tokenlist);
