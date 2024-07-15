@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 17:09:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 16:24:04 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,23 +95,6 @@ char	*create_path(char *base, char *path_env)
 	}
 	free_array(envpaths);
 	return (NULL);
-}
-
-/*
-when I need to free a string array like the envpaths
-*/
-int	free_array(char **envpaths)
-{
-	int	i;
-
-	i = 0;
-	while (envpaths[i])
-	{
-		free(envpaths[i]);
-		i++;
-	}
-	free(envpaths);
-	return (0);
 }
 
 /*

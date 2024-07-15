@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 16:21:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 16:23:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	open_fd_by_redirect_type(t_tokentype type, char *filename, uint8_t *status)
 	return (fd);
 }
 
-uint8_t	iterate_tokenlist_for_redirections(t_ast_node **ast , \
+uint8_t	iterate_tokenlist_for_redirections(t_ast_node **ast, \
 											t_list **tokenlist, \
 											int *token_counter)
 {
@@ -104,7 +104,8 @@ uint8_t	execute_redirection(t_ast_node **ast)
 	tokenlist = (*ast)->tokenlist;
 	if (tokenlist == NULL || tokenlist->content == NULL)
 		return (0);
-	status = iterate_tokenlist_for_redirections(ast, &tokenlist, &token_counter);
+	status = iterate_tokenlist_for_redirections(ast, &tokenlist, \
+												&token_counter);
 	if (tokenlist == NULL && token_counter == 0)
 	{
 		(*ast)->tokenlist = NULL;
