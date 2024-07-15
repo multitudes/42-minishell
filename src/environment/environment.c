@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 12:06:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 13:49:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@
 #include "splash_error.h"
 
 /*
-Update / add a variable to the environment given a key and corresponding value.
-*/
-
-bool update_env(t_darray *env_arr, const char *key, const char *value)
+ * Update / add a variable to the environment given a key and corresponding 
+ * value.
+ */
+bool	update_env(t_darray *env_arr, const char *key, const char *value)
 {
 	char		*env_str;
 	char		*new_env_str;
@@ -45,9 +45,9 @@ bool update_env(t_darray *env_arr, const char *key, const char *value)
 }
 
 /*
-Function prints the environment variables
-stored in environment array
-*/
+ * Function prints the environment variables
+ * stored in environment array
+ */
 int	print_env(t_darray *env_arr)
 {
 	int	i;
@@ -67,10 +67,10 @@ int	print_env(t_darray *env_arr)
 }
 
 /*
-Returns the value of an environment variable given a key.
-The returned value is not allocated.
-*/
-char *mini_get_env(t_darray *env_arr, const char *key)
+ * Returns the value of an environment variable given a key.
+ * The returned value is not allocated.
+ */
+char	*mini_get_env(t_darray *env_arr, const char *key)
 {
 	char		*env_str;
 	char		*position;
@@ -96,9 +96,9 @@ char *mini_get_env(t_darray *env_arr, const char *key)
 }
 
 /*
-Prints the environment variables when `export` command is used:
-Quoted strings, last command is omitted.
-*/
+ * Prints the environment variables when `export` command is used:
+ * Quoted strings, last command is omitted.
+ */
 int	print_env_export(t_darray *env_arr)
 {
 	t_darray	*export_arr;
@@ -107,13 +107,11 @@ int	print_env_export(t_darray *env_arr)
 	char		*value;
 	int			i;
 
-	debug("print env with `export`");
 	status = 0;
 	i = 0;
 	export_arr = NULL;
 	if (copy_env_darray(&export_arr, env_arr))
 		return (1);
-//	sort_array_for_export(export_arr);
 	while (export_arr && export_arr->contents && i < env_arr->end - 1)
 	{
 		key = get_var_key(export_arr->contents[i++]);
@@ -125,37 +123,4 @@ int	print_env_export(t_darray *env_arr)
 	}
 	darray_clear_destroy(export_arr);
 	return (status);
-}
-
-/*
-Returns the key in a variable string.
-Memory for key is malloced and needs to be freed.
-*/
-char	*get_var_key(const char *variable)
-{
-	char	*position;
-	char	*key;
-	position = ft_strchr(variable, '=');
-	if (position)
-		key = ft_substr(variable, 0, position - variable);
-	else
-		key = ft_strdup(variable);
-	return (key);
-}
-
-/*
-Returns the value in a variable string.
-Memory for value is malloced and needs to be freed.
-*/
-char	*get_var_value(const char *variable)
-{
-	char	*position;
-	char	*value;
-	position = ft_strchr(variable, '=');
-	if (position)
-		value = ft_substr(variable, position - variable + 1, \
-				ft_strlen(position + 1));
-	else
-		value = NULL;
-	return (value);
 }
