@@ -6,19 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 14:32:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 14:33:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 15:16:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executer.h"
 #include "splash.h"
 #include "splash_error.h"
-// #include "builtins.h"
-// #include "analyser.h"
-// #include "heredoc.h"
-// #include "darray.h"
-// #include "scanner.h"
-// #include "fd.h"
 
 /*
 Checks if tokenlist contains a redirection token.
