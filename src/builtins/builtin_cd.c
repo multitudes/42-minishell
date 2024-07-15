@@ -19,7 +19,7 @@
 #include "debug.h"
 #include "builtins.h"
 
-static char *execute_getcwd(char old_dir[])
+static char	*execute_getcwd(char old_dir[])
 {
 	char	*retval;
 
