@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 12:06:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 13:11:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,10 +108,8 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 	tokenlist = ast->tokenlist;
 	if (!tokenlist)
 		return ;
-	debug("First lexeme in tokenlist: -%s-, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 	expand_tokenlist(data, ast);
 	tokenlist = ast->tokenlist;
-	// debug("First lexeme in expanded tokenlist: -%s-, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 	while (tokenlist && tokenlist->next)
 	{
 		if ((!token_followed_by_space(tokenlist) \
@@ -123,5 +121,4 @@ void analyse_expand(t_ast_node *ast, t_data *data)
 			tokenlist = tokenlist->next;
 	}
 	which_ast_node(ast);
-	// debug("First lexeme in expanded and merged tokenlist: -%s-, type: %i, ast-node type: %i", get_token_lexeme(ast->tokenlist), get_token_type(ast->tokenlist),  ast->type);
 }
