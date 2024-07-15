@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 16:23:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 16:32:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,7 @@ static void	upd_status_redir(int fd, int fd2, char *file, uint8_t *status)
 uint8_t	dup2_by_redirect_type(t_tokentype type, \
 					char *filename, int fd, uint8_t *status)
 {
-	int	new_fd;
-
 	*status = 0;
-	new_fd = -1;
 	if (type == REDIRECT_OUT || type == DGREAT || type == CLOBBER)
 		upd_status_redir(fd, STDOUT_FILENO, filename, status);
 	else if (type == REDIRECT_IN || type == DLESS || type == DLESSDASH)
