@@ -23,7 +23,7 @@ TMP_DIR			= 	.tmp/
 LIBFTDIR 		= 	lib/libft
 
 # the files to compile
-SRCS 			= 	$(addprefix $(SRC_DIR), init.c fd.c main.c loop.c signals.c history/history.c history/history2.c \
+SRCS 			= 	$(addprefix $(SRC_DIR), init.c fd.c main.c loop.c signals.c freedata.c history/history.c history/history2.c \
 scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
 scanner/token_functions.c scanner/token_functions2.c scanner/dollar_tokens.c scanner/reserved_builtins.c \

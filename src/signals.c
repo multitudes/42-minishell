@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 12:10:12 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 12:12:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:33:59 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,25 +36,6 @@ according to the linux programming language by kerrisk (page 127), using
 the environ variable is better than getting it in main.. (not posix compliant)
 */
 extern char **environ;
-
-/*
-util function
-it makes sense to collect what we malloc in our data struct
-because it is easier to free at the end or when we need to exit
-tokenlist is freed in the loop with the ast
-*/
-void	free_data(t_data **data)
-{
-	if (data == NULL || *data == NULL)
-		return ;
-	debug("freeing env darray");
-	darray_clear_destroy((*data)->env_arr);
-	free((void *)((*data)->homepath));
-	(*data)->homepath = NULL;
-	free(*data);
-	*data = NULL;
-	debug("data freed");
-}
 
 /*
 for signals

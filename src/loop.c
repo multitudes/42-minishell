@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 12:21:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:33:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	tokenize_and_parse(t_data *data)
 	handle_history(data);
 	data->tokenlist = tokenizer(data->input);
 	if (syntax_check_and_heredoc(data) && data->tokenlist != NULL)
-	{	
+	{
 		data->ast = create_ast(data->tokenlist);
 		if (data->ast)
 		{
@@ -65,10 +65,10 @@ Doing so signals an “end-of-file” condition to the program.
 When that happens readLine() returns null ,
 so we check for that to exit the loop.
 */
-int loop()
+int	loop(void)
 {
 	t_data	*data;
-	uint8_t status;
+	uint8_t	status;
 
 	status = 0;
 	data = NULL;
@@ -114,7 +114,7 @@ void	single_command_innerloop(t_data *data)
 /*
 invoqued using the -c flag
 */
-int single_command_loop(const char *input)
+int	single_command_loop(const char *input)
 {
 	uint8_t	status;	
 	t_data	*data;
