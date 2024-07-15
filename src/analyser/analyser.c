@@ -90,7 +90,6 @@ static bool	separated_token_types(t_list *tokenlist)
 	else if (is_heredoc_token(type_1) || is_heredoc_token(type_2))
 		return (true);
 	return (false);
-
 }
 
 /*
@@ -99,7 +98,7 @@ Expansion of nodes containing single quotes, double quotes, variables,
 Could be extended to also include other Special Parameters ($!, etc.),
 $(..) ${..} $'..' $".."
 */
-void analyse_expand(t_ast_node *ast, t_data *data)
+void	analyse_expand(t_ast_node *ast, t_data *data)
 {
 	t_list		*tokenlist;
 

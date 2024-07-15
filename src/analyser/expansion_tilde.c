@@ -43,7 +43,7 @@ bool	valid_tilde_separator(char sep, int equal_status)
 Replaces occurances of '~' in a string, if conditions for ~-expansion are met.
 */
 char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, \
-                                char *home, t_exp_flags *flags)
+								char *home, t_exp_flags *flags)
 {
 	char	*new_lexeme;
 	int		i;
