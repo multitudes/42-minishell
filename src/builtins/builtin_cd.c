@@ -21,22 +21,22 @@
 
 static char *execute_getcwd(char old_dir[]) // char *message)
 {
-    char    *retval;
+	char	*retval;
 
-    retval = NULL;
-    retval = getcwd(old_dir, PATH_MAX);
-    return (retval);
+	retval = NULL;
+	retval = getcwd(old_dir, PATH_MAX);
+	return (retval);
 }
 
 static uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 {
-	char *home;
-    char *lexeme;
+	char	*home;
+	char	*lexeme;
 
 	debug("execute_cd_tokenlist with lexeme %s", get_token_lexeme(tokenlist));
 	home = mini_get_env(env_arr, "HOME");
 	lexeme = get_token_lexeme(tokenlist);
-    if (tokenlist && lexeme) 
+	if (tokenlist && lexeme) 
 	{
 		if (ft_strncmp(get_token_lexeme(tokenlist), "-", 2) == 0) // one arg  '-'
 		{
@@ -50,14 +50,14 @@ static uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 			}
 		}
 		else if (*lexeme && chdir(get_token_lexeme(tokenlist)))
-            return (perror_and_status2("cd: ", get_token_lexeme(tokenlist), 1));
-    }
-    else // no args
+			return (perror_and_status2("cd: ", get_token_lexeme(tokenlist), 1));
+	}
+	else // no args
 	{
-        if (!home)
+		if (!home)
 			return (stderr_and_status("cd: HOME not set", 1));
 		home = get_home(env_arr);
-        debug("home is -%s--------------------", home);
+		debug("home is -%s--------------------", home);
 		if (home && *home != '\0' && chdir(home))
 		{
 			free(home);
@@ -65,7 +65,7 @@ static uint8_t execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 		}
 		free(home);
 	}
-    return (0);
+	return (0);
 }
 
 /*
