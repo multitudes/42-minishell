@@ -1,16 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   quote_expansion.c                                  :+:      :+:    :+:   */
+/*   expansion_quotes.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:01:22 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/14 16:01:32 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/15 12:29:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "splash.h"
 #include "analyser.h"
-#include "minishell.h"
 #include "scanner.h"
 #include <libft.h>
 

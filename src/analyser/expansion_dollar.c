@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_dollar.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:01:47 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/14 16:01:51 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/15 12:29:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "analyser.h"
-#include "minishell.h"
+
+#include "splash.h"
 #include "scanner.h"
 #include "utils.h"
 #include <libft.h>
