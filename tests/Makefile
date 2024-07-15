@@ -28,7 +28,7 @@ globbing/globbing.c globbing/globbing1.c \
 analyser/analyser.c analyser/expansion_utils.c analyser/expansion_utils2.c \
 analyser/expansion_quotes.c analyser/expansion_dollar.c analyser/expansion_tilde.c \
 builtins/builtins.c builtins/builtins2.c \
-executer/executer.c executer/executer2.c executer/executer3.c executer/executer4.c \
+executer/executer.c executer/executer2.c executer/executer3.c executer/executer4.c executer/executer5.c \
 heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c)
 SUT_HDRS 	= 	$(addprefix ../include/, splash.h fd.h scanner.h environment.h \
 parser.h analyser.h executer.h splash_error.h darray.h builtins.h globbing.h heredoc.h) 

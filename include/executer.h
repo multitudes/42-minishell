@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 20:11:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 14:33:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ int		get_status_of_children(pid_t pid1, pid_t pid2);
 int		free_array(char **envpaths);
 uint8_t	get_wait_status(int status);
 void	update_dollar_underscore(t_darray *env_arr, t_list *tokenlist);
+void	update_dollar_undersc_single_cmd(t_darray *env_arr, t_list *tokenlist);
+bool	contains_redirection(t_list *tokenlist);
 
 #  ifdef __cplusplus
 

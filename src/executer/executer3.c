@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 12:06:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 13:58:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 	char	**argv;
 
 	status = 0;
+	update_dollar_underscore(data->env_arr, data->ast->tokenlist);
 	pid = fork();
 	if (pid == 0)
 	{

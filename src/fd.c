@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 12:48:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 12:06:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 14:06:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 #include "splash.h"
 #include "splash_error.h"
 
-void	save_fds(t_data *data)
+/*
+ * Saves the original file descriptors before redirection
+ */
+bool	save_fds(t_data *data)
 {
 	debug("Save for later restoration STDIN: %i, STDOUT: %i, STDERR: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
 	data->original_stdout = dup(STDOUT_FILENO);
@@ -24,8 +27,9 @@ void	save_fds(t_data *data)
 	if (data->original_stdout == -1 || data->original_stdin == -1 || data->original_stderr == -1)
 	{
 		data->exit_status = 1;
-		perror_and_null("dup");
+		return (perror_and_bool("dup", false));
 	}
+	return (true);
 }
 
 /*
@@ -35,7 +39,6 @@ void	save_fds(t_data *data)
  * yes I think we need to close the original fds
  * https://stackoverflow.com/a/11042581/9497800
 */
-
 static void	restore_stdin(t_data *data)
 {
 	if (data->original_stdin != -1)
@@ -56,6 +59,9 @@ static void	restore_stdin(t_data *data)
 	}
 }
 
+/*
+ * Restores the original stdout file descriptors
+*/
 static void	restore_stdout(t_data *data)
 {
 	if (data->original_stdout != -1)
@@ -76,6 +82,9 @@ static void	restore_stdout(t_data *data)
 	}
 }
 
+/*
+ * Restores the original stderr file descriptor
+ */
 static void	restore_stderr(t_data *data)
 {
 	if (data->original_stderr != -1)
@@ -96,6 +105,9 @@ static void	restore_stderr(t_data *data)
 	}
 }
 
+/*
+ * Restores the original file descriptors 
+ */
 void	restore_fds(t_data *data)
 {
 	restore_stdin(data);
