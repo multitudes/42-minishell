@@ -27,7 +27,7 @@ bool	match_files_in_directory(t_darray *files, const char *pattern)
 	if (!init(&gl) || !globbing_loop(files, pattern, gl))
 		result = false;
 	if (closedir(gl.dirp))
-		perror_and_null("closedir");
+		result = perror_and_bool("closedir", false);
 	return (result);
 }
 

@@ -34,7 +34,7 @@ static char *get_heredoc_filename()
         return (perror_and_null("heredoc set up"));
     new_filename = ft_strjoin(".tmp/heredoc_", index);
     if (!new_filename)
-        perror_and_null("heredoc set up");
+        return (perror_and_null("heredoc set up"));
     free(index);
     return (new_filename);
 }

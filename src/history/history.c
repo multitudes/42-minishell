@@ -129,16 +129,10 @@ int	clear_hist_file(const char *path)
 	int		fd;
 
 	if (path == NULL)
-	{
-		fprintf(stderr, "Error: Path is NULL\n");
-		return (1);
-	}
-	fd = open(path, O_WRONLY | O_TRUNC);
+		return (stderr_and_status("history not available", 1));
+	fd = open(path, O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd == -1)
-	{
-		perror_and_null("open");
-		return (1);
-	}
+		return (perror_and_status("open", 1));
 	close(fd);
 	return (0);
 }

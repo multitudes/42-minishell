@@ -97,10 +97,7 @@ bool	ft_write(int fd, const char *str)
 		return (true);
 	write_return = write(fd, str, ft_strlen(str));
 	if (write_return == -1 || write_return != (ssize_t)ft_strlen(str))
-	{
-		perror_and_null("write");
-		return (false);
-	}
+		perror_and_bool("write", false);
 	return (true);
 }
 
