@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 12:06:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 13:57:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 	uint8_t	status;
 
 	status = 0;
+	update_dollar_underscore(data->env_arr, data->ast->tokenlist);
 	if (!tokenlist)
 		return (EXIT_FAILURE);
 	if (ft_strncmp(get_token_lexeme(tokenlist), "echo", 5) == 0)
