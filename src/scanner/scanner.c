@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 22:21:59 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 12:47:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ t_list	*tokenizer(const char *input)
 //peek(data.input + i, "#", FUZZY))
 int skip_space(t_list *tokenlist, const char* input, int *i)
 {
-	debug("skip_space");
 	t_list	*last;
 	t_token	*lasttok;
 
@@ -93,15 +92,16 @@ bool	is_a_flag(t_mini_data *data, int *i)
 bool	is_some_semicolons(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, ";;&", FUZZY))
-		return (add_token(data, i, ";;&", DSEMI_AND));
+		add_token(data, i, ";;&", DSEMI_AND);
 	else if (peek(data->input + *i, ";;", FUZZY))
-		return (add_token(data, i, ";;", DSEMI));
+		add_token(data, i, ";;", DSEMI);
 	else if (peek(data->input + *i, ";", FUZZY))
-		return (add_token(data, i, ";", SEMI));
+		add_token(data, i, ";", SEMI);
 	else if (peek(data->input + *i, "!", EXACT))
-		return (add_token(data, i, "!", BANG));
+		add_token(data, i, "!", BANG);
 	else
 		return (false);
+	return (true);
 }
 
 bool	is_a_string_thing(t_mini_data *data, int *i)

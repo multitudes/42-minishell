@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 15:47:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 13:07:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #include "libft.h"
 
 /*
-follows the grammar
-*/
+ * follows the grammar
+ */
 t_ast_node	*parse_terminal(t_list **input_tokens)
 {
 	t_ast_node	*a;
@@ -29,7 +29,6 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 		return (NULL);
 	while (is_not_control_token(get_curr_token(*input_tokens)))
 	{
-		// debug("parse_terminal %s", get_token_lexeme(*input_tokens));
 		if (extract_expression(&head, input_tokens))
 			expr_has_node = true;
 		if (head == NULL)
@@ -38,6 +37,13 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 			break ;
 		if (is_not_control_token(get_curr_token(*input_tokens)))
 			*input_tokens = (*input_tokens)->next;
+	}
+	debug("in parse terminal, head is %s", get_token_lexeme(head));
+	debug("in parse terminal, tokenlist is %s", get_token_lexeme(*input_tokens));
+	if (is_tree_control_token(head))
+	{
+		ft_lstdelone(head, free_tokennode);
+		return (NULL);
 	}
 	break_list(input_tokens);
 	if (expr_has_node)
@@ -67,13 +73,14 @@ t_ast_node	*parse_pipeline(t_list **tokenlist)
 	t_ast_node	*b;
 	t_ast_node	*tmpnode;
 	t_list		*tmp;
-
+	debug("parse_pipeline");
 	a = NULL;
 	if (tokenlist == NULL || *tokenlist == NULL)
 		return (NULL);
 	a = parse_terminal(tokenlist);
 	if (a == NULL)
 		return (NULL);
+	debug("parse_pipeline: a is not NULL and next token lex is %s", get_token_lexeme(*tokenlist));
 	while (is_pipe_token(*tokenlist))
 	{
 		tmp = *tokenlist;
@@ -82,9 +89,11 @@ t_ast_node	*parse_pipeline(t_list **tokenlist)
 			ft_lstdelone(tmp, free_tokennode);
 			return (free_ast(&a));
 		}
+		debug("about to parse b and lex is %s", get_token_lexeme(*tokenlist));
 		b = parse_terminal(tokenlist);
 		if (b == NULL)
 		{
+			debug("parse_pipeline: b is NULL");
 			ft_lstdelone(tmp, free_tokennode);
 			return (free_ast(&a));
 		}
