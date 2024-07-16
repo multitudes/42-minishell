@@ -38,7 +38,7 @@ error/error_perror.c error/error_stderr.c darray/darray.c darray/darray2.c darra
 builtins/builtins.c builtins/builtin_cd.c builtins/builtin_echo.c builtins/builtin_env.c \
 builtins/builtin_exit.c builtins/builtin_export.c builtins/builtin_pwd.c builtins/builtin_unset.c \
 executer/executer.c executer/executer2.c executer/executer3.c executer/executer4.c executer/executer5.c executer/executer6.c \
-heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c heredoc/heredoc4.c)
+heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c heredoc/heredoc4.c heredoc/heredoc5.c)
 OBJS 			=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 HDRS 			=	$(addprefix include/, init.h fd.h splash.h scanner.h environment.h \
 parser.h analyser.h executer.h splash_error.h darray.h builtins.h globbing.h debug.h heredoc.h) 

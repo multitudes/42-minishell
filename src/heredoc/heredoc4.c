@@ -115,3 +115,18 @@ bool	create_heredoc_file(t_list *tokenlist, t_heredoc *heredoc)
 	((t_token *)(tokenlist->content))->type = HEREDOC_FILE;
 	return (true);
 }
+
+/*
+Frees the memory used for storing delimiter lexemes.
+*/
+void	free_heredoc(t_heredoc *heredoc)
+{
+	int	i;
+
+	i = 0;
+	while (i < heredoc->delim_count)
+	{
+		free(heredoc->delim[i]);
+		free(heredoc->file[i++]);
+	}
+}

@@ -22,80 +22,67 @@
 #include <readline/history.h>
 #include <signal.h>
 
-static void	remove_backslash(char **str)
+static bool	process_line(t_heredoc *heredoc, int i, int heredoc_fd, char *line)
 {
-	char	*temp;
+	bool	status;
 
-	if (*str && (*str)[0] != '\\')
-		return ;
-	else if (*str && (*str)[0] == '\\' \
-			&& ((*str)[1] == '\0' || (*str)[1] == '$'))
+	status = true;
+	if (line)
 	{
-		temp = ft_strdup((*str) + 1);
-		free (*str);
-		*str = temp;
+		if (!ft_write(heredoc_fd, line) || !ft_write(heredoc_fd, "\n"))
+			status = false;
+		else
+			status = true;
 	}
+	else if (line == NULL)
+	{
+		ft_write(1, \
+		"minishell: warning: here-document delimited by end-of-file (wanted '");
+		ft_write(1, heredoc->delim[i]);
+		ft_write(1, "')\n");
+		status = true;
+	}
+	free(line);
+	return (status);
 }
 
 /*
-Frees the memory used for storing delimiter lexemes.
+Open a file for writing heredoc content to
+and update the file descriptor passed as argument.
 */
-void	free_heredoc(t_heredoc *heredoc)
+static bool	open_heredoc_file(char *file, int *fd)
 {
-	int	i;
-
-	i = 0;
-	while (i < heredoc->delim_count)
-	{
-		free(heredoc->delim[i]);
-		free(heredoc->file[i++]);
-	}
+	*fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, \
+							S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	if (*fd < 0)
+		return (perror_and_bool("setup heredoc", false));
+	return (true);
 }
 
 /*
 Read and save content of final heredoc.
- // add check for ()syntax errorTODO
+TODO add check for ()syntax errors
 */
 static bool	read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 {
 	char	*line;
-	char	*temp;
-	int		temp_fd;
+	int		heredoc_fd;
 
-	temp_fd = open(heredoc->file[i], O_WRONLY | O_CREAT | O_TRUNC, \
-							S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-	if (temp_fd < 0)
-		return (perror_and_bool("setup heredoc", false));
+	heredoc_fd = -1;
+	if (!open_heredoc_file(heredoc->file[i], &heredoc_fd))
+		return (false);
 	line = readline("> ");
 	while (line && ft_strcmp(heredoc->delim[i], line))
 	{
-		if (line && heredoc->expansion[i] == true && ft_strchr(line, '$') \
-				&& line[0] != '\\')
-		{
-			temp = replace_dollar_vars(data, line);
-			free(line);
-			line = temp;
-		}
-		remove_backslash(&line);
-		if (!ft_write(temp_fd, line) || !ft_write(temp_fd, "\n"))
-		{
-			free(line);
+		line = expand_heredoc(heredoc->expansion[i], data, line);
+		if (!process_line(heredoc, i, heredoc_fd, line))
 			return (false);
-		}
-		free(line);
 		if (g_signal == SIGINT)
 			return (false);
 		line = readline("> ");
 	}
-	if (line == NULL)
-	{
-		ft_write(1, \
-			"minishell: warning: here-document delimited by end-of-file (wanted '");
-		ft_write(1, heredoc->delim[i]);
-		ft_write(1, "')\n");
-	}
-	free(line);
-	close(temp_fd);
+	process_line(heredoc, i, heredoc_fd, line);
+	close(heredoc_fd);
 	return (true);
 }
 

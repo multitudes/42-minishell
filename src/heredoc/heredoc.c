@@ -59,7 +59,6 @@ bool	execute_heredoc(t_data *data)
 {
 	t_heredoc	heredoc;
 
-	debug("execute heredoc");
 	set_up_heredoc_signals();
 	if (!init_heredoc(data->tokenlist, &heredoc) \
 		|| !process_delim_quotes(&heredoc) || !process_heredoc(&heredoc, data))
