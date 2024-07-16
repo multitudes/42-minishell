@@ -28,16 +28,16 @@ static bool	peek_is_valid_path(char c)
 /*
 Checks if tilde expansion is valid based on next char in lexeme or next token
 */
-static bool	valid_tilde_expansion(t_list *tokenlist, int index)
+bool	valid_tilde_expansion(t_list *tokenlist, char *lexeme, int i)
 {
 	if (!tokenlist->next \
-			&& peek_is_valid_path(get_token_lexeme(tokenlist)[index + 1]))
+			&& peek_is_valid_path(lexeme[i + 1]))
 		return (true);
 	else if (token_followed_by_space(tokenlist) \
-				&& peek_is_valid_path(get_token_lexeme(tokenlist)[index + 1]))
+				&& peek_is_valid_path(lexeme[i + 1]))
 		return (true);
 	else if (!token_followed_by_space(tokenlist) && tokenlist->next \
-				&& peek_is_valid_path(get_token_lexeme(tokenlist)[index + 1]) \
+				&& peek_is_valid_path(lexeme[i + 1]) \
 				&& peek_is_valid_path((get_token_lexeme(tokenlist->next))[0]))
 		return (true);
 	return (false);
@@ -47,10 +47,10 @@ bool	tilde_to_be_expanded(char *lexeme, t_exp_flags *flags, \
 									t_list *tokenlist, int i)
 {
 	if (i == 0 && flags->equal_status == 1 \
-			&& valid_tilde_expansion(tokenlist, i))
+			&& valid_tilde_expansion(tokenlist, lexeme, i))
 		return (true);
 	else if (i != 0 && valid_tilde_separator(lexeme[i - 1], flags) \
-					&& valid_tilde_expansion(tokenlist, i))
+					&& valid_tilde_expansion(tokenlist, lexeme, i))
 		return (true);
 	return (false);
 }

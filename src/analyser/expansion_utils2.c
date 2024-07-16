@@ -12,25 +12,31 @@
 
 #include "splash.h"
 #include "utils.h"
+#include "environment.h"
+#include "builtins.h"
 #include "analyser.h"
 #include <libft.h>
 
 void	set_flags(t_list *tokenlist, t_exp_flags *flags)
 {
-	if (get_token_type(tokenlist) == VAR_EXPANSION)
-		flags->starts_var_exp = true;
+	char	*key;
+
+	key = get_var_key(get_token_lexeme(tokenlist));
+	if (!no_valid_identifier(key))
+		flags->valid_key = true;
 	if (ft_strchr(get_token_lexeme(tokenlist), '=') && flags->equal_status == 0)
 		flags->equal_status = 1;
 	else if (ft_strchr(get_token_lexeme(tokenlist), '=') \
 				&& flags->equal_status == 1)
 		flags->equal_status = 2;
+	free(key);
 }
 
 void	reset_flags(t_exp_flags *flags)
 {
 	flags->equal_status = 1;
 	flags->lexeme_start = true;
-	flags->starts_var_exp = false;
+	flags->valid_key = false;
 }
 
 /*

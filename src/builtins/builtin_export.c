@@ -18,7 +18,7 @@
 #include "splash_error.h"
 #include "debug.h"
 
-static bool	no_valid_identifier(const char *key)
+bool	no_valid_identifier(const char *key)
 {
 	int	i;
 

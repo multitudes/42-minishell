@@ -38,6 +38,7 @@ uint8_t		execute_pwd_builtin(void);
 uint8_t		execute_unset_builtin(t_darray *env_arr, t_list *tokenlist);
 int			merge_tokens(t_list *tokenlist);
 bool		allowed_flags(const char *flag_lexem, const char *allowed_flags);
+bool		no_valid_identifier(const char *key);
 bool		read_only_variable(const char *key);
 
 #  ifdef __cplusplus
