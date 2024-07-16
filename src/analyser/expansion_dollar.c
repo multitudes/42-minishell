@@ -30,7 +30,7 @@ static char	*replace_lexeme(char *lexeme, char *key, char *key_value, int i)
 	back = ft_strdup(lexeme + i + ft_strlen(key) + 1);
 	new_lexeme = ft_strjoin3(front, key_value, back);
 	free(front);
-	free(back);;
+	free(back);
 	free(lexeme);
 	return (new_lexeme);
 }
