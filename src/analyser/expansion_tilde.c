@@ -92,7 +92,7 @@ void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 	if (!token)
 		return ;
 	home = get_home(env_arr);
-	// if (token->type == TILDE && flags->equal_status == 1 \
+	// if (token->type == TILDE && flags->equal_status == 1
 	// 	&& valid_tilde_expansion(tokenlist, 0))
 	// 	lexeme = home;
 	// else
