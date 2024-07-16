@@ -6,13 +6,15 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:47:55 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:22:21 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:47:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 #include "parser.h"
 
+/*
+ */
 bool	is_heredoc_token(t_tokentype tokentype)
 {
 	if (tokentype == DLESS || tokentype == DLESSDASH || \
@@ -22,10 +24,10 @@ bool	is_heredoc_token(t_tokentype tokentype)
 }
 
 /*
-Check if assigned type is a valid heredoc delimiter, in which case
-the type is changed to DLESS_DELIM before returning result of check.
-ADD MORE VALID TOKENTYPES TODO
-*/
+ * Check if assigned type is a valid heredoc delimiter, in which case
+ * the type is changed to DLESS_DELIM before returning result of check.
+ * ADD MORE VALID TOKENTYPES TODO
+ */
 bool	is_heredoc_delim(t_list *tokenlist)
 {
 	t_tokentype	tokentype;

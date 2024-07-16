@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:40:02 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:33:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:46:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #include "libft.h"
 
 /*
-is_builtin checks if the identifier is a builtin command
-*/
+ * is_builtin checks if the identifier is a builtin command
+ */
 bool	is_builtin(t_mini_data *data, char *identifier, int *start)
 {
 	if (peek(identifier, "echo", EXACT))

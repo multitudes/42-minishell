@@ -6,22 +6,22 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:39:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:41:56 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 
 /*
-params:
-- str: the string to check
-- i: the current index in the string
-- start: the index of the opening parenthesis
-returns true:
-- check for empty string in parenthesis
-- parentheses are not valid if they are followed or preceded 
-by characters other than && || | or spaces
-*/ 
+ * params:
+ * - str: the string to check
+ * - i: the current index in the string
+ * - start: the index of the opening parenthesis
+ * returns true:
+ * - check for empty string in parenthesis
+ * - parentheses are not valid if they are followed or preceded 
+ * by characters other than && || | or spaces
+ */ 
 bool	is_empty_parenthesis(const char *str, int i, int start)
 {
 	int	j; 
@@ -39,10 +39,10 @@ bool	is_empty_parenthesis(const char *str, int i, int start)
 }
 
 /*
-I define a block as the text between two delimiters like {}
-or "" '' or `` or () etc
-anything until I get the closing delimiter I specify in delim...
-*/
+ * I define a block as the text between two delimiters like {}
+ * or "" '' or `` or () etc
+ * anything until I get the closing delimiter I specify in delim...
+ */
 bool	add_parenthesisblock(t_mini_data *data, int *i, char delim, int t_type)
 {
 	int		start;

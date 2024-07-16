@@ -6,17 +6,17 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:38:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:42:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 
 /*
-I define a block as the text between two delimiters like {}
-or "" '' or `` or () etc
-anything until I get the closing delimiter I specify in delim...
-*/
+ * I define a block as the text between two delimiters like {}
+ * or "" '' or `` or () etc
+ * anything until I get the closing delimiter I specify in delim...
+ */
 bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type)
 {
 	int		start;
@@ -36,7 +36,7 @@ bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type)
 }
 
 /*
-arithmetic expansion is $(()) and I need to find the closing ))
+ * arithmetic expansion is $(()) and I need to find the closing ))
 */
 bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type)
 {
@@ -56,12 +56,12 @@ bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type)
 }
 
 /*
-cnd param is the condition, is a pointer to a function that 
-will be used to check the
-character in the while loop. I might need is_digit for numbers or
-is_alnum for identifiers etc
-Thgis works for easy tokens.
-*/
+ * cnd param is the condition, is a pointer to a function that 
+ * will be used to check the
+ * character in the while loop. I might need is_digit for numbers or
+ * is_alnum for identifiers etc
+ * This works for easy tokens.
+ */
 bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 {
 	int		start;
@@ -78,11 +78,11 @@ bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 }
 
 /*
-condition is a pointer to a function that will be used to check the
-character in the while loop. I might need is_digit for numbers or
-is_alnum for identifiers etc
-This is offset of 2 lets say I look for !- followed by a number of digits
-*/
+ * condition is a pointer to a function that will be used to check the
+ * character in the while loop. I might need is_digit for numbers or
+ * is_alnum for identifiers etc
+ * This is offset of 2 lets say I look for !- followed by a number of digits
+ */
 bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 {
 	int		start;
