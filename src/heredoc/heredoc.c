@@ -81,7 +81,6 @@ static bool	is_heredoc_and_syntax_check(t_list **tokenlist)
 	t_list		*curr;
 	t_list		*tmp;
 
-	tmp = NULL;
 	contains_heredoc = false;
 	curr = *tokenlist;
 	while (curr)
@@ -91,7 +90,7 @@ static bool	is_heredoc_and_syntax_check(t_list **tokenlist)
 			contains_heredoc = true;
 		else if (tokentype == COMMENT)
 		{
-			tmp = (curr)->prev;
+			tmp = curr->prev;
 			ft_lstclear(&curr, free_tokennode);
 			if (tmp)
 				tmp->next = NULL;

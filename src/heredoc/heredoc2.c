@@ -26,7 +26,6 @@ static void	remove_backslash(char **str)
 {
 	char	*temp;
 
-	debug("remove backslash");
 	if (*str && (*str)[0] != '\\')
 		return ;
 	else if (*str && (*str)[0] == '\\' \
@@ -86,7 +85,6 @@ static bool	read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 		free(line);
 		if (g_signal == SIGINT)
 			return (false);
-		debug("Current heredoc delimiter to match: %s", heredoc->delim[i]);
 		line = readline("> ");
 	}
 	if (line == NULL)
