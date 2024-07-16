@@ -20,11 +20,11 @@
  */
 bool	save_fds(t_data *data)
 {
-	debug("Save for later restoration STDIN: %i, STDOUT: %i, STDERR: %i", STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
 	data->original_stdout = dup(STDOUT_FILENO);
 	data->original_stdin = dup(STDIN_FILENO);
 	data->original_stderr = dup(STDERR_FILENO);
-	if (data->original_stdout == -1 || data->original_stdin == -1 || data->original_stderr == -1)
+	if (data->original_stdout == -1 || data->original_stdin == -1 \
+		|| data->original_stderr == -1)
 	{
 		data->exit_status = 1;
 		return (perror_and_bool("dup", false));
