@@ -91,3 +91,11 @@ void	shlvl_init(t_data *data)
 	update_env(data->env_arr, "SHLVL", shlvl);
 	free(shlvl);
 }
+
+void	init_fds(t_data *data)
+{
+	data->original_stdin = -1;
+	data->original_stdout = -1;
+	data->original_stderr = 
+	-1;
+}
