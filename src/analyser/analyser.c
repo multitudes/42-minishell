@@ -30,7 +30,7 @@ static void	execute_expansion_by_type(t_data *data, t_list **tokenlist, \
 	type = get_token_type(*tokenlist);
 	if (type == S_QUOTED_STRING)
 		expand_single_quotes(get_curr_token(*tokenlist));
-	else if (type == QUOTED_STRING)
+	else if (type == QUOTED_STRING && type != QUOTE_EXPANDED)
 		expand_double_quotes(data, get_curr_token(*tokenlist));
 	else if (type == VAR_EXPANSION || type == DOLLAR \
 			|| type == DOLLAR_QUESTION || type == DOLLAR_DIGIT)
@@ -38,7 +38,7 @@ static void	execute_expansion_by_type(t_data *data, t_list **tokenlist, \
 	else if (ft_strchr(get_token_lexeme(*tokenlist), '~') \
 			&& type != QUOTE_EXPANDED)
 		expand_path(data->env_arr, *tokenlist, flags);
-	else if (type == GLOBBING)
+	else if (type == GLOBBING && type != QUOTE_EXPANDED)
 		expand_globbing(tokenlist);
 }
 
@@ -68,6 +68,8 @@ static void	expand_tokenlist(t_data *data, t_ast_node *ast)
 			ast->tokenlist = tokenlist;
 		if (token_followed_by_space(tokenlist))
 			reset_flags(&flags);
+		else
+			flags.lexeme_start = false;
 		tokenlist = tokenlist->next;
 		count++;
 	}

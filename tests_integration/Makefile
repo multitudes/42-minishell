@@ -24,8 +24,8 @@ scanner/reserved_builtins.c scanner/reserved_builtins2.c \
 scanner/token_operators.c scanner/history_tokens.c scanner/token_blocks.c scanner/token_blocks2.c \
 scanner/redirection_tokens.c scanner/redirection_tokens2.c environment/environment.c environment/environment2.c environment/environment3.c \
 parser/parser.c parser/parser2.c parser/parser3.c parser/parser4.c parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c parser/parser_utils4.c \
-analyser/analyser.c analyser/expansion_utils.c analyser/expansion_utils2.c \
-analyser/expansion_quotes.c analyser/expansion_dollar.c analyser/expansion_tilde.c \
+analyser/analyser.c analyser/expansion_utils.c analyser/expansion_utils2.c analyser/expansion_quotes.c \
+analyser/expansion_dollar.c analyser/expansion_tilde.c analyser/expansion_tilde2.c \
 utils/utils.c utils/utils2.c globbing/globbing.c globbing/globbing1.c \
 error/error_perror.c error/error_stderr.c darray/darray.c darray/darray2.c darray/darray3.c \
 builtins/builtins.c builtins/builtin_cd.c builtins/builtin_echo.c builtins/builtin_env.c \

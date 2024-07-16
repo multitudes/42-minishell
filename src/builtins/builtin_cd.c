@@ -63,7 +63,6 @@ static uint8_t	execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 {
 	uint8_t	status;
 
-	debug("execute_cd_tokenlist with lexeme %s", get_token_lexeme(tokenlist));
 	status = 0;
 	if (tokenlist && get_token_lexeme(tokenlist))
 		status = exec_cd_with_argument(env_arr, tokenlist);

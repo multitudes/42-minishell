@@ -24,6 +24,7 @@
 typedef struct s_exp_flags 
 {
 	int		equal_status;
+	bool	lexeme_start;
 	bool	starts_var_exp;
 }			t_exp_flags;
 
@@ -46,11 +47,9 @@ void	expand_exit_status(t_data *data, t_token *token);
 void	expand_single_quotes(t_token *token);
 void	expand_double_quotes(t_data *data, t_token *token);
 char	*get_home(t_darray *env_arr);
-bool	peek_is_valid_path(char c);
-bool	valid_tilde_separator(char sep, int equal_status);
-bool	valid_tilde_expansion(t_list *tokenlist, int index);
-char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, \
-								char *home, t_exp_flags *flags);
+bool	tilde_to_be_expanded(char *lexeme, t_exp_flags *flags, \
+									t_list *tokenlist, int i);
+bool	valid_tilde_separator(char sep, t_exp_flags *flags);
 void	which_ast_node(t_ast_node *ast);
 void	set_flags(t_list *tokenlist, t_exp_flags *flags);
 void	reset_flags(t_exp_flags *flags);

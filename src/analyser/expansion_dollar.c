@@ -58,9 +58,9 @@ char	*replace_dollar_vars(t_data *data, char *lexeme)
 		{
 			key_value = get_key_value(data, key);
 			new_lexeme = replace_lexeme(new_lexeme, key, key_value, i);
+			i = i + ft_strlen(key_value);
 			free(key_value);
 			free(key);
-			i = i + ft_strlen(key_value);
 			continue ;
 		}
 		i++;
@@ -100,7 +100,6 @@ void	expand_dollar(t_data *data, t_token *token)
 	free(token->lexeme);
 	token->lexeme = var;
 	token->type = EXPANDED;
-	debug("Expand dollar, new token: %s, type: %i", token->lexeme, token->type);
 }
 
 /*

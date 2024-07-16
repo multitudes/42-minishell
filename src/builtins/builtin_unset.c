@@ -28,7 +28,6 @@ uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 	char	*lexeme;
 
 	status = 0;
-	debug("unset builtin");
 	tokenlist = tokenlist->next;
 	if (!tokenlist)
 		return (0);

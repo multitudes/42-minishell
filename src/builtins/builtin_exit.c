@@ -50,15 +50,11 @@ static void	merge_sign_token(t_list **tokenlist)
 	old_lexeme = get_token_lexeme(*tokenlist);
 	if (!old_lexeme)
 		return ;
-	debug("merge_minus_token old lex %s and length %zu", old_lexeme, \
-			ft_strlen(old_lexeme));
 	if ((old_lexeme[0] == '-' || old_lexeme[0] == '+') \
 		&& ft_strlen(old_lexeme) == 1)
 	{
 		sign = remove_sign_token(tokenlist);
 		old_lexeme = get_token_lexeme(*tokenlist);
-		debug("new tokenlist: %s > %s ", get_token_lexeme(*tokenlist), \
-				get_token_lexeme((*tokenlist)->next));
 		new_lexeme = ft_strjoin(sign, old_lexeme);
 		free(sign);
 		free(old_lexeme);

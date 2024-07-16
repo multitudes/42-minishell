@@ -25,7 +25,6 @@ uint8_t	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	uint8_t	status;
 
-	debug("env builtin");
 	status = 0;
 	if (get_token_lexeme(tokenlist->next))
 		status = stderr_and_status("env: too many arguments", 1);

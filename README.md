@@ -1533,7 +1533,7 @@ In the end we really used 28 tokens we receive from the scanner.
 57 are recognized but not acted upon because are not feature we implement.  
 
 ## Display the stderr
-A good idea is to display the std error with all the debug messages on a different widow in the terminal. For this we have two ways:
+A good idea is to display the std error with all the debug messages on a different window in the terminal. For this we have two ways:
 ```
 ./minishell 2> errorlogfile
 ```

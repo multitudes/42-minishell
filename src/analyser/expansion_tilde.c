@@ -16,97 +16,89 @@
 #include <libft.h>
 
 /*
-We dont expand tilde if the next char after the tilde is not a valid path.
-*/
-bool	peek_is_valid_path(char c)
-{
-	if (ft_strchr("/:", c) || c == '\0')
-		return (true);
-	return (false);
-}
-
-/*
 If there is a : or a first equal sign we expand.
 If we are already past the first equal sign we dont expand if 
 we have more equal signs in between.
 */
-bool	valid_tilde_separator(char sep, int equal_status)
+bool	valid_tilde_separator(char sep, t_exp_flags *flags)
 {
 	if (ft_strchr(": ", sep))
 		return (true);
-	else if (sep == '=' && equal_status == 1)
+	else if (sep == '=' && flags->equal_status == 1)
 		return (true);
 	return (false);
+}
+
+static char	*expand_tilde(char *lexeme, char *home, t_exp_flags *flags, int i)
+{
+	char	*front;
+	char	*back;
+	char	*new_lexeme;
+
+	back = ft_strdup(lexeme + i + 1);
+	if (i == 0)
+		new_lexeme = ft_strjoin(home, back);
+	else
+	{
+		front = ft_strndup(lexeme, i);
+		if (flags->equal_status == 1)
+			flags->equal_status = 2;
+		new_lexeme = ft_strjoin3(front, home, back);
+		free(front);
+	}
+	free(lexeme);
+	free(back);
+	return (new_lexeme);
 }
 
 /*
 Replaces occurances of '~' in a string, if conditions for ~-expansion are met.
 */
-char	*replace_tilde_in_str(t_list *tokenlist, char *lexeme, \
-								char *home, t_exp_flags *flags)
+static char	*replace_tilde_in_lexeme(t_list *tokenlist, char *home, \
+									t_exp_flags *flags)
 {
-	char	*new_lexeme;
+	char	*lexeme;
 	int		i;
-	char	*pos;
-	char	*front;
-	char	*back;
-	char	*temp;
 
 	i = 0;
-	new_lexeme = ft_strdup(lexeme);
-	if (flags->equal_status == 1)
+	lexeme = ft_strdup(get_token_lexeme(tokenlist));
+	if (flags->equal_status == 1 && ft_strchr(lexeme, '='))
+		i = ft_strchr(lexeme, '=') - lexeme + 1;
+	while (lexeme && lexeme[i])
 	{
-		pos = ft_strchr(new_lexeme, '=');
-		if (!pos)
-			pos = new_lexeme;
-		else
-			i = pos - new_lexeme + 1;
-	}
-	else
-		pos = new_lexeme;
-	while (new_lexeme && new_lexeme[i])
-	{
-		if (new_lexeme[i] == '~' && i == 0 && peek_is_valid_path(new_lexeme[i + 1]) && (flags->equal_status == 1) && valid_tilde_expansion(tokenlist, i))
+		if (lexeme[i] == '~' \
+			&& tilde_to_be_expanded(lexeme, flags, tokenlist, i))
 		{
-			back = ft_strdup(new_lexeme + 1);
-			temp = new_lexeme;
-			new_lexeme = ft_strjoin(home, back);
-			free(back);
-			free(temp);
-			i = ft_strlen(home) - 1;
-		}
-		else if (new_lexeme[i] == '~' && peek_is_valid_path(new_lexeme[i + 1]) && (i != 0 && valid_tilde_separator(new_lexeme[i - 1], flags->equal_status)) && valid_tilde_expansion(tokenlist, i))
-		{
-			front = ft_strndup(new_lexeme, i);
-			back = ft_strdup(new_lexeme + i + 1);
-			if (flags->equal_status == 1)
-				flags->equal_status = 2;
-			temp = new_lexeme;
-			new_lexeme = ft_strjoin3(front, home, back);
-			free(front);
-			free(back);
-			free(temp);
+			lexeme = expand_tilde(lexeme, home, flags, i);
 			i = i + ft_strlen(home) - 1;
 		}
-		if (new_lexeme[i] == '=' && flags->equal_status == 1)
+		if (lexeme[i] == '=' && flags->equal_status == 1)
 			flags->equal_status = 2;
 		i++;
 	}
-	return (new_lexeme);
+	return (lexeme);
 }
 
 /*
-Checks if tilde expansion is valid based on next char in lexeme or next token
+Expands "~" in pathnames
 */
-bool	valid_tilde_expansion(t_list *tokenlist, int index)
+void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 {
-	if (!tokenlist->next)
-		return (true);
-	else if (token_followed_by_space(tokenlist))
-		return (true);
-	else if (!token_followed_by_space(tokenlist) \
-				&& peek_is_valid_path(get_token_lexeme(tokenlist)[index + 1]) \
-				&& peek_is_valid_path((get_token_lexeme(tokenlist->next))[0]))
-		return (true);
-	return (false);
+	char	*lexeme;
+	char	*home;
+	t_token	*token;
+
+	token = get_curr_token(tokenlist);
+	if (!token)
+		return ;
+	home = get_home(env_arr);
+	// if (token->type == TILDE && flags->equal_status == 1 \
+	// 	&& valid_tilde_expansion(tokenlist, 0))
+	// 	lexeme = home;
+	// else
+		lexeme = replace_tilde_in_lexeme(tokenlist, home, flags);
+	free(home);
+	token->type = WORD;
+	free(token->lexeme);
+	token->lexeme = lexeme;
 }

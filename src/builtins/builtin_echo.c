@@ -25,7 +25,6 @@ uint8_t	execute_echo_builtin(t_list *tokenlist)
 	uint8_t	status;
 	int		new_line;
 
-	debug("echo builtin");
 	status = 0;
 	new_line = 1;
 	tokenlist = tokenlist->next;

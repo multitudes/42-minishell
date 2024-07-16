@@ -29,6 +29,7 @@ void	set_flags(t_list *tokenlist, t_exp_flags *flags)
 void	reset_flags(t_exp_flags *flags)
 {
 	flags->equal_status = 1;
+	flags->lexeme_start = true;
 	flags->starts_var_exp = false;
 }
 

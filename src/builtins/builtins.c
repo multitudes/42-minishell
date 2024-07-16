@@ -109,7 +109,6 @@ int	merge_tokens(t_list *tokenlist)
 	t_list	*tofree;
 	char	*new_lexeme;
 
-	debug("Token merge");
 	token_1 = get_curr_token(tokenlist);
 	token_2 = get_curr_token(tokenlist->next);
 	tofree = tokenlist->next;
