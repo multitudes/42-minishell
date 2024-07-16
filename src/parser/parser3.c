@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 14:28:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 14:55:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ void	*parse_list_innerloop(t_ast_node **a, t_list **tokenlist)
 }
 
 /*
-Parsing sequence of pipelines separated by operators "&&", "||"
-*/
+ * Parsing sequence of pipelines separated by operators "&&", "||"
+ */
 t_ast_node	*parse_list(t_list **tokenlist)
 {
 	t_ast_node	*a;

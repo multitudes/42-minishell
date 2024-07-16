@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 22:20:44 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:29:00 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,6 +235,7 @@ bool	is_heredoc_delim(t_list *tokenlist);
 bool	is_heredoc_token(t_tokentype tokentype);
 t_list	*get_head(t_list *tokenlist);
 int		count_tokens(t_list *tokenlist);
+bool	is_some_semicolons(t_mini_data *data, int *i);
 
 #  ifdef __cplusplus
 

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:47:55 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 19:00:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:22:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 bool	is_heredoc_token(t_tokentype tokentype)
 {
-	if (tokentype == DLESS || tokentype == DLESSDASH || tokentype == HEREDOC_FILE)
+	if (tokentype == DLESS || tokentype == DLESSDASH || \
+			tokentype == HEREDOC_FILE)
 		return (true);
 	return (false);
 }

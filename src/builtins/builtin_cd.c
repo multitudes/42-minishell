@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:22 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:52:25 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/16 15:18:59 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ static uint8_t	exec_cd_without_argument(t_darray *env_arr, t_list *tokenlist)
 	home = mini_get_env(env_arr, "HOME");
 	if (!home)
 		return (stderr_and_status("cd: HOME not set", 1));
-	// home = get_home(env_arr);
-	debug("home is -%s--------------------", home);
 	if (home && *home != '\0' && chdir(home))
 		return (perror_and_status2("cd: ", get_token_lexeme(tokenlist), 1));
 	return (0);

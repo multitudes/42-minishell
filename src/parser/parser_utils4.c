@@ -6,15 +6,15 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 12:11:14 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 14:00:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 14:56:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
 /*
-safely get the current token
-*/
+ * safely get the current token
+ */
 t_token	*get_curr_token(t_list *tokenlist)
 {
 	t_token	*token;
@@ -26,8 +26,8 @@ t_token	*get_curr_token(t_list *tokenlist)
 }
 
 /*
-safely get the lexeme of the current token
-*/
+ * safely get the lexeme of the current token
+ */
 char	*get_token_lexeme(t_list *tokenlist)
 {
 	t_token	*token;
@@ -39,8 +39,8 @@ char	*get_token_lexeme(t_list *tokenlist)
 }
 
 /*
-safely get the type of the current token
-*/
+ * safely get the type of the current token
+ */
 t_tokentype	get_token_type(t_list *tokenlist)
 {
 	t_token	*token;

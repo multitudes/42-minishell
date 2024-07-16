@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 14:51:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 14:55:44 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 /*
  * checks if the token is a pipe or pipe_and token
-*/
+ */
 bool	is_pipe_token(t_list *input_tokens)
 {
 	t_token	*token;

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:07:56 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 12:06:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:21:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,6 @@ Each node's content is a token which
 void	free_tokennode(void *content)
 {
 	if (content)
-	{
-		// debug("freeing token node content lexeme %s", ((t_token *)content)->lexeme);
 		free(((t_token *)content)->lexeme);
-	}
 	free(content);
 }

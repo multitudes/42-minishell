@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 14:01:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:01:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ bool	tokenlist_has_astnode(t_list *new_tokenlist)
 	return (false);
 }
 
+/*
+ * I need to tokenize the expression token and check if it is valid
+ * expression is like
+ */
 bool	tokenize_expression_token(t_list **input_tokens, t_list **expr_node, \
 									t_list **new_tokenlist, char **newlexeme)
 {
@@ -50,13 +54,13 @@ bool	tokenize_expression_token(t_list **input_tokens, t_list **expr_node, \
 }
 
 /*
-I now take care of empty expressions in the scanner
-NOTE: I do not change head if there is a node before the expression
-new_tokenlist from the tokenizer is the new list of tokens
-and if that is null I already have the scanner error message 
-on stderr and do not need to print anothererror... I will continue?
-return -1?
-*/
+ * I now take care of empty expressions in the scanner
+ * NOTE: I do not change head if there is a node before the expression
+ * new_tokenlist from the tokenizer is the new list of tokens
+ * and if that is null I already have the scanner error message 
+ * on stderr and do not need to print anothererror... I will continue?
+ * return -1?
+ */
 bool	replace_expression_tokens(t_list **head, t_list **input_tokens)
 {
 	t_list	*expr_node;
@@ -87,11 +91,11 @@ bool	replace_expression_tokens(t_list **head, t_list **input_tokens)
 }
 
 /*
-I get a t_list node in input with my token as expression type
-and want to substitute it with the content of the expression
-it is like cut and paste a linked list
-if I have an expression and cant replace it then I keep on running?
-*/
+ * I get a t_list node in input with my token as expression type
+ * and want to substitute it with the content of the expression
+ * it is like cut and paste a linked list
+ * if I have an expression and cant replace it then I keep on running?
+ */
 bool	extract_expression(t_list **head, t_list **input_tokens)
 {
 	if (get_token_type(*input_tokens) == EXPRESSION)
