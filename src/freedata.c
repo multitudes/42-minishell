@@ -22,11 +22,9 @@ void	free_data(t_data **data)
 {
 	if (data == NULL || *data == NULL)
 		return ;
-	debug("freeing env darray");
 	darray_clear_destroy((*data)->env_arr);
 	free((void *)((*data)->homepath));
 	(*data)->homepath = NULL;
 	free(*data);
 	*data = NULL;
-	debug("data freed");
 }
