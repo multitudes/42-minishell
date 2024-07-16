@@ -47,7 +47,6 @@ static bool	init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
 		}
 		tokenlist = tokenlist->next;
 	}
-	debug("init heredoc complete, delimiter count: %i", heredoc->delim_count);
 	return (true);
 }
 
@@ -116,11 +115,6 @@ bool	syntax_check_and_heredoc(t_data *data)
 		return (execute_heredoc(data));
 	}
 	else
-	{
-		debug("no heredoc found");
-		debug("tokenlist head is %s", get_token_lexeme(tokenlist));
 		data->tokenlist = tokenlist;
-	}
-	debug("no heredoc found");
 	return (true);
 }

@@ -45,13 +45,11 @@ void	free_heredoc(t_heredoc *heredoc)
 {
 	int	i;
 
-	debug("free heredoc content (delimiter and filenames)");
 	i = 0;
 	while (i < heredoc->delim_count)
 	{
 		free(heredoc->delim[i]);
 		free(heredoc->file[i++]);
-		debug("Reached end of free heredoc content loop (i = %i)", i - 1);
 	}
 }
 
@@ -65,8 +63,6 @@ static bool	read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 	char	*temp;
 	int		temp_fd;
 
-	debug("read heredoc");
-	debug("Filename used for heredoc: %s", heredoc->file[i]);
 	temp_fd = open(heredoc->file[i], O_WRONLY | O_CREAT | O_TRUNC, \
 							S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (temp_fd < 0)
@@ -94,8 +90,12 @@ static bool	read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 		line = readline("> ");
 	}
 	if (line == NULL)
+	{
 		ft_write(1, \
-			"minishell: warning: here-document delimited by end-of-file\n");
+			"minishell: warning: here-document delimited by end-of-file (wanted '");
+		ft_write(1, heredoc->delim[i]);
+		ft_write(1, "')\n");
+	}
 	free(line);
 	close(temp_fd);
 	return (true);
@@ -109,7 +109,6 @@ static bool	advance_to_final_delim(t_heredoc *heredoc, t_data *data)
 	int	i;
 
 	i = 0;
-	debug("advance to final delim");
 	while (i < heredoc->delim_count)
 	{
 		if (!read_heredoc(heredoc, data, i))
@@ -125,16 +124,12 @@ gets saved and passed to stdin of any commands.
 */
 bool	process_heredoc(t_heredoc *heredoc, t_data *data)
 {
-	debug("Process heredoc");
 	if (!advance_to_final_delim(heredoc, data))
 	{
-		debug("False return to process heredoc");
 		free_heredoc(heredoc);
 		g_signal = 0;
 		return (false);
 	}
-	debug("True return to process heredoc");
 	free_heredoc(heredoc);
-	debug("Return to process heredoc after freeing");
 	return (true);
 }

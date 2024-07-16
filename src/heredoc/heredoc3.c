@@ -65,6 +65,5 @@ bool	save_heredoc_delimiter(t_list *tokenlist, t_heredoc *heredoc)
 		free_heredoc(heredoc);
 		return (stderr_and_bool("heredoc memory error", false));
 	}
-	debug("Set delimiter %i: %s", heredoc->delim_count, heredoc->delim[heredoc->delim_count]);
 	return (true);
 }

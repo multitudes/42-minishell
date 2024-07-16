@@ -17,7 +17,7 @@
 #include <libft.h>
 
 /*
-removes all single and double qoutes from a string.
+Removes all single and double qoutes from a string.
 */
 static void	remove_quotes(char *string)
 {
@@ -70,6 +70,11 @@ bool	process_delim_quotes(t_heredoc *heredoc)
 	return (true);
 }
 
+/*
+Allocated a filename in the format heredoc_i.
+Next available filename up to i = 19 is provided.
+Then allocations starts again from beginning.
+*/
 static char	*get_heredoc_filename(void)
 {
 	static int	i = 0;
@@ -88,6 +93,11 @@ static char	*get_heredoc_filename(void)
 	return (new_filename);
 }
 
+/*
+Replaces heredoc delimiter in tokenlist
+with newly provided filename for storing heredoc contents.
+Also saves filename to heredoc struct.
+*/
 bool	create_heredoc_file(t_list *tokenlist, t_heredoc *heredoc)
 {
 	char	*temp;
