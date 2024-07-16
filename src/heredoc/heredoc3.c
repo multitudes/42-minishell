@@ -37,3 +37,34 @@ void	set_up_heredoc_signals(void)
 		return (perror("minishell: SIG_ERR"));
 	return ;
 }
+
+/*
+removes leading backslash in lexeme (used to sanitize heredoc delimiters)
+*/
+static void	remove_leading_backslash(t_token *token)
+{
+	char	*temp;
+	char	*lexeme;
+
+	lexeme = token->lexeme;
+	if (lexeme && lexeme[0] == '\\' && (lexeme[1] != '\0'))
+	{
+		temp = ft_strdup(lexeme + 1);
+		free(token->lexeme);
+		token->lexeme = temp;
+	}
+}
+
+bool	save_heredoc_delimiter(t_list *tokenlist, t_heredoc *heredoc)
+{
+	remove_leading_backslash((t_token *)(tokenlist->next->content));
+	heredoc->delim[heredoc->delim_count] = \
+		ft_strdup(get_token_lexeme(tokenlist->next));
+	if (!heredoc->delim[heredoc->delim_count])
+	{
+		free_heredoc(heredoc);
+		return (stderr_and_bool("heredoc memory error", false));
+	}
+	debug("Set delimiter %i: %s", heredoc->delim_count, heredoc->delim[heredoc->delim_count]);
+	return (true);
+}

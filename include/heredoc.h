@@ -34,6 +34,9 @@ extern "C" {
 # endif
 
 bool syntax_check_and_heredoc(t_data * data);
+bool	save_heredoc_delimiter(t_list *tokenlist, t_heredoc *heredoc);
+bool	create_heredoc_file(t_list *tokenlist, t_heredoc *heredoc);
+bool	process_delim_quotes(t_heredoc *heredoc);
 bool	execute_heredoc(t_data *data);
 void	free_heredoc(t_heredoc *heredoc);
 void	set_up_heredoc_signals(void);

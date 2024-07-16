@@ -21,127 +21,6 @@
 #include <readline/readline.h>
 #include <readline/history.h> // needed?
 
-static char	*get_heredoc_filename(void)
-{
-	static int	i = 0;
-	char		*index;
-	char		*new_filename;
-
-	if (i == 19)
-		i = 0;
-	index = ft_itoa(i++);
-	if (!index)
-		return (perror_and_null("heredoc set up"));
-	new_filename = ft_strjoin(".tmp/heredoc_", index);
-	if (!new_filename)
-		return (perror_and_null("heredoc set up"));
-	free(index);
-	return (new_filename);
-}
-
-/*
-removes leading backslash in lexeme (used to sanitize heredoc delimiters)
-*/
-static void	remove_leading_backslash(t_token *token)
-{
-	char	*temp;
-	char	*lexeme;
-
-	lexeme = token->lexeme;
-	if (lexeme && lexeme[0] == '\\' && (lexeme[1] != '\0'))
-	{
-		temp = ft_strdup(lexeme + 1);
-		free(token->lexeme);
-		token->lexeme = temp;
-	}
-}
-
-/*
-removes all single and double qoutes from a string.
-*/
-static void	remove_quotes(char *string)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (string && string[i])
-	{
-		if (string[i] != '"' && string[i] != '\'')
-		{
-			string[j] = string[i];
-			j++;
-		}
-		i++;
-	}
-	string[j] = '\0';
-}
-
-/*
-Checks for and handles single/double quotes in heredoc delimiter.
-TODO handle inner quotes like bash
-*/
-static bool	process_delim_quotes(t_heredoc *heredoc)
-{
-	int	i;
-	int	count_single_quotes;
-	int	count_double_quotes;
-
-	i = 0;
-	count_single_quotes = 0;
-	count_double_quotes = 0;
-	while (i < heredoc->delim_count)
-	{
-		heredoc->expansion[i] = true;
-		count_single_quotes = count_char_in_str(heredoc->delim[i], '\'');
-		count_double_quotes = count_char_in_str(heredoc->delim[i], '"');
-		if (count_single_quotes % 2 || count_double_quotes % 2)
-			return (stderr_and_bool("heredoc: invalid delimiter", false));
-		else if (count_single_quotes > 1 || count_double_quotes > 1)
-		{
-			remove_quotes(heredoc->delim[i]);
-			heredoc->expansion[i] = false;
-		}
-		i++;
-		count_single_quotes = 0;
-		count_double_quotes = 0;
-	}
-	return (true);
-}
-
-static bool	create_heredoc_file(t_list *tokenlist, t_heredoc *heredoc)
-{
-	char	*temp;
-
-	temp = ((t_token *)(tokenlist->content))->lexeme;
-	((t_token *)(tokenlist->content))->lexeme = get_heredoc_filename();
-	free(temp);
-	if (!get_token_lexeme(tokenlist))
-	{
-		free_heredoc(heredoc);
-		return (stderr_and_bool("heredoc setup error", false));
-	}
-	heredoc->file[heredoc->delim_count] = \
-		ft_strdup(((t_token *)(tokenlist->content))->lexeme);
-	((t_token *)(tokenlist->content))->type = HEREDOC_FILE;
-	return (true);
-}
-
-static bool	save_heredoc_delimiter(t_list *tokenlist, t_heredoc *heredoc)
-{
-	remove_leading_backslash((t_token *)(tokenlist->next->content));
-	heredoc->delim[heredoc->delim_count] = \
-		ft_strdup(get_token_lexeme(tokenlist->next));
-	if (!heredoc->delim[heredoc->delim_count])
-	{
-		free_heredoc(heredoc);
-		return (stderr_and_bool("heredoc memory error", false));
-	}
-	debug("Set delimiter %i: %s", heredoc->delim_count, heredoc->delim[heredoc->delim_count]);
-	return (true);
-}
-
 /*
 Set up heredoc(s). Up to 20 heredocs/delimiters are supported.
 TODO Add syntax check on tokenlist.
@@ -196,7 +75,7 @@ bool	execute_heredoc(t_data *data)
 /*
 Checks for tokenlist syntax and heredoc token.
 */
-static bool	syntax_check(t_list **tokenlist)
+static bool	is_heredoc_and_syntax_check(t_list **tokenlist)
 {
 	t_tokentype	tokentype;
 	bool		contains_heredoc;
@@ -231,7 +110,7 @@ bool	syntax_check_and_heredoc(t_data *data)
 	t_list	*tokenlist;
 
 	tokenlist = data->tokenlist;
-	if (syntax_check(&tokenlist))
+	if (is_heredoc_and_syntax_check(&tokenlist))
 	{
 		data->tokenlist = tokenlist;
 		return (execute_heredoc(data));
