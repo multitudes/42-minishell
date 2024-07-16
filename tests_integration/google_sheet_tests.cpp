@@ -1224,7 +1224,7 @@ const char* test_echoes()
 	my_assert(result.str() == "", "output is not correct echoes\n");
 	my_assert(exit_status == 2, "exit status is not 0\n");
 
-	this works in the shell but gets in infinite loop
+	//this works in the shell but gets in infinite loop
 	// result.str("");
 	// arg = "echo bonjour > $test w/ test=\"o1 o2\"";
 	// exit_status = run_command_and_check_output(arg, result);
@@ -1245,6 +1245,27 @@ const char* test_echoes()
 	debug("result from minishell: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct echoes\n");
 	my_assert(exit_status == 2, "exit status is not 2\n");
+	
+	result.str("");
+	arg = "()"; // 	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 127, "exit status is not 127\n");
+	
+	result.str("");
+	arg = "(("; // 	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+
+	result.str("");
+	arg = "[]"; // 	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 127, "exit status is not 127\n");
 
 	return NULL;
 }
