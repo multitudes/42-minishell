@@ -10,7 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "splash.h"
+#include "utils.h"
 #include "analyser.h"
+#include <libft.h>
 
 void	set_flags(t_list *tokenlist, t_exp_flags *flags)
 {
@@ -46,4 +49,53 @@ void	which_ast_node(t_ast_node *ast)
 			get_token_type(tokenlist) == COMMAND)
 		ast->type = NODE_COMMAND;
 	return ;
+}
+
+/*
+Looks at next char in str. If it is a $,
+then the potential key/var-name is returned.
+'$' followed by invalid var-syntax, returns an empty string.
+Returned key-string needs to be freed.
+*/
+char	*get_key(char *str)
+{
+	char	*end;
+
+	if (!str)
+		return (NULL);
+	if (*str != '$')
+		return (NULL);
+	end = str + 1;
+	if (end && (*end == ' ' || *end == '\0'))
+		return (NULL);
+	if (end && (*end == '?') && (*(end + 1) == '\0' \
+			|| ((end + 1) && *(end + 1) == ' ')))
+		return (ft_strdup("?"));
+	if (end && (ft_isalnum(*end) || *end == '_'))
+		end++;
+	else
+		return (ft_strdup(""));
+	while (end && (ft_isalnum(*end) || *end == '_'))
+		end++;
+	return (ft_strndup(str + 1, (size_t)(end - (str + 1))));
+}
+
+/*
+Gets the key value for a specified key from the env variable
+for the purpose of $ expansion.
+Key value is malloced and needs to be freed.
+*/
+char	*get_key_value(t_data *data, char *key)
+{
+	char	*key_value;
+
+	if (ft_strlen(key) == 0)
+		key_value = NULL;
+	else if (ft_strcmp(key, "?") == 0 && data)
+		key_value = ft_itoa(data->exit_status);
+	else if (ft_strcmp(key, "0") == 0)
+		key_value = ft_strdup("splash");
+	else
+		key_value = ft_strdup(mini_get_env(data->env_arr, key));
+	return (key_value);
 }

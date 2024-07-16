@@ -13,35 +13,26 @@
 #include "splash.h"
 #include "scanner.h"
 #include "utils.h"
+#include "analyser.h"
 #include <libft.h>
 
 /*
-Looks at next char in str. If it is a $,
-then the potential key/var-name is returned.
-'$' followed by invalid var-syntax, returns an empty string.
-Returned key-string needs to be freed.
+Replaces a char + given key at position i by key_value
+and returns the new lexeme.
 */
-char	*get_key(char *str)
+static char	*replace_lexeme(char *lexeme, char *key, char *key_value, int i)
 {
-	char	*end;
+	char	*new_lexeme;
+	char	*front;
+	char	*back;
 
-	if (!str)
-		return (NULL);
-	if (*str != '$')
-		return (NULL);
-	end = str + 1;
-	if (end && (*end == ' ' || *end == '\0'))
-		return (NULL);
-	if (end && (*end == '?') && (*(end + 1) == '\0' \
-			|| ((end + 1) && *(end + 1) == ' ')))
-		return (ft_strdup("?"));
-	if (end && (ft_isalnum(*end) || *end == '_'))
-		end++;
-	else
-		return (ft_strdup(""));
-	while (end && (ft_isalnum(*end) || *end == '_'))
-		end++;
-	return (ft_strndup(str + 1, (size_t)(end - (str + 1))));
+	front = ft_strndup(lexeme, i);
+	back = ft_strdup(lexeme + i + ft_strlen(key) + 1);
+	new_lexeme = ft_strjoin3(front, key_value, back);
+	free(front);
+	free(back);;
+	free(lexeme);
+	return (new_lexeme);
 }
 
 /*
@@ -52,36 +43,24 @@ Returns the new lexeme, which must be freed.
 char	*replace_dollar_vars(t_data *data, char *lexeme)
 {
 	int		i;
-	char	*new_lexeme;
-	char	*key_value;
 	char	*key;
-	char	*temp[3];
+	char	*key_value;
+	char	*new_lexeme;
 
 	i = 0;
-	new_lexeme = ft_strdup(lexeme);
 	key = NULL;
+	key_value = NULL;
+	new_lexeme = ft_strdup(lexeme);
 	while (new_lexeme && new_lexeme[i])
 	{
 		key = get_key(new_lexeme + i);
 		if (key != NULL)
 		{
-			if (ft_strlen(key) == 0)
-				key_value = NULL;
-			else if (ft_strcmp(key, "?") == 0 && data)
-				key_value = ft_itoa(data->exit_status);
-			else
-				key_value = mini_get_env(data->env_arr, key);
-			temp[0] = ft_strndup(new_lexeme, i);
-			temp[1] = ft_strdup(new_lexeme + i + ft_strlen(key) + 1);
-			temp[2] = new_lexeme;
-			new_lexeme = ft_strjoin3(temp[0], key_value, temp[1]);
-			i = i + ft_strlen(key_value);
-			free(temp[0]);
-			free(temp[1]);
-			free(temp[2]);
-			if (ft_strcmp(key, "?") == 0 && data)
-				free (key_value);
+			key_value = get_key_value(data, key);
+			new_lexeme = replace_lexeme(new_lexeme, key, key_value, i);
+			free(key_value);
 			free(key);
+			i = i + ft_strlen(key_value);
 			continue ;
 		}
 		i++;

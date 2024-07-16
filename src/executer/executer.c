@@ -18,6 +18,7 @@
 #include "heredoc.h"
 #include "darray.h"
 #include "scanner.h"
+#include "init.h"
 #include "fd.h"
 
 /*

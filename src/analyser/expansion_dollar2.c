@@ -1,21 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fd.h                                               :+:      :+:    :+:   */
+/*   expansion_dollar2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
+/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/12 12:45:51 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 14:02:13 by lbrusa           ###   ########.fr       */
+/*   Created: 2024/07/16 16:07:07 by rpriess           #+#    #+#             */
+/*   Updated: 2024/07/16 16:07:18 by rpriess          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FD_H
-# define FD_H
 
-# include "splash.h"
-
-bool	save_fds(t_data *data);
-void	restore_fds(t_data *data);
-
-#endif  // FD_H_

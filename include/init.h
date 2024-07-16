@@ -19,6 +19,7 @@
 bool	init_data(t_data **data);
 bool	init_data2(t_data **data);
 void	shlvl_init(t_data *data);
+void	init_fds(t_data *data);
 bool	init_env_darray(t_darray **env_arr);
 
 #endif  // INIT_H_
