@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 14:26:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 14:28:13 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@
  */
 void	*get_b_node(t_ast_node **b, t_list **tokenlist, t_list *tmp)
 {
-	if (get_token_type(tmp) != EXPRESSION && !movetonexttoken_andbreak(tokenlist))
+	if (get_token_type(tmp) != EXPRESSION && \
+			!movetonexttoken_andbreak(tokenlist))
 	{
 		ft_lstdelone(tmp, free_tokennode);
 		return (NULL);
