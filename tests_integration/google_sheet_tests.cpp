@@ -1267,6 +1267,13 @@ const char* test_echoes()
 	my_assert(result.str() == "", "output is not correct echoes\n");
 	my_assert(exit_status == 127, "exit status is not 127\n");
 
+	result.str("");
+	arg = "cat wfeh | cat csijdsji | cat nfwir"; // 	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
+
 	return NULL;
 }
 
