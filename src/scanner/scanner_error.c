@@ -13,6 +13,7 @@
 #include "scanner.h"
 #include "splash.h"
 #include "utils.h"
+#include "splash_error.h"
 
 /*
  * why returning true. I want to tell the scanner that the 
@@ -22,8 +23,7 @@
  */
 bool	scanner_error(t_mini_data *data, char *err_str)
 {
-	ft_write(2, err_str);
-	ft_write(2, "\n");
+	stderr_and_status(err_str, 0);
 	data->scanner_err_str = err_str;
 	data->scanner_error = 2;
 	return (true);

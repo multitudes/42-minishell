@@ -88,7 +88,6 @@ t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i, \
 	token->howmany = 0;
 	token->lexeme = return_lexeme_malloc(lexeme);
 	*i = *i + ft_strlen(token->lexeme);
-	debug("token created type %d -%s-", token->type, token->lexeme);
 	new_node = ft_lstnew(token);
 	if (new_node == NULL)
 	{
@@ -121,8 +120,8 @@ bool	add_token(t_mini_data *data, int *i, const char *lexem, \
 		if (token)
 			ft_lstadd_back(&data->tokenlist, token);
 		else
-			scanner_error(data, "minishell: error: malloc \
-			in new_toknode failed");
+			scanner_error(data, \
+							"minishell: error: malloc in new_toknode failed");
 	}
 	return (true);
 }

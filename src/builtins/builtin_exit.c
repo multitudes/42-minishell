@@ -82,7 +82,6 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	t_list	*head;
 
 	head = tokenlist;
-	debug("exit builtin %s =============", get_token_lexeme(tokenlist));
 	tokenlist = tokenlist->next;
 	merge_sign_token(&tokenlist);
 	head->next = tokenlist;
@@ -101,5 +100,6 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	free((char *)(data->input));
 	free_data(&data);
 	free(data);
+	debug("Exit status: %i", (int)status);
 	exit(status);
 }

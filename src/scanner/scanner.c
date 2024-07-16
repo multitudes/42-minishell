@@ -35,7 +35,7 @@ t_list	*tokenizer(const char *input)
 		if (got_tokens(&data, &i))
 			continue ;
 		else if (!is_space(data.input[i]))
-			scanner_error(&data, "minishell: syntax error");
+			scanner_error(&data, "syntax error");
 		else
 			skip_space(data.tokenlist, data.input, &i);
 	}
@@ -44,7 +44,6 @@ t_list	*tokenizer(const char *input)
 		ft_lstclear(&data.tokenlist, free_tokennode);
 		return (NULL);
 	}
-	debug("====== token list successfully tokenized ====== ");
 	return (data.tokenlist);
 }
 
