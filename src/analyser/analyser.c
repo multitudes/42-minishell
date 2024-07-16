@@ -27,7 +27,6 @@ static void	execute_expansion_by_type(t_data *data, t_list **tokenlist, \
 {
 	t_tokentype	type;
 
-	debug("Check and execute expansion by type (token type: %i)", get_token_type(*tokenlist));
 	type = get_token_type(*tokenlist);
 	if (type == S_QUOTED_STRING)
 		expand_single_quotes(get_curr_token(*tokenlist));
@@ -64,11 +63,9 @@ static void	expand_tokenlist(t_data *data, t_ast_node *ast)
 			return ;
 		}
 		set_flags(tokenlist, &flags);
-		debug("lexeme: %s, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 		execute_expansion_by_type(data, &tokenlist, &flags);
 		if (count == 0)
 			ast->tokenlist = tokenlist;
-		debug("lexeme after expansion: %s, type: %i", get_token_lexeme(tokenlist), get_token_type(tokenlist));
 		if (token_followed_by_space(tokenlist))
 			reset_flags(&flags);
 		tokenlist = tokenlist->next;
