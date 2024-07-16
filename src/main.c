@@ -22,7 +22,7 @@ debug("argc: %d", argc);
 */
 int	main(int argc, char **argv)
 {
-	if (argc == 3 && strcmp(argv[1], "-c") == 0)	
+	if (argc == 3 && strcmp(argv[1], "-c") == 0)
 		return (single_command_loop(argv[2]));
 	else
 		return (loop());
