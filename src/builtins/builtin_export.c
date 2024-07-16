@@ -22,10 +22,8 @@ static bool	no_valid_identifier(const char *key)
 {
 	int	i;
 
-	debug("check if valid identifier");
 	if (key && (!ft_isalpha(key[0]) || key[0] == '_'))
 		return (true);
-	debug("First key check passed");
 	i = 1;
 	while (key[i] != '\0')
 	{
@@ -51,7 +49,6 @@ static uint8_t	process_export_arguments(t_list *tokenlist, t_darray *env_arr)
 		status = merge_tokens(tokenlist);
 	key = get_var_key(get_token_lexeme(tokenlist));
 	value = get_var_value(get_token_lexeme(tokenlist));
-	debug("Key: %s, Value: %s", key, value);
 	if (no_valid_identifier(key))
 		status = stderr_and_status3("export `", \
 			get_token_lexeme(tokenlist), "': not a valid identifier", 1);
@@ -110,14 +107,12 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	uint8_t	status;
 
-	debug("export builtin");
 	status = 0;
 	tokenlist = tokenlist->next;
 	if (!tokenlist)
 		return (print_env_export(env_arr));
 	while (tokenlist)
 	{
-		debug("followed by space? %s", (get_curr_token(tokenlist))->folldbyspace ? "true" : "false");
 		status = process_export_arguments(tokenlist, env_arr);
 		tokenlist = tokenlist->next;
 	}
