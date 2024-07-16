@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 13:21:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 14:01:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ bool	tokenlist_has_astnode(t_list *new_tokenlist)
 	return (false);
 }
 
-bool	tokenize_expression_token(t_list **input_tokens, t_list **expr_node, t_list **new_tokenlist, char **newlexeme)
+bool	tokenize_expression_token(t_list **input_tokens, t_list **expr_node, \
+									t_list **new_tokenlist, char **newlexeme)
 {
 	*expr_node = *input_tokens;
 	*newlexeme = ft_substr(get_token_lexeme(*expr_node), 1, \
@@ -63,7 +64,8 @@ bool	replace_expression_tokens(t_list **head, t_list **input_tokens)
 	char	*newlexeme;
 	bool	has_node;
 
-	if (!tokenize_expression_token(input_tokens, &expr_node, &new_tokenlist, &newlexeme))
+	if (!tokenize_expression_token(input_tokens, &expr_node, \
+									&new_tokenlist, &newlexeme))
 		return (false);
 	has_node = tokenlist_has_astnode(new_tokenlist);
 	*input_tokens = (*input_tokens)->next;
@@ -98,7 +100,7 @@ bool	extract_expression(t_list **head, t_list **input_tokens)
 }
 
 bool	is_not_control_token(t_list *tokenlist)
-{	
+{
 	t_tokentype	type;
 
 	if (!tokenlist)

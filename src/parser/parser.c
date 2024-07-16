@@ -6,24 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 13:23:07 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 14:24:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
-
-/*
- * The ast tree cannot start with one of the following tokens:
- * '| |& && || ;& |&'
- */
-bool	is_tree_control_token(t_list *tmp)
-{
-	if (tmp && (get_token_type(tmp) == PIPE || get_token_type(tmp) == AND_IF || \
-		get_token_type(tmp) == OR_IF || get_token_type(tmp) == PIPE_AND || \
-		get_token_type(tmp) == SEMI_AND))
-		return (true);
-	return (false);
-}
 
 /*
  * Creates ast node(s) from tokens.
@@ -55,16 +42,30 @@ t_ast_node	*create_ast(t_list *tokenlist)
 }
 
 /*
- in this implementation the t_ast_node is a binary tree node
- and I malloc the node but the token list is a pointer to 
- the existing list I receive from the tokenizer.
- Still I need to free it somewhere and since it will not
- be needed later I free it here. Also the input_tokens list 
- is split in pieces in the tree so it would not be possible
- to traverse the list and free it later.
- I use free_tokennode as a function to free because the token list 
- contents are of type (void*)content and I need to cast it to
- t_token* to free the lexeme string and the token itself. 
+ * The ast tree cannot start with one of the following tokens:
+ * '| |& && || ;& |&'
+ */
+bool	is_tree_control_token(t_list *tmp)
+{
+	if (tmp && (get_token_type(tmp) == PIPE || get_token_type(tmp) == AND_IF || \
+		get_token_type(tmp) == OR_IF || get_token_type(tmp) == PIPE_AND || \
+		get_token_type(tmp) == SEMI_AND))
+		return (true);
+	return (false);
+}
+
+/*
+ * in this implementation the t_ast_node is a binary tree node
+ * and I malloc the node but the token list is a pointer to 
+ * the existing list I receive from the tokenizer.
+ * Still I need to free it somewhere and since it will not
+ * be needed later I free it here. Also the input_tokens list 
+ * is split in pieces in the tree so it is possible
+ * to traverse the list and free.
+ * I use free_tokennode as a function passed to free because the token list 
+ * contents are of type (void*)content and I need to cast it to
+ * t_token* to free the lexeme string and the token itself. This tokenfree func 
+ * does that.
  */
 void	*free_ast(t_ast_node **ast)
 {

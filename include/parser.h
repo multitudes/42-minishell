@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 13:18:17 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 14:21:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,9 @@ bool		is_not_control_token(t_list *tokenlist);
 int			count_list(t_list *input_tokens);
 void		break_list(t_list **input_tokens);
 bool		is_tree_control_token(t_list *tmp);
+void		*get_b_node(t_ast_node **b, t_list **tokenlist, t_list *tmp);
+bool		tokenize_expression_token(t_list **input_tokens, t_list **expr_node, \
+									t_list **new_tokenlist, char **newlexeme);
 
 #  ifdef __cplusplus
 
