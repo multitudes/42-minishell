@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 13:11:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 13:17:42 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 	head = *input_tokens;
 	if (input_tokens == NULL || *input_tokens == NULL)
 		return (NULL);
-	while (is_not_control_token(get_curr_token(*input_tokens)))
+	while (is_not_control_token(*input_tokens))
 	{
 		if (extract_expression(&head, input_tokens))
 			expr_has_node = true;
@@ -35,7 +35,7 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 			return (NULL);
 		if (input_tokens == NULL || *input_tokens == NULL)
 			break ;
-		if (is_not_control_token(get_curr_token(*input_tokens)))
+		if (is_not_control_token(*input_tokens))
 			*input_tokens = (*input_tokens)->next;
 	}
 	if (is_tree_control_token(head))

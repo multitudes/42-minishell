@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 12:50:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 13:23:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 /*
  * The ast tree cannot start with one of the following tokens:
- * '| |& && || ;|&'
+ * '| |& && || ;& |&'
  */
 bool	is_tree_control_token(t_list *tmp)
 {

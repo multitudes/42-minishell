@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 10:23:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 13:21:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ bool	tokenlist_has_astnode(t_list *new_tokenlist)
 		return (false);
 	while (tmp)
 	{
-		if (is_not_control_token(get_curr_token(tmp)))
+		if (is_not_control_token(tmp))
 			return (true);
 		tmp = tmp->next;
 	}
@@ -97,12 +97,15 @@ bool	extract_expression(t_list **head, t_list **input_tokens)
 	return (false);
 }
 
-bool	is_not_control_token(t_token *token)
-{
-	if (token == NULL)
+bool	is_not_control_token(t_list *tokenlist)
+{	
+	t_tokentype	type;
+
+	if (!tokenlist)
 		return (false);
-	if (token->type == PIPE || token->type == AND_IF || \
-	token->type == OR_IF || token->type == PIPE_AND)
+	type = get_token_type(tokenlist);
+	if (type == PIPE || type == AND_IF || \
+	type == OR_IF || type == PIPE_AND)
 		return (false);
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 13:02:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 13:18:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ char		*get_token_lexeme(t_list *input_tokens);
 bool		token_followed_by_space(t_list *input_tokens);
 t_tokentype	get_token_type(t_list *input_tokens);
 bool		tokenlist_has_astnode(t_list *new_tokenlist);
-bool		is_not_control_token(t_token *token);
+bool		is_not_control_token(t_list *tokenlist);
 int			count_list(t_list *input_tokens);
 void		break_list(t_list **input_tokens);
 bool		is_tree_control_token(t_list *tmp);
