@@ -21,6 +21,7 @@ char	*get_var_key(const char *variable)
 	char	*position;
 	char	*key;
 
+	key = NULL;
 	position = ft_strchr(variable, '=');
 	if (position)
 		key = ft_substr(variable, 0, position - variable);
@@ -35,9 +36,10 @@ char	*get_var_key(const char *variable)
  */
 char	*get_var_value(const char *variable)
 {
-	char	*position;
 	char	*value;
+	char	*position;
 
+	value = NULL;
 	position = ft_strchr(variable, '=');
 	if (position)
 		value = ft_substr(variable, position - variable + 1, \

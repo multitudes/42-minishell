@@ -42,8 +42,6 @@ static uint8_t	process_export_arguments(t_list *tokenlist, t_darray *env_arr)
 	char	*value;
 	uint8_t	status;
 
-	key = NULL;
-	value = NULL;
 	status = 0;
 	if (tokenlist->next && !token_followed_by_space(tokenlist))
 		status = merge_tokens(tokenlist);
