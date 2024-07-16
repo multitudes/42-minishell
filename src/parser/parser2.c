@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 13:07:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 13:11:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,9 @@ t_ast_node	*parse_terminal(t_list **input_tokens)
 		if (is_not_control_token(get_curr_token(*input_tokens)))
 			*input_tokens = (*input_tokens)->next;
 	}
-	debug("in parse terminal, head is %s", get_token_lexeme(head));
-	debug("in parse terminal, tokenlist is %s", get_token_lexeme(*input_tokens));
 	if (is_tree_control_token(head))
 	{
-		ft_lstdelone(head, free_tokennode);
+		ft_lstclear(&head, free_tokennode);
 		return (NULL);
 	}
 	break_list(input_tokens);
