@@ -165,7 +165,7 @@ typedef struct s_token
 	t_tokentype			type;
 	char				*lexeme;
 	bool				folldbyspace;
-	int 				howmany;	
+	int					howmany;	
 }						t_token;
 
 // for testing - leave here

@@ -79,14 +79,14 @@ int			count_list(t_list *input_tokens);
 void		break_list(t_list **input_tokens);
 bool		is_tree_control_token(t_list *tmp);
 void		*get_b_node(t_ast_node **b, t_list **tokenlist, t_list *tmp);
-bool		tokenize_expression_token(t_list **input_tokens, t_list **expr_node, \
-									t_list **new_tokenlist, char **newlexeme);
-void		*get_b_node_pipeline(t_ast_node **b, t_list **tokenlist, t_list *tmp);
+bool		tokenize_expression_token(t_list **input_tokens, \
+				t_list **expr_node, t_list **new_tokenlist, char **newlexeme);
+void		*get_b_node_pipeline(t_ast_node **b, t_list **tokenlist, \
+									t_list *tmp);
 void		*parse_pipeline_innerloop(t_ast_node **a, t_list **tokenlist);
 void		*parse_terminal_inner_loop(t_list **head, t_list **input_tokens, \
 										bool *expr_has_node);
 void		*parse_list_innerloop(t_ast_node **a, t_list **tokenlist);
-
 
 #  ifdef __cplusplus
 
