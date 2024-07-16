@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 11:30:05 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:39:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ returns true:
 - parentheses are not valid if they are followed or preceded 
 by characters other than && || | or spaces
 */ 
-bool is_empty_parenthesis(const char *str, int i, int start)	
-{	
-	int j; 
-	
+bool	is_empty_parenthesis(const char *str, int i, int start)
+{
+	int	j; 
+
 	j = start + 1;
 	if ((i - start) == 2)
 		return (true);
@@ -33,7 +33,7 @@ bool is_empty_parenthesis(const char *str, int i, int start)
 	{
 		if (!is_space(str[j]) && (str[j] != '(') && (str[j] != ')'))
 			return (false);
-		j++;	
+		j++;
 	}
 	return (true);
 }
@@ -52,17 +52,16 @@ bool	add_parenthesisblock(t_mini_data *data, int *i, char delim, int t_type)
 	start = (*i)++;
 	count = 1;
 	while (data->input[*i] && count > 0)
-	{	
+	{
 		if (data->input[*i] == '(')
 			count++;
-		if (data->input[*i] == delim )
+		if (data->input[*i] == delim)
 			count--;
 		advance(i);
 	}
 	if (count != 0)
-		return (scanner_error(data, "minishell: syntax error: unexpected end of file"));
-	// if (is_empty_parenthesis(data->input, *i, start))
-	// 	return (scanner_error(data, "minishell: syntax error near unexpected token ')'"));
+		return (scanner_error(data, "minishell: syntax error: \
+		unexpected end of file"));
 	tmp = ft_substr(data->input, start, *i - start);
 	add_token(data, &start, tmp, t_type);
 	*i = start;

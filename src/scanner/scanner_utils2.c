@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:52:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 19:33:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:40:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,3 @@ bool	char_is_in_pathname(const char c)
 {
 	return (is_alnum(c) || c != '.');
 }
-
