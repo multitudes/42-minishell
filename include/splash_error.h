@@ -22,10 +22,9 @@
 extern "C" {
 # endif
 
-// void	perror_minishell(const char *msg);
-void	*perror_and_null(const char *msg);
+void *perror_and_null(const char *msg);
 bool	perror_and_bool(const char *msg, bool boolean);
-uint8_t perror_and_status(const char *msg, uint8_t status);
+uint8_t	perror_and_status(const char *msg, uint8_t status);
 uint8_t	perror_and_status2(const char *msg_1, const char *msg_2, \
 							uint8_t status);
 uint8_t	perror_and_exit_with_status(const char *msg, uint8_t status);
@@ -37,7 +36,6 @@ uint8_t	stderr_and_status3(const char *msg_1, \
 							const char *msg_2, const char *msg_3, \
 							uint8_t status);
 bool	stderr_and_bool(const char *msg, bool boolean);
-
 
 #  ifdef __cplusplus
 
