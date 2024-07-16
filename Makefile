@@ -26,7 +26,8 @@ LIBFTDIR 		= 	lib/libft
 SRCS 			= 	$(addprefix $(SRC_DIR), init.c fd.c main.c loop.c signals.c freedata.c history/history.c history/history2.c \
 scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
 scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
-scanner/token_functions.c scanner/token_functions2.c scanner/token_functions3.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
+scanner/token_functions.c scanner/token_functions2.c scanner/token_functions3.c scanner/dollar_tokens.c \
+scanner/reserved_builtins.c scanner/reserved_builtins2.c \
 scanner/token_operators.c scanner/history_tokens.c scanner/token_blocks.c scanner/token_blocks2.c \
 scanner/redirection_tokens.c scanner/redirection_tokens2.c environment/environment.c environment/environment2.c environment/environment3.c \
 parser/parser.c parser/parser2.c parser/parser3.c parser/parser4.c parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c parser/parser_utils4.c \

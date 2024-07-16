@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:26:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:31:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,16 @@
 #include "libft.h"
 
 /*
- * peek wil look ahead to see if my string is beginning with a sequence of chars
- * that I want to recognize as a token.
+ * peek wil look ahead to see if my string is beginning with a sequence 
+ * of chars that I want to recognize as a token.
  * the parameters are:
  * - input is the string to check
  * - identifier is the string to check for
- * - need_delim is true/EXACT if the identifier must be delimited by a end of word
- * char to be valid, else is false/FUZZY if allows to be continued by other chars
- * ex '||' is FUZZY, works with/without spaces at the end but 'echo' is EXACT, 
- * works with valid with delim char.
+ * - need_delim is true/EXACT if the identifier must be delimited by a 
+ * end of word char to be valid, else is false/FUZZY if allows to be continued 
+ * by other chars
+ * ex '||' is FUZZY, works with/without spaces at the end but 'echo' 
+ * is EXACT, works with valid with delim char.
  */
 bool	peek(const char *input, const char *identifier, bool need_delim)
 {

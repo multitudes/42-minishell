@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:25:25 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:30:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,12 @@ bool	got_tokens(t_mini_data *data, int *i)
 /*
  * 
  */
-int skip_space(t_list *tokenlist, const char* input, int *i)
+int	skip_space(t_list *tokenlist, const char *input, int *i)
 {
 	t_list	*last;
 	t_token	*lasttok;
 
- 	last = ft_lstlast(tokenlist);
+	last = ft_lstlast(tokenlist);
 	if (*i > 0 && last)
 	{
 		lasttok = get_curr_token(last);

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:29:51 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:30:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,3 @@ bool	is_a_string_thing(t_mini_data *data, int *i)
 	free(tmp);
 	return (true);
 }
-
-

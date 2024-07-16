@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:40:02 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 19:42:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:33:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,35 +124,9 @@ bool	not_implemented_builtin(const char *id)
 	!ft_strcmp(id, "exec") || !ft_strcmp(id, "alias") || \
 	!ft_strcmp(id, "fg") || !ft_strcmp(id, "getopts") || \
 	!ft_strcmp(id, "hash") || !ft_strcmp(id, "help") || \
-	!ft_strcmp(id,"history") || !ft_strcmp(id, "jobs") || \
+	!ft_strcmp(id, "history") || !ft_strcmp(id, "jobs") || \
 	!ft_strcmp(id, "kill") || !ft_strcmp(id, "let") || \
 	not_implemented_builtin2(id))
 		return (true);
 	return (false);
-}
-
-/*
-is_builtin checks if the identifier is a builtin command
-*/
-bool	is_builtin(t_mini_data *data, char *identifier, int *start)
-{
-	if (peek(identifier, "echo", EXACT))
-		add_token(data, start, "echo", BUILTIN);
-	else if (peek(identifier, "cd", EXACT))
-		add_token(data, start, "cd", BUILTIN);
-	else if (peek(identifier, "export", EXACT))
-		add_token(data, start, "export", BUILTIN);
-	else if (peek(identifier, "unset", EXACT))
-		add_token(data, start, "unset", BUILTIN);
-	else if (peek(identifier, "env", EXACT))
-		add_token(data, start, "env", BUILTIN);
-	else if (peek(identifier, "exit", EXACT))
-		add_token(data, start, "exit", BUILTIN);
-	else if (peek(identifier, "pwd", EXACT))
-		add_token(data, start, "pwd", BUILTIN);
-	else if (not_implemented_builtin(identifier))
-		add_token(data, start, identifier, BUILTIN);
-	else
-		return (false);
-	return (true);
 }
