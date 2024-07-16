@@ -1100,6 +1100,155 @@ const char* test_dollardigit()
 	return NULL;
 }
 
+/*
+echo tests like | && etc
+*/
+const char* test_echoes() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "echo |";	
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+	
+	arg = "echo ||";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+
+	arg = "echo &&";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+
+	arg = "echo | &";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 127, "exit status is not 2\n");
+
+	
+	arg = "echo |&";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+
+// TODO is this the behaviour we want?
+	arg = "echo ;";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == ";\n", "output is not correct echoes\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+	result.str("");
+	fflush(stdout);
+	arg = "echo ;&";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == ";&\n", "output is not correct echoes\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	result.str("");
+	arg = "|";	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+	
+	result.str("");
+	arg = "||";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+
+	result.str("");
+	arg = "&&";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+
+	result.str("");
+	arg = "| &";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+
+	result.str("");
+	arg = "|&";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+
+	result.str("");
+// TODO is this the behaviour we want?
+	arg = ";";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 127, "exit status is not 127\n");
+	
+	result.str("");
+	arg = ";&";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+
+	result.str("");
+	arg = "echo bonjour ; |";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+
+	result.str("");
+	arg = "echo bonjour > > out";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	result.str("");
+	arg = "echo bonjour > $test";
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 0\n");
+
+	this works in the shell but gets in infinite loop
+	// result.str("");
+	// arg = "echo bonjour > $test w/ test=\"o1 o2\"";
+	// exit_status = run_command_and_check_output(arg, result);
+	// debug("result from minishell: -%s-\n", result.str().c_str());
+	// my_assert(result.str() == "", "output is not correct echoes\n");
+	// my_assert(exit_status == 1, "exit status is not 1\n");
+
+	result.str("");
+	arg = "echo bonjour >>> test"; // 	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 0, "exit status is not 1\n");
+
+	result.str("");
+	arg = "echo bonjour ||"; // 	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not correct echoes\n");
+	my_assert(exit_status == 2, "exit status is not 2\n");
+
+	return NULL;
+}
+
 
 const char *all_tests()
 {
@@ -1167,6 +1316,7 @@ const char *all_tests()
 
 	run_test(test_dollardigit);
 
+	run_test(test_echoes);
 
 	return NULL;
 }

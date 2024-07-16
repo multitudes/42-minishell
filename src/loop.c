@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 12:33:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 11:08:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void	single_command_innerloop(t_data *data)
 	data->tokenlist = tokenizer(data->input);
 	if (syntax_check_and_heredoc(data) && data->tokenlist != NULL)
 	{
+		debug("tokenlist: %s", get_token_lexeme(data->tokenlist));
 		data->ast = create_ast(data->tokenlist);
 		if (data->ast)
 		{
@@ -102,10 +103,11 @@ void	single_command_innerloop(t_data *data)
 			free_ast(&(data->ast));
 		}
 		else
-			data->exit_status = stderr_and_status("syntax parse error", 1);
+			data->exit_status = stderr_and_status("syntax parse error", 2);
 	}
 	else
 	{
+		ft_lstclear(&(data->tokenlist), free_tokennode);
 		free((char *)(data->input));
 		free_data(&data);
 		exit(2);

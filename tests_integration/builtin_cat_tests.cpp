@@ -16,7 +16,6 @@ input 123 then 123 followed by EOF and then EOF again
 */
 const char* test_basicminishell_cat() 
 {
-
 	bool pass = false;
 	std::string command_to_exec = "cat -u\n123\n123\x04\n\x04\n";
 	std::string expected_output = "minishell $ cat -u\n123\n123\x04\n\x04\nminishell $ exit\n";
@@ -50,8 +49,6 @@ const char *all_tests()
 
 // works as a main
 RUN_TESTS(all_tests);
-
-
 
 
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass) {

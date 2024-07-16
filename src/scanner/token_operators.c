@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:43:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/14 20:15:41 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 10:51:51 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,22 @@
 bool	is_simple_operator(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "=", FUZZY))
-		return (add_token(data, i, "=", EQUAL));
+		add_token(data, i, "=", EQUAL);
 	else if (peek(data->input + *i, "&", FUZZY))
-		return (add_token(data, i, "&", AND_TOK));
+		add_token(data, i, "&", AND_TOK);
 	else if (peek(data->input + *i, "^", FUZZY))
-		return (add_token(data, i, "^", CARET));
+		add_token(data, i, "^", CARET);
 	else if (peek(data->input + *i, "%", FUZZY))
-		return (add_token(data, i, "%", PERCENT));
+		add_token(data, i, "%", PERCENT);
 	else if (peek(data->input + *i, "~", EXACT))
-		return (add_token(data, i, "~", TILDE));
+		add_token(data, i, "~", TILDE);
 	else if (peek(data->input + *i, "$", FUZZY))
-		return (add_token(data, i, "$", DOLLAR));
+		add_token(data, i, "$", DOLLAR);
+	else if (peek(data->input + *i, "#", FUZZY))
+		add_token(data, i, "#", COMMENT);	
 	else
 		return (false);
+	return (true);
 }
 
 bool	is_a_control_operator(t_mini_data *data, int *i)
@@ -42,8 +45,6 @@ bool	is_a_control_operator(t_mini_data *data, int *i)
 		add_token(data, i, ";&", SEMI_AND);
 	else if (peek(data->input + *i, "|", FUZZY))
 		add_token(data, i, "|", PIPE);
-	else if (peek(data->input + *i, "#", FUZZY))
-		add_token(data, i, "#", COMMENT);	
 	else
 		return (false);
 	return (true);

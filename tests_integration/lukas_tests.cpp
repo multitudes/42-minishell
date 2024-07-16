@@ -339,6 +339,25 @@ const char* test_exits4()
 	return NULL;
 }
 
+/*
+exits
+assumes src is a folder - comand not found
+*/
+const char* test_laststring() 
+{
+    fflush(stdout);
+
+    std::ostringstream result;
+	std::string arg = "";
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+
+    debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "", "output is not nothing\n");
+	my_assert(exit_status == 127, "exit status is not 126\n");
+	return NULL;
+}
+
+
 const char *all_tests()
 {
 	// necessary to start the test suite

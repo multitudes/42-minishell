@@ -6,11 +6,24 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 17:20:03 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 11:17:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+
+/*
+ * 
+ * 
+ */
+bool	is_tree_control_token(t_list *tmp)
+{
+	if (tmp && (get_token_type(tmp) == PIPE || get_token_type(tmp) == AND_IF || \
+		get_token_type(tmp) == OR_IF || get_token_type(tmp) == PIPE_AND || \
+		get_token_type(tmp) == SEMI_AND))
+		return (true);
+	return (false);
+}
 
 /*
  * Creates ast node(s) from tokens.
@@ -30,12 +43,14 @@ t_ast_node	*create_ast(t_list *tokenlist)
 	tmp = tokenlist;
 	if (tokenlist == NULL)
 		return (NULL);
-	while (tmp)
+	while (tmp && !is_tree_control_token(tmp))
 	{
 		rootnode = parse_list(&tmp);
 		if (!rootnode)
 			return (NULL);
 	}
+	if (is_tree_control_token(tmp))
+		ft_lstclear(&tokenlist, free_tokennode);
 	return (rootnode);
 }
 
