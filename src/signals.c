@@ -28,7 +28,7 @@ otherwise we might need this. WTERMSIG(status) returns the signal number
 that caused the child to terminate when the child did not
 exit normally and it has been added to the executor.
 */
-int	g_signal;
+int			g_signal;
 
 /*
 The environ variable is part of the POSIX standard, so it should be 
