@@ -45,7 +45,7 @@ static void	execute_expansion_by_type(t_data *data, t_list **tokenlist, \
 /*
 Goes through tokenlist, expands if expansion types and expansion allowed.
 */
-static void	expand_tokenlist(t_data *data, t_ast_node *ast)
+static uint8_t	expand_tokenlist(t_data *data, t_ast_node *ast)
 {
 	t_exp_flags	flags;
 	int			count;
@@ -57,11 +57,7 @@ static void	expand_tokenlist(t_data *data, t_ast_node *ast)
 	while (tokenlist)
 	{
 		if (!get_curr_token(tokenlist))
-		{
-			data->exit_status = \
-				stderr_and_status("system error: missing token", 1);
-			return ;
-		}
+			return (stderr_and_status("system error: missing token", 1));
 		set_flags(tokenlist, &flags);
 		execute_expansion_by_type(data, &tokenlist, &flags);
 		if (count == 0)
@@ -73,6 +69,7 @@ static void	expand_tokenlist(t_data *data, t_ast_node *ast)
 		tokenlist = tokenlist->next;
 		count++;
 	}
+	return (0);
 }
 
 static bool	separated_token_types(t_list *tokenlist)
@@ -106,7 +103,7 @@ void	analyse_expand(t_ast_node *ast, t_data *data)
 	tokenlist = ast->tokenlist;
 	if (!tokenlist)
 		return ;
-	expand_tokenlist(data, ast);
+	data->exit_status = expand_tokenlist(data, ast);
 	tokenlist = ast->tokenlist;
 	while (tokenlist && tokenlist->next)
 	{

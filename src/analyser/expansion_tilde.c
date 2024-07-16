@@ -96,7 +96,7 @@ void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 	// 	&& valid_tilde_expansion(tokenlist, 0))
 	// 	lexeme = home;
 	// else
-		lexeme = replace_tilde_in_lexeme(tokenlist, home, flags);
+	lexeme = replace_tilde_in_lexeme(tokenlist, home, flags);
 	free(home);
 	token->type = WORD;
 	free(token->lexeme);
