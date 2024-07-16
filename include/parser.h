@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 14:41:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 14:53:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,10 @@ bool		tokenize_expression_token(t_list **input_tokens, t_list **expr_node, \
 									t_list **new_tokenlist, char **newlexeme);
 void		*get_b_node_pipeline(t_ast_node **b, t_list **tokenlist, t_list *tmp);
 void		*parse_pipeline_innerloop(t_ast_node **a, t_list **tokenlist);
+void		*parse_terminal_inner_loop(t_list **head, t_list **input_tokens, \
+										bool *expr_has_node);
+void		*parse_list_innerloop(t_ast_node **a, t_list **tokenlist);
+
 
 #  ifdef __cplusplus
 
