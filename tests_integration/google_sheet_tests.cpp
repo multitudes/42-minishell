@@ -1306,6 +1306,50 @@ const char* test_awk()
 	return NULL;
 }
 
+/* export VAR=$HOME:~
+echo $HOME:~
+echo ~
+echo : ~
+*/
+const char* test_export_semi() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "export VAR=$HOME:~ && echo $VAR";	
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(strcmp(result.str().c_str(), home), "output is not correct exp\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	result.str("");
+	arg = "echo $HOME:~"; // 	
+	std::string homeStr = home + std::string(":") + home + std::string("\n");
+
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == homeStr, "output is not correct wxport\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	result.str("");
+	arg = "echo ~"; // 	
+	homeStr = home + std::string("\n");
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == homeStr, "output is not correct export\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	result.str("");
+	arg = "echo : ~"; // 	
+	homeStr = std::string(": ") + home + std::string("\n");
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == homeStr, "output is not correct export\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	return NULL;
+}
+
 const char *all_tests()
 {
 	// necessary to start the test suite
@@ -1375,6 +1419,8 @@ const char *all_tests()
 	run_test(test_echoes);
 
 	run_test(test_awk);
+
+	run_test(test_export_semi);
 
 	return NULL;
 }
