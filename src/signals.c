@@ -70,6 +70,19 @@ static void	sigint_handler(int sig)
 	return ;
 }
 
+static void	sigint_handler_non_tty(int sig)
+{
+	if (sig == SIGINT)
+	{
+		ft_write(1, "\n");
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		exit(130);
+	}
+	return ;
+}
+
 /*
 on mac with ctrl - c , I get a new line on bash without 
 displaying ^C
@@ -97,8 +110,7 @@ int	set_up_std_signals(void)
 	}
 	else 
 	{
-		if ((signal(SIGINT, sigint_handler) == SIG_ERR) || \
-		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
+		if ((signal(SIGINT, sigint_handler_non_tty) == SIG_ERR))
 			return (perror_and_status("SIG_ERR signal", 1));
 	}
 	rl_catch_signals = 1;
