@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:57:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 12:26:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,14 @@ static bool	execute_other_builtins(t_data *data, t_list *tokenlist, \
 	else if (ft_strcmp(data->input, "history -c") == 0 \
 			|| ft_strcmp(data->input, "history --clear") == 0)
 	{
-		clear_hist_file(data->homepath);
+		clear_hist_file();
 		rl_clear_history();
 		*status = 0;
 		return (true);
 	}
 	else if (ft_strcmp(data->input, "history") == 0)
 	{
-		*status = print_history(data->env_arr);
+		*status = print_history();
 		return (true);
 	}
 	return (false);
