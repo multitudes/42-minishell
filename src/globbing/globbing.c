@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:45:04 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,6 @@ void	expand_globbing(t_list **tokenlist)
 										create_globbing_tokenlist(files));
 	if (head)
 		*tokenlist = head;
-	print_tokenlist(*tokenlist);
 	darray_clear_destroy(files);
 	return ;
 }
