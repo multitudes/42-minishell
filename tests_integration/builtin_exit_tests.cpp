@@ -15,7 +15,7 @@ const char* test_exit()
 {
 	bool pass = false;
 	std::string command_to_exec = "exit\n";
-	std::string expected_output = "minishell $ exit\nexit\n";
+	std::string expected_output = " splash 💦 > exit\nexit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
 	my_assert(status == 0, "Minishell exited with non-zero status");
 	my_assert(pass, "Output is not as expected");

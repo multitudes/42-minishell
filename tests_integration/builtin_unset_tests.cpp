@@ -31,7 +31,7 @@ const char* test_unset_read_only() {
 
 	// test export read only
 	int exit_status = run_command_and_check_output("unset PPID=123\n", \
-	"minishell $ unset PPID=123\nminishell $ exit\n", &pass);
+	" splash 💦 > unset PPID=123\n splash 💦 > exit\n", &pass);
 	my_assert(pass, "pass is not as expected");
 	debug("exit_status: %d", exit_status);
 	// assert(exit_status == 0);
@@ -46,7 +46,7 @@ const char* test_unset_read_only_EUID() {
 
 	// test export read only
 	int exit_status = run_command_and_check_output("unset EUID=123\n", \
-	"minishell $ unset EUID=123\nminishell $ exit\n", &pass);
+	" splash 💦 > unset EUID=123\n splash 💦 > exit\n", &pass);
     debug("exit_status: %d", exit_status);
 	my_assert(pass, "pass is not as expected");
 	// assert(exit_status == 0);
@@ -59,7 +59,7 @@ const char* test_unset_read_only_UID() {
 
 	// test export read only
 	int exit_status = run_command_and_check_output("unset UID=123\n", \
-	"minishell $ unset UID=123\nminishell $ exit\n", &pass);
+	" splash 💦 > unset UID=123\n splash 💦 > exit\n", &pass);
 	debug("exit_status: %d", exit_status);
 	my_assert(pass, "pass is not as expected");
 	// assert(exit_status == 0);
@@ -77,7 +77,7 @@ const char* test_unset_read_only2() {
 	bool pass = false;
 
 	// test export read only
-	int exit_status = run_command_and_check_output("unset PPID\n", "minishell $ unset PPID\nminishell $ exit\n", &pass);
+	int exit_status = run_command_and_check_output("unset PPID\n", " splash 💦 > unset PPID\n splash 💦 > exit\n", &pass);
 	debug("exit_status: %d", exit_status);
 	my_assert(pass, "pass is not as expected");
 	// assert(exit_status == 1);
@@ -92,7 +92,7 @@ const char* test_unset_read_only_EUID2() {
 
 	// test export read only
 	int exit_status = run_command_and_check_output("unset EUID\n", \
-	"minishell $ unset EUID\nminishell $ exit\n", &pass);
+	" splash 💦 > unset EUID\n splash 💦 > exit\n", &pass);
 	debug("exit_status: %d", exit_status);	
 	my_assert(pass, "pass is not as expected");
 	// assert(exit_status == 1);
@@ -104,7 +104,7 @@ const char* test_unset_read_only_UID2() {
 
 	// test export read only
 	int exit_status = run_command_and_check_output("unset UID\n", \
-	"minishell $ unset UID\nminishell $ exit\n", &pass);
+	" splash 💦 > unset UID\n splash 💦 > exit\n", &pass);
 	debug("exit_status: %d", exit_status);																																
 	my_assert(pass, "pass is not as expected");
 	// assert(exit_status == 1);

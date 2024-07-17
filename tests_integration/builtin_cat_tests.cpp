@@ -18,7 +18,7 @@ const char* test_basicminishell_cat()
 {
 	bool pass = false;
 	std::string command_to_exec = "cat -u\n123\n123\x04\n\x04\n";
-	std::string expected_output = "minishell $ cat -u\n123\n123\x04\n\x04\nminishell $ exit\n";
+	std::string expected_output = " splash 💦 > cat -u\n123\n123\x04\n\x04\n splash 💦 > exit\n";
 	int status = run_command_and_check_output(command_to_exec, expected_output, &pass);
 	my_assert(status == 0, "Minishell exited with non-zero status");
 	my_assert(pass, "Output is not as expected");

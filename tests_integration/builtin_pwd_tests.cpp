@@ -23,16 +23,16 @@ std::string get_current_directory() {
 }
 
 /*
-Ex output: -minishell $ echo $PWD
+Ex output: - splash 💦 > echo $PWD
 /home/lbrusa/DEV/minishell/tests_integration
-minishell $ exit
+ splash 💦 > exit
 -
 */
 const char* test_pwd_on_startup() 
 {
     bool pass = false;
 	uint8_t	exit_status;
-	std::string output = "minishell $ echo $PWD\n" + get_current_directory() + "\nminishell $ exit\n";
+	std::string output = " splash 💦 > echo $PWD\n" + get_current_directory() + "\n splash 💦 > exit\n";
     exit_status = run_command_and_check_output("echo $PWD", output, &pass);
 	my_assert(exit_status == 0, "Minishell exited with non-zero status");
 	my_assert(pass, "Output is not as expected");
@@ -41,12 +41,12 @@ const char* test_pwd_on_startup()
 
 // comment out because apparently the output is mixedd with the sterr?
 /*
- DEBUG builtin_pwd_tests.cpp:run_command_and_check_output:152: output: -minishell $ unset PWD
+ DEBUG builtin_pwd_tests.cpp:run_command_and_check_output:152: output: - splash 💦 > unset PWD
 make[1]: *** [Makefile:71: runtests] Error 1
-minishell $ 
-minishell $ echo $PWD
+ splash 💦 > 
+ splash 💦 > echo $PWD
 
-minishell $ exit
+ splash 💦 > exit
 make: *** [Makefile:90: tests_integration] Error 2
 -
 */
@@ -54,7 +54,7 @@ make: *** [Makefile:90: tests_integration] Error 2
 // const char* test_pwd_after_unset() {
 //     bool pass = false;
 // 	uint8_t	exit_status;
-// 	std::string output = "minishell $ unset PWD\nminishell $ \necho $PWD\n\nminishell $ exit\n";
+// 	std::string output = " splash 💦 > unset PWD\n splash 💦 > \necho $PWD\n\n splash 💦 > exit\n";
 //     exit_status = run_command_and_check_output("unset PWD\n\necho $PWD", output, &pass);
 // 	my_assert(exit_status == 0, "Minishell exited with non-zero status");
 // 	my_assert(pass, "Output is not as expected");

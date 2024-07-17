@@ -727,7 +727,7 @@ For example, if a user types ls *.txt, the shell should expand the *.txt wild
 // ...
 
 char *input;
-input = readline("minishell $ ");
+input = readline(" splash 💦 > ");
 while (input != NULL)
 {
     add_input_to_history(input);
@@ -748,7 +748,7 @@ while (input != NULL)
     }
 
     globfree(&glob_result);
-    input = readline("minishell $ ");
+    input = readline(" splash 💦 > ");
 }
 
 free(input);
