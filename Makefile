@@ -62,8 +62,8 @@ endif
 
 # target
 all: $(LIBFT) $(NAME) tests tests_integration copy_bonus
-	mkdir -p $(TMP_DIR)
-	chmod 700 $(TMP_DIR)
+	@mkdir -p $(TMP_DIR)
+	@chmod 700 $(TMP_DIR)
 
 # Static pattern rule for compilation - adding the .o files in the obj folder 
 # with includes for the libft that will allow the <libft.h> notation 
