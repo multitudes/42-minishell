@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 10:48:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 16:32:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	mainloop(t_data *data)
 {
 	while (true)
 	{
-		data->input = readline("minishell $ ");
+data->input = readline("\033[44m\033[97m splash 💦 \033[0m\033[44m\033[97m>\033[0m ");
 		if (data->input != NULL)
 		{
 			if (ft_strncmp(data->input, "", 1) != 0)
