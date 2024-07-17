@@ -170,7 +170,7 @@ Furthermore we use integration tests and unit tests: To be able to make changes 
 ### Basic Architecture of our Shell
 1. Overarching loop for repeated and single command execution. We start by implementing a loop that reads the user input with the readline() function. The readline function is part of the part of the GNU Readline library and offers other functions like rl_clear_history, rl_on_new_line, rl_replace_line, rl_redisplay,add_history that we are allowed to use in our project.
 2. Scanner: The first step is scanning, also known as lexing, or (if you’re trying to impress someone) lexical analysis. A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like '(' and ','. Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ).
-3. Parser: The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. Before building a tree, any heredocs that are found in the tokenlist are interpreted and set up. Then the parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. These trees have a couple of different names—“parse tree” or “abstract syntax tree”. In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”.
+3. Parser: The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. Before building a tree, any heredocs that are found in the tokenlist are interpreted and set up. Then the parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. In order to evaluate an arithmetic node, you need to know the numeric values of its subtrees, so you have to evaluate those first. That means working your way from the leaves up to the root—a post-order traversal. If I gave you an arithmetic expression, you could draw one of these trees pretty easily. These trees have a couple of different names—“parse tree” or “abstract syntax tree”. In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”.
 Everything up to this point is considered the front end of the implementation.
 4. Tree-walk interpreter: To run the program, the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
 5. Before commands (system or builtin) are executed redirections (including for heredocs) are set up.
@@ -204,7 +204,7 @@ I really liked the explanation of context-free grammar in the book "Crafting Int
 
 A scanner (or lexer) takes the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like ( and , . Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ). The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. These trees have a couple of different names—“parse tree” or “abstract syntax tree”. In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”. Everything up to this point is considered the front end of the implementation. The back end is where the interpreter actually runs the program. There are a few different ways to do this, but the most common is tree-walk interpreters. To run the program, the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
 
-## Grammar of a shell
+## Grammar of a Shell
 We need to create our grammar. To do so we head to our Bash manual!
 
 Some of the tokens that are of interest to us:
@@ -230,10 +230,10 @@ Also there is the question of priority:
 - { and } are used to group commands in a block.
 
 How do we write down a grammar that contains an infinite number of valid strings? We obviously can’t list them all out. Instead, we create a finite set of rules.  
-This is from the book Crafting Interpreters by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:  
+This is from the book "Crafting Interpreters" by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:  
 <img src="assets/expression_grammar.png" alt="Expression Grammar" width="400">
 
-## Grammar of our shell
+## Grammar of our Shell
 This is a good starting point for our grammar.
 Through reading the shell grammar page (link below) I got a better understanding of how to write the grammar for our shell and came up with the following:
 ```
@@ -287,21 +287,21 @@ typedef enum e_tokentype {
 cat ("hey")
 bash: syntax error near unexpected token `('
 ```
-When not escaped or quoted, parentheses `(` and `)` in bash have special meanings and are treated as control operators. They cannot be used as part of an argument like a filename. Here are their main uses:
+When not escaped or quoted, parentheses `(` and `)` in bash have special meanings and are treated as control operators. They cannot be used as part of an argument like a filename.
 
-Ex: Commands enclosed between `(` and `)` are executed in a subshell, which is a separate instance of the shell.
-
+Their main use is to group arguments that get executed together when parsing the tree, e.g.
 ```bash
 (echo "Hello"; echo "World")
 ```
-Then they are used in functions or for arithmetic operations, which we do not implement. 
+would ensure both commands would be executed before the result of the combined commands would be interpreted in the context of other commands and syntax surrounding the parantheses.
+Parantheses are also used in functions or for arithmetic operations, which we do not implement. 
 
-So, when not escaped or quoted, parentheses cannot be part of an argument like a filename. They are treated as control operators and have special meanings.
+In our shell, parantheses are used to organize association in lists, i.e. which '&&' and '||' operators should be grouped together.
 
-## Variable names
-Variables names have stricter rules than command or file names. 
+## Variable Names
+Variables names have stricter rules than command or file names.
 
-They match like in C the regex pattern:
+They match the regex pattern:
 `[_a-zA-Z][[_0-9a-zA-Z]]*`
  
 ex `export [_a-zA-Z][[_0-9a-zA-Z]]*=....`
@@ -318,7 +318,7 @@ export 234fsd=fjskld
 And then we have an illustrative special case below. The expansion mostly happens in bash before the parsing in the tree (if any in bash).  
 - var becomes HOME
 - then when we unset $var because $var was previously expanded we get `unset HOME`
-- when I do `export $var=home/rpriess` it is really `export HOME=home/rpriess` 
+- when I do `export $var=home/rpriess` it is really `export HOME=home/rpriess`
 
 ```
 lbrusa@c3a4c7:/home/lbrusa/DEV/minishell$ export var=HOME        
@@ -333,22 +333,6 @@ PATH=/local/bin:/local/bin:/local/bin:/.local/bin:/usr/local/sbin:/usr/local/bin
 _=/usr/bin/env
 lbrusa@c3a4c7:/home/lbrusa/DEV/minishell$ 
 ```
-
-## Tokens
-### Metacharacters
-A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
-
-A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
-
-A sequence of characters considered a single unit by the shell. It is either a word or an operator.
-
-word
-A sequence of characters treated as a unit by the shell. Words may not include unquoted metacharacters.
-
-The core of the scanner is a loop. Starting at the first character of the source code, it figures out what lexeme it belongs to, and consumes it and any following characters that are part of that lexeme. When it reaches the end of that lexeme, it emits a token.
-
-## Parsing
-In order to evaluate an arithmetic node, you need to know the numeric values of its subtrees, so you have to evaluate those first. That means working your way from the leaves up to the root—a post-order traversal:If I gave you an arithmetic expression, you could draw one of these trees pretty easily.
 
 ## Allowed functions
 ### The readline function
@@ -375,8 +359,8 @@ int main() {
 }
 
 ```
-need linking with `-lreadline` when compiling.
-Using add_history() function, we add the input to the history list maintained by Readline. This allows users to recall and edit previously entered command lines using the up and down arrow keys. It seems that we are not allowed to use the history_list() function or the history_get() function therefore we will have to implement our own history list.
+The function requires linking with `-lreadline` when compiling.
+Using the `add_history()` function, we add the input to the history list maintained by Readline. This allows users to recall and edit previously entered command lines using the up and down arrow keys. As we were not allowed to use the `history_list()` function or the `history_get()` function we implemented our own history list.
 
 ## On the mac m1 
 I could get the readline and add_history functions to work on my mac m1. 
