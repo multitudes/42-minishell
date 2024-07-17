@@ -6,14 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:01:22 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 12:29:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "splash.h"
 #include "analyser.h"
 #include "scanner.h"
-#include <libft.h>
+#include "libft.h"
 
 void	expand_single_quotes(t_token *token)
 {

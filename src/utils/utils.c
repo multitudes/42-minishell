@@ -6,12 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:37:46 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 11:41:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
-#include <libft.h>
+#include "libft.h"
 #include "splash_error.h"
 #include "scanner.h"
 #include <stdbool.h>

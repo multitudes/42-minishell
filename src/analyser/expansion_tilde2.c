@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_tilde2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 00:15:22 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 00:15:26 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 #include "analyser.h"
-#include <libft.h>
+#include "libft.h"
 
 /*
 We dont expand tilde if the next char after the tilde is not a valid path.

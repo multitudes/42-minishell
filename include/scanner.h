@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:29:00 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define SCANNER_H
 
 # include <stdbool.h>
-# include <libft.h>
+# include "libft.h"
 
 /*
 to make the code more clear I add these two defines 

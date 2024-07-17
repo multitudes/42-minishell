@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 12:10:32 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 # include <stdarg.h>
 # include <assert.h>
 # include <limits.h>
-# include <libft.h>
+# include "libft.h"
 # include "darray.h"
 # include "environment.h"
 # include "parser.h"

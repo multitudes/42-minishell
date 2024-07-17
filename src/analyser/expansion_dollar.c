@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:01:47 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 12:29:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "scanner.h"
 #include "utils.h"
 #include "analyser.h"
-#include <libft.h>
+#include "libft.h"
 
 /*
 Replaces a char + given key at position i by key_value

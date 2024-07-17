@@ -6,14 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 11:22:23 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 13:05:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "splash_error.h"
 #include "utils.h"
 #include <stdint.h>
-#include <libft.h>
+#include "libft.h"
 #include <stdbool.h>
 
 /*

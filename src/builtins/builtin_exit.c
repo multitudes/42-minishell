@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_exit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:53:34 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:53:38 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "utils.h"
 #include "splash_error.h"
 #include "debug.h"
-#include <libft.h>
+#include "libft.h"
 #include <stdbool.h>
 
 static char	*remove_sign_token(t_list **tokenlist)

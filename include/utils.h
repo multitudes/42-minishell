@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:38:35 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 20:32:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define UTILS_H
 
 # include <stddef.h>
-# include <libft.h>
+# include "libft.h"
 # include <stdbool.h>
 
 int		ft_isascii(const int c);

@@ -6,12 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:15:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 13:26:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:48:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "darray.h"
-#include <libft.h>
+#include "libft.h"
 
 /*
  * Returns a new darray with the given element size and initial max size

@@ -6,14 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:02:17 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:15:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "analyser.h"
 #include "scanner.h"
 #include "utils.h"
-#include <libft.h>
+#include "libft.h"
 
 /*
 If there is a : or a first equal sign we expand.

@@ -66,7 +66,7 @@ all: $(LIBFT) $(NAME) tests tests_integration bonus
 	@chmod 700 $(TMP_DIR)
 
 # Static pattern rule for compilation - adding the .o files in the obj folder 
-# with includes for the libft that will allow the <libft.h> notation 
+# with includes for the libft that will allow the "libft.h" notation 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@

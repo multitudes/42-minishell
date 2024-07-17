@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 13:09:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:45:52 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 14:13:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,16 @@
 #include "utils.h"
 #include "splash_error.h"
 
+#define SIZEOFCHAR 1
 /*
  * Used in the bubblesort function to return ordered strings.
+ * This function is intended to be generic and if i have an array 
+ * of ints then size will be size of int or char or whatever type
+ * To avoid usinfg an unused large buffer I use SIZEOFCHAR 1 for this project
  */
 static void	swappointers(void *a, void *b, size_t size)
 {
-	char	temp[BUFSIZ];
+	char	temp[SIZEOFCHAR];
 
 	ft_memcpy(temp, a, size);
 	ft_memcpy(a, b, size);
@@ -98,7 +102,7 @@ int	print_env_export(t_darray *env_arr)
 	export_arr = NULL;
 	if (copy_env_darray(&export_arr, env_arr))
 		return (1);
-	ft_bubblesort(export_arr->contents, export_arr->end, sizeof(void *), cmp);
+	ft_bubblesort(export_arr->contents, export_arr->end, sizeof(char *), cmp);
 	while (export_arr && export_arr->contents && i < export_arr->end - 1)
 	{
 		key = get_var_key(export_arr->contents[i++]);

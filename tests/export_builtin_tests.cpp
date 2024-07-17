@@ -1,6 +1,6 @@
 #include "razorclam_tests.h"
 #include "../include/splash.h"
-#include <libft.h>
+#include "libft.h"
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>

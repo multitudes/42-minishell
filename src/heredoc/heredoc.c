@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/14 21:16:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "builtins.h"
 #include "utils.h"
 #include "splash_error.h"
-#include <libft.h>
+#include "libft.h"
 #include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h> // needed?

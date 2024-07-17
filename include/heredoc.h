@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 21:02:07 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 12:04:59 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <stdbool.h>
 # include <stddef.h>
-# include <libft.h>
+# include "libft.h"
 # include "parser.h"
 # include "splash.h"
 # include <fcntl.h>

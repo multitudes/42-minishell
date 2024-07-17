@@ -6,13 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 19:23:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "scanner.h"
-#include <libft.h>
+#include "libft.h"
 
 /*
 returns the next token after deleting the current token
