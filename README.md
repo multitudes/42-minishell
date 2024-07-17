@@ -1475,6 +1475,21 @@ $ wc -c <<''
 ```
 Since this requires handling quotes around the delimiter, which is not required by the subject, and it would mean implementing different parsing rules, at which point you could go haywire and ask why not require <<- too.
 
+## Using files to store the heredocs
+heredocs need to be run before the command execution so they need to be stored somewhere and a file is probably a good option. We decided to use the tmp folder on Linux to store the heredocs because it is a common practice and we have access to it from anywhere. I updated the makefile with:
+```
+TMP_DIR			= 	/tmp/splash/
+
+# target
+all: $(LIBFT) $(NAME) tests tests_integration
+	mkdir -p $(TMP_DIR)
+```
+and it makes a directory if it not already exists. The files will be deleted when the program ends.
+
+<div style="text-align: center;">
+<img src="assets/heredocs.png" alt="hello world" style="width: 50%;display: inline-block;" />
+</div>
+
 ## the ioctl system call
 To fix the issue with the signals in the heredoc we used the `ioctl` system call.  
 `ioctl` stands for "input/output control" and is a system call in Unix-like operating systems. It provides a generic way to make device-specific calls on file descriptors, which might represent files, devices, or other types of I/O streams. The purpose of `ioctl` is to perform operations on a file descriptor that are not achievable with simple read or write commands, often because they involve hardware control or special modes of communication.

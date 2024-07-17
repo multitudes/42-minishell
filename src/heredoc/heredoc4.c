@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc4.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:47:45 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/16 16:47:48 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/17 08:34:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static char	*get_heredoc_filename(void)
 	index = ft_itoa(i++);
 	if (!index)
 		return (perror_and_null("heredoc set up"));
-	new_filename = ft_strjoin(".tmp/heredoc_", index);
+	new_filename = ft_strjoin("/tmp/splash/heredoc_", index);
 	if (!new_filename)
 		return (perror_and_null("heredoc set up"));
 	free(index);

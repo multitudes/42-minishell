@@ -19,7 +19,7 @@ INCLUDES 		= 	-I./lib/libft -I./include
 # directories
 OBJ_DIR			= 	obj/
 SRC_DIR			= 	src/
-TMP_DIR			= 	.tmp/
+TMP_DIR			= 	/tmp/splash/
 LIBFTDIR 		= 	lib/libft
 
 # the files to compile
