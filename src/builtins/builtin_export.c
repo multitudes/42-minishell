@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:06 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:52:10 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/17 18:42:04 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,42 +65,42 @@ static uint8_t	process_export_arguments(t_list *tokenlist, t_darray *env_arr)
 }
 
 /*
-Executes 'export' builtin. No options interpreted.
-
-- when a string with newline characters is assigned to a variable in BASH
-(e.g. VAR="first\nsecond\nthird"
-	- single or double quotes give the same result),
-and export, then `export` and `env`
-list the variable with displayed \n-characters,
-in env case without quotes, in export case with quotes and escape charaters
-but echo on the variable will actually execute the newlines
-
-- If no value is provided export does not assigne a value to `name` 
-	and simply displays it as `name`
-	unless the variable already exists, then it is left unchanged
-- if export is executed without values but with `export name=` 
-	then `export` displays this variable as `name=''
-	(i.e. assigns an empty string)
-- while env without arguments does not display the variable at all
-- it is possible to assign multiple values to a variable 
-	`export VAR=1:2:3:"string" (in this case the quotes are not shown 
-	(neither with env nor with export))
-- it can also end with a ':'
-- export `VAR=2=3` gets added to the environment as `VAR='2=3'` 
-	(env would display this variable as `VAR=2=3`)
-- export `VAR=` gets added as `VAR=""` (empty string)
-- export `VAR==2` gets added as `VAR="=2"
-- export VAR="$HOME", VAR=$HOME do not work at the moment
-	(no value assigned at all)
-- export VAR="string", VAR="string=string" do not work,
-	the latter assigns a variable with name string and value string
-- export var13= "detached string" should return 
-	error: bash: export: `detached string': not a valid identifier
-- export "var14"=value would assign value to var14
-- export "VAR=rew"u=iqorye
-QUESTION:
-- where do we want to store our local variables?
-*/
+ * Executes 'export' builtin. No options interpreted.
+ * 
+ * - when a string with newline characters is assigned to a variable in BASH
+ * (e.g. VAR="first\nsecond\nthird"
+ * 	- single or double quotes give the same result),
+ * and export, then `export` and `env`
+ * list the variable with displayed \n-characters,
+ * in env case without quotes, in export case with quotes and escape charaters
+ * but echo on the variable will actually execute the newlines
+ * 
+ * - If no value is provided export does not assigne a value to `name` 
+ * 	and simply displays it as `name`
+ * 	unless the variable already exists, then it is left unchanged
+ * - if export is executed without values but with `export name=` 
+ * 	then `export` displays this variable as `name=''
+ * 	(i.e. assigns an empty string)
+ * - while env without arguments does not display the variable at all
+ * - it is possible to assign multiple values to a variable 
+ * 	`export VAR=1:2:3:"string" (in this case the quotes are not shown 
+ * 	(neither with env nor with export))
+ * - it can also end with a ':'
+ * - export `VAR=2=3` gets added to the environment as `VAR='2=3'` 
+ * 	(env would display this variable as `VAR=2=3`)
+ * - export `VAR=` gets added as `VAR=""` (empty string)
+ * - export `VAR==2` gets added as `VAR="=2"
+ * - export VAR="$HOME", VAR=$HOME do not work at the moment
+ * 	(no value assigned at all)
+ * - export VAR="string", VAR="string=string" do not work,
+ * 	the latter assigns a variable with name string and value string
+ * - export var13= "detached string" should return 
+ * 	error: bash: export: `detached string': not a valid identifier
+ * - export "var14"=value would assign value to var14
+ * - export "VAR=rew"u=iqorye
+ * QUESTION:
+ * - where do we want to store our local variables?
+ */
 uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	uint8_t	status;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_unset.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:53:10 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:53:14 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/17 18:42:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 #include "debug.h"
 
 /*
-Builtin function to unset variables.
-Checks for specific read-only variables, which cannot be unset.
-*/
+ * Builtin function to unset variables.
+ * Checks for specific read-only variables, which cannot be unset.
+ */
 uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	uint8_t	status;

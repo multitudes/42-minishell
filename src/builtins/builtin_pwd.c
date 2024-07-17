@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_pwd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:54:47 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:54:51 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/17 18:42:10 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include <stdio.h> // remove and replace printf with write_data or ft_write
 
 /*
-Executes builtin 'pwd' command.
-*/
+ * Executes builtin 'pwd' command.
+ */
 uint8_t	execute_pwd_builtin(void)
 {
 	char	cur_dir[PATH_MAX];
