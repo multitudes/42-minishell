@@ -167,16 +167,14 @@ Our minishell is divided into a few main parts:
 - The executer, which takes the data structure produced by the parser and expanded by the analyser and executes the command(s) it represents.
 Furthermore we use integration tests and unit tests: To be able to make changes and refactor our code with confidence, we needed to have a suite of tests that would always run to ensure that our shell is working as expected.
 
-# The Road Map
-- We start by implementing a loop that reads the user input with the readline() function. The readline function is part of the part of the GNU Readline library and offers other functions like rl_clear_history, rl_on_new_line, rl_replace_line, rl_redisplay,add_history that we are allowed to use in our project.
-- The first step is scanning, also known as lexing, or (if you’re trying to impress someone) lexical analysis.
-- A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like '(' and ','. Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ).
-- The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. 
-A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. These trees have a couple of different names—“parse tree” or “abstract syntax tree”. In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”.
-- Everything up to this point is considered the front end of the implementation.
-- Tree-walk interpreter: To run the program, the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
-- Before commands (system or builtin) are executed heredocs and redirections are set up.
-- Commands are exeuted either by calling system commands or any of the custom builtins described above.
+### Basic Architecture of our Shell
+1. Overarching loop for repeated and single command execution. We start by implementing a loop that reads the user input with the readline() function. The readline function is part of the part of the GNU Readline library and offers other functions like rl_clear_history, rl_on_new_line, rl_replace_line, rl_redisplay,add_history that we are allowed to use in our project.
+2. Scanner: The first step is scanning, also known as lexing, or (if you’re trying to impress someone) lexical analysis. A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like '(' and ','. Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ).
+3. Parser: The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. Before building a tree, any heredocs that are found in the tokenlist are interpreted and set up. Then the parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. These trees have a couple of different names—“parse tree” or “abstract syntax tree”. In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”.
+Everything up to this point is considered the front end of the implementation.
+4. Tree-walk interpreter: To run the program, the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
+5. Before commands (system or builtin) are executed redirections (including for heredocs) are set up.
+6. Commands are executed either by calling system commands or any of the custom builtins described above.
 
 ## Grammar as Foundation
 The syntax of a programming language is defined by a grammar. The syntax of a programming language is a precise description of all its grammatically correct programs. Noam Chomsky defined four categories of grammars: regular, context-free, context- sensitive, and unrestricted.
@@ -184,24 +182,27 @@ The syntax of a programming language is defined by a grammar. The syntax of a pr
 ## Inspiration: Context Free Grammar (CFG). 
 A formal grammar takes a set of atomic pieces it calls its “alphabet”. Then it defines a (usually infinite) set of “strings” that are “in” the grammar. Each string is a sequence of “letters” in the alphabet.
 
-A grammar naturally describes the hierarchical structure of most programming language constructs. For example, an if-else statement in Java can have  
-`if (expression) statement else statement`
-That is, an if-else statement si the concatenation of the keyword if, an opening parenthesis, an expression, a closing parenthesis, a statement, the keyword else, and another statement. Using the variable expr to denote an expres- sion and the variable stmt to denote a statement, this structuring rule can be expressed as  
-`stmt →if (expr) stmt else stmt`
+A grammar naturally describes the hierarchical structure of most programming language constructs. For example, an if-else statement in Java can have
 
-If you start with the rules, you can use them to generate strings that are in the grammar. Strings created this way are called derivations because each is “derived” from the rules of the grammar. In each step of the game, you pick a rule and follow what it tells you to do. Most of the lingo around formal grammars comes from playing them in this direction. Rules are called productions because they produce strings in the grammar.
+```if (expression) statement else statement```
+
+That is, an if-else statement is the concatenation of the keyword if, an opening parenthesis, an expression, a closing parenthesis, a statement, the keyword else, and another statement. Using the variable expr to denote an expression and the variable stmt to denote a statement, this structuring rule can be expressed as 
+
+```stmt →if (expr) stmt else stmt```
+
+If you start with the rules, you can use them to generate strings that follow the grammar. Strings created this way are called derivations because each is “derived” from the rules of the grammar. In each step, you pick a rule and follow what it tells you to do. Most of the lingo around formal grammars comes from implementing them in this direction. Rules are called productions because they produce strings in the grammar.
 Each production in a context-free grammar has a head—its name—and a body which describes what it generates. In its pure form, the body is simply a list of symbols. Symbols come in two delectable flavors:
-A terminal is a letter from the grammar’s alphabet. You can think of it like a literal value. In the syntactic grammar we’re defining, the terminals are individual lexemes—tokens coming from the scanner like if or 1234.
+A _terminal_ is a letter from the grammar’s alphabet. You can think of it like a literal value. In the syntactic grammar we’re defining, the terminals are individual lexemes—tokens coming from the scanner like 'if' or '1234'.
 These are called “terminals”, in the sense of an “end point” because they don’t lead to any further “moves” in the game. You simply produce that one symbol.
-A nonterminal is a named reference to another rule in the grammar. It means “play that rule and insert whatever it produces here”. In this way, the grammar composes.
+A _nonterminal_ is a named reference to another rule in the grammar. It means “play that rule and insert whatever it produces here”. In this way, the grammar composes.
 
 To make this concrete, we need a way to write down these production rules. People have been trying to crystallize grammar all the way back to Pāṇini’s Ashtadhyayi, which codified Sanskrit grammar a mere couple thousand years ago. Not much progress happened until John Backus and company needed a notation for specifying ALGOL 58 and came up with Backus-Naur form.
 
-I really liked the explanation of context-free grammar in the book Crafting Interpreters by Rob Nystrom. Looking in chapter 4 of the book, he explains that the first step is scanning.
+I really liked the explanation of context-free grammar in the book "Crafting Interpreters" by Rob Nystrom. Looking in chapter 4 of the book, he explains that the first step is scanning.
 
 > Scanning is a good starting point for us too because the code isn’t very hard—pretty much a switch statement with delusions of grandeur.
 
-A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like ( and , . Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ). The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. These trees have a couple of different names—“parse tree” or “abstract syntax tree”. In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”. Everything up to this point is considered the front end of the implementation. The back end is where the interpreter actually runs the program. There are a few different ways to do this, but the most common is tree-walk interpreters. To run the program, the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
+A scanner (or lexer) takes the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like ( and , . Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ). The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. These trees have a couple of different names—“parse tree” or “abstract syntax tree”. In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”. Everything up to this point is considered the front end of the implementation. The back end is where the interpreter actually runs the program. There are a few different ways to do this, but the most common is tree-walk interpreters. To run the program, the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
 
 ## Grammar of a shell
 We need to create our grammar. To do so we head to our Bash manual!
