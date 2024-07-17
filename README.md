@@ -334,8 +334,8 @@ _=/usr/bin/env
 lbrusa@c3a4c7:/home/lbrusa/DEV/minishell$ 
 ```
 
-## Allowed functions
-### The readline function
+## Allowed Functions
+### The readline() Function
 The readline() function is not a standard C library function, but rather a function provided by the GNU Readline library.  
 
 Here's a basic example:
@@ -374,16 +374,7 @@ LDLIBS += -L$(shell brew --prefix readline)/lib
 ### rl_clear_history
 The rl_clear_history function is part of the GNU Readline library, and it is used to clear the history list maintained by Readline. The history list typically stores previously entered command lines, allowing users to recall and edit them.
 
-## Structure and functional elements
-### Phases of the interpreter: scanning, parsing, and evaluating code.
-
-1. A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like ( and , . Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min )
-
-2. The next step is parsing. This is where our syntax gets a grammar, the ability to compose larger expressions and statements out of smaller parts. A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar.
-
-3. ...
-
-### Interactive and non-interactive shells and scripts
+### Interactive and Non-Interactive Shells and Scripts
 
 One important aspect to consider when creating a simple shell is whether it is running in interactive mode or non-interactive mode.
 
@@ -393,7 +384,7 @@ In non-interactive mode, the shell is being used to run a script or a batch of c
 
 To check whether the shell is running in interactive mode or non-interactive mode, we can use the isatty() function. This function checks whether a file descriptor refers to a terminal or not. If it returns true, then the shell is running in interactive mode and we should display a prompt. If it returns false, then the shell is running in non-interactive mode and we should not display a prompt.
 
-### Create an infinite loop for the prompt
+### Create an Infinite Loop for the Prompt
 we can display a prompt to the user. This input can be a single command or multiple commands separated by a semicolon. To read input from the user, we can use the getline function which reads a line of input from the user. 
 
 ### Parsing User Input
@@ -458,8 +449,6 @@ A fun illustration:
 ```echo hello > world here I am```
 In this case stdout is redirected to the file "world", which is created if does not exist and then the rest of the command is executed. As a result the file world contains the string "hello here I am".
 
-
-
 ### Support Pipes
 
 To implement pipes, we can use the pipe() function to create a pipe and the fork() function to create a child process for each command.
@@ -485,42 +474,20 @@ After entering the command follwed by `&` the shell will display the process id 
 
 ### Error Handling
 
-We distinguish fatal errors that require termination of the minishell (and freeing of all allocated memory ...) and errors that are noted to the user while program execution continues.
+We distinguish fatal errors that require termination of the minishell (and freeing of all allocated memory ...) and errors that are noted to the user while program execution continues. We check the return/exit value of system calls and library functions and store it in our main struct. After the last command is executetd we check the value of this variable and update the environment variable `$?` with the value. The shell should provide meaningful error messages to the user when a command fails.
 
-We check the return/exit value of system calls and library functions and store it in a global variable. After the last command is executetd we check the value of the global variable and update the environment variable `$?` with the value.
+Examples of the types of errors that a simple shell may encounter:
+incorrect command, incorrect number of arguments, permission denied, system call error, signal handling, memory allocation error, failed update of history etc.
 
-The shell should provide meaningful error messages to the user when a command fails. 
+An important distinction needs to be made between calls to system functions that fail and errors that are identified within the shell program execution itself (either because of incorrect input syntax by the user or actual malfunctioning program execution).
 
-Examples of the types of errors that a simple shell may encounter and how they can be handled:
-ex incorrect command,  incorrect number of arguments, permission denied, system call error, signal handling, memory allocation error, failed update of history etc.
+We aimed to capture all return values from system functions and act upon them. Typically we would write a message to standard error using the `perror()` function, which appends meaningful error details to a custom message. For example executing `cat unknown_file` would give an error "no such file or directory". By calling `perror("minishell: cat")` the full output to standard error would be: `minishell: cat: no such file or directory`, similar to the error messages bash provides.
 
-| Error | How it is handled |
-| -- | -- |
-| ... | ... |
-| Reading history file path from environment fails |  |
-| Open history file path fails | | 
-| Writing to history fails | |
-| Updating environment with history input fails | |
+Errors that are not the direct result of errors in system functions are handled by writing to standard error directly without using `perror` or `strerror`.
 
+We created a number of custom error functions to handle the different error cases. This way we could prepend and customize error messages and, e.g. also pass exit status back to the main loop.
 
-
-## `strerror(errno)` and `perror` 
-
-They are both used to print human-readable error messages, but they are used differently.  
-`strerror(errno)` is a function that returns a pointer to a string that describes the error code passed in the argument errno. You can use it with `printf` to format and print the error message.
-
-```c
-printf("getcwd() error: %s\n", strerror(errno));
-```
-
-On the other hand, `perror` is a function that prints a descriptive error message to stderr. The argument you pass to `perror` is a string that is printed as a prefix to the error message.
-
-```c
-perror("getcwd() error");
-```
-So, if you want to use `perror` in your code, you don't need to use it inside `printf`. It prints the error message directly.
-
-## Error Handling in C
+#### Error Handling in C
 Using system functions and library in C can be useful to use the functioms like `strerror()` and `perror()` to print errors. Most of these functions return a value to indicate success or failure, and set the `errno` variable to indicate the type of error that occurred.
 For example the `getcwd()` function can fail in a few scenarios, and it sets the `errno` variable to indicate the type of error. Here are some possible error codes:
 
@@ -549,24 +516,87 @@ int main() {
     return 0;
 }
 ```
+#### `strerror(errno)` and `perror` 
 
+They are both used to print human-readable error messages, but they are used differently.  
+`strerror(errno)` is a function that returns a pointer to a string that describes the error code passed in the argument errno. You can use it with `printf` to format and print the error message.
+
+```c
+printf("getcwd() error: %s\n", strerror(errno));
+```
+
+On the other hand, `perror` is a function that prints a descriptive error message directly to stderr. The argument you pass to `perror` is a string that is printed as a prefix to the error message.
+
+```c
+perror("getcwd() error");
+```
+
+#### Error Handling and Error Codes
+
+In Bash, when a command finishes execution, it returns an exit status. The exit status is an integer number. To help identify the type of error, if any, Bash uses specific exit status numbers. Here are some of the most common ones:
+
+- `0`: Success. The command executed successfully.
+- `1`: General errors such as "divide by zero" and other impermissible operations.
+- `2`: Misuse of shell builtins, according to Bash documentation. Missing keyword or command, or permission problem.
+- `126`: Command invoked cannot execute. Permission problem or command is not an executable.
+- `127`: "Command not found."
+- `128`: Invalid argument to exit. `exit` takes only integer args in the range 0 - 255.
+- `128+n`: Fatal error signal "n". The error code plus the signal number that killed the process.
+- `130`: Script terminated by Control-C.
+- `255*`: Exit status out of range. `exit` takes only integer args in the range 0 - 255.
+
+These are just a few examples. The exact list can vary between systems. For a more comprehensive list, you can refer to the documentation for your specific system or shell.
+
+#### errno
+`errno` is a global variable that is set by system calls and some library functions in the event of an error to indicate what went wrong. Its value is significant only when the return value of the call indicated an error (i.e., -1 from most system calls; -1 or NULL from most library functions), and it is overwritten by the next function that fails.
+
+Here are some common `errno` values:
+
+- `EACCES` (13): Permission denied.
+- `EAGAIN` (11): Resource temporarily unavailable.
+- `EBADF` (9): Bad file descriptor.
+- `EBUSY` (16): Device or resource busy.
+- `EEXIST` (17): File exists.
+- `EFAULT` (14): Bad address.
+- `EFBIG` (27): File too large.
+- `EINTR` (4): Interrupted system call.
+- `EINVAL` (22): Invalid argument.
+- `EIO` (5): Input/output error.
+- `EISDIR` (21): Is a directory.
+- `EMFILE` (24): Too many open files.
+- `ENFILE` (23): File table overflow.
+- `ENOENT` (2): No such file or directory.
+- `ENOMEM` (12): Out of memory.
+- `ENOSPC` (28): No space left on device.
+- `EPERM` (1): Operation not permitted.
+- `EPIPE` (32): Broken pipe.
+- `ESRCH` (3): No such process.
+
+In the context of the `close` function, the relevant `errno` values are:
+
+- `EBADF`: The file descriptor isn't valid.
+- `EINTR`: The `close` call was interrupted by a signal.
+- `EIO`: An I/O error occurred.
+
+For a complete list, you can refer to the man page by typing `man errno` in the terminal or check the official documentation for your system's C library.
+
+#### Exit Status of the Last Command.
+In Bash, the exit status of the last command is stored in the special variable $?. You can access this variable to see the exit status of the last command that was executed.
+
+```
+echo $?
+```
 
 ### Signals
 Signals are used by the operating system to notify a process of various events, such as a segmentation fault or a user interrupt. 
 
-### Memory management and memory Leaks
+### Memory Management and Memory Leaks
+As our shell is written in C we have to handle memory ourselves. Using the system functions `malloc()` and `free()` was allowed, the rest was up to us.
+Generally we aim to free memory as close to its initial allocation as possible. This way we ensure to use available resources efficiently and also facilitate freeing allocated memory upon planned and unplanned program termination.
+Each execution of the main loop returns to the main prompt of our shell. All memory that was not needed for the previous loop is freed and only those parts of the program still allocated that are needed for each loop (such as the environment variables).
+When the program is exited (e.g. through the builtin command exit(n)) all still allocated memory is freed. Also, memory is routinely freed in case of the various program errors that may occur to ensure we do not create any memory leaks.
 
-   | Allocated memory | when to free? |
--- | ---------------- | ------------ |
-1  | Array for environment information | upon error and when terminating program |
-2  | Memory for strings read from environment in array | upon error, when updating environment and when terminating program |
-3  | Main data struct | upon error and when terminating program |
-4  | path for history file | immediately after accessing it with open() |
-5  | data->input allocated by readline() in loop() | free after each call or after final call ? |
-6  | Token list (linked list) | |
-7  |  |  |
-
-We use valgrind... On linux.
+To track memory use on linux we mostly use valgrind:
 ```
 valgrind ./myprogram
 ```
@@ -767,7 +797,7 @@ esac
 ```
 
 
-## control operators
+## Control Operators
 A control operator in bash is one of those ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’
 
 these control operators do have precedence and associativity rules, similar to operators in programming languages. Here's a rough breakdown:
@@ -777,7 +807,7 @@ these control operators do have precedence and associativity rules, similar to o
 4. ( and ) can be used to group commands, which can override the default precedence rules.
 5. ;;, ;&, and ;;& are used in the context of a case statement to separate different cases.
 
-## wildcards
+## Wildcards
 For wildcard expansion, you would typically use the glob function, as I mentioned in the previous response. Here's how you can modify your code to expand wildcards in the input:
 For example, if a user types ls *.txt, the shell should expand the *.txt wildcard to a list of all .txt files in the current directory.
 
@@ -813,7 +843,7 @@ while (input != NULL)
 
 free(input);
 ```
-## ISR - interrupt service routine
+## ISR - Interrupt Service Routine
 The __interrupt and __irq keywords are used in some programming languages and environments to declare interrupt service routines (ISRs). An ISR is a special kind of function that is executed in response to an interrupt signal.
 An interrupt is a signal to the processor emitted by hardware or software indicating an event that needs immediate attention. The processor responds by suspending its current activities, saving its state, and executing a function called an interrupt handler (or an interrupt service routine, ISR) to deal with the event. This activity is called "servicing the interrupt."
 The __interrupt or __irq keyword is used to tell the compiler that the declared function is an ISR. This can affect the generated code for the function, as ISRs often need to save and restore more processor state than regular functions, and may need special instructions for returning from the function.
@@ -829,7 +859,7 @@ If you want to input a character in hexadecimal in your program, you can simply 
 char c = '\x04';
 char *s = "\x04";
 
-## Expansion in bash
+## Expansion in Bash
 In bash, expansion refers to the process of replacing a special character or sequence of characters with a value. There are several types of expansion in bash, including:
 
 - $identifier or ${identifier} is used for variable expansion. The identifier is the name of the variable. Bash replaces $identifier or ${identifier} with the value of the variable.
@@ -851,7 +881,7 @@ ex:
 echo "The result of 2 + 2 is $((2 + 2))"
 ```
 
-## Expanding with quotes
+## Expanding with Quotes
 
 ```
 (base)  % cat $"HOME"
@@ -867,7 +897,7 @@ Three cases:
 - `$HOME` : This is the correct way to expand the HOME environment variable. It expands to the path of your home directory.
 - `$'HOME'` : This is used for string literals in Bash, where escape sequences (like `\n` for newline) are interpreted. Since `HOME` doesn't contain any escape sequences, `$'HOME'` is equivalent to `'HOME'`. So cat `$'HOME'` also tries to display the contents of a file named HOME in the current directory.
 
-## Set env variables
+## Set env Variables
 If you want to set an environment variable for the new program, you need to use the third argument to `execve()`, which is an array of strings representing the new environment. Each string in this array should be in the format name=value.
 
 ```
@@ -924,7 +954,7 @@ So, if var="world", your command will output Hello' world'.
 The basic redirection operators in bash we will implement are `>`, `<`, and `>>`. These operators allow you to redirect the standard input and output of a command to and from files.  
 We tokenized them as `REDIRECTION_OUT`, `REDIRECTION_IN`, and `REDIRECTION_APP` respectively.
 
-### Some more advanced use cases of redirections in bash:
+### Some More Advanced Use Cases of Redirections in Bash:
 quoting the shell manual:
 > 2.7.2 Redirecting Output  
 The two general formats for redirecting output are:  
@@ -943,7 +973,7 @@ shall cause the file whose name is the expansion of word to be opened for both r
 
 (not implemented)
 
-## More examples from the shell manual (not implemented)
+## More Examples From the Shell Manual (not implemented)
 
 Open readfile as file descriptor 3 for reading:  
 ```bash
@@ -962,26 +992,26 @@ Close file descriptor 3:
 exec 3<&-
 ```
 
-### clobbering
+### Clobbering
 The `noclobber` option in shell environments (like Bash) is used to prevent accidentally overwriting existing files through redirection. When `noclobber` is set (using `set -o noclobber` or `set -C`), attempting to redirect output to an existing file using the `>` operator will fail with an error, thus protecting the file from being overwritten.  
 However, there might be cases where you intentionally want to overwrite a file even when `noclobber` is set. For this purpose, you can use the `>|` redirection operator. The `>|` operator forces the shell to overwrite the target file, effectively bypassing the `noclobber` setting for that particular redirection command. (not implemented)
 
-### redirections without a command
+### Redirections Without a Command
 Bash does handle redirections without a command. It's just that there's no command to execute, so nothing will be written to/read from the redirections.
 Regarding this problematic case, DLESSs should (preferably) be handled during or right after parsing.
 Look at these cases in bash:
 
-### case 1 (no syntax error):
+#### case 1 (no syntax error):
 ```
 <<1 cat | <<2 cat | ( <<3 cat | <<4 cat || <<5 cat | ( <<6 cat ) && <<7 cat ) | <<8 cat <<9 | <<10 cat
 ```
-### case 2 (syntax error):
+#### case 2 (syntax error):
 ```<<1 cat | <<2 cat | ( <<3 cat | <<4 cat || <<5 cat | ( <<6 cat ) && <<7 cat ) | () <<8 cat <<9 | <<10 cat```
-### case 3 (syntax error):
+#### case 3 (syntax error):
 ```
 <<1 cat | <<2 cat | ( <<3 cat | <<4 cat || <<5 cat | ( <<6 cat ) && <<7 cat ) | <<8 () cat <<9 | <<10 cat
 ```
-### case 4 (syntax error):
+#### case 4 (syntax error):
 ```
 <<1 cat | <<2 cat | ( <<3 cat | <<4 cat || <<5 cat | ( <<6 cat ) && <<7 cat ) | <<8 cat <<9 () | <<10 cat
 ```
@@ -992,7 +1022,7 @@ In the fourth case, you can press CTRL+D until DLESS #9 is handled, afterwards y
 Of course, the cat commands could've been left out, but i kept them for clarity.
 Now, of course you don't have to handle it like bash, but bash shows a good way to handle DLESSs. (edited) 
 
-## environmental and local variables
+## Environmental and Local Variables
 In Bash, when you create a variable using the var="heyhey" syntax, you're creating a shell variable. Shell variables are only available in the current shell (i.e., the current terminal session). They are not passed to child processes (i.e., commands or scripts that you run from the current shell).
 
 If you want to make a shell variable available to child processes, you need to export it as an environment variable using the export command. For example:
@@ -1125,7 +1155,7 @@ start with process_node(root of AST)
 ```
 
 
-## Git rebase
+## Git Rebase
 Working in a team and using git sometimes it is better to use rebase instead of merge.
 
 Rebase is a Git command that allows you to integrate changes from one branch into another. It's often used to keep a feature branch up-to-date with the latest code from the main branch.
@@ -1142,7 +1172,7 @@ The result is a cleaner history than merging. Instead of a merge commit, your fe
 
 However, rebase can be more complex to use than merging, especially when conflicts occur. It's a powerful tool, but it should be used with understanding and care.
 
-## Execute a shell command
+## Execute a Shell Command
 Use fork() to create a new process, and then use `execve()` in the child process to replace it with a shell that executes the command. Here's an example:
 ```
 #include <unistd.h>
@@ -1172,7 +1202,7 @@ int main() {
 }
 ```
 
-## We are allowed to use a global variable
+## We are Allowed to Use a Global Variable
 In the subject of the project, it is mentioned that we can use a global variable to track the signals received by the program.   
 This is useful because signal handlers cannot take arguments, so we need a way to communicate the signal number to the rest of the program.  However there is a way to get the exit signal of the childrem processes with the waitpid function.
 Ex:
@@ -1194,7 +1224,7 @@ else
 
 So if the child process exited normally, the exit status will be the return value of the child process. If the child process exited on a signal, the exit status will be the signal number plus 128. Taking SIGINT as example (signal number 2), the exit status will be 130. 
 
-## Debugging file descriptors
+## Debugging File Descriptors
 A student here suggested this shell command to debug file descriptors in our minishell program with the the `lsof` command:
 Run the minishell and then in a separate terminal, run the following command:  
 ```
@@ -1231,63 +1261,7 @@ minishell 180339 lbrusa    2u   CHR  136,1      0t0        4 /dev/pts/1
 
 In this case, it shows that your `minishell` process has the terminal `/dev/pts/2` open for both input and output.
 
-## Error handling and error codes
-
-In Bash, when a command finishes execution, it returns an exit status. The exit status is an integer number. To help identify the type of error, if any, Bash uses specific exit status numbers. Here are some of the most common ones:
-
-- `0`: Success. The command executed successfully.
-- `1`: General errors such as "divide by zero" and other impermissible operations.
-- `2`: Misuse of shell builtins, according to Bash documentation. Missing keyword or command, or permission problem.
-- `126`: Command invoked cannot execute. Permission problem or command is not an executable.
-- `127`: "Command not found."
-- `128`: Invalid argument to exit. `exit` takes only integer args in the range 0 - 255.
-- `128+n`: Fatal error signal "n". The error code plus the signal number that killed the process.
-- `130`: Script terminated by Control-C.
-- `255*`: Exit status out of range. `exit` takes only integer args in the range 0 - 255.
-
-These are just a few examples. The exact list can vary between systems. For a more comprehensive list, you can refer to the documentation for your specific system or shell.
-
-## errno
-`errno` is a global variable that is set by system calls and some library functions in the event of an error to indicate what went wrong. Its value is significant only when the return value of the call indicated an error (i.e., -1 from most system calls; -1 or NULL from most library functions), and it is overwritten by the next function that fails.
-
-Here are some common `errno` values:
-
-- `EACCES` (13): Permission denied.
-- `EAGAIN` (11): Resource temporarily unavailable.
-- `EBADF` (9): Bad file descriptor.
-- `EBUSY` (16): Device or resource busy.
-- `EEXIST` (17): File exists.
-- `EFAULT` (14): Bad address.
-- `EFBIG` (27): File too large.
-- `EINTR` (4): Interrupted system call.
-- `EINVAL` (22): Invalid argument.
-- `EIO` (5): Input/output error.
-- `EISDIR` (21): Is a directory.
-- `EMFILE` (24): Too many open files.
-- `ENFILE` (23): File table overflow.
-- `ENOENT` (2): No such file or directory.
-- `ENOMEM` (12): Out of memory.
-- `ENOSPC` (28): No space left on device.
-- `EPERM` (1): Operation not permitted.
-- `EPIPE` (32): Broken pipe.
-- `ESRCH` (3): No such process.
-
-In the context of the `close` function, the relevant `errno` values are:
-
-- `EBADF`: The file descriptor isn't valid.
-- `EINTR`: The `close` call was interrupted by a signal.
-- `EIO`: An I/O error occurred.
-
-For a complete list, you can refer to the man page by typing `man errno` in the terminal or check the official documentation for your system's C library.
-
-## See the exit status of the last command.
-In Bash, the exit status of the last command is stored in the special variable $?. You can access this variable to see the exit status of the last command that was executed.
-
-```
-echo $?
-```
-
-## tgoto
+## tgoto (not used in our shell)
 The tgoto function is a part of the termcap library in Unix-like operating systems. It is used to generate movement strings for the terminal.
 
 The termcap library provides a way to manipulate the terminal independent of its type. It has capabilities that describe the terminal's features and how to use them.
@@ -1326,7 +1300,7 @@ c4c1c1% type ls
 ls is /usr/bin/ls
 [...]
 ```
-## what could a dot do?
+## What Could a Dot do?
 My scanner has an option for a dot. but is a dot something recognized by the bash shell? lets find out.
 
 ```
@@ -1345,7 +1319,7 @@ Here's an example of how to use the . command:
 ```
 This will execute the myscript.sh script in the current shell. If myscript.sh sets any environment variables, those variables will be available in the current shell after the script is executed.
 
-# extras
+# Extras
 ## The PWD builtin
 [from a student at 42...]
 I just realized how difficult the pwd builtin is if you want to make it behave like bash (some evaluators insist on taking bash as a reference when implementing the builtins). 
@@ -1385,7 +1359,7 @@ $ PWD= bash -c pwd  #PWD is unset, set to getcwd()
 All minishells I've seen always print `~/real` (without the tilde of course) instead of the other cases. Would anyone consider this as mandatory in any way? Since we've had so many discussion about implement the builtins "fully", although neither subject nor evaluation sheet explicitly tell you to implement the specific behaviors in question (cd -, cd without args, export without args, exit argument handling, echo handling of -n, etc.)
 
 
-## Some commands cases
+## Some Command Cases
 ```
 bash-3.2$ export myvar=`ls -l`
 bash-3.2$ $myvar
@@ -1409,7 +1383,7 @@ bash-3.2$ myvar="ls -l"
 bash-3.2$ eval $myvar
 ```
 
-## true and false
+## True and False
 ```
 true
 echo $?  # prints: 0
@@ -1423,7 +1397,7 @@ The true command does nothing and successfully completes immediately, returning 
 
 The false command also does nothing but it completes with a non-zero exit status, signifying failure.
 
-## more heredoc
+## More Heredoc
 (For others, the code they posted contains only double quotes, not single quotes)
 We don't have to handle multiline delimiters in minishell.
 
@@ -1457,7 +1431,7 @@ $ wc -c <<''
 ```
 Since this requires handling quotes around the delimiter, which is not required by the subject, and it would mean implementing different parsing rules, at which point you could go haywire and ask why not require <<- too.
 
-## Using files to store the heredocs
+## Using Files to Store the Heredocs
 heredocs need to be run before the command execution so they need to be stored somewhere and a file is probably a good option. We decided to use the tmp folder on Linux to store the heredocs because it is a common practice and we have access to it from anywhere. I updated the makefile with:
 ```
 TMP_DIR			= 	/tmp/splash/
@@ -1472,7 +1446,7 @@ and it makes a directory if it not already exists. The files will be deleted whe
 <img src="assets/heredocs.png" alt="hello world" style="width: 50%;display: inline-block;" />
 </div>
 
-## the ioctl system call
+## The ioctl() System Call
 To fix the issue with the signals in the heredoc we used the `ioctl` system call.  
 `ioctl` stands for "input/output control" and is a system call in Unix-like operating systems. It provides a generic way to make device-specific calls on file descriptors, which might represent files, devices, or other types of I/O streams. The purpose of `ioctl` is to perform operations on a file descriptor that are not achievable with simple read or write commands, often because they involve hardware control or special modes of communication.
 
@@ -1506,17 +1480,15 @@ So, `ioctl(0, TIOCSTI, "\n");` simulates pressing the Enter key in the terminal.
 ## Precedences
 the precedence of || and && in Bash and C is different.
 
-In C, the && operator has higher precedence than the || operator. This means that in an expression with both && and ||, the && parts will be evaluated first.
+In C, the '&&' operator has higher precedence than the '||' operator. This means that in an expression with both '&&' and '||', the '&&' parts will be evaluated first.
 
+In Bash, however, '||' and '&&' have equal precedence and are evaluated from left to right.
 
-In Bash, however, || and && have equal precedence and are evaluated from left to right.
-
-
-In terms of precedence, in both Bash and C, || has lower precedence than | (in C | is a bitwise OR operator. ).  
-In Bash, it means that in an expression with both | and ||, the | parts will be evaluated first.
-Here's an example of using | and || in Bash:
+In terms of precedence, in both Bash and C, '||' has lower precedence than '|' (in C '|' is a bitwise OR operator.).  
+In Bash, it means that in an expression with both '|' and '||', the '|' parts will be evaluated first.
+Here's an example of using '|' and '||' in Bash:
 ```
-command1 | command2 || echo "command1 or command2 failed
+command1 | command2 || echo "command1 or command2" failed
 ```
 In this example, the output of command1 is piped into command2. If either command1 or command2 fails, the message "command1 or command2 failed" is printed to the console.
 
@@ -1527,7 +1499,7 @@ This is about building the correct ast tree... the image is self explanatory. (i
 
 ## The status of the project at the time of the evaluation
 In the end we really used 28 tokens we receive from the scanner.  
-57 are recognized but not acted upon because are not feature we implement.  
+57 are recognized but not acted upon because they are related to features we do not implement.  
 
 ## Display the stderr
 A good idea is to display the std error with all the debug messages on a different window in the terminal. For this we have two ways:
@@ -1536,7 +1508,7 @@ A good idea is to display the std error with all the debug messages on a differe
 ```
 and in another window do `tail -f errorlogfile"
 
-But also open a new window and get the terminal file name with `tty` and `./minishell > /dev/pts/5`
+Alternatively open a new window and get the terminal file name with `tty` and execute the shell with `./minishell 2> /dev/pts/5`
 
 ## Final notes
 The line count for the project counting the c and h files is at the end stage before submission 12763:
@@ -1552,7 +1524,7 @@ find . -name '*.c' -o -name '*.h' -o -name '*.cpp' -o -name '*.hpp' | xargs wc -
 
 
 
-## links
+## Links
 The Bash reference manual:  
 https://www.gnu.org/software/bash/manual/bash.html  
 the canonical reference for all things compiler:  
