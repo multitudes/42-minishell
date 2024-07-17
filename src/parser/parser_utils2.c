@@ -17,7 +17,6 @@
 /*
 returns the next token after deleting the current token
 and connecting the previous and next token
-TODO check for leaks
 */
 bool	consume_token_and_connect(t_list **input_tokens)
 {

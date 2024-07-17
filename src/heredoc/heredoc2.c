@@ -61,7 +61,6 @@ static bool	open_heredoc_file(char *file, int *fd)
 
 /*
 Read and save content of final heredoc.
-TODO add check for ()syntax errors
 */
 static bool	read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 {
