@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 10:38:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:41:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,8 @@ int	clear_hist_file(void)
 {
 	int		fd;
 
-	fd = open(HIST_FILE, O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	fd = open(HIST_FILE, O_WRONLY | O_TRUNC, \
+				S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd == -1)
 		return (perror_and_status("open", 1));
 	close(fd);

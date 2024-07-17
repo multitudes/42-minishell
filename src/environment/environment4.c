@@ -1,0 +1,110 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   environment4.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/17 13:09:42 by lbrusa            #+#    #+#             */
+/*   Updated: 2024/07/17 13:41:06 by lbrusa           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "splash.h"
+#include "environment.h"
+#include "darray.h"
+#include "utils.h"
+#include "splash_error.h"
+
+/*
+ * Used in the bubblesort function to return ordered strings.
+ */
+static void	swappointers(void *a, void *b, size_t size)
+{
+	char	temp[BUFSIZ];
+
+	ft_memcpy(temp, a, size);
+	ft_memcpy(a, b, size);
+	ft_memcpy(b, temp, size);
+}
+
+/*
+ * I kept the standard C style signature for my bubble sort function so it can 
+ * be used interchangeably with the qsort function pointer.
+ */
+static void	ft_bubblesort(void *base, size_t nmemb, size_t size, \
+							int (*compar)(const void *, const void *))
+{
+	size_t	i;
+	size_t	j;
+	char	*arr;
+	int		swapped;
+
+	i = 0;
+	j = 0;
+	arr = base;
+	swapped = 1;
+	while (i < nmemb - 1 && swapped) 
+	{
+		swapped = 0;
+		j = 0;
+		while (j < nmemb - i - 1)
+		{
+			if (compar(arr + j * size, arr + (j + 1) * size) > 0) 
+			{
+				swappointers(arr + j * size, arr + (j + 1) * size, size);
+				swapped = 1;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+/*
+ * Used in the bubblesort function to compare strings.
+ */
+static int	cmp(const void *a, const void *b)
+{
+	const char	*str1;
+	const char	*str2;
+
+	str1 = *(const char **)a;
+	str2 = *(const char **)b;
+	if (!str1)
+		return (1);
+	if (!str2)
+		return (-1);
+	return (ft_strcmp(str1, str2));
+}
+
+/*
+ * Prints the environment variables when `export` command is used:
+ * Quoted strings, last command is omitted. 
+ */
+int	print_env_export(t_darray *env_arr)
+{
+	t_darray	*export_arr;
+	int			status;
+	char		*key;
+	char		*value;
+	int			i;
+
+	i = 0;
+	status = 0;
+	export_arr = NULL;
+	if (copy_env_darray(&export_arr, env_arr))
+		return (1);
+	ft_bubblesort(export_arr->contents, export_arr->end, sizeof(void *), cmp);
+	while (export_arr && export_arr->contents && i < export_arr->end - 1)
+	{
+		key = get_var_key(export_arr->contents[i++]);
+		value = mini_get_env(export_arr, key);
+		if (key && 
+			(printf("declare -x %s=%c%s%c\n", key, '"', value, '"') < 0))
+			status = perror_and_status("printf export", 1);
+		free(key);
+	}
+	darray_clear_destroy(export_arr);
+	return (status);
+}

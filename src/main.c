@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 09:40:56 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 08:08:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:42:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,3 @@ int	main(int argc, char **argv)
 	else
 		return (loop());
 }
-

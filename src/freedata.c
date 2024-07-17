@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 12:34:38 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 08:21:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:43:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,3 @@ void	free_data(t_data **data)
 	free(*data);
 	*data = NULL;
 }
-
