@@ -46,7 +46,7 @@ static uint8_t	exec_cd_with_argument(t_darray *env_arr, t_list *tokenlist)
 	}
 	else if ((get_token_lexeme(tokenlist))[0] \
 				&& chdir(get_token_lexeme(tokenlist)))
-		return (perror_and_status2("cd", get_token_lexeme(tokenlist), 1));
+		return (perror_and_status2("cd: ", get_token_lexeme(tokenlist), 1));
 	return (0);
 }
 
@@ -72,17 +72,9 @@ static uint8_t	execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 }
 
 /*
-Minishell builtin for "cd" command.
+Minishell builtin for "cd" command. Also cd ~, cd .. etc are supported
 Relative and absolute path as arguments.
 Updates PWD and OLDPWD environment variables.
-TODOs:
-- interpret errors from called getcwd system function.
-- Implement additional functionality:
--- if invalid name is given output is "bash: cd: ARGUMENT_GIVEN:
-	No such file or directory" with exit code 1
-(from The Open Group Base Specifications Issue 7, 2018 edition:
-"When a <hyphen-minus> is used as the operand,
-this shall be equivalent to the command: cd "$OLDPWD" && pwd")
 */
 uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 {
