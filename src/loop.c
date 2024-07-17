@@ -44,7 +44,10 @@ void	mainloop(t_data *data)
 {
 	while (true)
 	{
-data->input = readline("\033[44m\033[97m splash 💦 \033[0m\033[44m\033[97m>\033[0m ");
+		if (isatty(STDIN_FILENO))
+			data->input = readline("\033[44m\033[97m splash 💦 \033[0m\033[44m\033[97m>\033[0m ");
+		else
+			data->input = get_next_line(STDIN_FILENO);
 		if (data->input != NULL)
 		{
 			if (ft_strncmp(data->input, "", 1) != 0)
