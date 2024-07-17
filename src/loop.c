@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 11:08:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 10:48:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 */
 void	tokenize_and_parse(t_data *data)
 {
-	handle_history(data);
+	handle_history(data->input);
 	data->tokenlist = tokenizer(data->input);
 	if (syntax_check_and_heredoc(data) && data->tokenlist != NULL)
 	{
@@ -73,9 +73,9 @@ int	loop(void)
 
 	status = 0;
 	data = NULL;
-	if (!init_data(&data) && set_up_std_signals() > 0)
+	if (!init_data(&data) || set_up_std_signals() > 0)
 		return (EXIT_FAILURE);
-	load_history(data->env_arr);
+	load_history();
 	mainloop(data);
 	status = data->exit_status;
 	free((char *)(data->input));
