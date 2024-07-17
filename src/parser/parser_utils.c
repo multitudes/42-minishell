@@ -26,14 +26,9 @@ t_ast_node	*new_node(t_nodetype type, t_ast_node *left, t_ast_node *right, \
 	if (node == NULL)
 		return (perror_and_null("malloc new_node"));
 	node->type = type;
-	node->parent = NULL;
 	node->left = left;
 	node->right = right;
 	node->tokenlist = tokenlist;
-	if (left != NULL)
-		left->parent = node;
-	if (right != NULL)
-		right->parent = node;
 	return (node);
 }
 

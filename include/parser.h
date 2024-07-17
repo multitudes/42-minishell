@@ -34,13 +34,8 @@ typedef enum e_nodetype
 	NODE_BUILTIN,
 }	t_nodetype;
 
-/*
-do I need the parent node? we will see when executing!
-TODO - check later
-*/
 typedef struct s_ast_node {
 	t_nodetype			type;
-	struct s_ast_node	*parent;
 	struct s_ast_node	*left;
 	struct s_ast_node	*right;
 	t_list				*tokenlist;
