@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 13:09:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:41:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:45:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@ static void	ft_bubblesort(void *base, size_t nmemb, size_t size, \
 
 /*
  * Used in the bubblesort function to compare strings.
+ * Because the darray has a content as void** when I pass the content
+ * which an array of strings I need to cast it to a char**.
+ * I then compare the strings with ft_strcmp.
  */
 static int	cmp(const void *a, const void *b)
 {
