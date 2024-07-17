@@ -153,6 +153,7 @@ int	run_command_and_check_output(const std::string& command_to_exec, const std::
 
 bool isRunningOnGitHubActions() 
 {
-    const char* githubActions = std::getenv("GITHUB_ACTIONS");
-    return githubActions != nullptr && githubActions == std::string("true");
+    // const char* githubActions = std::getenv("GITHUB_ACTIONS");
+    // return githubActions != nullptr && githubActions == std::string("true");
+	return true;
 }

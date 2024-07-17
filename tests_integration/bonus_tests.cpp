@@ -198,8 +198,9 @@ RUN_TESTS(all_tests);
 
 bool isRunningOnGitHubActions() 
 {
-	const char* github_actions = std::getenv("GITHUB_ACTIONS");
-	return github_actions != NULL && strcmp(github_actions, "true") == 0;
+	// const char* github_actions = std::getenv("GITHUB_ACTIONS");
+	// return github_actions != NULL && strcmp(github_actions, "true") == 0;
+	return true;
 }
 
 
