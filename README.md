@@ -62,98 +62,6 @@ The shell then parses these tokens into commands and other constructs, removes t
 
 We have restrictions in what we are allowed to use, summarized here: [subject and allowed functions](assets/allowed_functions.md).  
 
-## The Builtins
-
-The functionality of the builtin commands we implement is summarized below. The functionality is based on original bash functionality (as described in the BASH manual), while reduced in scope. 
-
-### `echo [-n] [arg ...]`
-(_Bash builtin command_)
-Output `args` separated by spaces and terminated with a newline. With `-n` option trailing newline is suppressed.
-Just `echo` prints a newline. `echo -n` prints nothTo clarify: should we actually treat the removal/unsetting of functions? How do we identify read-only variables and functions?ing. `echo -n "hello"` prints `hello` without a newline.  `echo -n -nnnn` prints nothing.  
-`echo -n -nwhy` prints `-nwhy`. (dont ask me why :) but I think it is since the flag is not recognized as a flag but as a string. 
-Return status is zero (usually since it is hard to fail!).  
-
-### `cd [directory]` (with relative or absolute path)
-(_original Bourne Shell builtin_)
-Used to change the current working directory to another directory. If directory is not specified the `HOME` shell variable is used. If directory is '-', it is converted to $OLDPWD before attempting directory change. 
-Successful execution of `cd` should set `PWD` to new directory and `OLDPWD` to the working directory before the change.  
-The command can fail, if the directory is not existent, if the directory is not a directory, if the directory is not readable, if the directory is not searchable, if the directory is not writable, if the directory is not accessible. Errors are printed to perror or stderr and can be like `cd: no such file or directory: /nonexistent` or `cd: permission denied: /root`.  
-Return status is zero upon success, non-zero otherwise.
-
-### `pwd` (without options)
-(_original Bourne Shell builtin_)
-Prints the absolute pathname of the current working directory (can contain symbolic links though this may be implementation defined as the normally available options either explicitly prohibit symbolic links (`-P`) or explicitly allow symbolic links (`-L`).
-Return status is zero unless an error is encountered while determining the name of the current directory (or an invalid option is supplied).
-
-### `export [name[=value]]` (without options)
-(_original Bourne Shell builtin_)
-Without any other options (as in our implementation) `name` refers to variables. Export allows to pass specified names/variable to be passed to child processes. When no arguments are provided, a list of all variables marked for export is displayed. These are the same as the variables seen when invoking 'env', minus the variable for the last command ('_='). When a value is provided after `name` and `=` the variable is set to `value`.
-To note: "All values undergo tilde expansion, parameter and variable expansion, command substitution, arithmetic expansion, and quote removal." (see 3.4 Shell Parameters in the Bash Manual)
-Return status is zero unless invalid option is supplied or one of the names is not a valid shell variable name.
-
-### `unset [name]` (without options)
-(_original Bourne Shell builtin_)
-Removes each variable or function with `name`. If no options are supplied (as in out case), each name refers to a variable. In bash, if there was no variable by that name, a function with that name, if any, would be unset. Some shell variables lose their special behavior if they are unset. Read-only variables and functions cannot be unset.
-Return status is zero unless `name` is read-only or cannot be unset.
-We implement basic read-only functionality for read-only variables that are typically passed to subprograms (i.e. also to our shell when it is started from another shell, such as bash). We do not implement functions.
-
-### `env` (without options or arguments)
-`env` is not described as a builtin in the BASH manual. The variable $ENV is described related to POSIX variant of invoking shell.
-Presumably env prints the current environment, i.e. the inherited environment plus any modifications through `export` and `unset`. 
-From bash there is a way to start the minishell without any environment variables doing:  
-```
-env -i ./minishell
-```
-In this case the environment will have only the '_' and SHLVL variables. We ensure that our shell retains core core functionality, even with limited available information from the environment (such as the home directory). System commands provided without an absolute path will not get executed as no PATH information is available but builtin commands, such as cd mostly work. 
-
-### `exit [n]` (without options)
-(_original Bourne Shell builtin_)
-The builtin command `exit`,- as the name implies -, exits the shell. The exit status is of type uint8_t and shall be set to that of the last executed command.  
-The BASH builtin allows optionally to set the exit status as an argument ([n]) which will be cast to the uint8_t type.
-
-### history
-Though not required, we decided that our shell should also have a working history and implemented history handling and two history commands: 'history', which displays the full command history. This history is persistent across shell invocations. 'history -c' clears the history.
-
-# Teamwork - It's about git
-Using a version control system (such as git and GitHub) was essential for productive team collaboration. It allowed us to work in parallel on features in different branches, flag and resolve issues and generally keeping track of the project and implementing changes without creating a mess. We learned a lot and adapted our workflow to our specific working styles.
-
-## Commit Style
->  Treat your codebase like a good camper does their campsite: always try to leave it a little better than you found it.  - Bob Nystrom
-
-For our commits we took first inspiration from the following, even if we implemented a reduced version for our purposes. We mostly used a commit style in the form of "KEYWORD \[scope\] commit message" and mostly used the keywords 'FEAT', 'FIX', 'DOCS' and 'REFACTOR'.
-
-See https://www.conventionalcommits.org/en/v1.0.0/#summary.  
-
-The commit message should be structured as follows:
-```
-<type>[optional scope]: <description>
-[optional body]
-[optional footer(s)]
-```
-The commit contains the following structural elements, to communicate intent to the consumers of your library (from the source):
-
-- `fix:` a commit of the type fix patches a bug in your codebase (this correlates with PATCH in Semantic Versioning).
-- `feat:` a commit of the type feat introduces a new feature to the codebase (this correlates with MINOR in Semantic Versioning).  
-- `BREAKING CHANGE:` a commit that has a footer BREAKING CHANGE:, or appends a ! after the type/scope, introduces a breaking API change (correlating with MAJOR in Semantic Versioning). A BREAKING CHANGE can be part of commits of any type.  
-- types other than fix: and feat: are allowed, for example @commitlint/config-conventional (based on the Angular convention) recommends build:, chore:, ci:, docs:, style:, refactor:, perf:, test:, and others.  
-- footers other than BREAKING CHANGE: <description> may be provided and follow a convention similar to git trailer format.  
-- Additional types are not mandated by the Conventional Commits specification, and have no implicit effect in Semantic Versioning (unless they include a BREAKING CHANGE). A scope may be provided to a commit’s type, to provide additional contextual information and is contained within parenthesis, e.g., feat(parser): add ability to parse arrays.  
-
-## Git pull --rebase
-It depends of the team's preference but using this command will avoid doing a merge.
-```
-git pull --rebase
-```
-I also added it to my git aliases like
-```
-git config --global alias.pr 'pull --rebase'
-```
-If git pull rebase should fail, it is easy to back up with 
-```
-git rebase --abort
-```
-and pull normally or solve the conflicts.
-
 ## Architecture
 A well defined architecture is a better experience for team work, but it doesnt come free, takes work and modularity is key. But when modularity doesn’t end up being helpful, it quickly becomes actively harmful and it spirals out of control.
 
@@ -265,6 +173,7 @@ args 			-> FLAGS | WORD | STRING | QUOTED_STRING | SIMPLE_QUOTED_STRING | VAR_EX
 Where DLESS is the heredoc operator, and the other operators are the redirection operators.
 
 ## Lexemes
+
 Our job is to scan through the list of characters and group them together into the smallest sequences that still represent something. Each of these blobs of characters is called a lexeme.
 example of lexeme
 ```
@@ -283,6 +192,7 @@ typedef enum e_tokentype {
 ```
 
 ## Parentheses
+
 ```
 cat ("hey")
 bash: syntax error near unexpected token `('
@@ -299,6 +209,7 @@ Parantheses are also used in functions or for arithmetic operations, which we do
 In our shell, parantheses are used to organize association in lists, i.e. which '&&' and '||' operators should be grouped together.
 
 ## Variable Names
+
 Variables names have stricter rules than command or file names.
 
 They match the regex pattern:
@@ -333,6 +244,7 @@ PATH=/local/bin:/local/bin:/local/bin:/.local/bin:/usr/local/sbin:/usr/local/bin
 _=/usr/bin/env
 lbrusa@c3a4c7:/home/lbrusa/DEV/minishell$ 
 ```
+
 
 ## Allowed Functions
 ### The readline() Function
@@ -587,10 +499,8 @@ In Bash, the exit status of the last command is stored in the special variable 
 echo $?
 ```
 
-### Signals
-Signals are used by the operating system to notify a process of various events, such as a segmentation fault or a user interrupt. 
-
 ### Memory Management and Memory Leaks
+
 As our shell is written in C we have to handle memory ourselves. Using the system functions `malloc()` and `free()` was allowed, the rest was up to us.
 Generally we aim to free memory as close to its initial allocation as possible. This way we ensure to use available resources efficiently and also facilitate freeing allocated memory upon planned and unplanned program termination.
 Each execution of the main loop returns to the main prompt of our shell. All memory that was not needed for the previous loop is freed and only those parts of the program still allocated that are needed for each loop (such as the environment variables).
@@ -720,7 +630,6 @@ Tilde ('~')
 Caret ('^')
 Percent ('%')
 
-## $# means
 
 ## {} and [] in bash scripts
 they have specific meanings:
@@ -737,7 +646,6 @@ Brace expansion: echo {1..10}
 ./myscript arg1 arg2 arg3
 
 Then inside myscript, $# will be 3, because three arguments were passed to the script.
-
 
 The ^ symbol in bash has a few different uses:
 1. In regular expressions, ^ is used to denote the start of a line. For example, ^abc matches any line that starts with "abc".
@@ -798,6 +706,7 @@ esac
 
 
 ## Control Operators
+
 A control operator in bash is one of those ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’
 
 these control operators do have precedence and associativity rules, similar to operators in programming languages. Here's a rough breakdown:
@@ -808,6 +717,7 @@ these control operators do have precedence and associativity rules, similar to o
 5. ;;, ;&, and ;;& are used in the context of a case statement to separate different cases.
 
 ## Wildcards
+
 For wildcard expansion, you would typically use the glob function, as I mentioned in the previous response. Here's how you can modify your code to expand wildcards in the input:
 For example, if a user types ls *.txt, the shell should expand the *.txt wildcard to a list of all .txt files in the current directory.
 
@@ -843,12 +753,17 @@ while (input != NULL)
 
 free(input);
 ```
-## ISR - Interrupt Service Routine
+
+## Signals and ISR - Interrupt Service Routine
+
+Signals are used by the operating system to notify a process of various events, such as a segmentation fault or a user interrupt. 
+
 The __interrupt and __irq keywords are used in some programming languages and environments to declare interrupt service routines (ISRs). An ISR is a special kind of function that is executed in response to an interrupt signal.
 An interrupt is a signal to the processor emitted by hardware or software indicating an event that needs immediate attention. The processor responds by suspending its current activities, saving its state, and executing a function called an interrupt handler (or an interrupt service routine, ISR) to deal with the event. This activity is called "servicing the interrupt."
 The __interrupt or __irq keyword is used to tell the compiler that the declared function is an ISR. This can affect the generated code for the function, as ISRs often need to save and restore more processor state than regular functions, and may need special instructions for returning from the function.
 
 ## Input Special Characters
+
 In a bash shell, you can input a character in hexadecimal using the format $'\xHH', where HH is the hexadecimal value. For example, $'\x04' represents the character with the ASCII value 4.
 echo -e "The control character for end of transmission is $'\x04'"
 In this command, echo -e enables interpretation of backslash escapes, and $'\x04' is replaced by the character with the ASCII value 4.
@@ -860,6 +775,7 @@ char c = '\x04';
 char *s = "\x04";
 
 ## Expansion in Bash
+
 In bash, expansion refers to the process of replacing a special character or sequence of characters with a value. There are several types of expansion in bash, including:
 
 - $identifier or ${identifier} is used for variable expansion. The identifier is the name of the variable. Bash replaces $identifier or ${identifier} with the value of the variable.
@@ -898,59 +814,48 @@ Three cases:
 - `$'HOME'` : This is used for string literals in Bash, where escape sequences (like `\n` for newline) are interpreted. Since `HOME` doesn't contain any escape sequences, `$'HOME'` is equivalent to `'HOME'`. So cat `$'HOME'` also tries to display the contents of a file named HOME in the current directory.
 
 ## Set env Variables
-If you want to set an environment variable for the new program, you need to use the third argument to `execve()`, which is an array of strings representing the new environment. Each string in this array should be in the format name=value.
 
+There are to ways to get the environment variables passed down to my program in C:
+
+- We could use the third argument to `execve()`, which is an array of strings representing the new environment. Each string in this array should be in the format name=value.
+
+- Better, the environ variable is part of the POSIX standard, so it should be 
+available on any POSIX-compliant system.
+according to the linux programming language by kerrisk (page 127), using
+the environ variable is better than getting it in main.. (not posix compliant)
 ```
-int main() {
-    char *newargv[] = { "/bin/bash", NULL };
-    char *newenviron[] = { "MYVAR=2", NULL };
-
-    execve(newargv[0], newargv, newenviron);
-
-    // If execve returns at all, an error occurred.
-    perror("execve");
-    return 1;
-}
+extern char	**environ;
 ```
-
-In this code, newenviron is an array of strings representing the new environment for the new program. The string "MYVAR=2" sets the environment variable MYVAR to 2.
-This will start a new bash shell with MYVAR set to 2, but it won't run any command. 
-If you want to run a command in the new shell, you can add -c command to newargv, like this:
-
-```
-char *newargv[] = { "/bin/bash", "-c", "echo $MYVAR", NULL };
-```
+We chose the second option.
 
 In a shell, when you set an environment variable, it's only set for the current shell (the parent process) and any child processes that the shell starts after the variable is set. The environment variable is not passed back to the parent of the shell.
 
-For example, if you start a shell from a terminal, set an environment variable in the shell, and then exit the shell, the environment variable will not be set in the terminal. This is because the terminal is the parent of the shell, and environment variables are not passed from a child process to its parent.
+For example, setting environment variables in a script does not affect the environment of the shell where you run the script. The script runs in a child process, and any environment variables it sets are lost when the script exits.
 
-This is why, for example, setting environment variables in a script does not affect the environment of the shell where you run the script. The script runs in a child process, and any environment variables it sets are lost when the script exits.
-
-If you want to set an environment variable in the current shell, you need to use the export command in the shell itself, not in a child process. If you want to set an environment variable for all shells, you can add the export command to a shell startup file like `~/.bashrc` or `~/.bash_profile`.
+We save the environment in a dynamic array upon launching the minishell.
 
 ## Quotes
 
 In the context of shell scripting, single quotes (') and double quotes (") have different behaviors:  
 
-- Single Quotes ('): Anything enclosed between single quotes is preserved exactly as typed. No variable substitution or command substitution will occur within single quotes. For example, if you have a variable var="world" and you echo 'Hello $var', it will output Hello $var, not Hello world.
-
-- Double Quotes ("): Within double quotes, variable substitution and command substitution will occur. For example, if you have a variable var="world" and you echo "Hello $var", it will output Hello world. Similarly, if you echo "Today is $(date)", it will replace $(date) with the current date.  
-
-In the context of shell scripting, the echo command is used to output text. The text to be output is enclosed in quotes.
-In your command echo " Hello' $var'", you're using a mix of double quotes (") and single quotes ('). Here's how it works:
-
+- Single Quotes ('): Anything enclosed between single quotes is preserved exactly as typed. No variable substitution or command substitution will occur within single quotes. For example, 
+```bash
+var="world" && echo 'Hello $var'
 ```
-echo " Hello '$var' ! "
+will output `Hello $var`, not `Hello world`.
+
+- Double Quotes ("): Within double quotes, variable substitution and command substitution will occur. For example, 
+```bash
+var="world" && echo "Hello $var"
 ```
-
-The double quotes (") start at the beginning and end at the end of the string. Within double quotes, variable substitution will occur. This means that $var will be replaced with the value of the variable var.
-
-The single quotes (') are treated as literal characters within the double quotes. They do not start a new quoted string, and they do not prevent variable substitution. So ' $var' is not treated as a single-quoted string; instead, it's part of the double-quoted string.
-
-So, if var="world", your command will output Hello' world'.
+it will output `Hello world`. Similarly, 
+```bash
+echo "Today is $(date)"
+```
+will replace `$(date)` with the current date.  
 
 ## Redirections
+
 The basic redirection operators in bash we will implement are `>`, `<`, and `>>`. These operators allow you to redirect the standard input and output of a command to and from files.  
 We tokenized them as `REDIRECTION_OUT`, `REDIRECTION_IN`, and `REDIRECTION_APP` respectively.
 
@@ -992,7 +897,9 @@ Close file descriptor 3:
 exec 3<&-
 ```
 
-### Clobbering
+### Clobbering 
+(not implemented)
+
 The `noclobber` option in shell environments (like Bash) is used to prevent accidentally overwriting existing files through redirection. When `noclobber` is set (using `set -o noclobber` or `set -C`), attempting to redirect output to an existing file using the `>` operator will fail with an error, thus protecting the file from being overwritten.  
 However, there might be cases where you intentionally want to overwrite a file even when `noclobber` is set. For this purpose, you can use the `>|` redirection operator. The `>|` operator forces the shell to overwrite the target file, effectively bypassing the `noclobber` setting for that particular redirection command. (not implemented)
 
@@ -1023,6 +930,7 @@ Of course, the cat commands could've been left out, but i kept them for clarity.
 Now, of course you don't have to handle it like bash, but bash shows a good way to handle DLESSs. (edited) 
 
 ## Environmental and Local Variables
+
 In Bash, when you create a variable using the var="heyhey" syntax, you're creating a shell variable. Shell variables are only available in the current shell (i.e., the current terminal session). They are not passed to child processes (i.e., commands or scripts that you run from the current shell).
 
 If you want to make a shell variable available to child processes, you need to export it as an environment variable using the export command. For example:
@@ -1048,42 +956,6 @@ In our shell implementation, you would need to handle these two types of variabl
 
 Shell variables can be stored in a local data structure, while environment variables can be stored in the environ global variable or managed using the getenv, setenv, and unsetenv functions.
 
-## DLESS
-In Bash scripting, a here document (DLESS) is a type of redirection that allows to pass a block of input to a command. The syntax for a DLESS is as follows (, in Backus–Naur form):
-```
-command <<DELIMITER
-text block
-DELIMITER
-```
-Here's how it works:
-- command is the command that will receive the text block as input.  
-- `<<` DELIMITER starts the DLESS. DELIMITER can be any string. It marks the beginning and the end of the text block.  
-- text block is the input that will be passed to the command. It can be multiple lines.  
-- DELIMITER on a line by itself ends the DLESS.  
-
-Here's an example:
-```
-command <<DELIMITER
-text block
-DELIMITER
-```
-
-This will pass the two lines of text to the cat command, which will print them.  
-
-In our parser, we would need to handle DLESSs as a special case of redirection. When we encounter a `<<DELIMITER`, we would need to read lines until you encounter a line that contains only `DELIMITER`. The lines in between become the input for the command.
-
-The DLESS syntax in a grammar could be represented as follows:
-```
-DLESS -> 	expression "<<" delimiter NEWLINE content delimiter NEWLINE;
-```
-The DLESS -> expression "<<" delimiter NEWLINE content delimiter NEWLINE; rule correctly captures the structure of a DLESS, where:
-
-expression is the command that will receive the DLESS as input.
-"<<" is the DLESS operator.
-delimiter is the string that marks the beginning and end of the DLESS.
-NEWLINE separates the delimiter from the content of the DLESS and the content from the ending delimiter.
-content is the text of the DLESS.
-The expression before "<<" in the DLESS rule ensures that a DLESS is associated with a command, which is necessary because a DLESS is a form of input redirection.
 
 ## Traversing an Abstract Syntax Tree (AST) 
 typically involves using a depth-first search. There are three types of depth-first traversals: pre-order, in-order, and post-order.  
@@ -1110,7 +982,6 @@ void preOrderTraversal(ASTNode* node) {
 }
 ```
 You can perform in-order or post-order traversal by changing the order of the operations in this function. For in-order traversal, you would first traverse the left child, then visit the node, then traverse the right child. For post-order traversal, you would first traverse the left child, then the right child, then visit the node.  
-
 
 ## LL parsing
 LL parsing is a type of parsing for context-free grammars. The name "LL" stands for "Left-to-right, Leftmost derivation", which describes the way the input is consumed and the parse tree is built.
@@ -1154,23 +1025,90 @@ function execute_ast(node):
 start with process_node(root of AST)
 ```
 
+# The Builtins
 
-## Git Rebase
-Working in a team and using git sometimes it is better to use rebase instead of merge.
+In a shell, builtins are commands that are built into the shell itself, rather than being external programs. This means that the shell executes builtins directly, without needing to fork and exec an external program. We can check if a command is a builtin like this with the `type` command in bash shell:
+```
+c4c1c1% type exit
+exit is a shell builtin
+c4c1c1% type cd  
+cd is a shell builtin
+c4c1c1% type echo
+echo is a shell builtin
+c4c1c1% type .
+. is a shell builtin
+c4c1c1% type ls
+ls is /usr/bin/ls
+[...]
+```
+The functionality of the builtin commands we implement is summarized below. The functionality is based on original bash functionality (as described in the BASH manual), while reduced in scope. 
 
-Rebase is a Git command that allows you to integrate changes from one branch into another. It's often used to keep a feature branch up-to-date with the latest code from the main branch.
+### `echo [-n] [arg ...]`
+(_Bash builtin command_)
+Output `args` separated by spaces and terminated with a newline. With `-n` option trailing newline is suppressed.
+Just `echo` prints a newline. `echo -n` prints nothTo clarify: should we actually treat the removal/unsetting of functions? How do we identify read-only variables and functions?ing. `echo -n "hello"` prints `hello` without a newline.  `echo -n -nnnn` prints nothing.  
+`echo -n -nwhy` prints `-nwhy`. (dont ask me why :) but I think it is since the flag is not recognized as a flag but as a string. 
+Return status is zero (usually since it is hard to fail!).  
 
-Here's a step-by-step explanation of how rebase works:
+### `cd [directory]` (with relative or absolute path)
+(_original Bourne Shell builtin_)
+Used to change the current working directory to another directory. If directory is not specified the `HOME` shell variable is used. If directory is '-', it is converted to $OLDPWD before attempting directory change. 
+Successful execution of `cd` should set `PWD` to new directory and `OLDPWD` to the working directory before the change.  
+The command can fail, if the directory is not existent, if the directory is not a directory, if the directory is not readable, if the directory is not searchable, if the directory is not writable, if the directory is not accessible. Errors are printed to perror or stderr and can be like `cd: no such file or directory: /nonexistent` or `cd: permission denied: /root`.  
+Return status is zero upon success, non-zero otherwise.
 
-You have a feature branch that you've made some commits on.
-The main branch receives new commits while you're working on your feature branch.
-You want to include those new commits from the main branch into your feature branch.
-You can use git rebase main while on your feature branch to do this.
-What rebase does is it takes the changes made in the commits on your feature branch, and re-applies them on top of the main branch. This effectively moves or "rebases" your feature branch to the tip of the main branch.
+### `pwd` (without options)
+(_original Bourne Shell builtin_)
+Prints the absolute pathname of the current working directory (can contain symbolic links though this may be implementation defined as the normally available options either explicitly prohibit symbolic links (`-P`) or explicitly allow symbolic links (`-L`).
+Return status is zero unless an error is encountered while determining the name of the current directory (or an invalid option is supplied).
 
-The result is a cleaner history than merging. Instead of a merge commit, your feature branch will have a linear history that makes it look like you started working on it later than you actually did.
+### `export [name[=value]]` (without options)
+(_original Bourne Shell builtin_)
+Without any other options (as in our implementation) `name` refers to variables. Export allows to pass specified names/variable to be passed to child processes. When no arguments are provided, a list of all variables marked for export is displayed. These are the same as the variables seen when invoking 'env', minus the variable for the last command ('_='). When a value is provided after `name` and `=` the variable is set to `value`.
+To note: "All values undergo tilde expansion, parameter and variable expansion, command substitution, arithmetic expansion, and quote removal." (see 3.4 Shell Parameters in the Bash Manual)
+Return status is zero unless invalid option is supplied or one of the names is not a valid shell variable name.
 
-However, rebase can be more complex to use than merging, especially when conflicts occur. It's a powerful tool, but it should be used with understanding and care.
+### `unset [name]` (without options)
+(_original Bourne Shell builtin_)
+Removes each variable or function with `name`. If no options are supplied (as in out case), each name refers to a variable. In bash, if there was no variable by that name, a function with that name, if any, would be unset. Some shell variables lose their special behavior if they are unset. Read-only variables and functions cannot be unset.
+Return status is zero unless `name` is read-only or cannot be unset.
+We implement basic read-only functionality for read-only variables that are typically passed to subprograms (i.e. also to our shell when it is started from another shell, such as bash). We do not implement functions.
+
+### `env` (without options or arguments)
+`env` is not described as a builtin in the BASH manual. The variable $ENV is described related to POSIX variant of invoking shell.
+Presumably env prints the current environment, i.e. the inherited environment plus any modifications through `export` and `unset`. 
+From bash there is a way to start the minishell without any environment variables doing:  
+```
+env -i ./minishell
+```
+In this case the environment will have only the '_' and SHLVL variables. We ensure that our shell retains core core functionality, even with limited available information from the environment (such as the home directory). System commands provided without an absolute path will not get executed as no PATH information is available but builtin commands, such as cd mostly work. 
+
+### `exit [n]` (without options)
+(_original Bourne Shell builtin_)
+The builtin command `exit`,- as the name implies -, exits the shell. The exit status is of type uint8_t and shall be set to that of the last executed command.  
+The BASH builtin allows optionally to set the exit status as an argument ([n]) which will be cast to the uint8_t type.
+
+## What Could a Dot do?
+My scanner has an option for a dot. but is a dot something recognized by the bash shell? lets find out.
+
+```
+bash-3.2$ .
+bash: .: filename argument required
+.: usage: . filename [arguments]
+```
+I asked copilot:  
+The . command in Bash is a builtin command for sourcing a file. This means it executes the file in the current shell, rather than spawning a new subshell. This is useful when you want to load a script that modifies the environment, such as setting environment variables.
+
+The . command expects a filename as an argument, but it didn't receive one.
+
+Here's an example of how to use the . command:
+```
+. ./myscript.sh
+```
+This will execute the myscript.sh script in the current shell. If myscript.sh sets any environment variables, those variables will be available in the current shell after the script is executed.
+
+### history
+Though not required, we decided that our shell should also have a working history and implemented history handling and two history commands: 'history', which displays the full command history. This history is persistent across shell invocations. 'history -c' clears the history.
 
 ## Execute a Shell Command
 Use fork() to create a new process, and then use `execve()` in the child process to replace it with a shell that executes the command. Here's an example:
@@ -1202,7 +1140,7 @@ int main() {
 }
 ```
 
-## We are Allowed to Use a Global Variable
+## We are Allowed to Use one and only one Global Variable
 In the subject of the project, it is mentioned that we can use a global variable to track the signals received by the program.   
 This is useful because signal handlers cannot take arguments, so we need a way to communicate the signal number to the rest of the program.  However there is a way to get the exit signal of the childrem processes with the waitpid function.
 Ex:
@@ -1283,41 +1221,6 @@ char *gotostr = tgoto(cm, 10, 20);
 In this example, gotostr will contain an escape sequence that moves the cursor to column 10, row 20.
 
 Please note that termcap is quite old and has largely been replaced by terminfo and the ncurses library, which provide similar functionality but are more powerful and flexible.
-
-## Builtins
-
-In a shell, builtins are commands that are built into the shell itself, rather than being external programs. This means that the shell executes builtins directly, without needing to fork and exec an external program. We can check if a command is a builtin like this with the `type` command in bash shell:
-```
-c4c1c1% type exit
-exit is a shell builtin
-c4c1c1% type cd  
-cd is a shell builtin
-c4c1c1% type echo
-echo is a shell builtin
-c4c1c1% type .
-. is a shell builtin
-c4c1c1% type ls
-ls is /usr/bin/ls
-[...]
-```
-## What Could a Dot do?
-My scanner has an option for a dot. but is a dot something recognized by the bash shell? lets find out.
-
-```
-bash-3.2$ .
-bash: .: filename argument required
-.: usage: . filename [arguments]
-```
-I asked copilot:  
-The . command in Bash is a builtin command for sourcing a file. This means it executes the file in the current shell, rather than spawning a new subshell. This is useful when you want to load a script that modifies the environment, such as setting environment variables.
-
-The . command expects a filename as an argument, but it didn't receive one.
-
-Here's an example of how to use the . command:
-```
-. ./myscript.sh
-```
-This will execute the myscript.sh script in the current shell. If myscript.sh sets any environment variables, those variables will be available in the current shell after the script is executed.
 
 # Extras
 ## The PWD builtin
@@ -1410,7 +1313,6 @@ eof'
 >
 >eof
 ```
-
 Doesn't work, and neither does
 ```
 $ wc -c << '
@@ -1497,10 +1399,6 @@ This is about building the correct ast tree... the image is self explanatory. (i
 
 <img src="assets/associativity.jpg" alt="associativity" width="400">
 
-## The status of the project at the time of the evaluation
-In the end we really used 28 tokens we receive from the scanner.  
-57 are recognized but not acted upon because they are related to features we do not implement.  
-
 ## Display the stderr
 A good idea is to display the std error with all the debug messages on a different window in the terminal. For this we have two ways:
 ```
@@ -1523,6 +1421,65 @@ find . -name '*.c' -o -name '*.h' -o -name '*.cpp' -o -name '*.hpp' | xargs wc -
 ```
 
 
+## Teamwork - It's about git
+Using a version control system (such as git and GitHub) was essential for productive team collaboration. It allowed us to work in parallel on features in different branches, flag and resolve issues and generally keeping track of the project and implementing changes without creating a mess. We learned a lot and adapted our workflow to our specific working styles.
+
+### Commit Style
+>  Treat your codebase like a good camper does their campsite: always try to leave it a little better than you found it.  - Bob Nystrom
+
+For our commits we took first inspiration from the following, even if we implemented a reduced version for our purposes. We mostly used a commit style in the form of "KEYWORD \[scope\] commit message" and mostly used the keywords 'FEAT', 'FIX', 'DOCS' and 'REFACTOR'.
+
+See https://www.conventionalcommits.org/en/v1.0.0/#summary.  
+
+The commit message should be structured as follows:
+```
+<type>[optional scope]: <description>
+[optional body]
+[optional footer(s)]
+```
+The commit contains the following structural elements, to communicate intent to the consumers of your library (from the source):
+
+- `fix:` a commit of the type fix patches a bug in your codebase (this correlates with PATCH in Semantic Versioning).
+- `feat:` a commit of the type feat introduces a new feature to the codebase (this correlates with MINOR in Semantic Versioning).  
+- `BREAKING CHANGE:` a commit that has a footer BREAKING CHANGE:, or appends a ! after the type/scope, introduces a breaking API change (correlating with MAJOR in Semantic Versioning). A BREAKING CHANGE can be part of commits of any type.  
+- types other than fix: and feat: are allowed, for example @commitlint/config-conventional (based on the Angular convention) recommends build:, chore:, ci:, docs:, style:, refactor:, perf:, test:, and others.  
+- footers other than BREAKING CHANGE: <description> may be provided and follow a convention similar to git trailer format.  
+- Additional types are not mandated by the Conventional Commits specification, and have no implicit effect in Semantic Versioning (unless they include a BREAKING CHANGE). A scope may be provided to a commit’s type, to provide additional contextual information and is contained within parenthesis, e.g., feat(parser): add ability to parse arrays.  
+
+## Git rebase
+
+When working in a team and using git sometimes it is better to use rebase instead of merge.
+
+Rebase is a Git command that allows you to integrate changes from one branch into another. It's often used to keep a feature branch up-to-date with the latest code from the main branch.
+
+Here's a step-by-step explanation of how rebase works:
+
+You have a feature branch that you've made some commits on.
+The main branch receives new commits while you're working on your feature branch.
+You want to include those new commits from the main branch into your feature branch.
+You can use git rebase main while on your feature branch to do this.
+What rebase does is it takes the changes made in the commits on your feature branch, and re-applies them on top of the main branch. This effectively moves or "rebases" your feature branch to the tip of the main branch.
+
+The result is a cleaner history than merging. Instead of a merge commit, your feature branch will have a linear history that makes it look like you started working on it later than you actually did.
+
+However, rebase can be more complex to use than merging, especially when conflicts occur. It's a powerful tool, but it should be used with understanding and care.
+```
+git pull --rebase
+```
+I also added it to my git aliases like
+```
+git config --global alias.pr 'pull --rebase'
+```
+If git pull rebase should fail, it is easy to back up with 
+```
+git rebase --abort
+```
+and pull normally or solve the conflicts.
+
+
+## The status of the project at the time of the evaluation
+In the end we really used 28 tokens we receive from the scanner.  
+57 are recognized but not acted upon because they are related to features we do not implement.  
 
 ## Links
 The Bash reference manual:  

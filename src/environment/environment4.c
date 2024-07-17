@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 13:09:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 14:13:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 15:58:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "splash_error.h"
 
 #define SIZEOFCHAR 1
+
 /*
  * Used in the bubblesort function to return ordered strings.
  * This function is intended to be generic and if i have an array 
