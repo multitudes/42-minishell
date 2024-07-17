@@ -3,13 +3,12 @@
 # Project: 42-minishell
 > "The number of UNIX installations has grown to 10, with more expected." (The UNIX Programmer's Manual, 2nd Edition, June, 1972.)
 
-
 This team project is about creating a simple shell.
 
 We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  
 
-## What is a shell?
-A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them. Generally, a shell is a user interface that allows us to use computer resources such as memory. Think of a command-line interface such as Bash of Fish.
+## What is a Shell?
+A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them through the core operating system. Generally, a shell is a user interface that allows us to use computer resources such as memory and system functions, without having to manage all of the needed system interactions manually.
 
 The bash manual describes a shell as follows:
 
@@ -19,119 +18,126 @@ The bash manual describes a shell as follows:
 
 - Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
 
-## What we learned
+## What We Learned
+The project lies at the intersection of C programming and system programming. Even a functionally significantly reduced shell such as ours requires the implementation of many submodules that combine and act together in myriad ways based on the specific user commands provided. To make this work we not only had to dive deep into C and linux system programming but also learned about and employed a range of other things:
 
 - The difference between a shell and a terminal.
 - The difference between Bash and other shells.
 - The POSIX standard.
-- keep the project documented.
-- Create and manage testing to allow to change and code without breaking. 
-- the two main testing paradigms, unit testing and integration testing
-- GitHub actions for the tests in a sanitized environment and to deploy our documentation.
+- The merits and necessities of good project documentation.
+- Create and manage testing to allow to change and work on new code without breaking previous functionality. 
+- The two main testing paradigms, unit testing and integration testing
+- GitHub actions for performing tests in a sanitized environment and to deploy our documentation.
 - Team work and Git rebase vs merge. Linear history. Branching. Code reviews, open issues and assigning/ splitting the workload. Communicate deadlines.
 - Create a good debugging workflow.
 - The importance of a good architecture. Decoupling. Modularity. Dividing the shell into a scanner, parser, analyser and expander, executer. which is useful for testing and debugging.
+- Error management, e.g. handling system errors through perror and our own shell errors through standard error and passing 
+- Rigorosity, e.g. with regard to return values of functions.
+- Of course, intricacies and pecularities of bash syntax
+- ...
 
-### Some more definitions from the bash manual and posix shell manuals
-- POSIX  A family of open system standards based on Unix.
-- builtin A command that is implemented internally by the shell itself, rather than by an executable program somewhere in the file system.
-- control operator : A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
-- exit status : The value returned by a command to its caller. The value is restricted to eight bits, so the maximum value is 255.
-- metacharacter: A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
-- operator : A control operator or a redirection operator.
-- reserved word: A word that has a special meaning to the shell. Most reserved words introduce shell flow control constructs, such as for and while. (not strictly enforced by the shell)
-- signal : A mechanism by which a process may be notified by the kernel of an event occurring in the system.
-- token:  A sequence of characters considered a single unit by the shell. It is either a word or an operator.
-- word A sequence of characters treated as a unit by the shell. Words may not include unquoted metacharacters.
+### Some more Definitions from the Bash Manual and POSIX Shell Manuals
+- POSIX: A family of open system standards based on Unix.
+- Builtin: A command that is implemented internally by the shell itself, rather than by an executable program somewhere in the file system.
+- Operator: A control operator or a redirection operator.
+	- Control operator: A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
+	- Redirection operator: A token redirects input and out put to and from files by manipulating file descriptors: '<', '>', '>>', '&>'
+	- Heredoc: '<<'
+- Exit status: The value returned by a command to its caller. The value is restricted to eight bits, so the maximum value is 255.
+- Metacharacter: A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
+- Reserved word: A word that has a special meaning to the shell. Most reserved words introduce shell flow control constructs, such as 'for' and 'while'. (not strictly enforced by the shell)
+- Signal: A mechanism by which a process may be notified by the kernel of an event occurring in the system.
+- Token: A sequence of characters considered a single unit by the shell. It is either a word or an operator.
+- Word: A sequence of characters treated as a unit by the shell. Words may not include unquoted metacharacters.
 
 ### Shell Syntax (from the BASH manual)
 
-When the shell reads input, it proceeds through a sequence of operations. If the input indicates the beginning of a comment, the shell ignores the comment symbol (‘#’), and the rest of that line.
+When the shell reads input, it proceeds through a sequence of operations. If the input indicates the beginning of a comment, the shell ignores the comment symbol (‘#’), unless it is part of a quote ("" or ''), and the rest of that line.
 
-Otherwise, roughly speaking, the shell reads its input and divides the input into words and operators, employing the quoting rules to select which meanings to assign various words and characters.
+Otherwise, roughly speaking, the shell reads its input and divides the input into words and operators, employing quoting rules to select which meanings to assign various words and characters.
 
 The shell then parses these tokens into commands and other constructs, removes the special meaning of certain words or characters, expands others, redirects input and output as needed, executes the specified command, waits for the command’s exit status, and makes that exit status available for further inspection or processing.
 
-## The Subject of the assignment
+## The Subject of the Assignment
 
-We have restrictions in what we are allowed to use and it is summarized here [subject and allowed functions](assets/allowed_functions.md).  
+We have restrictions in what we are allowed to use, summarized here: [subject and allowed functions](assets/allowed_functions.md).  
 
-## The builtins
+## The Builtins
 
-The functionality of the builtin commands we will implement is described in the BASH manual and a short summary provided in the following.
+The functionality of the builtin commands we implement is summarized below. The functionality is based on original bash functionality (as described in the BASH manual), while reduced in scope. 
 
-#### `echo [-n] [arg ...]`
+### `echo [-n] [arg ...]`
 (_Bash builtin command_)
 Output `args` separated by spaces and terminated with a newline. With `-n` option trailing newline is suppressed.
-Just `echo` prints a newline. `echo -n` prints nothing. `echo -n "hello"` prints `hello` without a newline.  `echo -n -nnnn` prints nothing.  
-`echo -n -nwhy` prints `-nwhy`. (dont ask me why :) but I think it is since the flag is not recognized as a flag but as a string). 
+Just `echo` prints a newline. `echo -n` prints nothTo clarify: should we actually treat the removal/unsetting of functions? How do we identify read-only variables and functions?ing. `echo -n "hello"` prints `hello` without a newline.  `echo -n -nnnn` prints nothing.  
+`echo -n -nwhy` prints `-nwhy`. (dont ask me why :) but I think it is since the flag is not recognized as a flag but as a string. 
 Return status is zero (usually since it is hard to fail!).  
 
-#### `cd [directory]` (with relative or absolute path)
+### `cd [directory]` (with relative or absolute path)
 (_original Bourne Shell builtin_)
 Used to change the current working directory to another directory. If directory is not specified the `HOME` shell variable is used. If directory is '-', it is converted to $OLDPWD before attempting directory change. 
 Successful execution of `cd` should set `PWD` to new directory and `OLDPWD` to the working directory before the change.  
-can fail if the directory is not existent. if the directory is not a directory. if the directory is not readable. if the directory is not searchable. if the directory is not writable. if the directory is not accessible. Errors are printed to stderr and can be like `cd: no such file or directory: /nonexistent` or `cd: permission denied: /root`.  
+The command can fail, if the directory is not existent, if the directory is not a directory, if the directory is not readable, if the directory is not searchable, if the directory is not writable, if the directory is not accessible. Errors are printed to perror or stderr and can be like `cd: no such file or directory: /nonexistent` or `cd: permission denied: /root`.  
 Return status is zero upon success, non-zero otherwise.
 
-#### `pwd` (without options)
+### `pwd` (without options)
 (_original Bourne Shell builtin_)
 Prints the absolute pathname of the current working directory (can contain symbolic links though this may be implementation defined as the normally available options either explicitly prohibit symbolic links (`-P`) or explicitly allow symbolic links (`-L`).
 Return status is zero unless an error is encountered while determining the name of the current directory (or an invalid option is supplied).
 
-#### `export [name[=value]]` (without options)
+### `export [name[=value]]` (without options)
 (_original Bourne Shell builtin_)
-Without any other options (as in our implementation) `name` refers to variables. Export allows to pass specified names/variable to be passed to child processes. When no names are provided, a list of all exported variables is displayed. When a value is provided after `name` and `=` the variable is set to `value`.
+Without any other options (as in our implementation) `name` refers to variables. Export allows to pass specified names/variable to be passed to child processes. When no arguments are provided, a list of all variables marked for export is displayed. These are the same as the variables seen when invoking 'env', minus the variable for the last command ('_='). When a value is provided after `name` and `=` the variable is set to `value`.
 To note: "All values undergo tilde expansion, parameter and variable expansion, command substitution, arithmetic expansion, and quote removal." (see 3.4 Shell Parameters in the Bash Manual)
 Return status is zero unless invalid option is supplied or one of the names is not a valid shell variable name.
 
-To clarify: difference between environment variables and exported variables
-
-#### `unset [name]` (without options)
+### `unset [name]` (without options)
 (_original Bourne Shell builtin_)
-Removes each variable or function with `name`.
-> If no options are supplied, each name refers to a variable; if there is no variable by that name, a function with that name, if any, is unset. [...] Some shell variables lose their special behavior if they are unset.
-Read-only variables and functions cannot be unset.
-Return status is zero unless `name` is read-only or cannot not be unset.
-To clarify: should we actually treat the removal/unsetting of functions? How do we identify read-only variables and functions?
+Removes each variable or function with `name`. If no options are supplied (as in out case), each name refers to a variable. In bash, if there was no variable by that name, a function with that name, if any, would be unset. Some shell variables lose their special behavior if they are unset. Read-only variables and functions cannot be unset.
+Return status is zero unless `name` is read-only or cannot be unset.
+We implement basic read-only functionality for read-only variables that are typically passed to subprograms (i.e. also to our shell when it is started from another shell, such as bash). We do not implement functions.
 
-#### `env` (without options or arguments)
+### `env` (without options or arguments)
 `env` is not described as a builtin in the BASH manual. The variable $ENV is described related to POSIX variant of invoking shell.
 Presumably env prints the current environment, i.e. the inherited environment plus any modifications through `export` and `unset`. 
 From bash there is a way to start the minishell without any environment variables doing:  
 ```
 env -i ./minishell
 ```
-We check for this eventuality too. the env will have only the PWD PATH _ and SHLVL variables.
+In this case the environment will have only the '_' and SHLVL variables. We ensure that our shell retains core core functionality, even with limited available information from the environment (such as the home directory). System commands provided without an absolute path will not get executed as no PATH information is available but builtin commands, such as cd mostly work. 
 
-#### `exit [n]` (without options)
+### `exit [n]` (without options)
 (_original Bourne Shell builtin_)
 The builtin command `exit`,- as the name implies -, exits the shell. The exit status is of type uint8_t and shall be set to that of the last executed command.  
-The BASH builtin allows optionally to set the exit status as an argument ([n]) which will be cast to the uint8_t type..
+The BASH builtin allows optionally to set the exit status as an argument ([n]) which will be cast to the uint8_t type.
 
-# Teamwork - It's about GIT
-## Commit style
+### history
+Though not required, we decided that our shell should also have a working history and implemented history handling and two history commands: 'history', which displays the full command history. This history is persistent across shell invocations. 'history -c' clears the history.
+
+# Teamwork - It's about git
+Using a version control system (such as git and GitHub) was essential for productive team collaboration. It allowed us to work in parallel on features in different branches, flag and resolve issues and generally keeping track of the project and implementing changes without creating a mess. We learned a lot and adapted our workflow to our specific working styles.
+
+## Commit Style
 >  Treat your codebase like a good camper does their campsite: always try to leave it a little better than you found it.  - Bob Nystrom
+
+For our commits we took first inspiration from the following, even if we implemented a reduced version for our purposes. We mostly used a commit style in the form of "KEYWORD \[scope\] commit message" and mostly used the keywords 'FEAT', 'FIX', 'DOCS' and 'REFACTOR'.
 
 See https://www.conventionalcommits.org/en/v1.0.0/#summary.  
 
 The commit message should be structured as follows:
-
 ```
 <type>[optional scope]: <description>
-
 [optional body]
-
 [optional footer(s)]
 ```
-The commit contains the following structural elements, to communicate intent to the consumers of your library:
+The commit contains the following structural elements, to communicate intent to the consumers of your library (from the source):
 
-> `fix:` a commit of the type fix patches a bug in your codebase (this correlates with PATCH in Semantic Versioning).
-`feat:` a commit of the type feat introduces a new feature to the codebase (this correlates with MINOR in Semantic Versioning).  
-`BREAKING CHANGE:` a commit that has a footer BREAKING CHANGE:, or appends a ! after the type/scope, introduces a breaking API change (correlating with MAJOR in Semantic Versioning). A BREAKING CHANGE can be part of commits of any type.  
-types other than fix: and feat: are allowed, for example @commitlint/config-conventional (based on the Angular convention) recommends build:, chore:, ci:, docs:, style:, refactor:, perf:, test:, and others.  
-footers other than BREAKING CHANGE: <description> may be provided and follow a convention similar to git trailer format.  
-Additional types are not mandated by the Conventional Commits specification, and have no implicit effect in Semantic Versioning (unless they include a BREAKING CHANGE). A scope may be provided to a commit’s type, to provide additional contextual information and is contained within parenthesis, e.g., feat(parser): add ability to parse arrays.  
+- `fix:` a commit of the type fix patches a bug in your codebase (this correlates with PATCH in Semantic Versioning).
+- `feat:` a commit of the type feat introduces a new feature to the codebase (this correlates with MINOR in Semantic Versioning).  
+- `BREAKING CHANGE:` a commit that has a footer BREAKING CHANGE:, or appends a ! after the type/scope, introduces a breaking API change (correlating with MAJOR in Semantic Versioning). A BREAKING CHANGE can be part of commits of any type.  
+- types other than fix: and feat: are allowed, for example @commitlint/config-conventional (based on the Angular convention) recommends build:, chore:, ci:, docs:, style:, refactor:, perf:, test:, and others.  
+- footers other than BREAKING CHANGE: <description> may be provided and follow a convention similar to git trailer format.  
+- Additional types are not mandated by the Conventional Commits specification, and have no implicit effect in Semantic Versioning (unless they include a BREAKING CHANGE). A scope may be provided to a commit’s type, to provide additional contextual information and is contained within parenthesis, e.g., feat(parser): add ability to parse arrays.  
 
 ## Git pull --rebase
 It depends of the team's preference but using this command will avoid doing a merge.
@@ -148,40 +154,31 @@ git rebase --abort
 ```
 and pull normally or solve the conflicts.
 
-## Ideas
-### Architecture
+## Architecture
 A well defined architecture is a better experience for team work, but it doesnt come free, takes work and modularity is key. But when modularity doesn’t end up being helpful, it quickly becomes actively harmful and it spirals out of control.
 
 ### Decoupling
 A part of creating a good architecture is decoupling. Decoupling is the process of separating the different parts of a system so that they are not dependent on each other. This makes the system more flexible and easier to maintain.
-Our minishell will be divided into a few main parts:
+Our minishell is divided into a few main parts:
 - The scanner or lexemer, which splits the input into tokens.
+- Processing of heredocs.
 - The parser, which takes the tokens, and builds/employs a data structure that represents the command(s) to be executed.
 - The analyser/expander, which expands variables and expressions.
 - The executer, which takes the data structure produced by the parser and expanded by the analyser and executes the command(s) it represents.
-Furthermore we use integration tests and unit tests: To be able to make changes and refactor our code with confidence, we will need to have a suite of tests that we can run to ensure that our shell is working as expected.
+Furthermore we use integration tests and unit tests: To be able to make changes and refactor our code with confidence, we needed to have a suite of tests that would always run to ensure that our shell is working as expected.
 
-## The road map
-- we start by implementing a loop that reads the user input with the readline() function. The readline function is part of the part of the GNU Readline library and offers other functions like rl_clear_history, rl_on_new_line, rl_replace_line, rl_redisplay,add_history that we are allowed to use in our project.
+# The Road Map
+- We start by implementing a loop that reads the user input with the readline() function. The readline function is part of the part of the GNU Readline library and offers other functions like rl_clear_history, rl_on_new_line, rl_replace_line, rl_redisplay,add_history that we are allowed to use in our project.
 - The first step is scanning, also known as lexing, or (if you’re trying to impress someone) lexical analysis.
-- A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like ( and , . Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ).
+- A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like '(' and ','. Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ).
 - The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. 
-A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. These trees have a couple of different names—“parse tree” or “abstract syntax tree”In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”.
+A parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. These trees have a couple of different names—“parse tree” or “abstract syntax tree”. In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”.
 - Everything up to this point is considered the front end of the implementation.
-- Tree-walk interpreters 
- To run the program, the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
-- we have a number of builtins we will implement. These are 
-◦ echo with option -n
-◦ cd with only a relative or absolute path 
-◦ pwd with no options
-◦ export with no options
-◦ unset with no options
-◦ env with no options or arguments
-◦ exit with no options
+- Tree-walk interpreter: To run the program, the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
+- Before commands (system or builtin) are executed heredocs and redirections are set up.
+- Commands are exeuted either by calling system commands or any of the custom builtins described above.
 
-- Our shell should also have a working history.
-
-## Grammar as foundation
+## Grammar as Foundation
 The syntax of a programming language is defined by a grammar. The syntax of a programming language is a precise description of all its grammatically correct programs. Noam Chomsky defined four categories of grammars: regular, context-free, context- sensitive, and unrestricted.
 
 ## Inspiration: Context Free Grammar (CFG). 
