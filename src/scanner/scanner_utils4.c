@@ -6,13 +6,16 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:03:58 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:38:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:45:14 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
+#include "debug.h"
 
-bool	is_delimiting_char(const char c)
+/* 
+ */
+bool	not_a_delimiting_char(const char c)
 {
 	return (ft_isprint(c) && !filename_delimiter(c));
 }
@@ -23,34 +26,19 @@ bool	is_delimiting_char(const char c)
  */
 bool	is_true_false(t_mini_data *data, char *str, int *start)
 {
-	if (peek(str, "true", true))
+	if (peek(str, "true", EXACT))
 		add_token(data, start, "true", TRUETOK);
-	else if (peek(str, "false", true))
+	else if (peek(str, "false", EXACT))
 		add_token(data, start, "false", FALSETOK);
 	else
 		return (false);
 	return (true);
 }
 
-void	print_token_list(t_list *token_list)
-{
-	t_list	*current;
-	t_token	*token;
-
-	current = token_list;
-	while (current != NULL)
-	{
-		token = (t_token *)(current)->content;
-		printf("token: %s", token->lexeme);
-		current = current->next;
-	}
-	return ;
-}
-
 /*
-io numbers are the one preceding a < or > in a redirection
-cannot start with a 0
-*/
+ * io numbers are the one preceding a < or > in a redirection
+ * cannot start with a 0
+ */
 bool	is_io_number(const char *str)
 {
 	if (*str == '0' && is_digit(*(str + 1)))
@@ -63,9 +51,9 @@ bool	is_io_number(const char *str)
 }
 
 /*
-including numbers preceded by a - or + 
-and with and without a dot
-*/
+ * including numbers preceded by a - or + 
+ * and with and without a dot
+ */
 bool	str_is_number(const char *str)
 {
 	int	dot_seen;

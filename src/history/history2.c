@@ -6,28 +6,23 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 15:44:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 10:40:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "splash.h"
+#include "splash_error.h"
 
-void	print_history(void)
+int	print_history(void)
 {
 	int		i;
 	int		fd;
-	char	*path;
 	char	*line;
 
 	i = 0;
-	path = get_history_file_path();
-	fd = open(path, O_RDONLY);
-	free(path);
+	fd = open(HIST_FILE, O_RDONLY);
 	if (fd == -1)
-	{
-		perror("open");
-		return ;
-	}
+		return (perror_and_status("print history", EXIT_FAILURE));
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
@@ -37,6 +32,7 @@ void	print_history(void)
 		line = get_next_line(fd);
 	}
 	close(fd);
+	return (EXIT_SUCCESS);
 }
 
 /*
@@ -46,7 +42,7 @@ overwrite it- interestingly the compiler did not complain about it
 being const maybe because the pointer is const... but the contents
 can vary? 
 */
-void	sanitize_input(const char *input)
+bool	sanitize_input(const char *input)
 {
 	int		i;
 	char	*tmp;
@@ -61,4 +57,5 @@ void	sanitize_input(const char *input)
 			*tmp++ = input[i++];
 	}
 	*tmp = '\0';
+	return (true);
 }

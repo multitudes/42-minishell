@@ -6,24 +6,25 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:57:41 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/12 19:38:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:43:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "scanner.h"
 
 /*
-if contains a slash or starts with a dot or starts with a ./ ../ ~/ ~+
-*/
+ * if contains a slash or starts with a dot or starts with a ./ ../ ~/ ~+
+ */
 bool	str_is_pathname(const char *str)
 {
-	if (ft_strchr(str, '/') || peek(str, ".", false) || peek(str, "./", \
-	false) || peek(str, "../", false) || peek(str, "~/", false) || \
-	peek(str, "~+", false))
+	if (((ft_strchr(str, '/') && (!ft_strchr(str, '~'))) || peek(str, ".", \
+	false) || peek(str, "./", FUZZY) || peek(str, "../", FUZZY) || peek(str, \
+	"~/", FUZZY) || peek(str, "~+/", FUZZY) || peek(str, "~+", EXACT) || \
+	peek(str, "~-/", FUZZY) || peek(str, "~-", EXACT)) && !ft_strchr(str, '*'))
 	{
 		while (*str)
 		{
-			if (!is_in_pathname(*str))
+			if (!char_is_in_pathname(*str))
 				return (false);
 			str++;
 		}
@@ -32,6 +33,21 @@ bool	str_is_pathname(const char *str)
 	return (false);
 }
 
+/*
+ * Recognizing a globbing wanna be expansion, any string with the letter *
+ * it will be for the bonus eventually!
+*/
+bool	is_a_globbing(t_mini_data *data, const char *tmp, int *start)
+{
+	if (ft_strchr(tmp, '*'))
+		add_token(data, start, tmp, GLOBBING);
+	else
+		return (false);
+	return (true);
+}
+
+/*
+ */
 bool	is_a_pathname_or_num(t_mini_data *data, const char *tmp, int *start)
 {
 	if (str_is_pathname(tmp))
@@ -54,23 +70,9 @@ bool	str_is_alphanum(const char *str)
 }
 
 /*
-printable chars include a space. This is for the identifiers
-*/
-int	isprint_no_space(const char *str)
-{
-	while (*(str))
-	{
-		if (is_space(*str) || !isprint(*str))
-			return (0);
-		str++;
-	}
-	return (1);
-}
-
-/*
-just for style, it removes ugly pointer arythmetics 
-from my code
-*/
+ * just for style, it removes ugly pointer arythmetics 
+ * from my code
+ */
 void	advance(int *i)
 {
 	(*i)++;

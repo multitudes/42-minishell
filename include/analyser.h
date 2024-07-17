@@ -6,16 +6,58 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:38:03 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/14 10:30:44 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:04:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ANALYSER_H
 # define ANALYSER_H
 
-# include "minishell.h"
+# include "splash.h"
 
-void	analyse_expand(t_ast_node *ast, t_data *data);
+/*
+ * properties:
+ * - equal_status is 0 default - 1 when the = is a var assignment and 
+ * 2 when I have more than one equal sign and I dont need to expand tilde
+ * - starts_var_exp There is a dollar exp in the name of the var assignment 
+ */
+typedef struct s_exp_flags 
+{
+	int		equal_status;
+	bool	lexeme_start;
+	bool	valid_key;
+}			t_exp_flags;
+
+// needed for the tests - leave it here
+# ifdef __cplusplus
+
+extern "C" {
+
+# endif
+
+void analyse_expand(t_ast_node * ast, t_data * data);
+void	expand_dollar(t_data *data, t_token *token);
+bool	single_dollar(char *str);
+char	*get_key(char *str);
+char	*get_key_value(t_data *data, char *key);
+char	*replace_dollar_vars(t_data *data, char *lexeme);
+void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags);
+void	expand_globbing(t_list **tokenlist);
+void	expand_exit_status(t_data *data, t_token *token);
+void	expand_single_quotes(t_token *token);
+void	expand_double_quotes(t_data *data, t_token *token);
+char	*get_home(t_darray *env_arr);
+bool	tilde_to_be_expanded(char *lexeme, t_exp_flags *flags, \
+									t_list *tokenlist, int i);
+bool	valid_tilde_expansion(t_list *tokenlist, char *lexeme, int i);
+bool	valid_tilde_separator(char sep, t_exp_flags *flags);
 void	which_ast_node(t_ast_node *ast);
+void	set_flags(t_list *tokenlist, t_exp_flags *flags);
+void	reset_flags(t_exp_flags *flags);
 
-#endif  // ANALYSER_H_
+#  ifdef __cplusplus
+
+}
+#  endif
+
+# endif

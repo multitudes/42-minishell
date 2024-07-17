@@ -1,11 +1,8 @@
 #include "razorclam_tests.h"
-#include <iostream>
 #include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
-#include "../include/minishell.h"
 #include "../include/scanner.h"
 
 /*
@@ -96,7 +93,7 @@ const char* test_scanner_redirections() {
 	result = process_token(&current, &i, ">>", DGREAT);
 	result = process_token(&current, &i, "file.txt", WORD);
 	result = process_token(&current, &i, "ls", WORD);
-	result = process_token(&current, &i, "&>>", REDIRECT_OUT_APP);
+	result = process_token(&current, &i, "&>>", REDIRECT_BOTH_APP);
 	result = process_token(&current, &i, "file.txt", WORD);
 
 	// this is how I check for the end of the list
@@ -138,7 +135,7 @@ const char* test_scanner_redirections2() {
 }
 
 /*
-more redirection -> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
+more redirection -> expression ( "<" | ">" | ">>" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
 
 */
 const char* test_scanner_redirections3() {
@@ -146,7 +143,7 @@ const char* test_scanner_redirections3() {
 	// i want to check the output of the call to the function in scanner.c file
 	// tokenizer(char *input) returning a t_list of lexemes
 	// I will create a string and check the output of the function
-	std::string str = "cat<cat>cat>>cat>>&cat";
+	std::string str = "cat<cat>cat>>cat";
 	const char* input = str.c_str();
 	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
@@ -160,8 +157,6 @@ const char* test_scanner_redirections3() {
 	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, ">>", DGREAT);
 	result = process_token(&current, &i, "cat", WORD);
-	result = process_token(&current, &i, ">>&", REDIRECT_BOTH_APP);
-	result = process_token(&current, &i, "cat", WORD);
 
 
 	// this is how I check for the end of the list
@@ -172,7 +167,7 @@ const char* test_scanner_redirections3() {
 
 
 /*
-more redirection -> expression ( "<" | ">" | ">>" | ">>&" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
+more redirection -> expression ( "<" | ">" | ">>" | "2>" | "&> | &>> | 2>> | <> | >|") expression; 
 
 */
 const char* test_scanner_redirections4() {
@@ -198,7 +193,7 @@ const char* test_scanner_redirections4() {
 	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, ">&", GREATAND);
 	result = process_token(&current, &i, "cat", WORD);
-	result = process_token(&current, &i, "&>>", REDIRECT_OUT_APP);
+	result = process_token(&current, &i, "&>>", REDIRECT_BOTH_APP);
 	result = process_token(&current, &i, "cat", WORD);
 	result = process_token(&current, &i, "2", IO_NUMBER);
 	result = process_token(&current, &i, ">>", DGREAT);

@@ -1,0 +1,119 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   analyser.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "splash.h"
+#include "analyser.h"
+#include "scanner.h"
+#include "libft.h"
+#include "splash_error.h"
+#include "utils.h"
+#include "builtins.h"
+
+/*
+Identify if and which expansion needed
+and call the appropriate expansion function.
+*/
+static void	execute_expansion_by_type(t_data *data, t_list **tokenlist, \
+										t_exp_flags *flags)
+{
+	t_tokentype	type;
+
+	type = get_token_type(*tokenlist);
+	if (type == S_QUOTED_STRING)
+		expand_single_quotes(get_curr_token(*tokenlist));
+	else if (type == QUOTED_STRING && type != QUOTE_EXPANDED)
+		expand_double_quotes(data, get_curr_token(*tokenlist));
+	else if (type == VAR_EXPANSION || type == DOLLAR \
+			|| type == DOLLAR_QUESTION || type == DOLLAR_DIGIT)
+		expand_dollar(data, get_curr_token(*tokenlist));
+	else if (ft_strchr(get_token_lexeme(*tokenlist), '~') \
+			&& type != QUOTE_EXPANDED)
+		expand_path(data->env_arr, *tokenlist, flags);
+	else if (type == GLOBBING && type != QUOTE_EXPANDED)
+		expand_globbing(tokenlist);
+}
+
+/*
+Goes through tokenlist, expands if expansion types and expansion allowed.
+*/
+static uint8_t	expand_tokenlist(t_data *data, t_ast_node *ast)
+{
+	t_exp_flags	flags;
+	int			count;
+	t_list		*tokenlist;
+
+	count = 0;
+	tokenlist = ast->tokenlist;
+	reset_flags(&flags);
+	while (tokenlist)
+	{
+		if (!get_curr_token(tokenlist))
+			return (stderr_and_status("system error: missing token", 1));
+		set_flags(tokenlist, &flags);
+		execute_expansion_by_type(data, &tokenlist, &flags);
+		if (count == 0)
+			ast->tokenlist = tokenlist;
+		if (token_followed_by_space(tokenlist))
+			reset_flags(&flags);
+		else
+			flags.lexeme_start = false;
+		tokenlist = tokenlist->next;
+		count++;
+	}
+	return (0);
+}
+
+static bool	separated_token_types(t_list *tokenlist)
+{
+	t_tokentype	type_1;
+	t_tokentype	type_2;
+
+	if (!tokenlist || !tokenlist->next)
+		return (true);
+	type_1 = get_token_type(tokenlist);
+	type_2 = get_token_type(tokenlist->next);
+	if (is_redirection_token(type_1) || is_redirection_token(type_2))
+		return (true);
+	else if (is_heredoc_token(type_1) || is_heredoc_token(type_2))
+		return (true);
+	return (false);
+}
+
+/*
+Expansion of nodes containing single quotes, double quotes, variables,
+~ / paths, Special Parameters ($?, $0 implemented)
+Could be extended to also include other Special Parameters ($!, etc.),
+$(..) ${..} $'..' $".."
+*/
+void	analyse_expand(t_ast_node *ast, t_data *data)
+{
+	t_list		*tokenlist;
+
+	if (ast == NULL)
+		return ;
+	tokenlist = ast->tokenlist;
+	if (!tokenlist)
+		return ;
+	data->exit_status = expand_tokenlist(data, ast);
+	tokenlist = ast->tokenlist;
+	while (tokenlist && tokenlist->next)
+	{
+		if ((!token_followed_by_space(tokenlist) \
+				&& !separated_token_types(tokenlist)) \
+			|| (ft_strlen(get_token_lexeme(tokenlist)) == 0 \
+				&& get_token_type(tokenlist) != QUOTE_EXPANDED))
+			merge_tokens(tokenlist);
+		else
+			tokenlist = tokenlist->next;
+	}
+	which_ast_node(ast);
+}

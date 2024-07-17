@@ -29,6 +29,8 @@
 *.dylib
 
 # Executables
+minishell
+tests*/*_tests
 *.exe
 *.out
 *.app
@@ -41,6 +43,7 @@
 *.su
 *.idb
 *.pdb
+tests*/tests.log
 
 # Kernel Module Compile Results
 *.mod*
@@ -50,3 +53,27 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+.vscode/settings.json
+src/scrap.c
+tests_integration/minishell_basic1_tests (copy).cpp
+tests/tmp/.shellignore
+tests/tmp/hello.txt
+tests/tmp/miniclam
+tests/tmp/world.c
+.cache/
+compile_commands.json
+.non-read_file
+minishell_bonus
+aa/a
+.noaccess_file
+READMEadds.md
+x
+y
+z
+tokenizer
+.tmp/heredoc_0
+.tmp/heredoc_1
+tests_integration/a
+tests_integration/ab
+tests_integration/a
+tests_integration/>

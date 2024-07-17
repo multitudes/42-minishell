@@ -1,13 +1,12 @@
 #include "razorclam_tests.h"
-#include <iostream>
 #include <string>
-#include <sstream>
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
-#include "../include/minishell.h"
 #include "../include/scanner.h"
 
+void	ft_lstdelone_test(t_list *lst, void (*del)(void*));
+void	ft_lstclear_test(t_list **lst, void (*del)(void*));
 
 /*
 file delimiters (for what is not accepted in file names)
@@ -58,24 +57,24 @@ const char* test_scanner_ident_space() {
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
 const char* test_scanner_ident_allrandom() {
 	
-	std::string str = "w-+*}[]=w{~or^%ld";
+	std::string str = "w-+}[]=w{~or^%ld";
 	const char* input = str.c_str();
 	t_list *lexemes = tokenizer(input);
 	t_list *current = lexemes;
 	const char *result;
 	int i = 0;
 
-	result = process_token(&current, &i, "w-+*}[]=w{~or^%ld", WORD);
+	result = process_token(&current, &i, "w-+}[]=w{~or^%ld", WORD);
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -89,10 +88,11 @@ const char* test_scanner_ident_comment() {
 	int i = 0;
 
 	result = process_token(&current, &i, "cd", BUILTIN);
-	// comments are ignored!
-	// this is how I check for the end of the list
+	result = process_token(&current, &i, "#", COMMENT);
+	result = process_token(&current, &i, "hello", WORD);
+	result = process_token(&current, &i, "world", WORD);
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -113,7 +113,7 @@ const char* test_scanner_ident_comment2() {
 	// comments are ignored!
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -131,11 +131,12 @@ const char* test_scanner_ident_comment3() {
 	const char *result;
 	int i = 0;
 
-	// result = process_token(&current, &i, "#hello world", COMMENT);
-	// comments are ignored!
-	// this is how I check for the end of the list
-	result = process_token(&current, &i, NULL, NULL_TOKEN);
+	result = process_token(&current, &i, "#", COMMENT);
+	result = process_token(&current, &i, "hello", WORD);
+	result = process_token(&current, &i, "world", WORD);
 
+	result = process_token(&current, &i, NULL, NULL_TOKEN);
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -166,7 +167,7 @@ const char* test_scanner_ident_number() {
 	result = process_token(&current, &i, "42.42.42", WORD);
 	result = process_token(&current, &i, "42.42.", WORD);
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -191,7 +192,7 @@ const char* test_scanner_ident_pathname() {
 
 	// this is how I check for the end of the list
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
-
+	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
 }
 
@@ -216,3 +217,33 @@ const char *all_tests()
 
 // works as a main
 RUN_TESTS(all_tests);
+
+
+
+//avoiding adding the whole libft only for this
+void	ft_lstdelone_test(t_list *lst, void (*del)(void*))
+{
+	if (lst == NULL)
+		return ;
+	del(lst->content);
+	free(lst);
+}
+
+void	ft_lstclear_test(t_list **lst, void (*del)(void*))
+{
+	t_list	**l;
+	t_list	*temp;
+
+	if (lst == NULL || *lst == NULL)
+		return ;
+	l = lst;
+	temp = *lst;
+	while ((*lst)->next)
+	{
+		*lst = (*lst)->next;
+		ft_lstdelone_test(temp, del);
+		temp = *lst;
+	}
+	ft_lstdelone_test(temp, del);
+	*l = NULL;
+}

@@ -6,16 +6,26 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:38:35 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/05/18 15:39:07 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_H
 # define UTILS_H
 
-# include "minishell.h"
+# include <stddef.h>
+# include "libft.h"
+# include <stdbool.h>
 
-int ft_isascii(const int c);
-
+int		ft_isascii(const int c);
+char	*ft_strndup(const char *s, size_t n);
+char	*ft_strjoin3(const char *s1, const char *s2, const char *s3);
+int		count_char_in_str(char *str, char c);
+void	replace_node_with_newlist(t_list **node, t_list *newlist);
+void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, \
+										t_list *new_tokenlist);
+bool	ft_write(int fd, const char *str);
+bool	write_data(int fd, const void *str, uint8_t *status);
+bool	ft_isnumstring(const char *str);
 
 #endif  // UTILS_H_

@@ -7,7 +7,7 @@ for i in *_tests
 do
     if test -f $i
     then
-        if $VALGRIND ./$i 2>> tests.log
+        if $VALGRIND ./$i 2> tests.log
         then
             echo $i PASS
         else
