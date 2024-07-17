@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 13:49:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:23:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,34 +93,4 @@ char	*mini_get_env(t_darray *env_arr, const char *key)
 		i++;
 	}
 	return (NULL);
-}
-
-/*
- * Prints the environment variables when `export` command is used:
- * Quoted strings, last command is omitted.
- */
-int	print_env_export(t_darray *env_arr)
-{
-	t_darray	*export_arr;
-	int			status;
-	char		*key;
-	char		*value;
-	int			i;
-
-	status = 0;
-	i = 0;
-	export_arr = NULL;
-	if (copy_env_darray(&export_arr, env_arr))
-		return (1);
-	while (export_arr && export_arr->contents && i < env_arr->end - 1)
-	{
-		key = get_var_key(export_arr->contents[i++]);
-		value = mini_get_env(export_arr, key);
-		if (key \
-			&& (printf("declare -x %s=%c%s%c\n", key, '"', value, '"') < 0))
-			status = perror_and_status("printf export", 1);
-		free(key);
-	}
-	darray_clear_destroy(export_arr);
-	return (status);
 }

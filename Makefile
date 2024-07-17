@@ -31,7 +31,7 @@ scanner/token_functions.c scanner/token_functions2.c scanner/token_functions3.c 
 scanner/reserved_builtins.c scanner/reserved_builtins2.c scanner/token_operators.c \
 scanner/history_tokens.c scanner/token_blocks.c scanner/token_blocks2.c \
 scanner/redirection_tokens.c scanner/redirection_tokens2.c \
-environment/environment.c environment/environment2.c environment/environment3.c \
+environment/environment.c environment/environment2.c environment/environment3.c environment/environment4.c \
 parser/parser.c parser/parser2.c parser/parser3.c parser/parser4.c \
 parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c parser/parser_utils4.c \
 analyser/analyser.c analyser/expansion_utils.c analyser/expansion_utils2.c analyser/expansion_quotes.c \
@@ -61,7 +61,7 @@ else ifeq ($(UNAME), Darwin)
 endif
 
 # target
-all: $(LIBFT) $(NAME) tests tests_integration copy_bonus
+all: $(LIBFT) $(NAME) tests tests_integration bonus
 	@mkdir -p $(TMP_DIR)
 	@chmod 700 $(TMP_DIR)
 
@@ -105,8 +105,8 @@ tests_integration:
 monkey:
 	sh monkey_tests/monkey.sh
 
-copy_bonus: minishell
-	cp minishell minishell_bonus
+bonus: minishell
+	@cp minishell minishell_bonus
 
 .PHONY: all clean fclean re tests tests_integration	copy_bonus
 
