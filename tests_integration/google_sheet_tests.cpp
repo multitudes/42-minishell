@@ -1277,6 +1277,34 @@ const char* test_echoes()
 	return NULL;
 }
 
+//echo b a | awk -v RS=" " '{print}' | sort
+const char* test_awk() 
+{
+	fflush(stdout);
+
+	std::ostringstream result;
+	std::string arg = "echo b a | awk -v RS=' ' '{print}' | sort";	
+	uint8_t exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "\na\nb\n", "output is not correct awk\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	result.str("");
+	arg = "echo hello world | awk '{print $1}' "; // 	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "hello world\n", "output is not correct awk\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	result.str("");
+	arg = "echo hello world |awk -v RS=' '  '{print $1}'"; // 	
+	exit_status = run_command_and_check_output(arg, result);
+	debug("result from minishell: -%s-\n", result.str().c_str());
+	my_assert(result.str() == "hello\nworld\n\n", "output is not correct awk\n");
+	my_assert(exit_status == 0, "exit status is not 0\n");
+
+	return NULL;
+}
 
 const char *all_tests()
 {
@@ -1345,6 +1373,8 @@ const char *all_tests()
 	run_test(test_dollardigit);
 
 	run_test(test_echoes);
+
+	run_test(test_awk);
 
 	return NULL;
 }
