@@ -27,7 +27,7 @@ static bool	process_line(t_heredoc *heredoc, int i, int heredoc_fd, char *line)
 	bool	status;
 
 	status = true;
-	if (line)
+	if (line && ft_strcmp(heredoc->delim[i], line))
 	{
 		if (!ft_write(heredoc_fd, line) || !ft_write(heredoc_fd, "\n"))
 			status = false;
