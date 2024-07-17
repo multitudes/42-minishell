@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 16:57:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:38:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,6 @@ int	handle_second_child_process(t_data *data, t_ast_node *ast)
  */
 uint8_t	get_wait_status(int status)
 {
-	debug("child exited with status %d", status);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))

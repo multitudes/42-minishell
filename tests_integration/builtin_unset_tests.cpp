@@ -27,7 +27,7 @@ const char* test_unset_read_only() {
     std::ostringstream result;
 	std::string arg = "unset PPID=123";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 
@@ -43,7 +43,7 @@ const char* test_unset_read_only_EUID() {
     std::ostringstream result;
 	std::string arg = "unset EUID=123";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 
@@ -57,7 +57,7 @@ const char* test_unset_read_only_UID() {
     std::ostringstream result;
 	std::string arg = "unset UID=123";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 
@@ -77,7 +77,7 @@ const char* test_unset_read_only2() {
     std::ostringstream result;
 	std::string arg = "unset PPID";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 1, "exit status is not 0\n");
 
@@ -93,7 +93,7 @@ const char* test_unset_read_only_EUID2() {
     std::ostringstream result;
 	std::string arg = "unset EUID";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 1, "exit status is not 0\n");
 
@@ -107,7 +107,7 @@ const char* test_unset_read_only_UID2() {
     std::ostringstream result;
 	std::string arg = "unset UID";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 1, "exit status is not 0\n");
 

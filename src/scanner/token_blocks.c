@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:42:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:33:42 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type)
 	while (data->input[*i] && data->input[*i] != delim)
 		advance(i);
 	if (data->input[*i] == '\0')
-		return (scanner_error(data, "minishell: syntax error: \
+		return (scanner_error(data, "splash: syntax error: \
 		unexpected end of file"));
 	tmp = ft_substr(data->input, start, *i - start + 1);
 	add_token(data, &start, tmp, t_type);
@@ -47,7 +47,7 @@ bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type)
 	while (peek(data->input + *i, delim, FUZZY) == false)
 		advance(i);
 	if (*(data->input + *i + 1) == '\0')
-		return (scanner_error(data, "minishell: error: unclosed expansion"));
+		return (scanner_error(data, "splash: error: unclosed expansion"));
 	tmp = ft_substr(data->input, start, *i - start + 2);
 	*i = start;
 	add_token(data, i, tmp, t_type);

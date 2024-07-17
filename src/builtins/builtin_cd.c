@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:22 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/16 15:18:59 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:37:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 	char	*getoldcwd;
 	char	*getcwd;
 
-	debug("cd builtin");
 	status = 0;
 	getoldcwd = NULL;
 	getcwd = NULL;
@@ -93,7 +92,6 @@ uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 		return (stderr_and_status("cd: too many arguments", 1));
 	getoldcwd = execute_getcwd(old_dir);
 	status = execute_cd_tokenlist(env_arr, tokenlist);
-	debug("status: %d", status);
 	if (status != 0)
 		return (status);
 	getcwd = execute_getcwd(dir);

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 19:33:34 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:33:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 #include "libft.h"
 
 /*
-Writes "minishell: msg\n" to standard error and returns status.
-If msg is NULL, "minishell: error\n" is printed.
+Writes "splash: msg\n" to standard error and returns status.
+If msg is NULL, "splash: error\n" is printed.
 */
 uint8_t	stderr_and_status(const char *msg, uint8_t status)
 {
 	if (msg)
 	{
-		if (!ft_write(2, "minishell: ") || !ft_write(2, msg) \
+		if (!ft_write(2, "splash: ") || !ft_write(2, msg) \
 				|| !ft_write(2, "\n"))
 			return (1);
 	}
@@ -35,15 +35,15 @@ uint8_t	stderr_and_status(const char *msg, uint8_t status)
 }
 
 /*
-Writes "minishell: msg_1: msg_2\n" to standard error and returns status.
-If msgs are NULL, "minishell: error\n" is printed.
+Writes "splash: msg_1: msg_2\n" to standard error and returns status.
+If msgs are NULL, "splash: error\n" is printed.
 */
 uint8_t	stderr_and_status2(const char *msg_1, \
 							const char *msg_2, uint8_t status)
 {
 	if (!msg_1 && !msg_2 && !ft_write(2, "minishell error"))
 		return (1);
-	if (!ft_write(2, "minishell: "))
+	if (!ft_write(2, "splash: "))
 		return (1);
 	if (msg_1 && !ft_write(2, msg_1))
 		return (1);
@@ -55,8 +55,8 @@ uint8_t	stderr_and_status2(const char *msg_1, \
 }
 
 /*
-Writes "minishell: msg_1: msg_2: msg_3\n" to standard error and returns status.
-If msgs are NULL, "minishell: error\n" is printed.
+Writes "splash: msg_1: msg_2: msg_3\n" to standard error and returns status.
+If msgs are NULL, "splash: error\n" is printed.
 */
 uint8_t	stderr_and_status3(const char *msg_1, \
 							const char *msg_2, const char *msg_3, \
@@ -64,7 +64,7 @@ uint8_t	stderr_and_status3(const char *msg_1, \
 {
 	if (!msg_1 && !msg_2 && !ft_write(2, "minishell error"))
 		return (1);
-	if (!ft_write(2, "minishell: "))
+	if (!ft_write(2, "splash: "))
 		return (1);
 	if (msg_1 && !ft_write(2, msg_1))
 		return (1);
@@ -78,8 +78,8 @@ uint8_t	stderr_and_status3(const char *msg_1, \
 }
 
 /*
-Writes "minishell: msg\n" to standard error and returns boolean.
-If msg is NULL, "minishell: error\n" is printed.
+Writes "splash: msg\n" to standard error and returns boolean.
+If msg is NULL, "splash: error\n" is printed.
 If write fails false is returned.
 */
 bool	stderr_and_bool(const char *msg, bool boolean)
@@ -87,7 +87,7 @@ bool	stderr_and_bool(const char *msg, bool boolean)
 	char	*error_msg;
 
 	if (msg)
-		error_msg = ft_strjoin("minishell: ", msg);
+		error_msg = ft_strjoin("splash: ", msg);
 	else
 		error_msg = ft_strdup("minishell error");
 	if (!ft_write(2, error_msg) || !ft_write(2, "\n"))

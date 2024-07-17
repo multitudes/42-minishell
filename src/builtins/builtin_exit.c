@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:53:34 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:37:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,5 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 	free((char *)(data->input));
 	free_data(&data);
 	free(data);
-	debug("Exit status: %i", (int)status);
 	exit(status);
 }

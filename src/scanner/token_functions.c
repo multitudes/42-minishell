@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:31:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:33:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ bool	add_token(t_mini_data *data, int *i, const char *lexem, \
 	t_list	*token;
 
 	if (!lexem)
-		scanner_error(data, "minishell: error: empty lexem in token creation");
+		scanner_error(data, "splash: error: empty lexem in token creation");
 	else
 	{
 		token = new_toknode(type, lexem, i, false);
@@ -121,7 +121,7 @@ bool	add_token(t_mini_data *data, int *i, const char *lexem, \
 			ft_lstadd_back(&data->tokenlist, token);
 		else
 			scanner_error(data, \
-							"minishell: error: malloc in new_toknode failed");
+							"splash: error: malloc in new_toknode failed");
 	}
 	return (true);
 }

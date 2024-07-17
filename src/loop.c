@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 16:32:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:36:41 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ int	loop(void)
 	status = data->exit_status;
 	free((char *)(data->input));
 	free_data(&data);
-	debug("Exit status: %i", status);
 	ft_write(1, "exit\n");
 	return (status); 
 }
@@ -98,12 +97,10 @@ void	single_command_innerloop(t_data *data)
 	data->tokenlist = tokenizer(data->input);
 	if (syntax_check_and_heredoc(data) && data->tokenlist != NULL)
 	{
-		debug("tokenlist: %s", get_token_lexeme(data->tokenlist));
 		data->ast = create_ast(data->tokenlist);
 		if (data->ast)
 		{
 			data->exit_status = execute_ast(data->ast, data);
-			debug("Exit status: %i", data->exit_status);
 			free_ast(&(data->ast));
 		}
 		else
@@ -130,13 +127,11 @@ int	single_command_loop(const char *input)
 	data = NULL;
 	if (!init_data(&data) && set_up_std_signals() > 0)
 		return (EXIT_FAILURE);
-	debug("input: %s", input);
 	data->input = ft_strdup(input);
 	if (data->input != NULL)
 		single_command_innerloop(data);
 	status = data->exit_status;
 	free((char *)(data->input));
 	free_data(&data);
-	debug("Exit status: %i", status);
 	return (status); 
 }

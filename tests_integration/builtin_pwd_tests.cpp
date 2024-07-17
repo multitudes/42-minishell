@@ -42,7 +42,7 @@ const char* test_pwd_on_startup()
 	// expected_output += "\n";
 	
 	// uint8_t exit_status = run_command_and_check_output(arg, result);
-    // debug("result from minishell: -%s-\n", result.str().c_str());
+    // debug("result from splash: -%s-\n", result.str().c_str());
 	// my_assert(result.str() == expected_output, "output is not correct\n");
 	// my_assert(exit_status == 0, "exit status is not 0\n");
 

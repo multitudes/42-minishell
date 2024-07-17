@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 13:40:09 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:38:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,7 @@ returns a void pointer to the element
 void	*darray_get(t_darray *array, int i)
 {
 	if (i >= array->max)
-	{
-		debug("darray attempt to get past max");
 		return (NULL);
-	}
 	return (array->contents[i]);
 }
 
@@ -50,7 +47,6 @@ void	*darray_remove_and_shift(t_darray *array, int i)
 {
 	void	*el;
 
-	debug("darray_remove_and_shift");
 	el = darray_remove(array, i);
 	while (i < array->end)
 	{
@@ -70,10 +66,7 @@ with darray_push or set
 void	*darray_new_elem(t_darray *array)
 {
 	if (array->element_size == 0)
-	{
-		debug("Can't use darray_new_elem on 0 size darrays.");
 		return (NULL);
-	}
 	return (ft_calloc(1, array->element_size));
 }
 

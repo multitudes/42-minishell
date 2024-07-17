@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:04:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/14 16:04:33 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/17 18:40:44 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "analyser.h"
 #include "scanner.h"
 #include "parser.h"
@@ -57,18 +58,17 @@ char	*get_home(t_darray *env_arr)
 
 	home = mini_get_env(env_arr, "HOME");
 	cwd = NULL;
-	if (home && debug("HOME from env"))
+	if (home)
 		return (ft_strdup(home));
-	else if (getenv("USER") && debug("home from USER"))
+	else if (getenv("USER"))
 		return (ft_strjoin("/home/", getenv("USER")));
 	else
 	{
 		cwd = getcwd(buf, PATH_MAX);
-		if (cwd && count_char_in_str(cwd, '/') > 1 && debug("HOME from cwd"))
+		if (cwd && count_char_in_str(cwd, '/') > 1)
 			home = retrieve_home_from_cwd(cwd);
 	}
 	if (home)
 		return (home);
-	debug("HOME manually set to /home");
 	return (ft_strdup("/home"));
 }

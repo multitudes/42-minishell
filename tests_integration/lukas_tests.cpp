@@ -34,7 +34,7 @@ const char* test_builtin()
 	std::string arg = "exit hello";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "exit\n", "output is not correct\n");
 	my_assert(exit_status == 2, "exit status is not 2\n");
 	return NULL;
@@ -51,7 +51,7 @@ const char* test_builtin2()
 	std::string arg = "exit -\"100\"";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "exit\n", "output is not correct\n");
 	my_assert(exit_status == 156, "exit status is not 255\n");
 	return NULL;
@@ -68,7 +68,7 @@ const char* test_builtin3()
 	std::string arg = "exit +\"100\"";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "exit\n", "output is not correct\n");
 	my_assert(exit_status == 100, "exit status is not 255\n");
 	return NULL;
@@ -85,7 +85,7 @@ const char* test_builtin4()
 	std::string arg = "exit \"-100\"";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "exit\n", "output is not correct\n");
 	my_assert(exit_status == 156, "exit status is not 255\n");
 	return NULL;
@@ -102,7 +102,7 @@ const char* test_builtin5()
 	std::string arg = "exit \"+100\"";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "exit\n", "output is not correct\n");
 	my_assert(exit_status == 100, "exit status is not 255\n");
 	return NULL;
@@ -119,7 +119,7 @@ const char* test_builtin6()
 	std::string arg = "exit 100 toomany";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 1, "exit status is not 255\n");
 	return NULL;
@@ -136,7 +136,7 @@ const char* test_builtin7()
 	std::string arg = "exit too many";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "exit\n", "output is not correct\n");
 	my_assert(exit_status == 2, "exit status is not 2\n");
 	return NULL;
@@ -155,7 +155,7 @@ const char* test_builtin_unset()
 	std::string arg = "unset PATH && echo $?";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "0\n", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 255\n");
 	return NULL;
@@ -173,7 +173,7 @@ const char* test_builtin_echo()
 	std::string arg = "echo '$'";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "$\n", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -190,7 +190,7 @@ const char* test_builtin_echo2()
 	std::string arg = "echo \"$\"";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "$\n", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -207,7 +207,7 @@ const char* test_builtin_echo3()
 	std::string arg = "echo a c b  | sort";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "a c b\n", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -224,7 +224,7 @@ const char* test_builtin_echo4()
 	std::string arg = "echo 'bye *'";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "bye *\n", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -241,7 +241,7 @@ const char* test_builtin_export()
 	std::string arg = "export a=42 && export a=43 | echo $a";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "42\n", "output is not 42\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -258,7 +258,7 @@ const char* test_builtin_export2()
 	std::string arg = "export GHOST=123 | env | grep GHOST";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not nothing\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -276,7 +276,7 @@ const char* test_exits()
 	std::string arg = "./src";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not nothing\n");
 	my_assert(exit_status == 126, "exit status is not 126\n");
 	return NULL;
@@ -295,7 +295,7 @@ const char* test_exits2()
 	std::string arg = "./Makefile";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not nothing\n");
 	my_assert(exit_status == 126, "exit status is not 126\n");
 	return NULL;
@@ -313,7 +313,7 @@ const char* test_exits3()
 	std::string arg = "./Makefiles";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not nothing\n");
 	my_assert(exit_status == 127, "exit status is not 126\n");
 	return NULL;
@@ -331,7 +331,7 @@ const char* test_exits4()
 	std::string arg = "src";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not nothing\n");
 	my_assert(exit_status == 127, "exit status is not 126\n");
 	return NULL;
@@ -349,7 +349,7 @@ const char* test_laststring()
 	std::string arg = "";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not nothing\n");
 	my_assert(exit_status == 127, "exit status is not 126\n");
 	return NULL;

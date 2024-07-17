@@ -25,7 +25,7 @@ const char* test_export_read_only()
     std::ostringstream result;
 	std::string arg = "export PPID=123";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 1, "exit status is not 1\n");
 	
@@ -38,7 +38,7 @@ const char* test_export_read_only_EUID() {
     std::ostringstream result;
 	std::string arg = "export EUID=123";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 1, "exit status is not 1\n");
 	
@@ -51,7 +51,7 @@ const char* test_export_read_only_UID() {
     std::ostringstream result;
 	std::string arg = "export UID=123";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 1, "exit status is not 1\n");
 	

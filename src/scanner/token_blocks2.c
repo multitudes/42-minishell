@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:41:56 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:33:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ bool	add_parenthesisblock(t_mini_data *data, int *i, char delim, int t_type)
 		advance(i);
 	}
 	if (count != 0)
-		return (scanner_error(data, "minishell: syntax error: \
+		return (scanner_error(data, "splash: syntax error: \
 		unexpected end of file"));
 	tmp = ft_substr(data->input, start, *i - start);
 	add_token(data, &start, tmp, t_type);

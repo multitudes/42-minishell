@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 02:19:34 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 12:50:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:33:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static bool	process_line(t_heredoc *heredoc, int i, int heredoc_fd, char *line)
 	else if (line == NULL)
 	{
 		ft_write(1, \
-		"minishell: warning: here-document delimited by end-of-file (wanted '");
+		"splash: warning: here-document delimited by end-of-file (wanted '");
 		ft_write(1, heredoc->delim[i]);
 		ft_write(1, "')\n");
 		status = true;

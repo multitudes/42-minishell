@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 14:24:12 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:38:56 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,6 @@ void	print_ast(t_ast_node *a, int level)
 	while (tokenlist)
 	{
 		token = (t_token *)tokenlist->content;
-		debug("level %d - token type: %d - lexeme %s", level, \
-		(t_tokentype)(token->type), token->lexeme);
 		tokenlist = tokenlist->next;
 	}
 	if (a->left)

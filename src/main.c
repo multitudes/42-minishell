@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 09:40:56 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:42:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:36:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ and executing them until the user decides to exit it.
 provisional. But since we cannot test our main.c file we will continue
 from here straight into a loop function that will be implemented in
 loop.c file.
-debug("argc: %d", argc);
 */
 int	main(int argc, char **argv)
 {

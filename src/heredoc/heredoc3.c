@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 09:41:09 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:33:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	set_up_heredoc_signals(void)
 {
 	rl_catch_signals = 0;
 	if (signal(SIGINT, sigint_handler2) == SIG_ERR)
-		return (perror("minishell: SIG_ERR"));
+		return (perror("splash: SIG_ERR"));
 	return ;
 }
 

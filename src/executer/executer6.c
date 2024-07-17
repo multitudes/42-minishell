@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 15:31:05 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 16:24:09 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:38:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ uint8_t	setup_redirect(t_list **tokenlist, t_tokentype type)
 	int		fd;
 	uint8_t	status;
 
-	debug("setup redirect");
 	fd = -1;
 	status = 0;
 	consume_token_and_connect(tokenlist);

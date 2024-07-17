@@ -393,7 +393,7 @@ incorrect command, incorrect number of arguments, permission denied, system call
 
 An important distinction needs to be made between calls to system functions that fail and errors that are identified within the shell program execution itself (either because of incorrect input syntax by the user or actual malfunctioning program execution).
 
-We aimed to capture all return values from system functions and act upon them. Typically we would write a message to standard error using the `perror()` function, which appends meaningful error details to a custom message. For example executing `cat unknown_file` would give an error "no such file or directory". By calling `perror("minishell: cat")` the full output to standard error would be: `minishell: cat: no such file or directory`, similar to the error messages bash provides.
+We aimed to capture all return values from system functions and act upon them. Typically we would write a message to standard error using the `perror()` function, which appends meaningful error details to a custom message. For example executing `cat unknown_file` would give an error "no such file or directory". By calling `perror("splash: cat")` the full output to standard error would be: `splash: cat: no such file or directory`, similar to the error messages bash provides.
 
 Errors that are not the direct result of errors in system functions are handled by writing to standard error directly without using `perror` or `strerror`.
 

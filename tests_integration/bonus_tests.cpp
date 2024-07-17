@@ -43,7 +43,7 @@ const char* test_and()
 	std::string arg = "cat <a && echo e";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "ls -lae\n", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -63,7 +63,7 @@ const char* test_and2()
 	std::string arg = "(cat <a && echo e) | echo hello";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "hello\n", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -83,7 +83,7 @@ const char* test_and3()
 	std::string arg = "cat <a";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "hello", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -104,7 +104,7 @@ const char* test_redir4()
 	std::string arg = "cat ab > a && cat a";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "hello", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -126,7 +126,7 @@ const char* test_redir5()
 	std::string arg = "cat ab > ab2 > a && cat a";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "hello", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
@@ -149,7 +149,7 @@ const char* test_redir6()
 	std::string arg = "cat < ab2";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct\n");
 	my_assert(exit_status == 1, "exit status is not 1\n");
 	return NULL;
@@ -169,7 +169,7 @@ const char* test_redir7()
 	std::string arg = "cat a > b > c && cat c";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
-    debug("result from minishell: -%s-\n", result.str().c_str());
+    debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "ls -la\n", "output is not correct\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
