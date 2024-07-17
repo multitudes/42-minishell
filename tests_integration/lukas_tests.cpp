@@ -7,12 +7,10 @@
 #include <string>
 #include <cstring>
 #include <array>
-#include <sstream>
 #include <iostream>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
+
 
 // forward declaration 
 // this is the new version of the function with popen
