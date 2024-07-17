@@ -2,7 +2,7 @@
 #include <cassert>
 #include <unistd.h>
 #include <sys/wait.h>
-#include "../include/minishell.h"
+#include "../include/splash.h"
 #include "../include/darray.h"
 
 # define darray_last(A) ((A)->contents[(A)->end - 1])

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 20:11:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 16:21:41 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,15 @@ int		get_status_of_children(pid_t pid1, pid_t pid2);
 int		free_array(char **envpaths);
 uint8_t	get_wait_status(int status);
 void	update_dollar_underscore(t_darray *env_arr, t_list *tokenlist);
+void	update_dollar_undersc_single_cmd(t_darray *env_arr, t_list *tokenlist);
+bool	contains_redirection(t_list *tokenlist);
+int		open_fd_by_redirect_type(t_tokentype type, char *filename, \
+									uint8_t *status);
+uint8_t	dup2_by_redirect_type(t_tokentype type, \
+					char *filename, int fd, uint8_t *status);
+bool	supported_redirect_token(t_tokentype type);
+uint8_t	iterate_tokenlist_for_redirections(t_ast_node **ast, \
+									t_list **tokenlist, int *token_counter);
 
 #  ifdef __cplusplus
 

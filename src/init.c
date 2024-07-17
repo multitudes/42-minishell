@@ -6,14 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 11:40:17 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 13:00:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:06:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdbool.h>
 #include <stdlib.h>
 #include "init.h"
-#include "minishell.h"
+#include "splash.h"
 #include "splash_error.h"
 
 /*
@@ -36,7 +36,7 @@ bool	init_data(t_data **data)
 		return (false);
 	*data = malloc(sizeof(t_data));
 	if (*data == NULL && darray_clear_destroy(env_array))
-		return (zero_and_printerr("malloc data"));
+		return (stderr_and_status("malloc data", 0));
 	(*data)->env_arr = env_array;
 	shlvl_init(*data);
 	return (init_data2(data));
@@ -45,6 +45,7 @@ bool	init_data(t_data **data)
 bool	init_data2(t_data **data)
 {
 	(*data)->input = "no input";
+	(*data)->homepath = NULL;
 	(*data)->tokenlist = NULL;
 	(*data)->ast = NULL;
 	(*data)->exit_status = 0;
@@ -65,14 +66,14 @@ bool	init_env_darray(t_darray **env_arr)
 	i = 0;
 	*env_arr = darray_create(sizeof(char *), 100);
 	if (*env_arr == NULL)
-		return (zero_and_printerr("env_array env"));
+		return (stderr_and_status("error setup env", 0));
 	while (environ && environ[i])
 	{
 		env = ft_strdup(environ[i++]);
 		if (env == NULL && darray_clear_destroy(*env_arr))
-			return (zero_and_printerr("malloc env"));
+			return (stderr_and_status("malloc env", 0));
 		if (darray_push(*env_arr, env) == -1 && darray_clear_destroy(*env_arr))
-			return (zero_and_printerr("darray_push"));
+			return (stderr_and_status("error setup env", 0));
 	}
 	darray_push(*env_arr, NULL);
 	return (true);
@@ -89,4 +90,11 @@ void	shlvl_init(t_data *data)
 	shlvl = ft_itoa(ft_atoi(mini_get_env(data->env_arr, "SHLVL")) + 1);
 	update_env(data->env_arr, "SHLVL", shlvl);
 	free(shlvl);
+}
+
+void	init_fds(t_data *data)
+{
+	data->original_stdin = -1;
+	data->original_stdout = -1;
+	data->original_stderr = -1;
 }

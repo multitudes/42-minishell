@@ -6,26 +6,23 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/10 11:46:26 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 10:40:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "splash.h"
 #include "splash_error.h"
 
-int	print_history(t_darray *env_arr)
+int	print_history(void)
 {
 	int		i;
 	int		fd;
-	char	*path;
 	char	*line;
 
 	i = 0;
-	path = get_history_file_path(env_arr);
-	fd = open(path, O_RDONLY);
-	free(path);
+	fd = open(HIST_FILE, O_RDONLY);
 	if (fd == -1)
-		return (status_and_perror("minishell: error print history", EXIT_FAILURE));
+		return (perror_and_status("print history", EXIT_FAILURE));
 	line = get_next_line(fd);
 	while (line != NULL)
 	{

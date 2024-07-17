@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:55:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 07:46:47 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:45:19 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define SCANNER_H
 
 # include <stdbool.h>
-# include <libft.h>
+# include "libft.h"
 
 /*
 to make the code more clear I add these two defines 
@@ -70,6 +70,7 @@ typedef enum e_tokentype {
 	AND_IF,
 	OR_IF,
 	EXPRESSION,
+	COMMENT,
 	COM_EXPANSION,
 	VAR_EXPANSION,
 	EXPR_EXPANSION,
@@ -164,6 +165,7 @@ typedef struct s_token
 	t_tokentype			type;
 	char				*lexeme;
 	bool				folldbyspace;
+	int					howmany;	
 }						t_token;
 
 // for testing - leave here
@@ -176,13 +178,10 @@ int init_scanner_data(t_mini_data * data, const char *input);
 t_list	*new_toknode(t_tokentype type, const char *lexeme, \
 						int *start, bool folldbyspace);
 t_list	*tokenizer(const char *input);
-t_list	*string_tokenizer(const char *input);
 bool	peek(const char *input, const char *identifier, bool end_space);
 void	advance(int *i);
 int		skip_space(t_list *tokenlist, const char *input, int *i);
 bool	is_space(const char c);
-int		ft_strncicmp(char const *a, char const *b, int n);
-bool	cmp_char_case_insensitive(const char a, const char b);
 bool	is_delimiter(const char ch);
 bool	is_not_delimiter(const char ch);
 bool	is_digit(const char c);
@@ -195,7 +194,6 @@ bool	is_reserved(t_mini_data *data, char *identifier, int *start);
 bool	is_true_false(t_mini_data *data, char *str, int *start);
 bool	is_builtin(t_mini_data *data, char *identifier, int *start);
 bool	add_token(t_mini_data *data, int *i, const char *lxm, t_tokentype type);
-void	print_tokenlist(t_list *tokenlist);
 bool	is_io_number(const char *identifier);
 bool	str_is_number(const char *identifier);
 bool	str_is_alphanum(const char *identifier);
@@ -236,6 +234,7 @@ bool	is_heredoc_delim(t_list *tokenlist);
 bool	is_heredoc_token(t_tokentype tokentype);
 t_list	*get_head(t_list *tokenlist);
 int		count_tokens(t_list *tokenlist);
+bool	is_some_semicolons(t_mini_data *data, int *i);
 
 #  ifdef __cplusplus
 

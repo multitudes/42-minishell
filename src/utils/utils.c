@@ -6,12 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:37:46 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 11:41:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
-#include <libft.h>
+#include "libft.h"
 #include "splash_error.h"
 #include "scanner.h"
 #include <stdbool.h>
@@ -56,16 +56,8 @@ int	ft_isascii(const int c)
 }
 
 /*
-This function will join three strings together
-This pattern is often used 
-(see man page for strlcpy and strlcat)
-
-size_t n = ft_strlcpy(result, s1, total_length)
-if (n > total_length)
-	return (NULL); 
-
-but since in this function I know the total length of the string
-because I allocate it such checks are not needed
+This function joins three strings together.
+The first string should not be NULL but could be an empty string.
 */
 char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 {
@@ -75,7 +67,7 @@ char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 	total_length = ft_strlen(s1) + ft_strlen(s2) + ft_strlen(s3) + 1;
 	result = malloc(total_length);
 	if (!result)
-		return (null_on_err("malloc ft_strjoin3"));
+		return (perror_and_null("malloc ft_strjoin3"));
 	ft_strlcpy(result, s1, total_length);
 	ft_strlcat(result, s2, total_length);
 	ft_strlcat(result, s3, total_length);
@@ -83,7 +75,7 @@ char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 }
 
 /*
-Counts the number of occurances of a char c in a string
+Counts the number of occurances of a char c in a string.
 */
 int	count_char_in_str(char *str, char c)
 {
@@ -102,55 +94,24 @@ int	count_char_in_str(char *str, char c)
 }
 
 /*
- * This function will replace the node with the new list
- * it will return nothing but will modify the tokenlist
- * params: 
- * head - the head of the tokenlist - will be modified only if the newlist
- * is the first node
- * node - the node to be replaced - it will be freed also
- * newlist - the new list to replace the node
+Returns true if all chars in str are an ascii digit.
+Initial char can be '+' or '-'.
+Returns falls if str is NULL.
 */
-void	replace_node_with_newlist(t_list **node, t_list *newlist)
+bool	ft_isnumstring(const char *str)
 {
-	t_list *prev;
-	t_list *next;
-	t_list *last;
-	t_list *tmp;
-	
-	if (!node || !newlist)
-		return ;
-	tmp = *node;
-	prev = (*node)->prev;
-	next = (*node)->next;
-	if (prev)
-		prev->next = newlist;
-	else
-		tmp = newlist;
-	newlist->prev = prev;
-	last = ft_lstlast(newlist);
-	last->next = next;
-	if (next)
-		next->prev = last;
-	ft_lstdelone(*node, free_tokennode);
-	if (!prev)
-		*node = tmp;
-}
+	int	i;
 
-/*
-wrapper for the system write function to simplify syntax
-and perform write return value checking.
-Returns false if write call returns error.
-*/
-bool	ft_write(int fd, char *str)
-{
-	ssize_t	write_return;
-
-	write_return = 0;
-	write_return = write(fd, str, ft_strlen(str));
-	if (write_return == -1 || write_return != (ssize_t)ft_strlen(str))
-	{
-		perror("write");
+	i = 0;
+	if (!str)
 		return (false);
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (false);
+		i++;
 	}
 	return (true);
 }

@@ -1,53 +1,53 @@
 Test with random ASCII string
 
 Testing: >>>>>>>>>>>>>>>>>>>>>>>>>  }EW,'#+\R7O@L0,4aN8R1hv
-./monkey.sh: line 29: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 29: ./splash: No such file or directory
+Exit status splash: 127
 
 Exit status bash: 2
 Testing: >>>>>>>>>>>>>>>>>>>>>>>>>  S-i:d=1B(09_j$36r;%Nb@)};&vU\
-./monkey.sh: line 29: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 29: ./splash: No such file or directory
+Exit status splash: 127
 
 Exit status bash: 2
 Testing: >>>>>>>>>>>>>>>>>>>>>>>>>  gP9Dh$^L/"<h@y$&:XdYjj/_
-./monkey.sh: line 29: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 29: ./splash: No such file or directory
+Exit status splash: 127
 
 Exit status bash: 2
 Testing: >>>>>>>>>>>>>>>>>>>>>>>>>  eM@F0}x\H0,Wg.vo3#._!0z6[.}
-./monkey.sh: line 29: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 29: ./splash: No such file or directory
+Exit status splash: 127
 
 Exit status bash: 127
 Testing: >>>>>>>>>>>>>>>>>>>>>>>>>  u|3.j%;$k:q:lDP[&(S4sjnldYOGM
-./monkey.sh: line 29: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 29: ./splash: No such file or directory
+Exit status splash: 127
 
 Exit status bash: 2
 Testing: >>>>>>>>>>>>>>>>>>>>>>>>>  nw@*[Fn'A<|]z+jhbKgx
-./monkey.sh: line 29: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 29: ./splash: No such file or directory
+Exit status splash: 127
 
 Exit status bash: 2
 Testing: >>>>>>>>>>>>>>>>>>>>>>>>>  2XF'u|9uqWvKuT3h$hSEW
-./monkey.sh: line 29: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 29: ./splash: No such file or directory
+Exit status splash: 127
 
 Exit status bash: 2
 Testing: >>>>>>>>>>>>>>>>>>>>>>>>>  H7i0Lzkse5T6sJ@gAG0lS
-./monkey.sh: line 29: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 29: ./splash: No such file or directory
+Exit status splash: 127
 
 Exit status bash: 127
 Testing: >>>>>>>>>>>>>>>>>>>>>>>>>  +.+_)A+tR6{Z#\%R0[.Gyyjp
-./monkey.sh: line 29: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 29: ./splash: No such file or directory
+Exit status splash: 127
 
 Exit status bash: 2
 Testing: >>>>>>>>>>>>>>>>>>>>>>>>>  SqoK0OOk5_l{ZBJW!eHq\I5e
-./monkey.sh: line 29: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 29: ./splash: No such file or directory
+Exit status splash: 127
 
 Exit status bash: 127
 
@@ -55,61 +55,61 @@ Test with command prepended
 
 Command:  cat
 Qn~ac]/^,Ct7XPJiW[V8}d)=PsSAA
-./monkey.sh: line 45: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 45: ./splash: No such file or directory
+Exit status splash: 127
 Exit status bash: 2
 
 Command:  cat
 .Z^Bs}m!)1?%,s,8Fv!l\pN{*A:k
-./monkey.sh: line 45: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 45: ./splash: No such file or directory
+Exit status splash: 127
 Exit status bash: 2
 
 Command:  cat
 )jd4yNnWH]8mzilnc"3rb
-./monkey.sh: line 45: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 45: ./splash: No such file or directory
+Exit status splash: 127
 Exit status bash: 2
 
 Command:  cat
 %9:"O"f^r,vz@$,M_jHF5A.
-./monkey.sh: line 45: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 45: ./splash: No such file or directory
+Exit status splash: 127
 Exit status bash: 1
 
 Command:  cat
 m/<9Gxo/MZ+\\).AT'L\$VO*=k@2
-./monkey.sh: line 45: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 45: ./splash: No such file or directory
+Exit status splash: 127
 Exit status bash: 2
 
 Command:  cat
 --]22wd*v{h13'[p2c:";A8]A+Q
-./monkey.sh: line 45: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 45: ./splash: No such file or directory
+Exit status splash: 127
 Exit status bash: 2
 
 Command:  cat
 "<U[BuV)di@lTl_*^FyW"B:f:**sD
-./monkey.sh: line 45: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 45: ./splash: No such file or directory
+Exit status splash: 127
 Exit status bash: 1
 
 Command:  cat
 $?.O^v%"RW#PYYE+baDXC^6:F%IDG
-./monkey.sh: line 45: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 45: ./splash: No such file or directory
+Exit status splash: 127
 Exit status bash: 2
 
 Command:  cat
 ||eT=()Nt)v3FH3=AO{TngoeB
-./monkey.sh: line 45: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 45: ./splash: No such file or directory
+Exit status splash: 127
 Exit status bash: 2
 
 Command:  cat
 gL=)tz@pxD2,WRyRZ,:Ytn1R3h
-./monkey.sh: line 45: ./minishell: No such file or directory
-Exit status minishell: 127
+./monkey.sh: line 45: ./splash: No such file or directory
+Exit status splash: 127
 Exit status bash: 2
 

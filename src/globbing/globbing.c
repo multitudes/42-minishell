@@ -6,12 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/09 11:17:17 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:45:04 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "globbing.h"
-#include <libft.h>
+#include "libft.h"
 #include "debug.h"
 #include "utils.h"
 #include <unistd.h>
@@ -31,14 +31,14 @@ bool	init(t_globbing *gl)
 {
 	gl->dirp = opendir(".");
 	if (!gl->dirp)
-		return (false_and_perr("opendir"));
+		return (perror_and_bool("opendir", false));
 	errno = 0;
 	gl->dir_entry = readdir(gl->dirp);
 	if (!gl->dir_entry && errno)
-		return (false_and_perr("readdir"));
+		return (perror_and_bool("readdir", false));
 	gl->full_path = NULL;
 	if (getcwd(gl->cwd, PATH_MAX) == NULL)
-		return (false_and_perr("getcwd"));
+		return (perror_and_bool("getcwd", false));
 	return (true);
 }
 
@@ -56,7 +56,7 @@ bool	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 	{
 		gl.full_path = ft_strjoin3(gl.cwd, "/", gl.dir_entry->d_name);
 		if (!gl.full_path)
-			result = false_and_print("strjoin3");
+			result = stderr_and_bool("strjoin3 malloc", false);
 		if (stat(gl.full_path, &gl.path_stat) == 0)
 		{
 			if (S_ISREG(gl.path_stat.st_mode))
@@ -66,12 +66,12 @@ bool	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 			}
 		}
 		else
-			result = false_and_perr("stat");
+			result = perror_and_bool("stat", false);
 		free(gl.full_path);
 		errno = 0;
 		gl.dir_entry = readdir(gl.dirp);
 		if (!gl.dir_entry && errno)
-			result = false_and_perr("readdir");
+			result = perror_and_bool("readdir", false);
 	}
 	return (result && files->end > 0);
 }
@@ -106,12 +106,17 @@ t_list	*create_globbing_tokenlist(t_darray *files)
 void	expand_globbing(t_list **tokenlist)
 {
 	char		*pat;
+	t_list		*head;
 	t_darray	*files;
 
+	head = NULL;
 	pat = get_token_lexeme(*tokenlist);
 	files = darray_create(sizeof(char *), 100);
 	if (match_files_in_directory(files, pat))
-		replace_token_with_tokenlist(tokenlist, create_globbing_tokenlist(files));
+		replace_token_with_tokenlist(&head, tokenlist, \
+										create_globbing_tokenlist(files));
+	if (head)
+		*tokenlist = head;
 	darray_clear_destroy(files);
 	return ;
 }

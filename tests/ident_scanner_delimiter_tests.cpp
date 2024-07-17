@@ -88,8 +88,9 @@ const char* test_scanner_ident_comment() {
 	int i = 0;
 
 	result = process_token(&current, &i, "cd", BUILTIN);
-	// comments are ignored!
-	// this is how I check for the end of the list
+	result = process_token(&current, &i, "#", COMMENT);
+	result = process_token(&current, &i, "hello", WORD);
+	result = process_token(&current, &i, "world", WORD);
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;
@@ -130,9 +131,10 @@ const char* test_scanner_ident_comment3() {
 	const char *result;
 	int i = 0;
 
-	// result = process_token(&current, &i, "#hello world", COMMENT);
-	// comments are ignored!
-	// this is how I check for the end of the list
+	result = process_token(&current, &i, "#", COMMENT);
+	result = process_token(&current, &i, "hello", WORD);
+	result = process_token(&current, &i, "world", WORD);
+
 	result = process_token(&current, &i, NULL, NULL_TOKEN);
 	ft_lstclear_test(&lexemes, free_tokennode);
 	return result;

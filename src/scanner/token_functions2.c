@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 20:38:07 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:41:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,16 @@ t_list	*get_head(t_list *tokenlist)
 {
 	t_list	*head;
 
+	if (!tokenlist)
+		return (NULL);
 	head = tokenlist;
 	while (head->prev)
 		head = head->prev;
 	return (head);
 }
 
+/*
+ */
 int	count_tokens(t_list *tokenlist)
 {
 	int	count;

@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   splash.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 11:14:30 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef SPLASH_H
+# define SPLASH_H
 
 // stdio.h below is definitely needed by macos because of the 
 // alternative brew readline library used in the project
@@ -34,7 +34,7 @@
 # include <stdarg.h>
 # include <assert.h>
 # include <limits.h>
-# include <libft.h>
+# include "libft.h"
 # include "darray.h"
 # include "environment.h"
 # include "parser.h"
@@ -69,6 +69,7 @@ pipe_fd : file descriptors for the pipe
 typedef struct s_data 
 {
 	const char			*input;
+	const char			*homepath;
 	t_list				*tokenlist;
 	t_darray			*env_arr;
 	t_ast_node			*ast;
@@ -93,12 +94,12 @@ int loop();
 bool		init_data(t_data **data);
 bool		init_data2(t_data **data);
 bool		init_env_darray(t_darray **env_array);
-void		free_data(t_data **data);
-int			single_command_loop(const char *input);
 int			set_up_std_signals(void);
-void		save_fds(t_data *data);
-void		restore_fds(t_data *data);
+void		mainloop(t_data *data);
+void		tokenize_and_parse(t_data *data);
+int			single_command_loop(const char *input);
 void		single_command_innerloop(t_data *data);
+void		free_data(t_data **data);
 
 #  ifdef __cplusplus
 

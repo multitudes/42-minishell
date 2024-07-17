@@ -24,16 +24,11 @@ t_ast_node	*new_node(t_nodetype type, t_ast_node *left, t_ast_node *right, \
 		return (NULL);
 	node = malloc(sizeof(t_ast_node));
 	if (node == NULL)
-		return (null_on_err("malloc failed in new_node"));
+		return (perror_and_null("malloc new_node"));
 	node->type = type;
-	node->parent = NULL;
 	node->left = left;
 	node->right = right;
 	node->tokenlist = tokenlist;
-	if (left != NULL)
-		left->parent = node;
-	if (right != NULL)
-		right->parent = node;
 	return (node);
 }
 
@@ -55,7 +50,6 @@ void	print_token(t_list *input_token)
 
 /*
  * count the number of nodes in the t_list
- * TODO not currently used!
 */
 int	count_list(t_list *input_tokens)
 {

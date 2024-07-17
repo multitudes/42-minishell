@@ -73,3 +73,7 @@ z
 tokenizer
 .tmp/heredoc_0
 .tmp/heredoc_1
+tests_integration/a
+tests_integration/ab
+tests_integration/a
+tests_integration/>

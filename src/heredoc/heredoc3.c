@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 09:41:09 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/11 08:33:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 18:33:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,80 +14,56 @@
 #include "parser.h"
 #include "executer.h"
 #include "splash_error.h"
+#include "utils.h"
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
 
 static void	sigint_handler2(int sig)
 {
-    if (sig == SIGINT)
-    {
-        write(1, "^C", 2);
-        ioctl(0, TIOCSTI, "\n");
+	if (sig == SIGINT)
+	{
+		ft_write(1, "^C");
+		ioctl(0, TIOCSTI, "\n");
 		g_signal = sig;
-    }
+	}
 	return ;
 }
 
 void	set_up_heredoc_signals(void)
 {
-    rl_catch_signals = 0;
+	rl_catch_signals = 0;
 	if (signal(SIGINT, sigint_handler2) == SIG_ERR)
-		return (perror("SIG_ERR signal failed"));
+		return (perror("splash: SIG_ERR"));
 	return ;
 }
 
-// static int  execute_heredoc_child(t_list *tokenlist, t_data *data, int pfd[2])
-// {
-//     char    **argv;
+/*
+removes leading backslash in lexeme (used to sanitize heredoc delimiters)
+*/
+static void	remove_leading_backslash(t_token *token)
+{
+	char	*temp;
+	char	*lexeme;
 
-//     if (close(pfd[1]) == -1)
-//         exit_and_print_err("minishell: error: parent close write end of pipe", 127);
-//     dup2(pfd[0], STDIN_FILENO);
-//     argv = get_argv_from_tokenlist(&tokenlist);
-//     if (resolve_command_path(argv, mini_get_env(data->env_arr, "PATH")) > 0)
-//         exit (127);
-//     debug("command and args: %s %s", argv[0], argv[1]);
-//     execve(argv[0], argv, (char **)data->env_arr->contents);
-//     return (exit_and_print_err(NULL, 127));
-// }
+	lexeme = token->lexeme;
+	if (lexeme && lexeme[0] == '\\' && (lexeme[1] != '\0'))
+	{
+		temp = ft_strdup(lexeme + 1);
+		free(token->lexeme);
+		token->lexeme = temp;
+	}
+}
 
-// static int  execute_heredoc_parent(int pfd[2], pid_t pid, t_heredoc *heredoc)
-// {
-//     int     status;
-//     ssize_t write_return;
-
-//     status = 0;
-//     write_return = -1;
-//     if (close(pfd[0]) == -1)
-//         return(status_and_perror("minishell: error: parent close read end of pipe", 1));
-//     debug("heredoc buffer: %s", heredoc->buffer);
-//     write_return = write(pfd[1], heredoc->buffer, ft_strlen(heredoc->buffer));
-//     if (write_return == -1 || (size_t)write_return != ft_strlen(heredoc->buffer))
-//         return(status_and_perror("minishell: write heredoc to stdin of command", 1));
-//     if (close(pfd[1]) == -1)
-//         return(status_and_perror("minishell: setup heredoc parent", 1));
-//     waitpid(pid, &status, 0);
-//     debug("status of my child %d", status);
-//     return (get_wait_status(status));
-// }
-
-// int redirect_and_execute_heredoc(t_ast_node *ast, t_data *data, t_heredoc *heredoc)
-// {
-//     int     pfd[2];
-//     pid_t   pid;
-//     int     status;
-
-//     debug("redirect and execute heredoc");
-//     status = 0;
-//     if (pipe(pfd) == -1)
-//         return(status_and_perror("minishell: setup heredoc pipe", 1));
-//     pid = fork();
-//     if (pid == -1)
-//         return(status_and_perror("minishell: redirect heredoc", 1));
-//     if (pid == 0)
-//         status = execute_heredoc_child(ast->tokenlist, data, pfd);
-//     else
-//         status = execute_heredoc_parent(pfd, pid, heredoc);
-//     return (status);
-// }
+bool	save_heredoc_delimiter(t_list *tokenlist, t_heredoc *heredoc)
+{
+	remove_leading_backslash((t_token *)(tokenlist->next->content));
+	heredoc->delim[heredoc->delim_count] = \
+		ft_strdup(get_token_lexeme(tokenlist->next));
+	if (!heredoc->delim[heredoc->delim_count])
+	{
+		free_heredoc(heredoc);
+		return (stderr_and_bool("heredoc memory error", false));
+	}
+	return (true);
+}

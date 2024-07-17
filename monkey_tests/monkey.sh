@@ -27,7 +27,7 @@ do
 	ascii_string=$(generate_any_string) 
 	echo "Testing: >>>>>>>>>>>>>>>>>>>>>>>>> " $ascii_string | tee -a log/ascii_string.txt log/monkeybash.txt log/monkeyminishell.txt >/dev/null 2>&1
 	./minishell -c "$ascii_string" >> log/monkeyminishell.txt 2>&1
-	echo "Exit status minishell: $?" >> log/monkeyminishell.txt 2>&1
+	echo "Exit status splash: $?" >> log/monkeyminishell.txt 2>&1
 	echo  >>log/monkeyminishell.txt 2>&1
 	bash -c "$ascii_string" >> log/monkeybash.txt 2>&1
 	echo "Exit status bash: $?" | tee -a log/monkeybash.txt log/monkeyminishell.txt 2>&1
@@ -43,7 +43,7 @@ do
 	ascii_string=$(generate_any_string) 
 	echo $ascii_string | tee -a log/ascii_string.txt log/monkeyminishell.txt 2>&1
 	./minishell -c "$random_command $ascii_string" >> log/monkeyminishell.txt 2>&1
-	echo "Exit status minishell: $?" | tee -a log/monkeyminishell.txt 2>&1
+	echo "Exit status splash: $?" | tee -a log/monkeyminishell.txt 2>&1
 	bash -c "$random_command $ascii_string" >> log/monkeybash.txt 2>&1
 	echo "Exit status bash: $?" | tee -a log/monkeybash.txt log/monkeyminishell.txt 2>&1
 	echo |tee -a log/ascii_string.txt log/monkeybash.txt log/monkeyminishell.txt  2>&1	

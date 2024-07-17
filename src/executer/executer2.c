@@ -6,14 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/11 20:25:40 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "executer.h"
 #include <limits.h>
-#include <libft.h>
+#include "libft.h"
 #include "utils.h"
 #include "splash_error.h"
 #include "scanner.h"
@@ -30,17 +30,17 @@ int	resolve_command_path(char **argv, char *path_env)
 	int			is_relative_path;
 
 	if (!find_path(argv, path_env))
-		return (print_error_status2(argv[0], " command not found", 127));
+		return (stderr_and_status2(argv[0], ": command not found", 127));
 	if (access(argv[0], F_OK) == -1)
-		return (status_perror2("minishell: ", argv[0], 127));
+		return (perror_and_status(argv[0], 127));
 	if (stat(argv[0], &statbuf))
-		return (status_perror2("minishell: ", argv[0], 1));
+		return (perror_and_status(argv[0], 1));
 	if (S_ISDIR(statbuf.st_mode))
-		return (print_error_status2(argv[0], ": is a directory", 126));
+		return (stderr_and_status2(argv[0], ": is a directory", 126));
 	is_relative_path = ft_strncmp(argv[0], "./", 2) == 0 || \
 						ft_strcmp(argv[0], "..") != 0;
 	if (is_relative_path && access(argv[0], X_OK) == -1)
-		return (status_perror2("minishell: ", argv[0], 126));
+		return (perror_and_status(argv[0], 126));
 	return (0);
 }
 
@@ -98,23 +98,6 @@ char	*create_path(char *base, char *path_env)
 }
 
 /*
-when I need to free a string array like the envpaths
-*/
-int	free_array(char **envpaths)
-{
-	int	i;
-
-	i = 0;
-	while (envpaths[i])
-	{
-		free(envpaths[i]);
-		i++;
-	}
-	free(envpaths);
-	return (0);
-}
-
-/*
 In the case of having a token expanded for ex to "ls -la"
 the command would fail because of the space between the flags
 I need to retokenize the command so this functions checks for spaces
@@ -135,7 +118,7 @@ void	check_for_spaces(t_list **tokenlist)
 		if (ft_strchr(lex, ' ') && get_token_type(*tokenlist) == EXPANDED)
 		{
 			new = tokenizer(lex);
-			replace_token_with_tokenlist(tokenlist, new);
+			replace_token_with_tokenlist(&head, tokenlist, new);
 		}
 		if (!(*tokenlist)->next)
 			break ;
@@ -169,5 +152,7 @@ char	**get_argv_from_tokenlist(t_list **tokenlist)
 		*tokenlist = (*tokenlist)->next;
 	}
 	argv[i] = NULL;
+	if (argv == NULL || argv[0] == NULL || argv[0][0] == '\0')
+		exit(0);
 	return (argv);
 }

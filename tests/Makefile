@@ -14,18 +14,25 @@ OBJ_DIR		= 	../obj/
 SRC_DIR		= 	../src/
 
 # the file to tests (SUT = System Under Test)
-SUT_SRCS 	= 	$(addprefix $(SRC_DIR), init.c fd.c loop.c history/history.c history/history2.c \
+SUT_SRCS 	= 	$(addprefix $(SRC_DIR), init.c fd.c loop.c signals.c freedata.c history/history.c history/history2.c \
 scanner/scanner.c scanner/scanner_utils.c scanner/scanner_utils2.c scanner/scanner_utils3.c \
-scanner/scanner_utils4.c scanner/scanner_utils5.c scanner/scanner_error.c \
-scanner/token_functions.c scanner/token_functions2.c scanner/dollar_tokens.c scanner/reserved_builtins.c \
+scanner/scanner_utils4.c scanner/scanner_error.c \
+scanner/token_functions.c scanner/token_functions2.c scanner/token_functions3.c scanner/dollar_tokens.c \
+scanner/reserved_builtins.c scanner/reserved_builtins2.c \
 scanner/token_operators.c scanner/token_blocks.c scanner/history_tokens.c \
-scanner/redirection_tokens.c scanner/token_blocks2.c environment/environment.c environment/environment2.c \
-parser/parser.c parser/parser2.c parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c utils/utils.c utils/utils2.c parser/parser_utils4.c\
-error.c error2.c darray/darray.c darray/darray2.c darray/darray3.c globbing/globbing.c globbing/globbing1.c \
-analyser/analyser.c analyser/analyser2.c builtins/builtins.c builtins/builtins2.c \
-executer/executer.c executer/executer2.c executer/executer3.c executer/executer4.c \
-heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c)
-SUT_HDRS 	= 	$(addprefix ../include/, minishell.h fd.h scanner.h environment.h \
+scanner/redirection_tokens.c scanner/redirection_tokens2.c scanner/token_blocks2.c \
+environment/environment.c environment/environment2.c environment/environment3.c environment/environment4.c \
+parser/parser.c parser/parser2.c parser/parser3.c parser/parser4.c parser/parser_utils.c parser/parser_utils2.c parser/parser_utils3.c \
+utils/utils.c utils/utils2.c parser/parser_utils4.c\
+error/error_perror.c error/error_stderr.c darray/darray.c darray/darray2.c darray/darray3.c \
+globbing/globbing.c globbing/globbing1.c \
+analyser/analyser.c analyser/expansion_utils.c analyser/expansion_utils2.c analyser/expansion_quotes.c \
+analyser/expansion_dollar.c analyser/expansion_tilde.c analyser/expansion_tilde2.c \
+builtins/builtins.c builtins/builtin_cd.c builtins/builtin_echo.c builtins/builtin_env.c \
+builtins/builtin_exit.c builtins/builtin_export.c builtins/builtin_pwd.c builtins/builtin_unset.c \
+executer/executer.c executer/executer2.c executer/executer3.c executer/executer4.c executer/executer5.c executer/executer6.c \
+heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c heredoc/heredoc4.c heredoc/heredoc5.c)
+SUT_HDRS 	= 	$(addprefix ../include/, splash.h fd.h scanner.h environment.h \
 parser.h analyser.h executer.h splash_error.h darray.h builtins.h globbing.h heredoc.h) 
 
 # will be compiled into object files

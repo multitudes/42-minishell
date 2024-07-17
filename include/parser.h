@@ -6,14 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:38:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/13 12:14:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
 
-# include <libft.h>
+# include "libft.h"
 # include <stdbool.h>
 # include "scanner.h"
 # include "debug.h"
@@ -34,16 +34,14 @@ typedef enum e_nodetype
 	NODE_BUILTIN,
 }	t_nodetype;
 
-/*
-do I need the parent node? we will see when executing!
-TODO - check later
-*/
 typedef struct s_ast_node {
 	t_nodetype			type;
-	struct s_ast_node	*parent;
 	struct s_ast_node	*left;
 	struct s_ast_node	*right;
 	t_list				*tokenlist;
+	int					original_stdout;
+	int					original_stdin;
+	int					original_stderr;
 }						t_ast_node;
 
 // needed for the tests - leave it here - norminette allows it I think 
@@ -71,9 +69,19 @@ char		*get_token_lexeme(t_list *input_tokens);
 bool		token_followed_by_space(t_list *input_tokens);
 t_tokentype	get_token_type(t_list *input_tokens);
 bool		tokenlist_has_astnode(t_list *new_tokenlist);
-bool		is_not_control_token(t_token *token);
+bool		is_not_control_token(t_list *tokenlist);
 int			count_list(t_list *input_tokens);
 void		break_list(t_list **input_tokens);
+bool		is_tree_control_token(t_list *tmp);
+void		*get_b_node(t_ast_node **b, t_list **tokenlist, t_list *tmp);
+bool		tokenize_expression_token(t_list **input_tokens, \
+				t_list **expr_node, t_list **new_tokenlist, char **newlexeme);
+void		*get_b_node_pipeline(t_ast_node **b, t_list **tokenlist, \
+									t_list *tmp);
+void		*parse_pipeline_innerloop(t_ast_node **a, t_list **tokenlist);
+void		*parse_terminal_inner_loop(t_list **head, t_list **input_tokens, \
+										bool *expr_has_node);
+void		*parse_list_innerloop(t_ast_node **a, t_list **tokenlist);
 
 #  ifdef __cplusplus
 
