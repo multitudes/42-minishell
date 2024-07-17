@@ -29,8 +29,8 @@ void	expand_single_quotes(t_token *token)
 }
 
 /*
-TODO: this may  not behave well, when we have strings like "\"djklfjsdl\""
-or ""dkldfj" as escape characters and unclosed quotes are not handled ;
+Removes double quotes, perfoms expansion on dollar variables.
+Does not handle escape characters such as '\'.
 */
 void	expand_double_quotes(t_data *data, t_token *token)
 {

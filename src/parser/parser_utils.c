@@ -50,7 +50,6 @@ void	print_token(t_list *input_token)
 
 /*
  * count the number of nodes in the t_list
- * TODO not currently used!
 */
 int	count_list(t_list *input_tokens)
 {
