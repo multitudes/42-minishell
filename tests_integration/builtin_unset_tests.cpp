@@ -176,6 +176,7 @@ uint8_t run_command_and_check_output(const std::string& command_to_exec, std::os
         }
     }
 }
+
 bool make_directory_read_only(const std::string& path) {
     // Check if directory already exists
     if (access(path.c_str(), F_OK) == -1) {
