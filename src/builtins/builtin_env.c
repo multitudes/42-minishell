@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:52:56 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/20 10:57:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "parser.h"
 #include "environment.h"
 #include "splash_error.h"
-#include "debug.h"
 
 /*
 Writes contents of environment to standard output.

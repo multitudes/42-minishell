@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:06 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:42:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/20 10:57:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "environment.h"
 #include "builtins.h"
 #include "splash_error.h"
-#include "debug.h"
 
 bool	no_valid_identifier(const char *key)
 {

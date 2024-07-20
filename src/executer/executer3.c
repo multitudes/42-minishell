@@ -6,13 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:38:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/20 10:57:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executer.h"
 #include <limits.h>
-#include "debug.h"
 #include "parser.h"
 #include "splash.h"
 #include "splash_error.h"

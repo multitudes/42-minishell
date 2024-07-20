@@ -6,12 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:54:47 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:42:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/20 10:57:28 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "splash_error.h"
-#include "debug.h"
 #include <unistd.h>
 #include <limits.h>
 #include <stdio.h> // remove and replace printf with write_data or ft_write

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:53:34 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:37:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/20 10:57:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "parser.h"
 #include "utils.h"
 #include "splash_error.h"
-#include "debug.h"
 #include "libft.h"
 #include <stdbool.h>
 

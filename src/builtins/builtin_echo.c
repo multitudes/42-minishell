@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:33 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:52:37 by rpriess          ###   ########.fr       */
+/*   Updated: 2024/07/20 10:57:07 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 #include "parser.h"
-#include "debug.h"
 #include "builtins.h"
 #include "utils.h"
 

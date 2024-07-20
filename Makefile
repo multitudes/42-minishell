@@ -45,7 +45,7 @@ executer/executer4.c executer/executer5.c executer/executer6.c \
 heredoc/heredoc.c heredoc/heredoc2.c heredoc/heredoc3.c heredoc/heredoc4.c heredoc/heredoc5.c)
 OBJS 			=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 HDRS 			=	$(addprefix include/, init.h fd.h splash.h scanner.h environment.h \
-parser.h analyser.h executer.h splash_error.h darray.h builtins.h globbing.h debug.h heredoc.h) 
+parser.h analyser.h executer.h splash_error.h darray.h builtins.h globbing.h heredoc.h) 
 
 # linker flags and libraries
 LIBFT 			=	$(LIBFTDIR)/libft.a
@@ -61,7 +61,7 @@ else ifeq ($(UNAME), Darwin)
 endif
 
 # target
-all: $(LIBFT) $(NAME) tests tests_integration bonus
+all: $(LIBFT) $(NAME) bonus #tests tests_integration
 	@mkdir -p $(TMP_DIR)
 	@chmod 700 $(TMP_DIR)
 
@@ -73,9 +73,6 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 
 # Target $(LIBFT) depends on the libft library.
 $(LIBFT):
-	@if [ ! -d $(LIBFTDIR) ]; then \
-	git clone https://github.com/multitudes/42-libft.git $(LIBFTDIR); \
-	fi
 	$(MAKE) -C $(LIBFTDIR) all
 
 # Target $(NAME) depends on object files $(OBJS) and libft library.
@@ -85,16 +82,17 @@ $(NAME): $(OBJS) $(HDRS)
 
 clean:
 	rm -rf $(OBJ_DIR)
-	#$(MAKE) -C $(LIBFTDIR) clean
-	$(MAKE) -C tests clean
+	$(MAKE) -C $(LIBFTDIR) clean
+	# $(MAKE) -C tests clean
 	
 fclean: clean
 	rm -f $(NAME)
-	# $(MAKE) -C $(LIBFTDIR) fclean
-	$(MAKE) -C tests fclean
-	$(MAKE) -C tests_integration fclean
+	rm -f minishell_bonus
+	$(MAKE) -C $(LIBFTDIR) fclean
+	# $(MAKE) -C tests fclean
+	# $(MAKE) -C tests_integration fclean
 
-re: fclean all copy_bonus
+re: fclean all copy_bonus 
 
 tests:
 	$(MAKE) -C tests

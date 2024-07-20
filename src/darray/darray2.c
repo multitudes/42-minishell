@@ -6,13 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 13:35:47 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:38:02 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/20 10:57:45 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "darray.h"
 #include <stdlib.h>
-#include "debug.h"
+
 /*
  * free the internal content array and deallocate the darray struct
 */

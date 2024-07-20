@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:53:10 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:42:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/20 10:59:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "environment.h"
 #include "builtins.h"
 #include "splash_error.h"
-#include "debug.h"
 
 /*
  * Builtin function to unset variables.

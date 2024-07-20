@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:22 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:37:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/20 10:57:03 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "splash_error.h"
 #include "environment.h"
 #include "analyser.h"
-#include "debug.h"
 #include "builtins.h"
 
 static uint8_t	exec_cd_without_argument(t_darray *env_arr, t_list *tokenlist)

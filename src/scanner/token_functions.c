@@ -6,12 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:33:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/20 10:58:04 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
-#include "debug.h"
 #include "libft.h"
 
 /*

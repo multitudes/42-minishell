@@ -6,13 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:45:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/20 10:57:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "globbing.h"
 #include "libft.h"
-#include "debug.h"
 #include "utils.h"
 #include <unistd.h>
 #include <dirent.h>

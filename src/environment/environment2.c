@@ -6,12 +6,11 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 15:59:50 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:49:13 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/20 10:58:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "environment.h"
-#include "debug.h"
 #include "darray.h"
 #include "libft.h"
 
