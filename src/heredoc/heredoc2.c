@@ -43,6 +43,7 @@ static bool	process_line(t_heredoc *heredoc, int i, int heredoc_fd, char *line)
 		status = true;
 	}
 	free(line);
+	line = NULL;
 	return (status);
 }
 
@@ -74,9 +75,12 @@ static bool	read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 	while (line && ft_strcmp(heredoc->delim[i], line))
 	{
 		line = expand_heredoc(heredoc->expansion[i], data, line);
-		if (!process_line(heredoc, i, heredoc_fd, line))
-			return (false);
 		if (g_signal == SIGINT)
+		{
+			free(line);
+			return (false);
+		}
+		if (!process_line(heredoc, i, heredoc_fd, line))
 			return (false);
 		line = readline("> ");
 	}
