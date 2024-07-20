@@ -38,6 +38,8 @@ void	tokenize_and_parse(t_data *data)
 		else
 			data->exit_status = stderr_and_status("syntax parse error", 1);
 	}
+	else
+		ft_lstclear(&data->tokenlist, free_tokennode);
 }
 
 void	mainloop(t_data *data)

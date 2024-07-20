@@ -41,14 +41,6 @@ static void	remove_quotes(char *string)
 /*
 Checks for and handles single/double quotes in heredoc delimiter.
 TODO handle inner quotes like bash
-*/
-bool	process_delim_quotes(t_heredoc *heredoc)
-{
-	int	i;
-	int	count_single_quotes;
-	int	count_double_quotes;
-
-	i = 0;
 	count_single_quotes = 0;
 	count_double_quotes = 0;
 	while (i < heredoc->delim_count)
@@ -100,19 +92,18 @@ Also saves filename to heredoc struct.
 */
 bool	create_heredoc_file(t_list *tokenlist, t_heredoc *heredoc)
 {
-	char	*temp;
+	t_token	*token;
 
-	temp = ((t_token *)(tokenlist->content))->lexeme;
-	((t_token *)(tokenlist->content))->lexeme = get_heredoc_filename();
-	free(temp);
+	token = get_curr_token(tokenlist);
+	free(token->lexeme);
+	token->lexeme = get_heredoc_filename();
 	if (!get_token_lexeme(tokenlist))
 	{
 		free_heredoc(heredoc);
 		return (stderr_and_bool("heredoc setup error", false));
 	}
-	heredoc->file[heredoc->delim_count] = \
-		ft_strdup(((t_token *)(tokenlist->content))->lexeme);
-	((t_token *)(tokenlist->content))->type = HEREDOC_FILE;
+	heredoc->file[heredoc->delim_count] = ft_strdup(token->lexeme);
+	token->type = HEREDOC_FILE;
 	return (true);
 }
 
