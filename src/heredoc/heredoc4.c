@@ -41,6 +41,14 @@ static void	remove_quotes(char *string)
 /*
 Checks for and handles single/double quotes in heredoc delimiter.
 TODO handle inner quotes like bash
+*/
+bool	process_delim_quotes(t_heredoc *heredoc)
+{
+	int	i;
+	int	count_single_quotes;
+	int	count_double_quotes;
+
+	i = 0;
 	count_single_quotes = 0;
 	count_double_quotes = 0;
 	while (i < heredoc->delim_count)
