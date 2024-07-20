@@ -13,6 +13,30 @@
 #include "scanner.h"
 #include "parser.h"
 
+static bool	valid_heredoc_delim(char *delim_lexeme)
+{
+	char	*pos_1;
+	char	*pos_2;
+	char	*pos_3;
+	char	*pos_4;
+	bool	result;
+
+	result = true;
+	if (!delim_lexeme || ft_strlen(delim_lexeme) == 0)
+		return (false);
+	pos_1 = ft_strchr(delim_lexeme, '(');
+	pos_2 = ft_strchr(delim_lexeme, ')');
+	pos_3 = ft_strchr(delim_lexeme, '\"');
+	pos_4 = ft_strchr(delim_lexeme, '\'');
+	if (pos_1 && ((pos_3 && pos_3 < pos_1) || (pos_4 && pos_4 < pos_1)))
+		result = true;
+	else if (pos_2 && ((pos_3 && pos_3 < pos_2) || (pos_4 && pos_4 < pos_2)))
+		result = true;
+	else if (pos_1 || pos_2)
+		return (false);
+	return (result);
+}
+
 /*
  */
 bool	is_heredoc_token(t_tokentype tokentype)
@@ -36,6 +60,8 @@ bool	is_heredoc_delim(t_list *tokenlist)
 	if (!tokenlist)
 		return (false);
 	tokentype = get_token_type(tokenlist);
+	if (!valid_heredoc_delim(get_token_lexeme(tokenlist)))
+		return (false);
 	if (tokentype == DLESS_DELIM || tokentype == DLESSDASH)
 		return (true);
 	else if (tokentype == TILDE)
