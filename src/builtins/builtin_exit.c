@@ -14,6 +14,7 @@
 #include "scanner.h"
 #include "parser.h"
 #include "utils.h"
+#include "fd.h"
 #include "splash_error.h"
 #include "debug.h"
 #include "libft.h"
@@ -92,6 +93,7 @@ uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 									": numeric argument required", 2);
 	else
 		status = data->exit_status;
+	restore_fds(data);
 	free_ast(&(data->ast));
 	free((char *)(data->input));
 	free_data(&data);
