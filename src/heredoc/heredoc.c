@@ -60,8 +60,15 @@ bool	execute_heredoc(t_data *data)
 
 	set_up_heredoc_signals();
 	if (!init_heredoc(data->tokenlist, &heredoc) \
-		|| !process_delim_quotes(&heredoc) || !process_heredoc(&heredoc, data))
+		|| !process_delim_quotes(&heredoc))
 	{
+		data->exit_status = 2;
+		set_up_std_signals();
+		return (false);
+	}
+	if (!process_heredoc(&heredoc, data))
+	{
+		data->exit_status = 130;
 		set_up_std_signals();
 		return (false);
 	}
