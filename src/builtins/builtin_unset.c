@@ -34,7 +34,7 @@ uint8_t	execute_unset_builtin(t_darray *env_arr, t_list *tokenlist)
 	while (tokenlist)
 	{
 		lexeme = get_token_lexeme(tokenlist);
-		if (ft_strchr(lexeme, '='))
+		if (ft_strchr(lexeme, '=') || ft_strcmp(lexeme, "") == 0)
 			;
 		else if (read_only_variable(lexeme))
 			status = stderr_and_status3("unset: ", lexeme, \
