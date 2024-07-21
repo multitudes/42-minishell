@@ -16,8 +16,6 @@
 #include "utils.h"
 #include "splash_error.h"
 
-// #define SIZEOFUINT 8
-
 /*
  * Used in the bubblesort function to return ordered strings.
  * This function is intended to be generic and if i have an array 
