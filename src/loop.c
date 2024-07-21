@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:36:41 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/21 11:38:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ void	mainloop(t_data *data)
 			data->input = get_next_line(STDIN_FILENO);
 		if (data->input != NULL)
 		{
+			if (g_signal)
+				data->exit_status = g_signal + 128;
 			if (ft_strncmp(data->input, "", 1) != 0)
 				tokenize_and_parse(data);
 			free((char *)(data->input));
@@ -132,7 +134,10 @@ int	single_command_loop(const char *input)
 	data->input = ft_strdup(input);
 	if (data->input != NULL)
 		single_command_innerloop(data);
-	status = data->exit_status;
+	if (g_signal)
+		status = g_signal + 128;
+	else
+		status = data->exit_status;
 	free((char *)(data->input));
 	free_data(&data);
 	return (status); 
