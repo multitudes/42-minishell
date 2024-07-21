@@ -15,13 +15,27 @@
 #include "parser.h"
 #include "environment.h"
 #include "builtins.h"
+#include "libft.h"
 #include "splash_error.h"
 #include "debug.h"
+
+// static bool	all_tokens_empty(t_list *tokenlist)
+// {
+// 	while (tokenlist)
+// 	{
+// 		if (ft_strcmp(get_token_lexeme(tokenlist), ""))
+// 			return (false);
+// 		tokenlist = tokenlist->next;
+// 	}
+// 	return (true);
+// }
 
 bool	no_valid_identifier(const char *key)
 {
 	int	i;
 
+	if (key && ft_strcmp(key, "") == 0)
+		return (false);
 	if (key && (!ft_isalpha(key[0]) || key[0] == '_'))
 		return (true);
 	i = 1;
@@ -107,7 +121,7 @@ uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 
 	status = 0;
 	tokenlist = tokenlist->next;
-	if (!tokenlist)
+	if (!tokenlist) // || all_tokens_empty(tokenlist))
 		return (print_env_export(env_arr));
 	while (tokenlist)
 	{
