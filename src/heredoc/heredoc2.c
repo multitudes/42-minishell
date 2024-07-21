@@ -31,19 +31,16 @@ static bool	process_line(t_heredoc *heredoc, int i, int heredoc_fd, char *line)
 	{
 		if (!ft_write(heredoc_fd, line) || !ft_write(heredoc_fd, "\n"))
 			status = false;
-		else
-			status = true;
 	}
 	else if (line == NULL)
 	{
-		ft_write(1, \
-		"splash: warning: here-document delimited by end-of-file (wanted '");
-		ft_write(1, heredoc->delim[i]);
-		ft_write(1, "')\n");
-		status = true;
+		if (!ft_write(1, \
+		"splash: warning: here-document delimited by end-of-file (wanted '") \
+		|| !ft_write(1, heredoc->delim[i]) \
+		|| !ft_write(1, "')\n"))
+			status = false;
 	}
 	free(line);
-	line = NULL;
 	return (status);
 }
 
