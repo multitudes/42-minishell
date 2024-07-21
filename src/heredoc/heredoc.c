@@ -68,10 +68,7 @@ bool	execute_heredoc(t_data *data)
 		outcome = false;
 	}
 	if (!process_heredoc(&heredoc, data))
-	{
-		data->exit_status = 130;
 		outcome = false;
-	}
 	set_up_std_signals();
 	return (outcome);
 }
