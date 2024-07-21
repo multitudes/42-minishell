@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/21 11:57:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/21 12:56:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,8 @@ int	loop(void)
 	status = data->exit_status;
 	free((char *)(data->input));
 	free_data(&data);
-	ft_write(1, "exit\n");
+	if (isatty(STDIN_FILENO))
+		ft_write(1, "exit\n");
 	return (status); 
 }
 
