@@ -111,6 +111,10 @@ bool	process_heredoc(t_heredoc *heredoc, t_data *data)
 {
 	if (!advance_to_final_delim(heredoc, data))
 	{
+		if (g_signal != 0)
+			data->exit_status = 130;
+		else
+			data->exit_status = 1;
 		free_heredoc(heredoc);
 		g_signal = 0;
 		return (false);
