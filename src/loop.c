@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/21 11:38:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/21 11:57:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	mainloop(t_data *data)
 			if (ft_strncmp(data->input, "", 1) != 0)
 				tokenize_and_parse(data);
 			free((char *)(data->input));
+			g_signal = 0;
 			continue ;
 		}
 		return ;
