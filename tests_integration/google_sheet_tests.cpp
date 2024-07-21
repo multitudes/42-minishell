@@ -715,7 +715,7 @@ const char* test_export8()
     debug("result from splash: -%s-\n", result.str().c_str());
 
 	my_assert(result.str() == "", "output is not correct export 8\n");
-	my_assert(exit_status == 1, "exit status is not 0\n");
+	my_assert(exit_status == 1, "exit status is not 1\n");
 	return NULL;
 }
 
