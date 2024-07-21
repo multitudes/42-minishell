@@ -16,7 +16,7 @@
 #include "utils.h"
 #include "splash_error.h"
 
-#define SIZEOFCHAR 1
+#define SIZEOFUINT 8
 
 /*
  * Used in the bubblesort function to return ordered strings.
@@ -26,7 +26,7 @@
  */
 static void	swappointers(void *a, void *b, size_t size)
 {
-	char	temp[SIZEOFCHAR];
+	char	temp[SIZEOFUINT];
 
 	ft_memcpy(temp, a, size);
 	ft_memcpy(a, b, size);
