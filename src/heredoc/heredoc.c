@@ -57,23 +57,23 @@ or calls builtin functions depending on ast node type.
 bool	execute_heredoc(t_data *data)
 {
 	t_heredoc	heredoc;
+	bool		outcome;
 
+	outcome = true;
 	set_up_heredoc_signals();
 	if (!init_heredoc(data->tokenlist, &heredoc) \
 		|| !process_delim_quotes(&heredoc))
 	{
 		data->exit_status = 2;
-		set_up_std_signals();
-		return (false);
+		outcome = false;
 	}
 	if (!process_heredoc(&heredoc, data))
 	{
 		data->exit_status = 130;
-		set_up_std_signals();
-		return (false);
+		outcome = false;
 	}
 	set_up_std_signals();
-	return (true);
+	return (outcome);
 }
 
 /*
