@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 12:10:12 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/21 11:43:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/21 11:43:39 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ static void	sigint_handler_non_tty(int sig)
 {
 	if (sig == SIGINT)
 	{
-		debug("sigint_handler_non_tty\n");
 		g_signal = SIGINT;
 		ft_write(1, "\n");
 		rl_on_new_line();
