@@ -431,3 +431,5 @@ echo *
 *
 # should print hi again
 ```
+
+But creating a `>'$BLA'` file would not be expanded in our shell. In bash it would be expanded to the content of the file creating `hi laurent` if `$BLA` content was laurent but for some reason we dont expand anymore after globbing since globbing is handled as expansion. Anyway!
