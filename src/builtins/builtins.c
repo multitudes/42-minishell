@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 12:26:09 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:29:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,28 +20,31 @@
 #include "splash_error.h"
 #include "utils.h"
 
-static bool	execute_other_builtins(t_data *data, t_list *tokenlist, \
-									uint8_t *status)
+static bool	execute_other_builtins(t_list *tokenlist, uint8_t *status)
 {
-	if (ft_strcmp(get_token_lexeme(tokenlist), "true") == 0)
+	char	*lexeme;
+
+	lexeme = get_token_lexeme(tokenlist);
+	if (ft_strcmp(lexeme, "true") == 0)
 	{
 		*status = 0;
 		return (true);
 	}
-	else if (ft_strcmp(get_token_lexeme(tokenlist), "false") == 0)
+	else if (ft_strcmp(lexeme, "false") == 0) 
 	{
 		*status = 1;
 		return (true);
 	}
-	else if (ft_strcmp(data->input, "history -c") == 0 \
-			|| ft_strcmp(data->input, "history --clear") == 0)
+	else if (ft_strcmp(lexeme, "history") == 0 && tokenlist->next && \
+	(ft_strcmp(get_token_lexeme(tokenlist->next), "-c") == 0 || \
+			ft_strcmp(get_token_lexeme(tokenlist->next), "--clear") == 0))
 	{
 		clear_hist_file();
 		rl_clear_history();
 		*status = 0;
 		return (true);
 	}
-	else if (ft_strcmp(data->input, "history") == 0)
+	else if (ft_strcmp(lexeme, "history") == 0)
 	{
 		*status = print_history();
 		return (true);
@@ -75,7 +78,7 @@ uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 		return (execute_env_builtin(data->env_arr, tokenlist));
 	else if (ft_strcmp(get_token_lexeme(tokenlist), "exit") == 0)
 		return (execute_exit_builtin(data, tokenlist));
-	else if (execute_other_builtins(data, tokenlist, &status))
+	else if (execute_other_builtins(tokenlist, &status))
 		return (status);
 	else if (get_token_type(tokenlist) == BUILTIN)
 		return (stderr_and_status("builtin not implemented", 2));
