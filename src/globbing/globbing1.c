@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 19:16:09 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 17:12:05 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:07:14 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ bool	is_glob_match(const char *pattern, const char *file_name)
 			result = *file_name != '\0' \
 						&& is_glob_match(pattern, file_name + 1);
 	}
-	else 
+	else
 		result = *pattern == *file_name \
 					&& is_glob_match(pattern + 1, file_name + 1);
 	return (result);

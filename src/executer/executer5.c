@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 14:32:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 15:16:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:02:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,13 @@ void	update_dollar_undersc_single_cmd(t_darray *env_arr, t_list *tokenlist)
 	cmd_lexeme = get_token_lexeme(tokenlist);
 	if (ft_strncmp(cmd_lexeme, "env", 3) == 0)
 		cmd = ft_strdup(cmd_lexeme);
-	else 
+	else
 	{
 		cmd = create_path(cmd_lexeme, mini_get_env(env_arr, "PATH"));
 		if (cmd == NULL)
 			cmd = ft_strdup(cmd_lexeme);
 	}
-	if (update_env(env_arr, "_", cmd) == FALSE) 
+	if (update_env(env_arr, "_", cmd) == FALSE)
 		perror_and_null("update_env for '_'");
 	free(cmd);
 }

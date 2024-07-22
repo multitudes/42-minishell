@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:48:37 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:07:01 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	*free_ast(t_ast_node **ast)
 		free_ast(&((*ast)->left));
 	if ((*ast)->right)
 		free_ast(&((*ast)->right));
-	if ((*ast)->tokenlist) 
+	if ((*ast)->tokenlist)
 		ft_lstclear(&((*ast)->tokenlist), free_tokennode);
 	free(*ast);
 	*ast = NULL;

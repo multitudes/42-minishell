@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:41:09 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:01:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	count_tokens(t_list *tokenlist)
 	int	count;
 
 	count = 0;
-	while (tokenlist) 
+	while (tokenlist)
 	{
 		count++;
 		tokenlist = tokenlist->next;
