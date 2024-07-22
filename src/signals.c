@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 12:10:12 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/22 11:55:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:07:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int	set_up_std_signals(void)
 		(signal(SIGQUIT, SIG_IGN) == SIG_ERR))
 			return (perror_and_status("SIG_ERR", 1));
 	}
-	else 
+	else
 	{
 		if ((signal(SIGINT, sigint_handler_non_tty) == SIG_ERR))
 			return (perror_and_status("SIG_ERR signal", 1));
@@ -127,7 +127,7 @@ int	set_up_child_signals(void)
 		(signal(SIGQUIT, sigquit_handler) == SIG_ERR))
 			return (perror_and_status("SIG_ERR", 1));
 	}
-	else 
+	else
 	{
 		if ((signal(SIGINT, sigint_handler_non_tty) == SIG_ERR))
 			return (perror_and_status("SIG_ERR signal", 1));

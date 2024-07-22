@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 17:37:39 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/14 17:28:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:07:30 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, \
 	t_list	*current_pos;
 
 	current_pos = *tokenlist;
-	if (!tokenlist || !*tokenlist || !new_tokenlist) 
+	if (!tokenlist || !*tokenlist || !new_tokenlist)
 		return ;
 	next = (*tokenlist)->next;
 	prev = (*tokenlist)->prev;
