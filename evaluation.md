@@ -55,6 +55,21 @@ ls
 
 This is good :) The reason for the bash behaviour is that it gives meaning to empty strings like `""` and `''`. We do not need to do it and out behaviour is expected.
 
+also
+```bash
+echo "Hello, 
+World!" | cat -e
+# use ctrl-v and ctrl-j to get the newline
+# should print the lines with a $ at the end
+```		
+
+## pipes
+
+```bash
+| | |
+|||
+||||||||||||||||||
+```
 ## history of shells
 It also good to know a bit of history ad how the shells have evolved.
 See this page for some extra facts about the evolution of different shells. 
@@ -269,9 +284,150 @@ pwd # should print the path again
 
 .././././././.././././../. export A="../"^C
 #syntax error
+.././././././.././././../../bin/ls
+# should print the content of the bin directory
+$A.././././././.././././../../bin/ls
+# should print the content of the bin directory
 ```
 
 ## Create random commands
 There is the option in bash to create repeated letters with alt + 9. (Linux)
 also playing with CTRL + V and CTRL + C can give you some interesting results.
 
+## Verify the left to right order in path
+In `home` dir create the tmp dir and in it create a file called grep and make it executable
+with the #!/bin/bash as the first line and chmod +x grep
+then run the following command
+```bash
+export PATH="$HOME/tmp:$PATH"
+echo $PATH
+cat $HOME/grep
+#!/bin/sh
+# echo PWNED
+```
+so when you run `grep` it should print `PWNED`. This shows that the order of the path is from left to right. Otherwise it woud have executed the grep command.
+
+## Redirections
+```bash
+echo hi
+echo hi > ho
+cat ho
+#hi
+cat < ho
+cat < ho >> ha
+cat ha
+#hi\nhi
+nl ha > no
+```
+
+## heredoc
+```bash
+<<1
+<<1 # ending with CTRL + D
+```
+and
+```bash
+<<1<<2<<3<<4
+# then type CTRL + D 4 times
+<<1≤<2<<3<<4 | <<5<<6<<7<<8
+# then type CTRL + D 8 times
+<bla <<1≤<2<<3<<4 | <<5<<6<<7<<8
+<<''
+#syntax error
+cat<<a
+# the type $HOME , a, and check the expansion
+# when typing \$HOME the expansion doesnt happen
+cat<<a''
+# should work end with a
+cat<<$a
+#to end type $a
+```
+
+Tricky one:
+In Bash the heredoc are processed before anything else but still when using the `&&` and `||` the variables are updated... This would work in case of the bonus being available
+```bash
+export NO=YES && cat << haha
+# in the heredoc type $NO and verify it is yes
+```
+
+## bonus && and ||
+```bash
+export A=B && echo $A
+# should print B
+echo hi && echo ho
+# should print hi and ho
+echo hi || echo ho
+# should print hi
+echo hi && echo one && echo two && echo three
+# should print hi one two three
+echo hi && echo one && echo two && echo three || echo fail
+# should print hi one two three
+echo hi && echo one && echo t^C && echo three l| echo fail
+
+false && echo one && echo two && echo three || echo fail || echo not this one && echo but this one
+# should print fail but this one
+false && echo one && echo two && echo three Il echo fail || echo not this one && echo but this ONE && false || hey || ho
+# should print fail but this ONE and command not found hey
+(((true|false) | false| true))
+echo $?
+(echo hi) > hi
+cat hi
+
+```
+This would not work in bash because the parentheses are used for function blocks and not for subshells. But in our minishell it should work.
+```bash
+>what (echo hi)
+cat what
+# should print hi
+```
+in bash 
+```bash
+echo bla ›(rev)
+#prints bla /dev/fd/12
+```
+
+The command `echo bla >(rev)` is using a feature called process substitution. It allows a process's input or output to be referred to using a filename. It's a way to use the output of a command as if it were a file. the shell starts the `rev` command and replaces `>(rev)` with a path to a file descriptor that is connected to the input of `rev`. This file descriptor is typically something like `/dev/fd/12`, which represents a temporary file descriptor that the shell has set up to capture the output.
+
+## bonus parentheses
+```bash
+(echo hi) > hi | (sleep 1 && cat hi | nl)
+# should print hi
+```
+## go crazy
+```bash
+dev/urandom| head -1alse && echo one && echo two && echo three || echo fail || echo not this one && echo but this ONE && false || hey || ho)|(((nl)))))))|x|x|x|x|echo hi | cat\
+```
+```bash
+(((((false && echo one && echo two && echo three || echo fail || echo not this one && echo but this ONE && false || hey || ho) | (((nl)))))))|x|x|x|x|echo hi|cat /dev/urandom | head -l
+```
+
+## globbing
+Ok this took me a moment to understand lol, but it worked!
+
+```bash
+echo *
+# should print all the files in the directory
+mkdir tmp
+cd tmp
+touch cat
+touch hi
+*
+ls
+cat hi
+echo hi > hi
+*
+# should print hi
+```
+<div>
+	<img src="assets/globbing.png" alt="globbing" width="600">
+</div>
+
+And this works too
+```bash
+>echo
+>hi
+echo *
+# should print echo hi
+*
+# should print hi again
+```
