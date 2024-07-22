@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/22 12:05:20 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 16:20:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ int	execute_command(t_list *tokenlist, t_data *data)
 	pid = fork();
 	if (pid == 0)
 	{
-		set_up_child_signals();
 		argv = get_argv_from_tokenlist(&tokenlist);
 		status = resolve_command_path(argv, \
 									mini_get_env(data->env_arr, "PATH"));
 		if (status != 0)
 			exit (status);
+		set_up_child_signals();
 		execve(argv[0], argv, (char **)data->env_arr->contents);
 		exit(perror_and_status(argv[0], 126));
 	}
@@ -128,19 +128,17 @@ int	handle_second_child_process(t_data *data, t_ast_node *ast)
  */
 uint8_t	get_wait_status(int status)
 {
-	if (WIFSIGNALED(status))
-	{
-		if (WTERMSIG(status) == SIGQUIT)
-		{
-			ft_write(1, "Quit (core dumped)\n");
-			rl_on_new_line();
-			rl_replace_line("", 0);
-			rl_redisplay();
-		}
-	}
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGQUIT)
+			ft_write(1, "Quit (core dumped)\n");
+		// else if (WTERMSIG(status) == SIGINT)
+		// {
+		// 	ft_write(1, "\n");
+		// }
 		return (WTERMSIG(status) + 128);
+	}
 	return (perror_and_status("child exit", 1));
 }

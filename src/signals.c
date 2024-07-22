@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 12:10:12 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/22 12:07:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 16:36:14 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,6 @@ int	set_up_std_signals(void)
 		if (signal(SIGQUIT, sigquit_handler) == SIG_ERR)
 			return (perror_and_status("SIG_ERR signal", 1));
 	}
-	rl_catch_signals = 1;
 	return (0);
 }
 
@@ -123,7 +122,7 @@ int	set_up_child_signals(void)
 		return (perror_and_status("is atty", 1));
 	else if (isatty(STDIN_FILENO))
 	{
-		if ((signal(SIGINT, sigint_handler) == SIG_ERR) || \
+		if ((signal(SIGINT, SIG_DFL) == SIG_ERR) || \
 		(signal(SIGQUIT, sigquit_handler) == SIG_ERR))
 			return (perror_and_status("SIG_ERR", 1));
 	}
