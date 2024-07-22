@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:06 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:42:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 15:40:09 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ bool	no_valid_identifier(const char *key)
 {
 	int	i;
 
-	if (key && (!ft_isalpha(key[0]) || key[0] == '_'))
+	if (key && (!ft_isalpha(key[0]) && key[0] != '_'))
 		return (true);
 	i = 1;
 	while (key[i] != '\0')
