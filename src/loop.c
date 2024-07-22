@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/22 12:09:19 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 16:45:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,12 @@ void	mainloop(t_data *data)
 {
 	while (true)
 	{
+		set_up_rd_signals();
 		if (isatty(STDIN_FILENO))
 			data->input = readline("splash > ");
 		else
 			data->input = get_next_line(STDIN_FILENO);
+		set_up_signals();
 		if (data->input != NULL)
 		{
 			if (g_signal)
@@ -65,7 +67,7 @@ void	mainloop(t_data *data)
 }
 
 /*
-set_up_std_signals() returns 1 but if it fails I leave it failing 
+set_up_rd_signals() returns 1 but if it fails I leave it failing 
 silently or should we exit the program?
 The readLine() function, reads a line of input from
 the user on the command line and returns the result.
@@ -81,7 +83,7 @@ int	loop(void)
 
 	status = 0;
 	data = NULL;
-	if (!init_data(&data) || set_up_std_signals() > 0)
+	if (!init_data(&data))
 		return (EXIT_FAILURE);
 	load_history();
 	mainloop(data);
@@ -130,7 +132,7 @@ int	single_command_loop(const char *input)
 
 	status = 0;
 	data = NULL;
-	if (!init_data(&data) && set_up_std_signals() > 0)
+	if (!init_data(&data) && set_up_signals() > 0)
 		return (EXIT_FAILURE);
 	data->input = ft_strdup(input);
 	if (data->input != NULL)

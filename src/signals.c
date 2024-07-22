@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 12:10:12 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/22 16:36:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 16:44:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,13 @@ static void	sigint_handler(int sig)
 	rl_redisplay();
 }
 
+static void	sigint_handler_chd(int sig)
+{
+	(void)sig;
+	g_signal = SIGINT;
+	ft_write(1, "\n");
+}
+
 static void	sigint_handler_non_tty(int sig)
 {
 	(void)sig;
@@ -96,7 +103,7 @@ variable with the number of the signal received but
 usually only SIGINT is handled. the value of sigint is 2 
 whichy is added to 128 and gives 130, the exit code for ctrl-c
 */
-int	set_up_std_signals(void)
+int	set_up_rd_signals(void)
 {
 	if (isatty(STDIN_FILENO) == -1)
 		return (perror_and_status("is atty", 1));
@@ -116,13 +123,13 @@ int	set_up_std_signals(void)
 	return (0);
 }
 
-int	set_up_child_signals(void)
+int	set_up_signals(void)
 {
 	if (isatty(STDIN_FILENO) == -1)
 		return (perror_and_status("is atty", 1));
 	else if (isatty(STDIN_FILENO))
 	{
-		if ((signal(SIGINT, SIG_DFL) == SIG_ERR) || \
+		if ((signal(SIGINT, sigint_handler_chd) == SIG_ERR) || \
 		(signal(SIGQUIT, sigquit_handler) == SIG_ERR))
 			return (perror_and_status("SIG_ERR", 1));
 	}

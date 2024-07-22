@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/22 16:20:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 16:45:22 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int	execute_command(t_list *tokenlist, t_data *data)
 									mini_get_env(data->env_arr, "PATH"));
 		if (status != 0)
 			exit (status);
-		set_up_child_signals();
 		execve(argv[0], argv, (char **)data->env_arr->contents);
 		exit(perror_and_status(argv[0], 126));
 	}
