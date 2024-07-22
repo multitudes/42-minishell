@@ -42,6 +42,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 	pid = fork();
 	if (pid == 0)
 	{
+		set_up_child_signals();
 		argv = get_argv_from_tokenlist(&tokenlist);
 		status = resolve_command_path(argv, \
 									mini_get_env(data->env_arr, "PATH"));
@@ -127,6 +128,16 @@ int	handle_second_child_process(t_data *data, t_ast_node *ast)
  */
 uint8_t	get_wait_status(int status)
 {
+	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGQUIT)
+		{
+			ft_write(1, "Quit (core dumped)\n");
+			rl_on_new_line();
+			rl_replace_line("", 0);
+			rl_redisplay();
+		}
+	}
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))

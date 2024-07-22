@@ -147,6 +147,7 @@ grep --color -InR '\<g_'
 in the minishell signals are implemented in three places. In the readline main loop where SIGINT will just redisplay the prompt and SIGQUIT will do nothing.
 In the blocking child processes where SIGINT will kill the child and SIGQUIT will print the exit status of the child.
 
+
 ## file descriptors
 In valgrind there is a flag to check the open file descriptors. This is useful to check if you are closing all the file descriptors you open. Also they usually dont add up like memory leaks but still in a process we can open only 1000 of them. It is a good thing to double check the usage on exit.
 We use valgrind (on Linux only) to check for file descriptors. The flag is `--track-fds=yes`.
@@ -433,3 +434,4 @@ echo *
 ```
 
 But creating a `>'$BLA'` file would not be expanded in our shell. In bash it would be expanded to the content of the file creating `hi laurent` if `$BLA` content was laurent but for some reason we dont expand anymore after globbing since globbing is handled as expansion. Anyway!
+
