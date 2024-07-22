@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 12:10:12 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/21 13:09:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 11:55:55 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,22 +61,24 @@ the terminal.
 */
 static void	sigint_handler(int sig)
 {
-	if (sig == SIGINT)
-	{
-		g_signal = SIGINT;
-		ft_write(1, "\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
-	return ;
+	(void)sig;
+	g_signal = SIGINT;
+	ft_write(1, "\n");
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
 static void	sigint_handler_non_tty(int sig)
 {
-	if (sig == SIGINT)
-		g_signal = SIGINT;
-	return ;
+	(void)sig;
+	g_signal = SIGINT;
+}
+
+static void	sigquit_handler(int sig)
+{
+	(void)sig;
+	g_signal = SIGQUIT;
 }
 
 /*
@@ -108,7 +110,29 @@ int	set_up_std_signals(void)
 	{
 		if ((signal(SIGINT, sigint_handler_non_tty) == SIG_ERR))
 			return (perror_and_status("SIG_ERR signal", 1));
+		if (signal(SIGQUIT, sigquit_handler) == SIG_ERR)
+			return (perror_and_status("SIG_ERR signal", 1));
 	}
 	rl_catch_signals = 1;
+	return (0);
+}
+
+int	set_up_child_signals(void)
+{
+	if (isatty(STDIN_FILENO) == -1)
+		return (perror_and_status("is atty", 1));
+	else if (isatty(STDIN_FILENO))
+	{
+		if ((signal(SIGINT, sigint_handler) == SIG_ERR) || \
+		(signal(SIGQUIT, sigquit_handler) == SIG_ERR))
+			return (perror_and_status("SIG_ERR", 1));
+	}
+	else 
+	{
+		if ((signal(SIGINT, sigint_handler_non_tty) == SIG_ERR))
+			return (perror_and_status("SIG_ERR signal", 1));
+		if (signal(SIGQUIT, sigquit_handler) == SIG_ERR)
+			return (perror_and_status("SIG_ERR signal", 1));
+	}
 	return (0);
 }

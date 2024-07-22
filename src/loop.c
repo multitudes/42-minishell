@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/21 12:56:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 11:30:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ void	mainloop(t_data *data)
 	while (true)
 	{
 		if (isatty(STDIN_FILENO))
-			data->input = readline(\
-				"\033[44m\033[97m splash 💦 \033[0m\033[44m\033[97m>\033[0m ");
+			data->input = \
+				readline("\033[44m\033[97m splash 💦 \033[0m\033[44m\033[97m\033[0m\n> ");
 		else
 			data->input = get_next_line(STDIN_FILENO);
 		if (data->input != NULL)
