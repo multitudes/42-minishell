@@ -187,7 +187,7 @@ const char* test_builtin_echo2()
     fflush(stdout);
 
     std::ostringstream result;
-	std::string arg = "echo \"$\"";
+	std::string arg = "echo '$'";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
 
     debug("result from splash: -%s-\n", result.str().c_str());
