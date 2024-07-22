@@ -170,4 +170,29 @@ $EMPTY'/bin/'""'ls'$EMPTY$AGAIN
 Other tests:
 ```bash
 echo '$USER'
+# prints $USER
 echo "$USER"
+# prints the username
+
+echo h^C
+# redisplays the prompt
+echo 'hey ' / cat -e
+# checks for maintaining spaces in the single quotes
+```
+
+## the env builtin
+In the subject it says we need to implement the env builtin. In bash `env` is a program.
+So this makes sure we are not just executing the program `env` but also implementing the builtin.
+```bash
+env -i 
+# prints too many args
+/bin/env -i
+# prints nothing
+```
+
+## export builtin
+the identifiers can start with _ or a letter and can contain _ or a letter or a digit.  
+```bash
+export _A='"what"'
+export A_A='"'
+echo $A_A # prints "
