@@ -1481,6 +1481,9 @@ and pull normally or solve the conflicts.
 In the end we really used 28 tokens we receive from the scanner.  
 57 are recognized but not acted upon because they are related to features we do not implement.  
 
+more about the evaluation are in this file:
+[evaluation.md](evaluation.md)
+
 ## Links
 The Bash reference manual:  
 https://www.gnu.org/software/bash/manual/bash.html  
@@ -1542,3 +1545,6 @@ https://www.rozmichelle.com/pipes-forks-dups/
 
 Testing:  
 https://github.com/LucasKuhn/minishell_tester/blob/main/manual_tests/mandatory
+
+See this page for some extra facts about the evolution of different shells. 
+[https://www.in-ulm.de/~mascheck/bourne/](https://www.in-ulm.de/~mascheck/bourne/)
