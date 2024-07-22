@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/22 11:58:56 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:05:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,9 +130,9 @@ uint8_t	get_wait_status(int status)
 {
 	if (WIFSIGNALED(status))
 	{
-		if (WTERMSIG(status) == SIGQUIT) 
+		if (WTERMSIG(status) == SIGQUIT)
 		{
-			ft_write(1,"Quit (core dumped)\n");
+			ft_write(1, "Quit (core dumped)\n");
 			rl_on_new_line();
 			rl_replace_line("", 0);
 			rl_redisplay();
