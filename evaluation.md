@@ -196,3 +196,82 @@ the identifiers can start with _ or a letter and can contain _ or a letter or a 
 export _A='"what"'
 export A_A='"'
 echo $A_A # prints "
+export $42=42 # prints not a valid identifier
+
+# in bash do export A="ae\"aeghoue" then 
+echo $A
+
+export export
+export export=
+echo $export
+export export=a
+echo $export
+echo e=export
+$e
+# export command not found
+export l=ls
+echo $l
+# prints the result of ls
+export a=echo
+$a
+# prints echo
+which echo
+export k=cd
+#cd command not found
+export ^C=hi # ^C is not a valid identifier but to get ^C you need to press ctrl+v ctrl+c
+```
+
+## unset builtin
+```bash
+unset
+unset a
+unset wehtuogeth
+unset -
+unset [^[^
+#syntax error
+unset ^C 
+unset unset unset
+echo $? #should be 0
+unset e la  la #EXPORT
+```
+
+## pwd builtin
+```bash
+pwd
+echo $PWD
+cd ..
+cd .. ^C
+pwd
+echo $PWD
+cd -
+pwd
+echo $PWD
+echo OLDPWD
+cd ../../.././/.././../..////
+pwd
+# shd be root
+cd bin
+pwd
+echo $PWD
+```
+back to the shell directory
+```bash
+mkdir tmp
+cd tmp
+pwd
+mkdir -p a/b 
+cd a/b
+ls -al
+rm -rf ../../a
+pwd # will get confused and not print anything
+cd ..
+pwd # should print the path again
+
+.././././././.././././../. export A="../"^C
+#syntax error
+```
+
+## Create random commands
+There is the option in bash to create repeated letters with alt + 9. (Linux)
+also playing with CTRL + V and CTRL + C can give you some interesting results.
+
