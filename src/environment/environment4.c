@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 13:09:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 15:58:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:06:20 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ static void	ft_bubblesort(void *base, size_t nmemb, size_t size, \
 	j = 0;
 	arr = base;
 	swapped = 1;
-	while (i < nmemb - 1 && swapped) 
+	while (i < nmemb - 1 && swapped)
 	{
 		swapped = 0;
 		j = 0;
 		while (j < nmemb - i - 1)
 		{
-			if (compar(arr + j * size, arr + (j + 1) * size) > 0) 
+			if (compar(arr + j * size, arr + (j + 1) * size) > 0)
 			{
 				swappointers(arr + j * size, arr + (j + 1) * size, size);
 				swapped = 1;
@@ -106,7 +106,7 @@ int	print_env_export(t_darray *env_arr)
 	{
 		key = get_var_key(export_arr->contents[i++]);
 		value = mini_get_env(export_arr, key);
-		if (key && 
+		if (key && \
 			(printf("declare -x %s=%c%s%c\n", key, '"', value, '"') < 0))
 			status = perror_and_status("printf export", 1);
 		free(key);

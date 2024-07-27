@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:38:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 16:45:22 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "splash.h"
 #include "splash_error.h"
 #include "libft.h"
+#include "utils.h"
 
 /*
  * This function will execute the command in the tokenlist.
@@ -129,6 +130,14 @@ uint8_t	get_wait_status(int status)
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGQUIT)
+			ft_write(1, "Quit (core dumped)\n");
+		// else if (WTERMSIG(status) == SIGINT)
+		// {
+		// 	ft_write(1, "\n");
+		// }
 		return (WTERMSIG(status) + 128);
+	}
 	return (perror_and_status("child exit", 1));
 }

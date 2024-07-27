@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:33:49 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:02:00 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,14 @@ char	*return_lexeme_malloc(const char *lex)
 	char		*newlex;
 	char		*result;
 
-	if (!lex) 
+	if (!lex)
 		return (NULL);
 	result = ft_calloc(ft_strlen(lex) + 1, sizeof(char));
-	if (!result) 
+	if (!result)
 		return (NULL);
 	oldlex = lex;
 	newlex = result;
-	while (*oldlex) 
+	while (*oldlex)
 	{
 		if (*oldlex == '\\' && *(oldlex + 1) == '\\')
 		{

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/25 12:56:48 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 16:44:06 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ int loop();
 bool		init_data(t_data **data);
 bool		init_data2(t_data **data);
 bool		init_env_darray(t_darray **env_array);
-int			set_up_std_signals(void);
+int			set_up_rd_signals(void);
+int			set_up_signals(void);
 void		mainloop(t_data *data);
 void		tokenize_and_parse(t_data *data);
 int			single_command_loop(const char *input);

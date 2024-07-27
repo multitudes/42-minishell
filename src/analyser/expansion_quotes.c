@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:01:22 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:06:46 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	expand_single_quotes(t_token *token)
 
 	if (token && token->lexeme)
 	{
-		lexeme = ft_strtrim(token->lexeme, "'"); 
+		lexeme = ft_strtrim(token->lexeme, "'");
 		free(token->lexeme);
 		token->lexeme = lexeme;
 		token->type = QUOTE_EXPANDED;
