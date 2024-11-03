@@ -26,7 +26,7 @@ jobs:
       run: ls -la tests_integration
       
     - name: Upload log file
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: log-file
         path: tests_integration/tests.log
