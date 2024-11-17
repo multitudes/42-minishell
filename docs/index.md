@@ -210,7 +210,7 @@ Their main use is to group arguments that get executed together when parsing the
 would ensure both commands would be executed before the result of the combined commands would be interpreted in the context of other commands and syntax surrounding the parantheses.
 Parantheses are also used in functions or for arithmetic operations, which we do not implement. 
 
-In our shell, parantheses are used to organize association in lists, i.e. which '&&' and '||' operators should be grouped together.
+In our shell, parantheses are used to organize association in lists, i.e. which '&&' and '\|\|' operators should be grouped together.
 
 ## Variable Names
 
@@ -604,35 +604,35 @@ These examples demonstrate how wildcards can be used in combination with various
 ## Delimiters 
 In bash, a delimiter is a character or a set of characters that separates different parts of the command line. The delimiters you've listed are a good start, but bash has a few more. Here's an expanded list:
 
-Space (' ')
-Tab ('\t')
-Newline ('\n')
-Semicolon (';')
-Pipe ('|')
-Ampersand ('&')
-Less than ('<')
-Greater than ('>')
-Open parenthesis ('(')
-Close parenthesis (')')
-Open curly brace ('{')
-Close curly brace ('}')
-Open square bracket ('[')
-Close square bracket (']')
-Dollar sign ('$')
-Backtick (''`)
-Double quote ('"')
-Single quote ('\'')
-Backslash ('\\')
-Equals ('=')
-Plus ('+')
-Minus ('-')
-Asterisk ('*')
-Slash ('/')
-Comma (',')
-Exclamation mark ('!')
-Tilde ('~')
-Caret ('^')
-Percent ('%')
+Space (' ')  
+Tab ('\t')  
+Newline ('\n')  
+Semicolon (';')  
+Pipe ('|')  
+Ampersand ('&')  
+Less than ('<')  
+Greater than ('>')  
+Open parenthesis ('(')  
+Close parenthesis (')')  
+Open curly brace ('{')  
+Close curly brace ('}')  
+Open square bracket ('[')  
+Close square bracket (']')  
+Dollar sign ('$')  
+Backtick (''`)  
+Double quote ('"')  
+Single quote ('\'')  
+Backslash ('\\')  
+Equals ('=')  
+Plus ('+')  
+Minus ('-')  
+Asterisk ('*')  
+Slash ('/')  
+Comma (',')  
+Exclamation mark ('!')  
+Tilde ('~')  
+Caret ('^')  
+Percent ('%')  
 
 
 ## {} and [] in bash scripts
