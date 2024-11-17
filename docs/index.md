@@ -694,23 +694,13 @@ case "$variable" in
 esac
 ```
 
-## Control Operators
-
-A control operator in bash is one of those ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’
-
-these control operators do have precedence and associativity rules, similar to operators in programming languages. Here's a rough breakdown:  
-1. && and || have the same precedence and are left-associative. They allow you to execute a command based on the success (&&) or failure (||) of the previous command.
-2. ; and & have the same precedence, which is lower than && and ||. They allow you to separate commands (;) or run a command in the background (&).
-3. | and |& have higher precedence than &&, ||, ;, and &. They allow you to create pipelines, where the output of one command is used as the input of the next command (|), or where both the output and error output of one command are used as the input of the next command (|&).
-4. ( and ) can be used to group commands, which can override the default precedence rules.
-5. ;;, ;&, and ;;& are used in the context of a case statement to separate different cases.
 
 ## Wildcards
 
 For wildcard expansion, you would typically use the glob function, as I mentioned in the previous response. Here's how you can modify your code to expand wildcards in the input:
 For example, if a user types ls *.txt, the shell should expand the *.txt wildcard to a list of all .txt files in the current directory.
 
-```
+```bash
 #include <glob.h>
 
 // ...
@@ -747,9 +737,9 @@ free(input);
 
 Signals are used by the operating system to notify a process of various events, such as a segmentation fault or a user interrupt. 
 
-The __interrupt and __irq keywords are used in some programming languages and environments to declare interrupt service routines (ISRs). An ISR is a special kind of function that is executed in response to an interrupt signal.
-An interrupt is a signal to the processor emitted by hardware or software indicating an event that needs immediate attention. The processor responds by suspending its current activities, saving its state, and executing a function called an interrupt handler (or an interrupt service routine, ISR) to deal with the event. This activity is called "servicing the interrupt."
-The __interrupt or __irq keyword is used to tell the compiler that the declared function is an ISR. This can affect the generated code for the function, as ISRs often need to save and restore more processor state than regular functions, and may need special instructions for returning from the function.
+The `__interrupt` and `__irq` keywords are used in some programming languages and environments to declare interrupt service routines (ISRs). An ISR is a special kind of function that is executed in response to an interrupt signal.  
+An interrupt is a signal to the processor emitted by hardware or software indicating an event that needs immediate attention. The processor responds by suspending its current activities, saving its state, and executing a function called an interrupt handler (or an interrupt service routine, ISR) to deal with the event. This activity is called "servicing the interrupt."  
+The `__interrupt` or `__irq` keyword is used to tell the compiler that the declared function is an ISR. This can affect the generated code for the function, as ISRs often need to save and restore more processor state than regular functions, and may need special instructions for returning from the function.  
 
 ## Input Special Characters
 
@@ -760,8 +750,8 @@ In this command, `echo -e` enables interpretation of backslash escapes, and `
 In C, you can represent a character in hexadecimal by using the `\x` escape sequence followed by the hexadecimal value. For example, `\x04` represents the character with the ASCII value 4.
 If you want to input a character in hexadecimal in your program, you can simply include it in a string or character literal. For example:
 
-char c = '\x04';
-char *s = "\x04";
+`char c = '\x04';`  
+`char *s = "\x04";`
 
 ## Expansion in Bash
 
@@ -769,7 +759,7 @@ In bash, expansion refers to the process of replacing a special character or seq
 
 - $identifier or ${identifier} is used for variable expansion. The identifier is the name of the variable. Bash replaces $identifier or ${identifier} with the value of the variable.
 ex:
-```
+```bash
 name="Alice"
 echo "Hello, $name"
 ```
