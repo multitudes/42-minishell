@@ -43,12 +43,12 @@ The project lies at the intersection of C programming and system programming. Ev
 ### Some more Definitions from the Bash Manual and POSIX Shell Manuals
 - POSIX: A family of open system standards based on Unix.
 - Builtin: A command that is implemented internally by the shell itself, rather than by an executable program somewhere in the file system.
-- Operator: A control operator or a redirection operator.
-	- Control operator: A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
-	- Redirection operator: A token redirects input and out put to and from files by manipulating file descriptors: '<', '>', '>>', '&>'
-	- Heredoc: '<<'
+- Operator: A control operator or a redirection operator.  
+Control operator: A token that performs a control function. It is a newline or one of the following: ‘\|\|’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘\|’, ‘\|&’, ‘(’, or ‘)’.  
+Redirection operator: A token redirects input and out put to and from files by manipulating file descriptors: '<', '>', '>>', '&>'  
+Heredoc: '<<'  
 - Exit status: The value returned by a command to its caller. The value is restricted to eight bits, so the maximum value is 255.
-- Metacharacter: A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
+- Metacharacter: A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘\|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
 - Reserved word: A word that has a special meaning to the shell. Most reserved words introduce shell flow control constructs, such as 'for' and 'while'. (not strictly enforced by the shell)
 - Signal: A mechanism by which a process may be notified by the kernel of an event occurring in the system.
 - Token: A sequence of characters considered a single unit by the shell. It is either a word or an operator.
@@ -768,11 +768,11 @@ The __interrupt or __irq keyword is used to tell the compiler that the decla
 
 ## Input Special Characters
 
-In a bash shell, you can input a character in hexadecimal using the format $'\xHH', where HH is the hexadecimal value. For example, $'\x04' represents the character with the ASCII value 4.
-echo -e "The control character for end of transmission is $'\x04'"
-In this command, echo -e enables interpretation of backslash escapes, and $'\x04' is replaced by the character with the ASCII value 4.
+In a bash shell, you can input a character in hexadecimal using the format `$'\xHH'`, where HH is the hexadecimal value. For example, `$'\x04'` represents the character with the ASCII value 4.
+echo -e "The control character for end of transmission is `$'\x04'`"
+In this command, `echo -e` enables interpretation of backslash escapes, and `$'\x04'` is replaced by the character with the ASCII value 4.
 
-In C, you can represent a character in hexadecimal by using the \x escape sequence followed by the hexadecimal value. For example, \x04 represents the character with the ASCII value 4.
+In C, you can represent a character in hexadecimal by using the `\x` escape sequence followed by the hexadecimal value. For example, `\x04` represents the character with the ASCII value 4.
 If you want to input a character in hexadecimal in your program, you can simply include it in a string or character literal. For example:
 
 char c = '\x04';
