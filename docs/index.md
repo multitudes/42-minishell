@@ -635,62 +635,49 @@ Caret ('^')
 Percent ('%')  
 
 
-## {} and [] in bash scripts
+## `{}` and `[]` in bash scripts
 they have specific meanings:
 
-{}: Curly braces are used in bash for variable expansion (${variable}), brace expansion ({1..10}), and to define blocks of code (like in if statements and functions).
+`{}`: Curly braces are used in bash for variable expansion (${variable}), brace expansion ({1..10}), and to define blocks of code (like in if statements and functions).
 
-[]: Square brackets are used in bash for array indexing (array[0]), and to test conditions ([ $a -lt 10 ] or [[ $a -lt 10 ]]).
+`[]`: Square brackets are used in bash for array indexing: `array[0]`, and to test conditions: `[ $a -lt 10 ]` or `[[ $a -lt 10 ]]`.
 
-Here are some examples:
+Here are some examples:  
 
-Variable expansion: echo ${variable}
-Brace expansion: echo {1..10}
+Variable expansion: `echo ${variable}`  
+Brace expansion: `echo {1..10}`  
 
-./myscript arg1 arg2 arg3
+When:  
+`./myscript arg1 arg2 arg3`
 
-Then inside myscript, $# will be 3, because three arguments were passed to the script.
+Inside myscript, $# will be 3, because three arguments were passed to the script and I can access them using `$1`, `$2`, and `$3`.
 
-The ^ symbol in bash has a few different uses:
-1. In regular expressions, ^ is used to denote the start of a line. For example, ^abc matches any line that starts with "abc".
-2. In parameter substitution, ${var^} converts the first character of $var to uppercase.
-3. In parameter substitution, ${var^^} converts all characters of $var to uppercase.
-4. In the tr command, ^ is used to denote a range of characters. For example, tr A-Z a-z converts uppercase letters to lowercase.
-5. In the tr command, ^ is used to complement a set of characters when it's the first character in a set. For example, tr -d '^0-9' deletes all characters that are not digits.
-6. In the diff command, ^ is used to denote lines that are different between two files.
+The `^` symbol in bash has a few different uses:
+1. In regular expressions, `^` is used to denote the start of a line. For example, `^abc` matches any line that starts with "abc".
+2. In parameter substitution, `${var^}` converts the first character of $var to uppercase.
+3. In parameter substitution, `${var^^}` converts all characters of $var to uppercase.
+4. In the tr command, `^` is used to denote a range of characters. For example, tr A-Z a-z converts uppercase letters to lowercase.
+5. In the `tr` command, `^` is used to complement a set of characters when it's the first character in a set. For example, `tr -d '^0-9'` deletes all characters that are not digits.
+6. In the `diff` command, `^` is used to denote lines that are different between two files.
 
-The <> operator in bash is used for opening a file in read-write mode. Here's an example:
+The `<>` operator in bash is used for opening a file in read-write mode. Here's an example:  
+`command <> file`
 
-command <> file
+This command will run command, with file opened in read-write mode on standard input.  
 
-This command will run command, with file opened in read-write mode on standard input.
+`command 1>>file 2>&1`
 
-command 1>>file 2>&1
+This command will run `command`, and append both the `stdout` and `stderr` to file.
+Bash 4 and later shortened to:  
+`command &>>file`
 
-
-This command will run command, and append both the stdout and stderr to file.
-Bash 4 and later shortened to
-command &>>file
-
-
-Yes, you can use {} and [] in bash scripts, but they have specific meanings:
-* {}: Curly braces are used in bash for variable expansion (${variable}), brace expansion ({1..10}), and to define blocks of code (like in if statements and functions).
-* []: Square brackets are used in bash for array indexing (array[0]), and to test conditions ([ $a -lt 10 ] or [[ $a -lt 10 ]]).
-Here are some examples:
-* Variable expansion: echo ${variable}
-* Brace expansion: echo {1..10}
-* Code block:```if [ $a -lt 10 ]then  echo "a is less than 10"fi```
-* Array indexing: echo ${array[0]}
-* Test conditions: if [ $a -lt 10 ] or if [[ $a -lt 10 ]]
-
-
-No, the symbols ;;, ;&, and ;;& cannot be at the beginning of a command line in bash.
-These symbols are used in the context of a case statement in bash scripting:
-* ;; is used to end each case in a case statement.
-* ;& allows execution to continue with the next case clause, rather than exiting the case statement.
-* ;;& allows the shell to test the next pattern list in the case statement.
-Here's an example of how they might be used:
-```
+The symbols `;;`, `;&`, and `;;&` cannot be at the beginning of a command line in bash.  
+These symbols are used in the context of a case statement in bash scripting:  
+* `;;` is used to end each case in a case statement.
+* `;&` allows execution to continue with the next case clause, rather than exiting the case statement.
+* `;;&` allows the shell to test the next pattern list in the case statement.
+Here's an example of how they might be used: 
+```bash
 case "$variable" in
   pattern1)
     command1
@@ -705,15 +692,13 @@ case "$variable" in
     default_command
     ;;
 esac
-
 ```
-
 
 ## Control Operators
 
 A control operator in bash is one of those ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’
 
-these control operators do have precedence and associativity rules, similar to operators in programming languages. Here's a rough breakdown:
+these control operators do have precedence and associativity rules, similar to operators in programming languages. Here's a rough breakdown:  
 1. && and || have the same precedence and are left-associative. They allow you to execute a command based on the success (&&) or failure (||) of the previous command.
 2. ; and & have the same precedence, which is lower than && and ||. They allow you to separate commands (;) or run a command in the background (&).
 3. | and |& have higher precedence than &&, ||, ;, and &. They allow you to create pipelines, where the output of one command is used as the input of the next command (|), or where both the output and error output of one command are used as the input of the next command (|&).
