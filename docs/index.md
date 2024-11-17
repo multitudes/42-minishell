@@ -133,9 +133,9 @@ Some of the tokens that are of interest to us:
 
 Also there is the question of priority:
 
-- `&&` and `\|\|` have the same precedence and are left-associative. They allow you to execute a command based on the success (`&&`) or failure (`\|\|`) of the previous command.  
-- `;` and `&` have the same precedence, which is lower than `&&` and `\|\|`. They allow you to separate commands (`;`) or run a command in the background (`&`).  
-- `\|` and `\|&` have higher precedence than `&&`, `\|\|`, `;`, and `&`. They allow you to create pipelines, where the output of one command is used as the input of the next command (`|`), or where both the output and error output of one command are used as the input of the next command (`\|&`).  
+- `&&` and `||` have the same precedence and are left-associative. They allow you to execute a command based on the success (`&&`) or failure (`||`) of the previous command.  
+- `;` and `&` have the same precedence, which is lower than `&&` and `||`. They allow you to separate commands (`;`) or run a command in the background (`&`).  
+- `|` and `|&` have higher precedence than `&&`, `||`, `;`, and `&`. They allow you to create pipelines, where the output of one command is used as the input of the next command (`|`), or where both the output and error output of one command are used as the input of the next command (`|&`).  
 - `(` and `)` can be used to group commands, which can override the default precedence rules.  
 - `;;`, `;&`, and `;;&` are used in the context of a case statement to separate different cases.  
 - `[[` and `]]` are used for conditional expressions.  
