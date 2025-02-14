@@ -1,2 +1,2 @@
 include:
-  - index.md
+  - _includes/head-custom.html

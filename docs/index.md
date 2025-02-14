@@ -64,7 +64,7 @@ The shell then parses these tokens into commands and other constructs, removes t
 
 ## The Subject of the Assignment
 
-We have restrictions in what we are allowed to use, summarized here: [subject and allowed functions](assets/allowed_functions.md).  
+We have restrictions in what we are allowed to use, summarized here: [subject and allowed functions](assets-md/allowed_functions.md).  
 
 ## Architecture
 A well defined architecture is a better experience for team work, but it doesnt come free, takes work and modularity is key. But when modularity doesn’t end up being helpful, it quickly becomes actively harmful and it spirals out of control.
@@ -143,7 +143,7 @@ Also there is the question of priority:
 
 How do we write down a grammar that contains an infinite number of valid strings? We obviously can’t list them all out. Instead, we create a finite set of rules.  
 This is from the book "Crafting Interpreters" by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:  
-<img src="assets/expression_grammar.png" alt="Expression Grammar" width="400">
+<img src="assets-md/expression_grammar.png" alt="Expression Grammar" width="400">
 
 ## Grammar of our Shell
 This is a good starting point for our grammar.
@@ -1324,7 +1324,7 @@ all: $(LIBFT) $(NAME) tests tests_integration
 and it makes a directory if it not already exists. The files will be deleted when the program ends.
 
 <div style="text-align: center;">
-<img src="assets/heredocs.png" alt="hello world" style="width: 50%;display: inline-block;" />
+<img src="assets-md/heredocs.png" alt="hello world" style="width: 50%;display: inline-block;" />
 </div>
 
 ## The ioctl() System Call
@@ -1376,7 +1376,7 @@ In this example, the output of command1 is piped into command2. If either comman
 ## Associativity
 This is about building the correct ast tree... the image is self explanatory. (image by hhj3 youtube)
 
-<img src="assets/associativity.jpg" alt="associativity" width="400">
+<img src="assets-md/associativity.jpg" alt="associativity" width="400">
 
 ## Display the stderr
 A good idea is to display the std error with all the debug messages on a different window in the terminal. For this we have two ways:
