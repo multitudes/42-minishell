@@ -7,6 +7,8 @@ This team project is about creating a simple shell.
 
 We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  
 
+You can read this documentation onluine on [github.io](https://multitudes.github.io/42-minishell/).  
+
 ## What is a Shell?
 A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them through the core operating system. Generally, a shell is a user interface that allows us to use computer resources such as memory and system functions, without having to manage all of the needed system interactions manually.
 
