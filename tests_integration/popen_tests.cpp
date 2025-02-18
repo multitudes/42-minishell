@@ -30,13 +30,9 @@ const char* test_popen()
 	return NULL;
 }
 
-/*
-more minishell tests.
-test echo -n -nnn hello -n
-*/
+
 const char* test_echo() 
 {
-
     debug("running test_popen\n");
     fflush(stdout);
 
@@ -44,16 +40,13 @@ const char* test_echo()
 	std::string arg = "echo -n -nnn hello -n";
 	uint8_t exit_status = run_command_and_check_output(arg, result);
     debug("result: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "hello ", "output is not hello\n");
+	my_assert(result.str() == "hello -n", "output is not hello -n\n");
 	debug("exit_status: %d\n", exit_status);
 	// my_assert(exit_status == 0, "exit status is not 0\n");
 	return NULL;
 }
 
-/*
-print the value of the HOME environment variable
 
-*/
 const char* test_echo2() 
 {
     debug("running test_popen\n");
@@ -92,7 +85,6 @@ print the value of the HOME environment variable
 */
 const char* test_echo3() 
 {
-
     debug("running test_popen\n");
     fflush(stdout);
 
@@ -108,10 +100,6 @@ const char* test_echo3()
 	exit_status = run_command_and_check_output(arg, result);
 	
 	std::string output = result.str();
-    // remove the trailing newline from the output
-    // if (!output.empty() && output.back() == '\n') {
-    //     output.pop_back();
-    // }
     debug("output: -%s-", output.c_str());
 	my_assert(output == "hello\n", "output is not as expected\n");
 	my_assert(exit_status == 0, "exit status is not 0\n");
@@ -120,17 +108,15 @@ const char* test_echo3()
 
 const char *all_tests()
 {
-	if (isRunningOnGitHubActions())
-	{
-		// necessary to start the test suite
-		suite_start();
-		
-		// run the tests
-		run_test(test_popen);
-		run_test(test_echo);
-		run_test(test_echo2);
-		run_test(test_echo3);
-	}
+	// necessary to start the test suite
+	suite_start();
+	
+	// run the tests
+	run_test(test_popen);
+	run_test(test_echo);
+	run_test(test_echo2);
+	run_test(test_echo3);
+	
 	return NULL;
 }
 
