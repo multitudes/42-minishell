@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 14:55:44 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:35:00 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,6 @@ void	*parse_pipeline_innerloop(t_ast_node **a, t_list **tokenlist)
 	return (*a);
 }
 
-/*
- * Parsing a pipeline
- */
 t_ast_node	*parse_pipeline(t_list **tokenlist)
 {
 	t_ast_node	*a;

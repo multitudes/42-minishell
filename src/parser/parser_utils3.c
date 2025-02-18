@@ -6,18 +6,18 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:01:24 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:33:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-/*
-when I extract tokens from a parenthesis or expression
-I need to check if there if the list has just normal tokens or
-it will potentially create a node like pipe or a new list
-because I will handle them differently
-*/
+/** 
+ * when I extract tokens from a parenthesis or expression
+ * I need to check if there if the list has just normal tokens or
+ * it will potentially create a node like pipe or a new list
+ * because I will handle them differently
+ */  
 bool	tokenlist_has_astnode(t_list *new_tokenlist)
 {
 	t_list	*tmp;

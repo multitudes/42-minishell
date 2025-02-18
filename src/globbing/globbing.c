@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:50:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:45:04 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:28:18 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 /*
  * This function will initialize the struct used in globbing func
  * it will return true if it was successful
-*/
+ */
 bool	init(t_globbing *gl)
 {
 	gl->dirp = opendir(".");
@@ -46,7 +46,7 @@ bool	init(t_globbing *gl)
  * This function will loop through the directory and check 
  * if the files match the pattern it will return true if 
  * it was successful and if the directory entry is not null
-*/
+ */
 bool	globbing_loop(t_darray *files, const char *pat, t_globbing gl)
 {
 	bool	result;
@@ -102,7 +102,7 @@ t_list	*create_globbing_tokenlist(t_darray *files)
  * This function will expand the globbing pattern
  * it will return nothing but will modify the tokenlist
  * if the pattern matches the files in the directory
-*/
+ */
 void	expand_globbing(t_list **tokenlist)
 {
 	char		*pat;

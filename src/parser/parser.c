@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:39:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/22 12:07:01 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:34:21 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,32 +81,3 @@ void	*free_ast(t_ast_node **ast)
 	*ast = NULL;
 	return (NULL);
 }
-
-/* 
- * For debugging: print the ast tree  
- * Each node is printed with its type.
- * the content of each node in the linked list is a t_token like:
- * 
- * typedef struct	s_token {
- * 	t_tokentype	type;
- * 	char		*lexeme;
- * 	int 		start;
- * }				t_token ;
- * typedef struct s_token t_token;
- */
-// void	print_ast(t_ast_node *a, int level)
-// {
-// 	t_list	*tokenlist;
-
-// 	if (a == NULL)
-// 		return ;
-// 	tokenlist = a->tokenlist;
-// 	if (tokenlist == NULL || tokenlist->content == NULL)
-// 		return ;
-// 	while (tokenlist)
-// 		tokenlist = tokenlist->next;
-// 	if (a->left)
-// 		print_ast(a->left, ++level);
-// 	if (a->right)
-// 		print_ast(a->right, ++level);
-// }

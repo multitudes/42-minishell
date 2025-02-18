@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 12:34:38 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:43:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:38:44 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
  * it makes sense to collect what we malloc in our data struct
  * because it is easier to free at the end or when we need to exit
  * tokenlist is freed in the loop with the ast
-*/
+ */
 void	free_data(t_data **data)
 {
 	if (data == NULL || *data == NULL)

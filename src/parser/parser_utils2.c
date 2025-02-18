@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 09:30:42 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:38:50 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:33:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #include "scanner.h"
 #include "libft.h"
 
-/*
-returns the next token after deleting the current token
-and connecting the previous and next token
-*/
+/**
+ * returns the next token after deleting the current token
+ * and connecting the previous and next token
+ */
 bool	consume_token_and_connect(t_list **input_tokens)
 {
 	t_list	*ptr_to_next;
@@ -42,7 +42,7 @@ bool	consume_token_and_connect(t_list **input_tokens)
 /*
  * returns the next token but also breaks the list before the node 
  * performing the necessary checks
-*/
+ */
 bool	movetonexttoken_andbreak(t_list **input_tokens)
 {
 	if (*input_tokens == NULL)

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 12:48:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 14:06:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:38:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ bool	save_fds(t_data *data)
  * because in the other cases we always fork and exec
  * yes I think we need to close the original fds
  * https://stackoverflow.com/a/11042581/9497800
-*/
+ */
 static void	restore_stdin(t_data *data)
 {
 	if (data->original_stdin != -1)
@@ -61,7 +61,7 @@ static void	restore_stdin(t_data *data)
 
 /*
  * Restores the original stdout file descriptors
-*/
+ */
 static void	restore_stdout(t_data *data)
 {
 	if (data->original_stdout != -1)

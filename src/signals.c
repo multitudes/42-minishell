@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 12:10:12 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/22 16:44:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:42:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,44 +21,38 @@
 #include "utils.h"
 #include "debug.h"
 
-/*
-Allowed global variable for signals only. 
-will record the signal number which has been received
-We should check first if using WTERMSIG(status) is enough
-otherwise we might need this. WTERMSIG(status) returns the signal number
-that caused the child to terminate when the child did not
-exit normally and it has been added to the executor.
-*/
+/** 
+ * Allowed global variable for signals only. 
+ * will record the signal number which has been received
+ * We should check first if using WTERMSIG(status) is enough
+ * otherwise we might need this. WTERMSIG(status) returns the signal number
+ * that caused the child to terminate when the child did not
+ * exit normally and it has been added to the executor.
+ */
 int			g_signal;
 
-/*
-The environ variable is part of the POSIX standard, so it should be 
-available on any POSIX-compliant system.
-according to the linux programming language by kerrisk (page 127), using
-the environ variable is better than getting it in main.. (not posix compliant)
-*/
 extern char	**environ;
 
-/*
-for signals
-The readline library maintains an internal buffer of the current 
-line being edited. 
-This buffer is separate from what's displayed on the terminal.
-When a signal like SIGINT is received, you might want to clear this 
-buffer so that the user starts with a fresh line after the signal 
-is handled.
-Here's what each function does:
-rl_on_new_line(): This function tells readline that the cursor is 
-on a new line, so it should not try to clear the current line 
-when redisplaying the prompt.
-rl_replace_line("", 0): This function replaces the contents of 
-readline's internal buffer with an empty string. The 0 argument 
-means that the cursor should be placed at the start of the line.
-rl_redisplay(): This function updates the display to match 
-the current contents of the line buffer. Since you've just 
-cleared the line buffer, this will effectively clear the line on 
-the terminal.
-*/
+/** 
+ * for signals
+ * The readline library maintains an internal buffer of the current 
+ * line being edited. 
+ * This buffer is separate from what's displayed on the terminal.
+ * When a signal like SIGINT is received, you might want to clear this 
+ * buffer so that the user starts with a fresh line after the signal 
+ * is handled.
+ * Here's what each function does:
+ * rl_on_new_line(): This function tells readline that the cursor is 
+ * on a new line, so it should not try to clear the current line 
+ * when redisplaying the prompt.
+ * rl_replace_line("", 0): This function replaces the contents of 
+ * readline's internal buffer with an empty string. The 0 argument 
+ * means that the cursor should be placed at the start of the line.
+ * rl_redisplay(): This function updates the display to match 
+ * the current contents of the line buffer. Since you've just 
+ * cleared the line buffer, this will effectively clear the line on 
+ * the terminal.
+ */
 static void	sigint_handler(int sig)
 {
 	(void)sig;
@@ -88,21 +82,22 @@ static void	sigquit_handler(int sig)
 	g_signal = SIGQUIT;
 }
 
-/*
-on mac with ctrl - c , I get a new line on bash without 
-displaying ^C
-signal handling:
-◦ ctrl-C SIGINT displays a new prompt on a new line. 
-◦ ctrl-D exits the shell.
-◦ ctrl-\ SIGQUIT does nothing.	
-this line is maybe not needed rl_catch_signals = 0;
-but works better on the mac... producing result closer 
-to the bash shell mac version
-all other signals are sent to the handler so we update the global
-variable with the number of the signal received but 
-usually only SIGINT is handled. the value of sigint is 2 
-whichy is added to 128 and gives 130, the exit code for ctrl-c
-*/
+/** 
+ * on mac with ctrl - c , I get a new line on bash without 
+ * displaying ^C
+ * 
+ * signal handling:
+ * ◦ ctrl-C SIGINT displays a new prompt on a new line. 
+ * ◦ ctrl-D exits the shell.
+ * ◦ ctrl-\ SIGQUIT does nothing.	
+ * this line is maybe not needed rl_catch_signals = 0;
+ * but works better on the mac... producing result closer 
+ * to the bash shell mac version
+ * all other signals are sent to the handler so we update the global
+ * variable with the number of the signal received but 
+ * usually only SIGINT is handled. the value of sigint is 2 
+ * whichy is added to 128 and gives 130, the exit code for ctrl-c
+ */
 int	set_up_rd_signals(void)
 {
 	if (isatty(STDIN_FILENO) == -1)

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 02:19:34 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:33:34 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:29:32 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ static bool	process_line(t_heredoc *heredoc, int i, int heredoc_fd, char *line)
 	return (status);
 }
 
-/*
-Open a file for writing heredoc content to
-and update the file descriptor passed as argument.
-*/
+/** 
+ * Open a file for writing heredoc content to
+ * and update the file descriptor passed as argument.
+ */
 static bool	open_heredoc_file(char *file, int *fd)
 {
 	*fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, \
@@ -57,9 +57,9 @@ static bool	open_heredoc_file(char *file, int *fd)
 	return (true);
 }
 
-/*
-Read and save content of final heredoc.
-*/
+/** 
+ * Read and save content of final heredoc.
+ */
 static bool	read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 {
 	char	*line;
@@ -86,9 +86,9 @@ static bool	read_heredoc(t_heredoc *heredoc, t_data *data, int i)
 	return (true);
 }
 
-/*
-Prompt for each delimiter and advancing to next heredoc/delimiter.
-*/
+/** 
+ * Prompt for each delimiter and advancing to next heredoc/delimiter.
+ */
 static bool	advance_to_final_delim(t_heredoc *heredoc, t_data *data)
 {
 	int	i;
@@ -103,10 +103,10 @@ static bool	advance_to_final_delim(t_heredoc *heredoc, t_data *data)
 	return (true);
 }
 
-/*
-Reads heredoc content. Only input for final delimiter
-gets saved and passed to stdin of any commands.
-*/
+/** 
+ * Reads heredoc content. Only input for final delimiter
+ * gets saved and passed to stdin of any commands.
+ */
 bool	process_heredoc(t_heredoc *heredoc, t_data *data)
 {
 	if (!advance_to_final_delim(heredoc, data))

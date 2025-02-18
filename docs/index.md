@@ -11,6 +11,10 @@ This team project is about creating a simple shell.
 
 We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  
 
+We gave our shell the name "splash", acronym for "SimPLe A SHell".
+
+![splash](../assets/splash.png)
+
 ## What is a Shell?
 A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them through the core operating system. Generally, a shell is a user interface that allows us to use computer resources such as memory and system functions, without having to manage all of the needed system interactions manually.
 
@@ -21,6 +25,7 @@ The bash manual describes a shell as follows:
 - Shells also provide a small set of builtin commands (builtins) implementing functionality impossible or inconvenient to obtain via separate utilities. For example, cd, break, continue, and exec cannot be implemented outside of the shell because they directly manipulate the shell itself. The history, getopts, kill, or pwd builtins, among others, could be implemented in separate utilities, but they are more convenient to use as builtin commands.
 
 - Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
+
 
 ## What We Learned
 The project lies at the intersection of C programming and system programming. Even a functionally significantly reduced shell such as ours requires the implementation of many submodules that combine and act together in myriad ways based on the specific user commands provided. To make this work we not only had to dive deep into C and linux system programming but also learned about and employed a range of other things:

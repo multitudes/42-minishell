@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 14:32:01 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/22 12:02:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:27:41 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 #include "splash.h"
 #include "splash_error.h"
 
-/*
-Checks if tokenlist contains a redirection token.
-*/
+/** 
+ * Checks if tokenlist contains a redirection token.
+ */
 bool	contains_redirection(t_list *tokenlist)
 {
 	t_tokentype	tokentype;

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 11:40:17 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/21 11:54:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:39:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,14 @@
 #include "splash.h"
 #include "splash_error.h"
 
-/*
-The environ variable is part of the POSIX standard, so it should be 
-available on any POSIX-compliant system.
-according to the linux programming language by kerrisk (page 127), using
-the environ variable is better than getting it in main.. (not posix compliant)
-*/
+/** 
+ * The environ variable is part of the POSIX standard, so it should be 
+ * available on any POSIX-compliant system.
+ * according to the linux programming language by kerrisk (page 127), using
+ * the environ variable is better than getting it in main.. (not posix compliant)
+ */
 extern char	**environ;
 
-/*
-initialiser for data
-It would be nice to to save the home dir at the very beginning
-*/
 bool	init_data(t_data **data)
 {
 	t_darray	*env_array;
@@ -80,10 +76,10 @@ bool	init_env_darray(t_darray **env_arr)
 	return (true);
 }
 
-/*
-with each new instance of the shell,
-the env variable SHLVL is increased by one.
-*/
+/** 
+ * with each new instance of the shell,
+ * the env variable SHLVL is increased by one.
+ */
 void	shlvl_init(t_data *data)
 {
 	char	*shlvl;

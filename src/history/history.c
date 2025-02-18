@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:41:53 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:32:05 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,6 @@
 #include "splash_error.h"
 #include "utils.h"
 
-/*
-Your shell should:
-- Have a working history.
-*/
 void	load_history(void)
 {
 	int		fd;
@@ -39,18 +35,10 @@ void	load_history(void)
 	close(fd);
 }
 
-/*
-- add_history to be able to scroll through the history of commands
-(readline built in)
-- write line to history file for persistence
-- add to history only if line is not empty
-we will check if the input is a command to delete the history!
-This would be
-history -c or history --clear
-
-returns true if the input is a history command! so I can skip the rest of the
-readline loop~!
-*/
+/**
+ * Adds input to history and history file.
+ * Returns true if input is a history command.
+ */
 bool	handle_history(const char *input)
 {
 	sanitize_input(input);
@@ -59,12 +47,12 @@ bool	handle_history(const char *input)
 	return (0);
 }
 
-/*
-MINIHISTFILE
-s an env var containing the path to the history file
-and if it doesnt exist I will creat it. 644 are permission for the file
-read only for others and W/R for the owner.
-*/
+/** 
+ * MINIHISTFILE 
+ * is an env var containing the path to the history file
+ * and if it doesnt exist I will creat it. 644 are permission for the file
+ * read only for others and W/R for the owner.
+ */
 bool	add_to_hist_file(const char *input)
 {
 	int		fd;
@@ -81,12 +69,6 @@ bool	add_to_hist_file(const char *input)
 	return (true);
 }
 
-/*
-MINIHISTFILE
-s an env var containing the path to the history file
-and if it doesnt exist I will creat it. 644 are permission for the file
-read only for others and W/R for the owner.
-*/
 int	clear_hist_file(void)
 {
 	int		fd;

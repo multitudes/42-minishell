@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:47:45 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:30:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 #include "splash_error.h"
 #include "libft.h"
 
-/*
-Removes all single and double qoutes from a string.
-*/
+/** 
+ * Removes all single and double qoutes from a string.
+ */
 static void	remove_quotes(char *string)
 {
 	int	i;
@@ -38,10 +38,9 @@ static void	remove_quotes(char *string)
 	string[j] = '\0';
 }
 
-/*
-Checks for and handles single/double quotes in heredoc delimiter.
-TODO handle inner quotes like bash
-*/
+/** 
+ * Checks for and handles single/double quotes in heredoc delimiter.
+ */
 bool	process_delim_quotes(t_heredoc *heredoc)
 {
 	int	i;
@@ -70,11 +69,11 @@ bool	process_delim_quotes(t_heredoc *heredoc)
 	return (true);
 }
 
-/*
-Allocated a filename in the format heredoc_i.
-Next available filename up to i = 19 is provided.
-Then allocations starts again from beginning.
-*/
+/** 
+ * Allocated a filename in the format heredoc_i.
+ * Next available filename up to i = 19 is provided.
+ * Then allocations starts again from beginning.
+ */
 static char	*get_heredoc_filename(void)
 {
 	static int	i = 0;
@@ -93,11 +92,11 @@ static char	*get_heredoc_filename(void)
 	return (new_filename);
 }
 
-/*
-Replaces heredoc delimiter in tokenlist
-with newly provided filename for storing heredoc contents.
-Also saves filename to heredoc struct.
-*/
+/** 
+ * Replaces heredoc delimiter in tokenlist
+ * with newly provided filename for storing heredoc contents.
+ * Also saves filename to heredoc struct.
+ */
 bool	create_heredoc_file(t_list *tokenlist, t_heredoc *heredoc)
 {
 	t_token	*token;
@@ -115,9 +114,9 @@ bool	create_heredoc_file(t_list *tokenlist, t_heredoc *heredoc)
 	return (true);
 }
 
-/*
-Frees the memory used for storing delimiter lexemes.
-*/
+/** 
+ * Frees the memory used for storing delimiter lexemes.
+ */
 void	free_heredoc(t_heredoc *heredoc)
 {
 	int	i;

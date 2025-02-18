@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 20:20:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/22 16:44:06 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:28:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@
 #include <readline/readline.h>
 #include <readline/history.h> // needed?
 
-/*
-Set up heredoc(s). Up to 20 heredocs/delimiters are supported.
-*/
+/** 
+ * Set up heredoc(s). Up to 20 heredocs/delimiters are supported.
+ */
 static bool	init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
 {
 	heredoc->delim_count = 0;
@@ -49,11 +49,10 @@ static bool	init_heredoc(t_list *tokenlist, t_heredoc *heredoc)
 	return (true);
 }
 
-/*
-TBC
-Executes heredoc and then passes heredoc to stdin of system command
-or calls builtin functions depending on ast node type.
-*/
+/** 
+ * Executes heredoc and then passes heredoc to stdin of system command
+ * or calls builtin functions depending on ast node type.
+ */
 bool	execute_heredoc(t_data *data)
 {
 	t_heredoc	heredoc;
@@ -73,9 +72,9 @@ bool	execute_heredoc(t_data *data)
 	return (outcome);
 }
 
-/*
-Checks for tokenlist syntax and heredoc token.
-*/
+/** 
+ * Checks for tokenlist syntax and heredoc token.
+ */
 static bool	is_heredoc_and_syntax_check(t_list **tokenlist)
 {
 	t_tokentype	tokentype;

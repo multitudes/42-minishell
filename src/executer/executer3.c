@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/22 16:45:22 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:27:08 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	execute_command(t_list *tokenlist, t_data *data)
 
 /*
  * Called in the pipe case to get the status of the children.
-*/
+ */
 int	get_status_of_children(pid_t pid1, pid_t pid2)
 {
 	int	status;

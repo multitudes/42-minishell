@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 09:41:09 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:33:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:29:52 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,10 @@ void	set_up_heredoc_signals(void)
 	return ;
 }
 
-/*
-removes leading backslash in lexeme (used to sanitize heredoc delimiters)
-*/
+/** 
+ * removes leading backslash in lexeme 
+ * (used to sanitize heredoc delimiters)
+ */
 static void	remove_leading_backslash(t_token *token)
 {
 	char	*temp;

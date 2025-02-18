@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 15:31:05 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:38:43 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:27:59 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ bool	supported_redirect_token(t_tokentype type)
 	return (false);
 }
 
-/*
-when I need to free a string array like the envpaths
-*/
+/** 
+ * Used when I need to free a string array like the envpaths
+ */
 int	free_array(char **envpaths)
 {
 	int	i;

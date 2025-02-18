@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 12:23:43 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/22 16:45:08 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:39:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 /*
  * central function of the loop.c file
-*/
+ */
 void	tokenize_and_parse(t_data *data)
 {
 	handle_history(data->input);
@@ -67,15 +67,8 @@ void	mainloop(t_data *data)
 }
 
 /*
-set_up_rd_signals() returns 1 but if it fails I leave it failing 
-silently or should we exit the program?
-The readLine() function, reads a line of input from
-the user on the command line and returns the result.
-To kill an interactive command-line app, type Control-D.
-Doing so signals an “end-of-file” condition to the program.
-When that happens readLine() returns null ,
-so we check for that to exit the loop.
-*/
+ * main loop of the minishell
+ */
 int	loop(void)
 {
 	t_data	*data;

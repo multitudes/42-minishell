@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:37:46 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:42:38 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@
 #include "scanner.h"
 #include <stdbool.h>
 
-/*
- The strndup() function is similar to ft_strdup, but copies at most n bytes. 
- If s is longer than n, only n bytes are copied,
- and a terminating null byte ('\0') is added.
- The duplicate string is allocated with malloc, which needs to be freed.
-*/
+/** 
+ * The strndup() function is similar to ft_strdup, but copies at most n bytes. 
+ * If s is longer than n, only n bytes are copied,
+ * and a terminating null byte ('\0') is added.
+ * The duplicate string is allocated with malloc, which needs to be freed.
+ */
 char	*ft_strndup(const char *s, size_t n)
 {
 	size_t	i;
@@ -45,20 +45,18 @@ char	*ft_strndup(const char *s, size_t n)
 	return (new_str);
 }
 
-/*
-util . otherwise non ascii chars like ∂ will wreac havoc and the read function
-will stop reading the file.
-inline functions are typically defined in header files (cant do it here)
-*/
+/**
+ * Ensuring I am dealing with ASCII characters only.
+ */
 int	ft_isascii(const int c)
 {
 	return (c >= 0 && c <= 127);
 }
 
-/*
-This function joins three strings together.
-The first string should not be NULL but could be an empty string.
-*/
+/**
+ * This function joins three strings together.
+ * The first string should not be NULL but could be an empty string.
+ */
 char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 {
 	char	*result;
@@ -74,9 +72,9 @@ char	*ft_strjoin3(const char *s1, const char	*s2, const char	*s3)
 	return (result);
 }
 
-/*
-Counts the number of occurances of a char c in a string.
-*/
+/** 
+ * Counts the number of occurances of a char c in a string.
+ */
 int	count_char_in_str(char *str, char c)
 {
 	int	i;
@@ -93,11 +91,11 @@ int	count_char_in_str(char *str, char c)
 	return (count);
 }
 
-/*
-Returns true if all chars in str are an ascii digit.
-Initial char can be '+' or '-'.
-Returns falls if str is NULL.
-*/
+/** 
+ * Returns true if all chars in str are an ascii digit.
+ * Initial char can be '+' or '-'.
+ * Returns falls if str is NULL.
+ */
 bool	ft_isnumstring(const char *str)
 {
 	int	i;

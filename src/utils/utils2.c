@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 17:37:39 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/22 12:07:30 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:38:24 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 #include "utils.h"
 #include "splash_error.h"
 
-/*
-util function to replace a token with a new 
-tokenlist
+/** 
+ * util function to replace a token with a new tokenlist
 */
 void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, \
 										t_list *new_tokenlist)
@@ -55,7 +54,7 @@ void	replace_token_with_tokenlist(t_list **head, t_list **tokenlist, \
  * is the first node
  * node - the node to be replaced - it will be freed also
  * newlist - the new list to replace the node
-*/
+ */
 void	replace_node_with_newlist(t_list **node, t_list *newlist)
 {
 	t_list	*prev;
@@ -82,11 +81,11 @@ void	replace_node_with_newlist(t_list **node, t_list *newlist)
 		*node = tmp;
 }
 
-/*
-wrapper for the system write function to simplify syntax
-and perform write return value checking.
-Returns FALSE if write call returns error.
-Returns TRUE if empty string is passed as argument so that !
+/** 
+ * wrapper for the system write function to simplify syntax
+ * and perform write return value checking.
+ * Returns FALSE if write call returns error.
+ * Returns TRUE if empty string is passed as argument so that !
 */
 bool	ft_write(int fd, const char *str)
 {
@@ -101,8 +100,8 @@ bool	ft_write(int fd, const char *str)
 	return (true);
 }
 
-/*
-Write to fd and update status in case of write failure.
+/** 
+ * Write to fd and update status in case of write failure.
 */
 bool	write_data(int fd, const void *str, uint8_t *status)
 {

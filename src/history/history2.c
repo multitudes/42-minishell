@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 10:36:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 10:40:05 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:32:48 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,9 @@ int	print_history(void)
 	return (EXIT_SUCCESS);
 }
 
-/*
-The char input is sanitized by removing all non ascii characters
-andn it is coming from a dynamic memory allocation so I can 
-overwrite it- interestingly the compiler did not complain about it
-being const maybe because the pointer is const... but the contents
-can vary? 
-*/
+/**
+ * The char input is sanitized by removing all non ascii characters
+ */
 bool	sanitize_input(const char *input)
 {
 	int		i;

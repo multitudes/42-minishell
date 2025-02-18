@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 14:48:30 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 16:32:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:27:27 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,11 @@ uint8_t	iterate_tokenlist_for_redirections(t_ast_node **ast, \
 	return (status);
 }
 
-/*
-Execute commands that contain basic redirection:
-'<', '>', '>>' and also heredocs << after preprocessing.
-Heredocs are handled similar to stdin redirection.
-*/
+/**
+ * Execute commands that contain basic redirection:
+ * '<', '>', '>>' and also heredocs << after preprocessing.
+ * Heredocs are handled similar to stdin redirection.
+ */
 uint8_t	execute_redirection(t_ast_node **ast)
 {
 	uint8_t		status;

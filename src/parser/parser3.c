@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 11:17:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 14:55:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:34:42 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	*get_b_node(t_ast_node **b, t_list **tokenlist, t_list *tmp)
 
 /*
  * function called in parse list to parse the inner loop
- *
  */
 void	*parse_list_innerloop(t_ast_node **a, t_list **tokenlist)
 {
