@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:47:55 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:23:15 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 12:18:17 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ bool	add_here_and_delim(t_mini_data *data, int *i)
 	while (data->input[*i] && is_space(data->input[*i]))
 		advance(i);
 	start = *i;
-	while ((data->input + *i) && !is_delimiter(data->input[*i]))
+	while (data->input[*i] && !is_delimiter(data->input[*i]))
 		advance(i);
 	tmp = ft_substr(data->input, start, *i - start);
 	*i = start;
