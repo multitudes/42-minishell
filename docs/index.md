@@ -11,7 +11,7 @@ This team project is about creating a simple shell.
 
 We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  
 
-We gave our shell the name "splash", acronym for "SimPLe A SHell".
+We gave our shell the name "splash", acronym for "SimPLy A SHell".
 
 ![splash](../assets/splash.png)
 
