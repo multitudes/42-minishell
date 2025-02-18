@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 #include <string>
 #include <cstring>
+#include <cstdint> 
 
 // forward declarations
 int	run_command_and_check_output(const std::string& command_to_exec, const std::string& expected_output, bool *pass);
