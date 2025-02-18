@@ -8,6 +8,7 @@
 #include <cstring>
 #include <array>
 #include <sstream>
+#include <cstdint> 
 
 // forward declaration
 bool isRunningOnGitHubActions();
