@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <cstdint>
 
 // forward declaration
 uint8_t run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result);

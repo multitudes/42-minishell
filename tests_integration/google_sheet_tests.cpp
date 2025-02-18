@@ -14,6 +14,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <filesystem>
+#include <cstdint>
 
 // forward declaration 
 // this is the new version of the function with popen
