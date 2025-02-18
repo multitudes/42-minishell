@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:22:07 by rpriess           #+#    #+#             */
-/*   Updated: 2025/02/18 12:22:16 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 12:23:35 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ char	*get_key(char *str)
 	if (end && (*end == ' ' || *end == '\0'))
 		return (NULL);
 	if (end && (*end == '?') && (*(end + 1) == '\0' \
-			|| *(end + 1) == ' ')))
+			|| *(end + 1) == ' '))
 		return (ft_strdup("?"));
 	if (end && (ft_isalnum(*end) || *end == '_'))
 		end++;
