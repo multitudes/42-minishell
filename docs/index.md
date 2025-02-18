@@ -13,7 +13,7 @@ We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.
 
 We gave our shell the name "splash", acronym for "SimPLy A SHell".
 
-![splash](splash.png)
+<img src="splash.png" alt="shell" width="600">
 
 ## What is a Shell?
 A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them through the core operating system. Generally, a shell is a user interface that allows us to use computer resources such as memory and system functions, without having to manage all of the needed system interactions manually.
@@ -148,6 +148,7 @@ Also there is the question of priority:
 
 How do we write down a grammar that contains an infinite number of valid strings? We obviously can’t list them all out. Instead, we create a finite set of rules.  
 This is from the book "Crafting Interpreters" by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:  
+
 <img src="assets-md/expression_grammar.png" alt="Expression Grammar" width="400">
 
 ## Grammar of our Shell

@@ -9,7 +9,9 @@ We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.
 
 We gave our shell the name "splash", acronym for "SimPLy A SHell".
 
-![splash](assets/splash.png)
+
+<img src="assets/splash.png" alt="shell" width="600">
+
 
 You can read this documentation onluine on [github.io](https://multitudes.github.io/42-minishell/).  
 
@@ -145,6 +147,7 @@ Also there is the question of priority:
 
 How do we write down a grammar that contains an infinite number of valid strings? We obviously can’t list them all out. Instead, we create a finite set of rules.  
 This is from the book "Crafting Interpreters" by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:  
+
 <img src="assets/expression_grammar.png" alt="Expression Grammar" width="400">
 
 ## Grammar of our Shell
