@@ -6,14 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:43:16 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:40:38 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:02:32 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 
-/*
- */
 bool	is_simple_operator(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "=", FUZZY))
@@ -35,8 +33,6 @@ bool	is_simple_operator(t_mini_data *data, int *i)
 	return (true);
 }
 
-/*
- */
 bool	is_a_control_operator(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "||", FUZZY))
@@ -54,8 +50,6 @@ bool	is_a_control_operator(t_mini_data *data, int *i)
 	return (true);
 }
 
-/*
- */
 bool	is_a_math_op(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "--", FUZZY))

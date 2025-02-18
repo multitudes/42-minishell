@@ -6,34 +6,12 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:56:08 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/06/12 14:53:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 12:49:54 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 
-/*
-History expansion - (not implemented)!
-!!: Re-run the previous command. 
-This is useful if you forgot to use sudo for a command that 
-requires it. You can simply type sudo !! to re-run the previous 
-command with sudo.
-
-!n: Re-run the nth command in your history. 
-For example, !100 would re-run the 100th command.
-
-!-n: Re-run the command n lines back. 
-For example, !-2 would re-run the second most recent command.
-
-!string: Re-run the most recent command that 
-starts with string. For example, !ls would re-run the most recent command 
-that starts with ls.
-
-!?string?: Re-run the most recent command 
-that contains string anywhere. For example, !?txt? would re-run the most 
-recent command that includes txt.
-BANG_BANG,BANG_DIGIT, BANG_HYPHEN_DIGIT, BANG_ALPHA, BANG_QUESTION_ALPHA
-*/
 bool	is_a_hist_expansion(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "!!", FUZZY))

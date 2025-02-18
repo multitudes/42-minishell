@@ -6,21 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:40:02 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:47:17 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 12:50:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 #include "libft.h"
 
-/*
- * mh.. just checked again in the bash and maybe the function below is not 
- * necessary? TODO
- * bash lets me create a var while and print it with $while... 	
- * so not for identifier.  they cannot be used for commands...!
- * IF, THEN, ELSE, ELIF, FI, DO, DONE, WHILE, UNTIL, FOR, CASE, ESAC, SELECT,
- *  FUNCTION,
- */
 bool	is_reserved1(t_mini_data *data, char *identifier, int *start)
 {
 	if (peek(identifier, "while", EXACT))
@@ -44,8 +36,6 @@ bool	is_reserved1(t_mini_data *data, char *identifier, int *start)
 	return (true);
 }
 
-/* 
- */
 bool	is_reserved2(t_mini_data *data, char *identifier, int *start)
 {
 	if (peek(identifier, "if", EXACT))
@@ -67,8 +57,6 @@ bool	is_reserved2(t_mini_data *data, char *identifier, int *start)
 	return (true);
 }
 
-/* 
- */
 bool	is_reserved(t_mini_data *data, char *identifier, int *start)
 {
 	if (is_reserved1(data, identifier, start))
@@ -79,15 +67,6 @@ bool	is_reserved(t_mini_data *data, char *identifier, int *start)
 		return (false);
 }
 
-/*
- * bash builtins which we do not implement are in this list (taken from the 
- * bash manual but enhanced by copilot)
- * "alias bg bind break builtin caller command compgen 
- * . : complete continue declare dirs disown enable eval exec fc fg getopts hash 
- * help history jobs kill let local logout mapfile popd printf pushd read 
- * readonly return set shift shopt source suspend test times trap type 
- * typeset ulimit umask unalias wait readarray"
- */
 bool	not_implemented_builtin2(const char *id)
 {
 	if (!ft_strcmp(id, "local") || !ft_strcmp(id, "logout") || \
@@ -106,15 +85,6 @@ bool	not_implemented_builtin2(const char *id)
 	return (false);
 }
 
-/*
- * bash builtins which we do not implement are in this list (taken from the 
- * bash manual but enhanced by copilot)
- * "alias bg bind break builtin caller command compgen 
- * . : complete continue declare dirs disown enable eval exec fc fg getopts hash 
- * help history jobs kill let local logout mapfile popd printf pushd read 
- * readonly return set shift shopt source suspend test times trap type 
- * typeset ulimit umask unalias wait readarray"
- */
 bool	not_implemented_builtin(const char *id)
 {
 	if (!ft_strcmp(id, "bg") || !ft_strcmp(id, "fc") || !ft_strcmp(id, ":") \

@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:04:28 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:40:44 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:11:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,20 +36,20 @@ static char	*retrieve_home_from_cwd(char *cwd)
 	return (NULL);
 }
 
-/*
-Get home from environment -  it is a tricky one
-because bash always manages to get the home directory
-even if HOME is not set in the environment
-We are also not able to use special functions
-so the best we can do is to check the user from 
-the environment. In wtc/passwd the current user might also
-not be included so it is not a viable option.
-params:
-env_array: if NULL or HOME is not set, get the home 
-from the USER environment variable and collated with /home
-Just pass NULL to the func ad you can get home from anywhere
-but both need to be freed!
-*/
+/**
+ * Get home from the environment -  it is a tricky one
+ * because bash always manages to get the home directory
+ * even if HOME is not set in the environment
+ * We are also not allowed to use special functions
+ * so the best we can do is to check the user from 
+ * the environment. In wtc/passwd the current user might also
+ * not be included so it is not a viable option.
+ * params:
+ * env_array: if NULL or HOME is not set, get the home 
+ * from the USER environment variable and collated with /home
+ * Just pass NULL to the func ad you can get home from anywhere
+ * but both need to be freed!
+ */
 char	*get_home(t_darray *env_arr)
 {
 	char	*home;

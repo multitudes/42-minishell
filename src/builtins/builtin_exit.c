@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:53:34 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:37:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:13:59 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,12 @@ static void	merge_sign_token(t_list **tokenlist)
 	return ;
 }
 
-/*
-Now updated as follows
-if I have a "exit -100" I will have the 3 tokens exit - 100
-so I do atoi of 100 and multiply to -1 and cast to unsigned int 
-modulo 256 to get the same result as bash
-*/
+/**
+ * Now updated as follows
+ * if I have a "exit -100" I will have the 3 tokens exit - 100
+ * so I do atoi of 100 and multiply to -1 and cast to unsigned int 
+ * modulo 256 to get the same result as bash
+ */
 uint8_t	execute_exit_builtin(t_data *data, t_list *tokenlist)
 {
 	uint8_t	status;

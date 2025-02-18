@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:02:17 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:10:22 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 #include "utils.h"
 #include "libft.h"
 
-/*
-If there is a : or a first equal sign we expand.
-If we are already past the first equal sign we dont expand if 
-we have more equal signs in between.
-*/
+/** 
+ * If there is a : or a first equal sign we expand.
+ * If we are already past the first equal sign we dont expand if 
+ * we have more equal signs in between.
+ */
 bool	valid_tilde_separator(char sep, t_exp_flags *flags)
 {
 	if (ft_strchr(": ", sep))
@@ -51,9 +51,10 @@ static char	*expand_tilde(char *lexeme, char *home, t_exp_flags *flags, int i)
 	return (new_lexeme);
 }
 
-/*
-Replaces occurances of '~' in a string, if conditions for ~-expansion are met.
-*/
+/**
+ * Replaces occurances of '~' in a string, if conditions 
+ * for ~-expansion are met.
+ */
 static char	*replace_tilde_in_lexeme(t_list *tokenlist, char *home, \
 									t_exp_flags *flags)
 {
@@ -79,9 +80,9 @@ static char	*replace_tilde_in_lexeme(t_list *tokenlist, char *home, \
 	return (lexeme);
 }
 
-/*
-Expands "~" in pathnames
-*/
+/**
+ * Expands "~" in pathnames
+ */
 void	expand_path(t_darray *env_arr, t_list *tokenlist, t_exp_flags *flags)
 {
 	char	*lexeme;

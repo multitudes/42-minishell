@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:32:51 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/12 08:32:33 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 12:49:37 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,22 +59,6 @@ bool	is_complex_dollar_exp(t_mini_data *data, int *i)
 		return (false);
 }
 
-/*
-    DOLLAR_QUESTION, // '$?'  The special parameter ‘?’ is used to get the 
-	exit status of the last command.
-    DOLLAR_DOLLAR, // '$$' ‘$’ is used to get the process ID of the shell.
-    DOLLAR_STAR, // '$*' ‘*’ is used to get all the positional parameters.
-    DOLLAR_AT, // '$@'  ‘@’ is used to get all the positional parameters, 
-	except for the zeroth positional parameter.
-    DOLLAR_HASH, // '$#'  ‘#’ is used to get the number of positional 
-	parameters.
-    DOLLAR_BANG, // '$!'  ‘!’ is used to get the process ID of the last 
-	background command.
-	DOLLAR_HYPHEN, // '$-' used to get the current options set for the shell.	 
-	VAR_EXPANSION, // '$0' ‘0’ is used to get the name of the shell or script.
-	Parameter names in bash can only contain alphanumeric 
-	characters or underscores, and must start with a letter or underscore.
-*/
 bool	is_a_dollar_exp(t_mini_data *data, int *i)
 {
 	if (is_simple_dollar_exp(data, i))

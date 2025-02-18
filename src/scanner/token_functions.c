@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/22 12:02:00 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:01:36 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "debug.h"
 #include "libft.h"
 
-/*
+/**
  * peek wil look ahead to see if my string is beginning with a sequence 
  * of chars that I want to recognize as a token.
  * the parameters are:
@@ -41,8 +41,6 @@ bool	peek(const char *input, const char *identifier, bool need_delim)
 		return (false);
 }
 
-/*
- */
 char	*return_lexeme_malloc(const char *lex)
 {
 	const char	*oldlex;
@@ -70,7 +68,7 @@ char	*return_lexeme_malloc(const char *lex)
 	return (result);
 }
 
-/*
+/**
  * creates a simple t_list node - the token is in the content of the node
  * in form of a string that will need to be freed
  */
@@ -97,14 +95,14 @@ t_list	*new_toknode(t_tokentype type, const char *lexeme, int *i, \
 	return (new_node);
 }
 
-/*
- * this function checks if the tmp string is NULL and also if 
+/**
+ * this function also checks if the tmp string is NULL and if 
  * the malloc in create token fails and updates the error flag in the 
- * data struct so the loop will stop and free the data
+ * data struct so the loop will stop and free the data.
  * it still returns true because when a token subfunction returns true
  * it means the token has been recognized and the scanner can move on
  * otherwise it would keep on looking for the token
- * * defensive programming. passing a string literal to add_token will
+ * defensive programming. passing a string literal to add_token will
  * never fail but I still check for NULL lexemes!
  */
 bool	add_token(t_mini_data *data, int *i, const char *lexem, \

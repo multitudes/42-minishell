@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 15:15:36 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:48:39 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:15:43 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
  * element I store in my array 
  * If adding ints they need to be preallocated with darray_new
  * strings can be malloced and added with darray_push
-*/
+ */
 t_darray	*darray_create(size_t element_size, size_t initial_max)
 {
 	t_darray	*array;
@@ -43,7 +43,7 @@ t_darray	*darray_create(size_t element_size, size_t initial_max)
  * the content is an array of pointers. Frees the content pointed to.
  * sets every pointer to NULL from zero to max
  * and sets the end to 0
-*/
+ */
 void	darray_clear(t_darray *array)
 {
 	int	i;
@@ -69,7 +69,7 @@ void	darray_clear(t_darray *array)
  * it behaves exactly like malloc. It simply allocates a new block of 
  * memory of the specified size. It doesn't need to 
  * copy or free anything because there's no existing block of memory.
-*/
+ */
 void	*ft_realloc(void *ptr, size_t size, size_t old_size)
 {
 	void	*new_ptr;
@@ -90,7 +90,7 @@ void	*ft_realloc(void *ptr, size_t size, size_t old_size)
 /*
  * Called by darray_expand it will reallocate the old array and 
  * returns -1 in case of mem failure and keep the old size
-*/
+ */
 int	darray_resize(t_darray *array, size_t newsize, size_t old_size)
 {
 	void	*contents;
@@ -110,7 +110,7 @@ int	darray_resize(t_darray *array, size_t newsize, size_t old_size)
 /*
  * In our darray implementation the expansion is additive and stored 
  * in the expand_rate
-*/
+ */
 int	darray_expand(t_darray *array)
 {
 	size_t	old_max;

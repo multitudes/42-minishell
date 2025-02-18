@@ -6,14 +6,15 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:57:41 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:43:57 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 12:55:32 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 
-/*
- * if contains a slash or starts with a dot or starts with a ./ ../ ~/ ~+
+/**
+ * Checks if a string is a pathname which is a string that:
+ * contains a slash or starts with a dot or starts with a ./ ../ ~/ ~+
  */
 bool	str_is_pathname(const char *str)
 {
@@ -33,10 +34,6 @@ bool	str_is_pathname(const char *str)
 	return (false);
 }
 
-/*
- * Recognizing a globbing wanna be expansion, any string with the letter *
- * it will be for the bonus eventually!
-*/
 bool	is_a_globbing(t_mini_data *data, const char *tmp, int *start)
 {
 	if (ft_strchr(tmp, '*'))
@@ -46,8 +43,6 @@ bool	is_a_globbing(t_mini_data *data, const char *tmp, int *start)
 	return (true);
 }
 
-/*
- */
 bool	is_a_pathname_or_num(t_mini_data *data, const char *tmp, int *start)
 {
 	if (str_is_pathname(tmp))
@@ -59,8 +54,6 @@ bool	is_a_pathname_or_num(t_mini_data *data, const char *tmp, int *start)
 	return (true);
 }
 
-/*
-*/
 bool	str_is_alphanum(const char *str)
 {
 	while (*str)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:33 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:52:37 by rpriess          ###   ########.fr       */
+/*   Updated: 2025/02/18 13:13:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 #include "builtins.h"
 #include "utils.h"
 
-/*
-Executes builtin "echo" function with and without '-n' option
-which suppresses the trailing newline.
-*/
+/**
+ * Executes builtin "echo" function with and without '-n' option
+ * which suppresses the trailing newline.
+ */
 uint8_t	execute_echo_builtin(t_list *tokenlist)
 {
 	uint8_t	status;

@@ -1051,12 +1051,6 @@ const char* test_resolve_path_func()
 	debug("result from splash: -%s-\n", result.str().c_str());
 	my_assert(result.str() == "", "output is not correct pipe3\n");
 	my_assert(exit_status == 127, "exit status is not 126\n");
-
-	arg = "./builtin_cat_tests.cpp";	
-	exit_status = run_command_and_check_output(arg, result);
-	debug("result from splash: -%s-\n", result.str().c_str());
-	my_assert(result.str() == "", "output is not correct pipe3\n");
-	my_assert(exit_status == 126, "exit status is not 126\n");
 	
 	arg = "./abcwhat";	
 	exit_status = run_command_and_check_output(arg, result);

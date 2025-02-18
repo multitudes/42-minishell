@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:22 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:37:45 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:12:59 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,11 @@ static uint8_t	execute_cd_tokenlist(t_darray *env_arr, t_list *tokenlist)
 	return (status);
 }
 
-/*
-Minishell builtin for "cd" command. Also cd ~, cd .. etc are supported
-Relative and absolute path as arguments.
-Updates PWD and OLDPWD environment variables.
-*/
+/**
+ * Minishell builtin for "cd" command. Also cd ~, cd .. etc are supported 
+ * Relative and absolute path as arguments.
+ * Updates PWD and OLDPWD environment variables.
+ */
 uint8_t	execute_cd_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	uint8_t	status;

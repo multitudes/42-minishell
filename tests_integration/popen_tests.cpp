@@ -17,7 +17,6 @@ uint8_t run_command_and_check_output(const std::string& command_to_exec, std::os
 
 const char* test_popen() 
 {
-
     debug("running test_popen\n");
     fflush(stdout);
 
@@ -128,7 +127,7 @@ const char *all_tests()
 		
 		// run the tests
 		run_test(test_popen);
-		//run_test(test_echo);
+		run_test(test_echo);
 		run_test(test_echo2);
 		run_test(test_echo3);
 	}
@@ -137,6 +136,10 @@ const char *all_tests()
 
 RUN_TESTS(all_tests);
 
+
+/**
+ * Util function 
+ */
 bool isRunningOnGitHubActions() 
 {
 	const char* github_actions = std::getenv("GITHUB_ACTIONS");
@@ -144,9 +147,9 @@ bool isRunningOnGitHubActions()
 }
 
 
-/*
-util function to read from minishell using the popen call and the single command mode
-*/
+/**
+ * Util function 
+ */
 uint8_t run_command_and_check_output(const std::string& command_to_exec, std::ostringstream& result) 
 {
     debug("running test_popen\n");

@@ -6,14 +6,14 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/22 12:01:36 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:01:53 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 
-/*
-sometimes you need to know where you head is at
+/**
+ * sometimes you need to know where you head is at
 */
 t_list	*get_head(t_list *tokenlist)
 {
@@ -27,8 +27,6 @@ t_list	*get_head(t_list *tokenlist)
 	return (head);
 }
 
-/*
- */
 int	count_tokens(t_list *tokenlist)
 {
 	int	count;

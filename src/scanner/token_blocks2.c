@@ -6,13 +6,13 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/21 10:48:11 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:00:11 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 
-/*
+/**
  * I define a block as the text between two delimiters like {}
  * or "" '' or `` or () etc
  * anything until I get the closing delimiter I specify in delim...

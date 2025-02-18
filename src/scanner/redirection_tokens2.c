@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:47:55 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:47:31 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 12:50:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,6 @@ bool	is_heredoc_token(t_tokentype tokentype)
 	return (false);
 }
 
-/*
- * Check if assigned type is a valid heredoc delimiter, in which case
- * the type is changed to DLESS_DELIM before returning result of check.
- * ADD MORE VALID TOKENTYPES TODO
- */
 bool	is_heredoc_delim(t_list *tokenlist)
 {
 	t_tokentype	tokentype;

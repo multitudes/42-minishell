@@ -6,16 +6,17 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 13:35:47 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:38:02 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:17:00 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "darray.h"
 #include <stdlib.h>
 #include "debug.h"
-/*
+
+/**
  * free the internal content array and deallocate the darray struct
-*/
+ */
 void	darray_destroy(t_darray *array)
 {
 	if (array)
@@ -26,11 +27,11 @@ void	darray_destroy(t_darray *array)
 	}
 }
 
-/*
+/**
  * clear will free the content of the pointers in the  
  * internal content array to a zero. destroy will free the 
  * internal content array and deallocate the darray struct
-*/
+ */
 int	darray_clear_destroy(t_darray *array)
 {
 	darray_clear(array);
@@ -38,14 +39,14 @@ int	darray_clear_destroy(t_darray *array)
 	return (1);
 }
 
-/*
-push takes a already allocated element to add to the array and 
-add it to the end of the array
-It updates the array end and if the end is bigger than the max it 
-expands the array.
-The element to add needs to be already allocated on the heap
-push will not allocate memory for the element
-*/
+/**
+ * push takes a already allocated element to add to the array and 
+ * add it to the end of the array
+ * It updates the array end and if the end is bigger than the max it 
+ * expands the array.
+ * The element to add needs to be already allocated on the heap
+ * push will not allocate memory for the element
+ */
 int	darray_push(t_darray *array, void *el)
 {
 	array->contents[array->end] = el;
@@ -56,8 +57,6 @@ int	darray_push(t_darray *array, void *el)
 		return (0);
 }
 
-/*
-*/
 void	*darray_pop(t_darray *array)
 {
 	void	*element;
@@ -72,9 +71,8 @@ void	*darray_pop(t_darray *array)
 	return (element);
 }
 
-/*
-access the content by index and assign new element - 
-not returning a value
+/**
+ * access the content by index and assign new element
 */
 void	darray_set(t_darray *array, int i, void *el)
 {

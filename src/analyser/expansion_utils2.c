@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 09:22:07 by rpriess           #+#    #+#             */
-/*   Updated: 2025/02/18 12:23:35 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:12:33 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,12 @@ void	which_ast_node(t_ast_node *ast)
 	return ;
 }
 
-/*
-Looks at next char in str. If it is a $,
-then the potential key/var-name is returned.
-'$' followed by invalid var-syntax, returns an empty string.
-Returned key-string needs to be freed.
-*/
+/**
+ * Looks at next char in str. If it is a $,
+ * then the potential key/var-name is returned.
+ * '$' followed by invalid var-syntax, returns an empty string.
+ * Returned key-string needs to be freed.
+ */
 char	*get_key(char *str)
 {
 	char	*end;
@@ -87,11 +87,11 @@ char	*get_key(char *str)
 	return (ft_strndup(str + 1, (size_t)(end - (str + 1))));
 }
 
-/*
-Gets the key value for a specified key from the env variable
-for the purpose of $ expansion.
-Key value is malloced and needs to be freed.
-*/
+/**
+ * Gets the key value for a specified key from the env variable
+ * for the purpose of $ expansion.
+ * Key value is malloced and needs to be freed.
+ */
 char	*get_key_value(t_data *data, char *key)
 {
 	char	*key_value;

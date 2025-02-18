@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:51:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:33:42 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 12:59:57 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /*
  * I define a block as the text between two delimiters like {}
  * or "" '' or `` or () etc
- * anything until I get the closing delimiter I specify in delim...
+ * anything until I get the closing delimiter I store it in delim
  */
 bool	add_tokenblock(t_mini_data *data, int *i, char delim, int t_type)
 {
@@ -54,12 +54,12 @@ bool	add_block_dbl_paren(t_mini_data *data, int *i, char *delim, int t_type)
 	return (true);
 }
 
-/*
- * cnd param is the condition, is a pointer to a function that 
- * will be used to check the
+/**
+ * the cnd param is the condition passed to the while loop, 
+ * it is a pointer to a function that will be used to check the
  * character in the while loop. I might need is_digit for numbers or
  * is_alnum for identifiers etc
- * This works for easy tokens.
+ * This works for simple tokens.
  */
 bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 {
@@ -76,11 +76,12 @@ bool	proc_token_off_1(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 	return (true);
 }
 
-/*
- * condition is a pointer to a function that will be used to check the
- * character in the while loop. I might need is_digit for numbers or
- * is_alnum for identifiers etc
- * This is offset of 2 lets say I look for !- followed by a number of digits
+/**
+ * as above the condition (cnd) is a pointer to a function that will be 
+ * used to check the character in the while loop. 
+ * I might need is_digit for numbers or is_alnum for identifiers etc
+ * This starts with offset of 2 lets say I look for !- followed by a number 
+ * of digits
  */
 bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 {
@@ -97,8 +98,6 @@ bool	proc_tok_off_2(t_mini_data *data, int *i, bool (*cnd)(char), int type)
 	return (true);
 }
 
-/*
-*/
 bool	is_a_block(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, "(", FUZZY))

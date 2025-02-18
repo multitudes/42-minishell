@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 19:47:11 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:30:55 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 12:57:16 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 /*
  * scanning function
  * Returns a token list which is a linked list of t_list type
- * note: we dont need to action some of them but fir completeness I added 
+ * note: we dont need to action some of them but for completeness I added 
  * as much as I could. for instance we do not action the last & on a command
  * or redirections like 
  */
@@ -47,8 +47,6 @@ t_list	*tokenizer(const char *input)
 	return (data.tokenlist);
 }
 
-/*
-*/
 bool	got_tokens(t_mini_data *data, int *i)
 {
 	if (is_a_control_operator(data, i) || is_a_math_op(data, i) || \
@@ -61,9 +59,6 @@ bool	got_tokens(t_mini_data *data, int *i)
 		return (false);
 }
 
-/*
- * 
- */
 int	skip_space(t_list *tokenlist, const char *input, int *i)
 {
 	t_list	*last;

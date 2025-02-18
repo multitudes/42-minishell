@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rpriess <rpriess@student.42berlin.de>      +#+  +:+       +#+        */
+/*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:53 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/15 13:52:56 by rpriess          ###   ########.fr       */
+/*   Updated: 2025/02/18 13:13:31 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@
 #include "splash_error.h"
 #include "debug.h"
 
-/*
-Writes contents of environment to standard output.
-No options or arguments implemented.
-*/
+/**
+ * Writes contents of environment to standard output.
+ * No options or arguments implemented.
+ */
 uint8_t	execute_env_builtin(t_darray *env_arr, t_list *tokenlist)
 {
 	uint8_t	status;

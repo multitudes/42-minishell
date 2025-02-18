@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:52:06 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/22 15:40:09 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:14:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,6 @@ static uint8_t	process_export_arguments(t_list *tokenlist, t_darray *env_arr)
  * 	error: bash: export: `detached string': not a valid identifier
  * - export "var14"=value would assign value to var14
  * - export "VAR=rew"u=iqorye
- * QUESTION:
- * - where do we want to store our local variables?
  */
 uint8_t	execute_export_builtin(t_darray *env_arr, t_list *tokenlist)
 {

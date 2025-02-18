@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 13:54:47 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 18:42:10 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:14:34 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "debug.h"
 #include <unistd.h>
 #include <limits.h>
-#include <stdio.h> // remove and replace printf with write_data or ft_write
+#include <stdio.h>
 
 /*
  * Executes builtin 'pwd' command.

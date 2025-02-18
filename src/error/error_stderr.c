@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 19:33:34 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:33:27 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:24:47 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 #include "utils.h"
 #include "libft.h"
 
-/*
-Writes "splash: msg\n" to standard error and returns status.
-If msg is NULL, "splash: error\n" is printed.
-*/
+/**
+ * Writes msg to standard error and returns status.
+ * (used for child processes)
+ * If msg argument is NULL, "minishell error" is passed to perror.
+ */
 uint8_t	stderr_and_status(const char *msg, uint8_t status)
 {
 	if (msg)
@@ -34,9 +35,9 @@ uint8_t	stderr_and_status(const char *msg, uint8_t status)
 	return (status);
 }
 
-/*
-Writes "splash: msg_1: msg_2\n" to standard error and returns status.
-If msgs are NULL, "splash: error\n" is printed.
+/** 
+ * Writes msg_1: msg_2 to standard error and returns status.
+ * If msgs are NULL, "error\n" is printed.
 */
 uint8_t	stderr_and_status2(const char *msg_1, \
 							const char *msg_2, uint8_t status)
@@ -54,9 +55,9 @@ uint8_t	stderr_and_status2(const char *msg_1, \
 	return (status);
 }
 
-/*
-Writes "splash: msg_1: msg_2: msg_3\n" to standard error and returns status.
-If msgs are NULL, "splash: error\n" is printed.
+/** 
+ * Writes msg_1: msg_2 msg_3 to standard error and returns status.
+ * If msgs are NULL, "error\n" is printed.
 */
 uint8_t	stderr_and_status3(const char *msg_1, \
 							const char *msg_2, const char *msg_3, \
@@ -77,10 +78,10 @@ uint8_t	stderr_and_status3(const char *msg_1, \
 	return (status);
 }
 
-/*
-Writes "splash: msg\n" to standard error and returns boolean.
-If msg is NULL, "splash: error\n" is printed.
-If write fails false is returned.
+/**
+ * Writes msg to standard error and returns boolean.
+ * If msg is NULL, "splash: error\n" is printed.
+ * If write fails false is returned.
 */
 bool	stderr_and_bool(const char *msg, bool boolean)
 {

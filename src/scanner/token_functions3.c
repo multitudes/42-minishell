@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:24:40 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/16 15:30:23 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:02:12 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "debug.h"
 #include "libft.h"
 
-/*
+/**
  * create a lexeme for flag in this conf -[a-zA-Z]
  * else if (peek((data->input + i), "-", FUZZY) && is_alpha(data->input[i + 1]))
  */
@@ -37,9 +37,6 @@ bool	is_a_flag(t_mini_data *data, int *i)
 	return (false);
 }
 
-/*
- * 
- */
 bool	is_some_semicolons(t_mini_data *data, int *i)
 {
 	if (peek(data->input + *i, ";;&", FUZZY))
@@ -55,8 +52,6 @@ bool	is_some_semicolons(t_mini_data *data, int *i)
 	return (true);
 }
 
-/*
- */
 bool	is_a_string_thing(t_mini_data *data, int *i)
 {
 	int		start;

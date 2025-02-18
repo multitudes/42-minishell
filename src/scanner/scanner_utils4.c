@@ -6,22 +6,20 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 19:03:58 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 18:45:14 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 12:56:54 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scanner.h"
 #include "debug.h"
 
-/* 
- */
 bool	not_a_delimiting_char(const char c)
 {
 	return (ft_isprint(c) && !filename_delimiter(c));
 }
 
-/*
- * is_true_false checks if the identifier is a boolean value
+/**
+ * is_true_false checks if the identifier/token is a boolean value
  * like in bash true and false are not builtins but reserved words
  */
 bool	is_true_false(t_mini_data *data, char *str, int *start)
@@ -35,8 +33,8 @@ bool	is_true_false(t_mini_data *data, char *str, int *start)
 	return (true);
 }
 
-/*
- * io numbers are the one preceding a < or > in a redirection
+/**
+ * io numbers are the ones preceding a < or > in a redirection
  * cannot start with a 0
  */
 bool	is_io_number(const char *str)
@@ -50,8 +48,8 @@ bool	is_io_number(const char *str)
 	return (false);
 }
 
-/*
- * including numbers preceded by a - or + 
+/**
+ * This is including numbers preceded by a - or + 
  * and with and without a dot
  */
 bool	str_is_number(const char *str)

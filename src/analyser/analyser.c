@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 13:37:45 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:03:49 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@
 #include "utils.h"
 #include "builtins.h"
 
-/*
-Identify if and which expansion needed
-and call the appropriate expansion function.
-*/
+/**
+ * Identify if and which expansion needed
+ * and call the appropriate expansion function.
+ */
 static void	execute_expansion_by_type(t_data *data, t_list **tokenlist, \
 										t_exp_flags *flags)
 {
@@ -42,9 +42,10 @@ static void	execute_expansion_by_type(t_data *data, t_list **tokenlist, \
 		expand_globbing(tokenlist);
 }
 
-/*
-Goes through tokenlist, expands if expansion types and expansion allowed.
-*/
+/**
+ * iterate through the tokenlist, expands if expansion types and 
+ * expansion is allowed.
+ */
 static uint8_t	expand_tokenlist(t_data *data, t_ast_node *ast)
 {
 	t_exp_flags	flags;
@@ -88,12 +89,12 @@ static bool	separated_token_types(t_list *tokenlist)
 	return (false);
 }
 
-/*
-Expansion of nodes containing single quotes, double quotes, variables,
-~ / paths, Special Parameters ($?, $0 implemented)
-Could be extended to also include other Special Parameters ($!, etc.),
-$(..) ${..} $'..' $".."
-*/
+/**
+ * Expansion of nodes containing single quotes, double quotes, variables,
+ *  ~ / paths, Special Parameters ($?, $0 implemented)
+ * Could be extended to also include other Special Parameters ($!, etc.),
+ * $(..) ${..} $'..' $".."
+ */
 void	analyse_expand(t_ast_node *ast, t_data *data)
 {
 	t_list		*tokenlist;

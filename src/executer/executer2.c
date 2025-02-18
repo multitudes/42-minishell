@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/22 12:02:41 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:26:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@
 #include "scanner.h"
 #include <sys/stat.h>
 
-/*
-resolve_command_path will check if the command is in the PATH
-or if it is an absolute path. 
-if it cannot be resolved it will return 1
-*/
+/**
+ * resolve_command_path will check if the command is in the PATH
+ * or if it is an absolute path. 
+ * if it cannot be resolved it will return 1
+ */
 int	resolve_command_path(char **argv, char *path_env)
 {
 	struct stat	statbuf;
@@ -47,7 +47,7 @@ int	resolve_command_path(char **argv, char *path_env)
 /*
  * used by resolve_command_path when I get a simple command like "ls"
  * I need to check if the command is in the PATH
-*/
+ */
 bool	find_path(char **argv, char *path_env)
 {
 	char		*cmd;
@@ -68,7 +68,6 @@ bool	find_path(char **argv, char *path_env)
 
 /*
  * used by find_path to create the path to the command
- * 
 */
 char	*create_path(char *base, char *path_env)
 {
@@ -97,12 +96,12 @@ char	*create_path(char *base, char *path_env)
 	return (NULL);
 }
 
-/*
-In the case of having a token expanded for ex to "ls -la"
-the command would fail because of the space between the flags
-I need to retokenize the command so this functions checks for spaces
-and creates a new token for each word
-*/
+/**
+ * In the case of having a token expanded for ex to "ls -la"
+ * the command would fail because of the space between the flags
+ * I need to retokenize the command so this functions checks for spaces
+ * and creates a new token for each word
+ */
 void	check_for_spaces(t_list **tokenlist)
 {
 	char	*lex;
@@ -128,10 +127,10 @@ void	check_for_spaces(t_list **tokenlist)
 	*tokenlist = head;
 }
 
-/*
-Since until now we store the token as linked list
-we convert it to a char array for the execve function
-*/
+/**
+ * Since until now we store the token as linked list
+ * we convert it to a char array for the execve function
+ */
 char	**get_argv_from_tokenlist(t_list **tokenlist)
 {
 	int		i;

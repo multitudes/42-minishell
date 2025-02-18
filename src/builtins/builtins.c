@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:01:13 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/22 12:29:48 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:15:26 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ static bool	execute_other_builtins(t_list *tokenlist, uint8_t *status)
 	return (false);
 }
 
-/*
-Function to call to execute minishell builtin functions + history, true, false.
-Returns exit status of executed builtin.
-*/
+/**
+ * Function to call to execute minishell builtin functions + history, true, false.
+ * Returns exit status of executed builtin.
+ */
 uint8_t	execute_builtin(t_list *tokenlist, t_data *data)
 {
 	uint8_t	status;
@@ -97,14 +97,14 @@ bool	allowed_flags(const char *flag_lexem, const char *allowed_flags)
 	return (true);
 }
 
-/*
-Function merges the current and next token in a tokenlist:
-- type of the first token gets preserved
-- the token lexemes are joined together in a new lexeme
-- the folldbyspace info from the second token is preserved
-- the second token get deleted and the list node
-pointed to the following node in the list
-*/
+/**
+ * Function merges the current and next token in a tokenlist:
+ * - type of the first token gets preserved
+ * - the token lexemes are joined together in a new lexeme
+ * - the folldbyspace info from the second token is preserved
+ * - the second token get deleted and the list node
+ * pointed to the following node in the list
+ */
 int	merge_tokens(t_list *tokenlist)
 {
 	t_token	*token_1;

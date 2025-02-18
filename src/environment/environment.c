@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 12:29:52 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/17 13:23:28 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:18:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "splash_error.h"
 
 /*
- * Update / add a variable to the environment given a key and corresponding 
+ * adds a variable to the environment given a key and corresponding 
  * value.
  */
 bool	update_env(t_darray *env_arr, const char *key, const char *value)
@@ -45,8 +45,7 @@ bool	update_env(t_darray *env_arr, const char *key, const char *value)
 }
 
 /*
- * Function prints the environment variables
- * stored in environment array
+ * prints the environment variables
  */
 int	print_env(t_darray *env_arr)
 {

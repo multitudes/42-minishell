@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 10:19:13 by lbrusa            #+#    #+#             */
-/*   Updated: 2024/07/15 16:56:07 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:25:15 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@
 #include "init.h"
 #include "fd.h"
 
-/*
-posix compliant use of the environ variable
-*/
+/**
+ * posix compliant use of the environ variable
+ */
 extern char	**environ;
 
 /*
@@ -78,7 +78,7 @@ int	execute_ast(t_ast_node *ast, t_data *data)
 
 /*
  * This function will execute the list.
- * There are two cses for a list node: AND_IF and OR_IF.
+ * There are two cases for a list node: AND_IF and OR_IF.
  */
 int	execute_list(t_ast_node *ast, t_data *data)
 {

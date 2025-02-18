@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 00:15:22 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/17 13:49:29 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:10:50 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #include "analyser.h"
 #include "libft.h"
 
-/*
-We dont expand tilde if the next char after the tilde is not a valid path.
-Valid chars after tilde are '/', ':', ' ' and '\0'.
-*/
+/**
+ * We dont expand tilde if the next char after the tilde is not a valid path.
+ * Valid chars after tilde are '/', ':', ' ' and '\0'.
+ */
 static bool	peek_is_valid_path(char c)
 {
 	if (ft_strchr("/: ", c))
@@ -25,9 +25,10 @@ static bool	peek_is_valid_path(char c)
 	return (false);
 }
 
-/*
-Checks if tilde expansion is valid based on next char in lexeme or next token
-*/
+/**
+ * Checks if tilde expansion is valid based on next char in lexeme
+ * or next token
+ */
 bool	valid_tilde_expansion(t_list *tokenlist, char *lexeme, int i)
 {
 	if (!tokenlist->next \

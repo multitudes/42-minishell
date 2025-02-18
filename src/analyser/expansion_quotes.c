@@ -6,7 +6,7 @@
 /*   By: lbrusa <lbrusa@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 16:01:22 by rpriess           #+#    #+#             */
-/*   Updated: 2024/07/22 12:06:46 by lbrusa           ###   ########.fr       */
+/*   Updated: 2025/02/18 13:05:23 by lbrusa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,10 @@ void	expand_single_quotes(t_token *token)
 	}
 }
 
-/*
-Removes double quotes, perfoms expansion on dollar variables.
-Does not handle escape characters such as '\'.
-*/
+/** 
+ * Removes double quotes, perfoms expansion on dollar variables. 
+ * Does not handle escape characters such as '\'.
+ */
 void	expand_double_quotes(t_data *data, t_token *token)
 {
 	char	*unquoted_lexeme;
