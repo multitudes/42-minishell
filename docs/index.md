@@ -42,8 +42,7 @@ The project lies at the intersection of C programming and system programming. Ev
 - The importance of a good architecture. Decoupling. Modularity. Dividing the shell into a scanner, parser, analyser and expander, executer. which is useful for testing and debugging.
 - Error management, e.g. handling system errors through perror and our own shell errors through standard error and passing 
 - Rigorosity, e.g. with regard to return values of functions.
-- Of course, intricacies and pecularities of bash syntax
-- ...
+- Of course, intricacies and pecularities of bash syntax and grammar.
 
 ### Some more Definitions from the Bash Manual and POSIX Shell Manuals
 - POSIX: A family of open system standards based on Unix.
@@ -149,7 +148,7 @@ Also there is the question of priority:
 How do we write down a grammar that contains an infinite number of valid strings? We obviously can’t list them all out. Instead, we create a finite set of rules.  
 This is from the book "Crafting Interpreters" by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:  
 
-<img src="assets-md/expression_grammar.png" alt="Expression Grammar" width="400">
+<img src="assets-md/expression_grammar.png" alt="Expression Grammar" width="800">
 
 ## Grammar of our Shell
 This is a good starting point for our grammar.
@@ -200,6 +199,9 @@ typedef enum e_tokentype {
 	...
 } t_tokentype;
 ```
+
+More about delimiters here: [grammar](grammar.md)
+
 
 ## Parentheses
 
@@ -284,7 +286,7 @@ int main() {
 The function requires linking with `-lreadline` when compiling.
 Using the `add_history()` function, we add the input to the history list maintained by Readline. This allows users to recall and edit previously entered command lines using the up and down arrow keys. As we were not allowed to use the `history_list()` function or the `history_get()` function we implemented our own history list.
 
-## On the mac m1 
+### On the mac m1 
 I could get the readline and add_history functions to work on my mac m1. 
 But to get the rl_clear_history to work I had to switch libraries. Apparently the readline on the mac is not complete. So using brew I installed the GNU readline and linked it to my project in the makefile using the path found with `brew --prefix readline` which in my system expands to `/opt/homebrew/opt/readline/`.
 So my include path and LIBS path look like this:
@@ -296,7 +298,7 @@ LDLIBS += -L$(shell brew --prefix readline)/lib
 ### rl_clear_history
 The rl_clear_history function is part of the GNU Readline library, and it is used to clear the history list maintained by Readline. The history list typically stores previously entered command lines, allowing users to recall and edit them.
 
-### Interactive and Non-Interactive Shells and Scripts
+## Interactive and Non-Interactive Shells and Scripts
 
 One important aspect to consider when creating a simple shell is whether it is running in interactive mode or non-interactive mode.
 
@@ -306,6 +308,7 @@ In non-interactive mode, the shell is being used to run a script or a batch of c
 
 To check whether the shell is running in interactive mode or non-interactive mode, we can use the isatty() function. This function checks whether a file descriptor refers to a terminal or not. If it returns true, then the shell is running in interactive mode and we should display a prompt. If it returns false, then the shell is running in non-interactive mode and we should not display a prompt.
 
+## The Tasks at Hand
 ### Create an Infinite Loop for the Prompt
 we can display a prompt to the user. This input can be a single command or multiple commands separated by a semicolon. To read input from the user, we can use the getline function which reads a line of input from the user. 
 
