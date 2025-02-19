@@ -1,4 +1,4 @@
-name: miniclams workflow
+name: minishell tests
 
 on: [push, pull_request]
 
