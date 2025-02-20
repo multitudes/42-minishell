@@ -5,12 +5,12 @@
 
 This team project is about creating a simple shell.
 
+
 We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  
+Therefore, we gave our shell the name "splash", acronym for "SimPLy A SHell".  
+Here is a screenshot of our splash shell in action:  
 
-We gave our shell the name "splash", acronym for "SimPLy A SHell".  
-
-
-<img src="assets/splash.png" alt="shell" width="600">
+<img src="assets/splash.png" alt="shell" width="800">
 
 
 You can read this documentation online on [github.io](https://multitudes.github.io/42-minishell/).  
