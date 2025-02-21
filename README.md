@@ -3,7 +3,8 @@
 # Project: 42-minishell
 > "The number of UNIX installations has grown to 10, with more expected." (The UNIX Programmer's Manual, 2nd Edition, June, 1972.)
 
-This team project is about creating a simple shell.
+This team project is about creating a simple shell.  
+You can read this documentation online on [github.io](https://multitudes.github.io/42-minishell/).  
 
 
 We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  
@@ -13,7 +14,6 @@ Here is a screenshot of our splash shell in action:
 <img src="assets/splash.png" alt="shell" width="800">
 
 
-You can read this documentation online on [github.io](https://multitudes.github.io/42-minishell/).  
 
 ## What is a Shell?
 A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them through the core operating system. Generally, a shell is a user interface that allows us to use computer resources such as memory and system functions, without having to manage all of the needed system interactions manually.
