@@ -2,14 +2,14 @@
 
 ## Contributors:  
 [![GitHub](https://img.shields.io/badge/GitHub-multitudes-red?style=plastic&logo=github)](https://github.com/multitudes)  
-[![GitHub](https://img.shields.io/badge/GitHub-ProjektPhoenix-blue?style=plastic&logo=github)](https://github.com/ProjektPhoenix)
+[![GitHub](https://img.shields.io/badge/GitHub-ProjektPhoenix-blue?style=plastic&logo=github)](https://github.com/ProjektPhoenix)  
+The code is on GitHub: [42-minishell](https://github.com/multitudes/42-minishell)
  
 # Project: 42-minishell
 > "The number of UNIX installations has grown to 10, with more expected." (The UNIX Programmer's Manual, 2nd Edition, June, 1972.)
 
 This team project is about creating a simple shell.
 
-The code is on GitHub: [42-minishell](https://github.com/multitudes/42-minishell)
 
 We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  
 Therefore, we gave our shell the name "splash", acronym for "SimPLy A SHell".  
