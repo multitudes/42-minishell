@@ -3,6 +3,7 @@
 ## Contributors:  
 [![GitHub](https://img.shields.io/badge/GitHub-multitudes-red?style=plastic&logo=github)](https://github.com/multitudes)  
 [![GitHub](https://img.shields.io/badge/GitHub-ProjektPhoenix-blue?style=plastic&logo=github)](https://github.com/ProjektPhoenix)  
+
 The code is on GitHub: [42-minishell](https://github.com/multitudes/42-minishell)
  
 # Project: 42-minishell
