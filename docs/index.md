@@ -12,7 +12,35 @@ We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.
 Therefore, we gave our shell the name "splash", acronym for "SimPLy A SHell".  
 Here is a screenshot of our splash shell in action:  
 
-<img src="splash.png" alt="shell" width="800">
+<img src="splash.png" alt="shell" width="600">
+
+# Table of Contents
+
+- [Overview](#overview)
+- [What is a Shell?](#what-is-a-shell)
+- [Learning Outcomes](#learning-outcomes)
+- [Shell Concepts](#shell-concepts)
+  - [Definitions](#definitions)
+  - [Shell Syntax](#shell-syntax)
+- [Project Requirements](#project-requirements)
+- [Architecture](#architecture)
+  - [Decoupling](#decoupling)
+  - [Workflow](#workflow)
+- [Grammar](#grammar)
+- [Lexemes](#lexemes)
+- [Features](#features)
+  - [Builtins](#builtins)
+  - [Redirection](#redirection)
+  - [Pipes](#pipes)
+  - [Variables](#variables)
+  - [Parentheses](#parentheses)
+  - [Error Handling](#error-handling)
+  - [Memory Management](#memory-management)
+  - [Signals](#signals)
+- [Bonus Features](#bonus-features)
+- [Testing](#testing)
+- [Debugging](#debugging)
+- [Resources](#resources)
 
 ## What is a Shell?
 A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them through the core operating system. Generally, a shell is a user interface that allows us to use computer resources such as memory and system functions, without having to manage all of the needed system interactions manually.
@@ -25,8 +53,7 @@ The bash manual describes a shell as follows:
 
 - Shells may be used interactively or non-interactively. In interactive mode, they accept input typed from the keyboard. When executing non-interactively, shells execute commands read from a file.
 
-
-## What We Learned
+## Learning Outcomes
 The project lies at the intersection of C programming and system programming. Even a functionally significantly reduced shell such as ours requires the implementation of many submodules that combine and act together in myriad ways based on the specific user commands provided. To make this work we not only had to dive deep into C and linux system programming but also learned about and employed a range of other things:
 
 - The difference between a shell and a terminal.
@@ -41,33 +68,32 @@ The project lies at the intersection of C programming and system programming. Ev
 - The importance of a good architecture. Decoupling. Modularity. Dividing the shell into a scanner, parser, analyser and expander, executer. which is useful for testing and debugging.
 - Error management, e.g. handling system errors through perror and our own shell errors through standard error and passing 
 - Rigorosity, e.g. with regard to return values of functions.
-- Of course, intricacies and pecularities of bash syntax and grammar.
+- Of course, intricacies and pecularities of bash syntax
 
-### Some more Definitions from the Bash Manual and POSIX Shell Manuals
+## Shell Concepts
+### Definitions
 - POSIX: A family of open system standards based on Unix.
 - Builtin: A command that is implemented internally by the shell itself, rather than by an executable program somewhere in the file system.
-- Operator: A control operator or a redirection operator.  
-Control operator: A token that performs a control function. It is a newline or one of the following: ‘\|\|’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘\|’, ‘\|&’, ‘(’, or ‘)’.  
-Redirection operator: A token redirects input and out put to and from files by manipulating file descriptors: '<', '>', '>>', '&>'  
-Heredoc: '<<'  
+- Operator: A control operator or a redirection operator.
+    - Control operator: A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
+    - Redirection operator: A token redirects input and out put to and from files by manipulating file descriptors: '<', '>', '>>', '&>'
+    - Heredoc: '<<'
 - Exit status: The value returned by a command to its caller. The value is restricted to eight bits, so the maximum value is 255.
-- Metacharacter: A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘\|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
+- Metacharacter: A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
 - Reserved word: A word that has a special meaning to the shell. Most reserved words introduce shell flow control constructs, such as 'for' and 'while'. (not strictly enforced by the shell)
 - Signal: A mechanism by which a process may be notified by the kernel of an event occurring in the system.
 - Token: A sequence of characters considered a single unit by the shell. It is either a word or an operator.
 - Word: A sequence of characters treated as a unit by the shell. Words may not include unquoted metacharacters.
 
-### Shell Syntax (from the BASH manual)
-
+### Shell Syntax
 When the shell reads input, it proceeds through a sequence of operations. If the input indicates the beginning of a comment, the shell ignores the comment symbol (‘#’), unless it is part of a quote ("" or ''), and the rest of that line.
 
 Otherwise, roughly speaking, the shell reads its input and divides the input into words and operators, employing quoting rules to select which meanings to assign various words and characters.
 
 The shell then parses these tokens into commands and other constructs, removes the special meaning of certain words or characters, expands others, redirects input and output as needed, executes the specified command, waits for the command’s exit status, and makes that exit status available for further inspection or processing.
 
-## The Subject of the Assignment
-
-We have restrictions in what we are allowed to use, summarized here: [subject and allowed functions](assets-md/allowed_functions.md).  
+## Project Requirements
+We have restrictions in what we are allowed to use, summarized here: [subject and allowed functions](docs/allowed_functions.md).  
 
 ## Architecture
 A well defined architecture is a better experience for team work, but it doesnt come free, takes work and modularity is key. But when modularity doesn’t end up being helpful, it quickly becomes actively harmful and it spirals out of control.
@@ -82,7 +108,7 @@ Our minishell is divided into a few main parts:
 - The executer, which takes the data structure produced by the parser and expanded by the analyser and executes the command(s) it represents.
 Furthermore we use integration tests and unit tests: To be able to make changes and refactor our code with confidence, we needed to have a suite of tests that would always run to ensure that our shell is working as expected.
 
-### Basic Architecture of our Shell
+### Workflow
 1. Overarching loop for repeated and single command execution. We start by implementing a loop that reads the user input with the readline() function. The readline function is part of the part of the GNU Readline library and offers other functions like rl_clear_history, rl_on_new_line, rl_replace_line, rl_redisplay,add_history that we are allowed to use in our project.
 2. Scanner: The first step is scanning, also known as lexing, or (if you’re trying to impress someone) lexical analysis. A scanner (or lexer) takes in the linear stream of characters and chunks them together into a series of something more akin to “words”. In programming languages, each of these words is called a token. Some tokens are single characters, like '(' and ','. Others may be several characters long, like numbers ( 123 ), string literals ( "hi!" ), and identifiers ( min ).
 3. Parser: The next step is parsing. This is where our syntax gets a grammar—the ability to compose larger expressions and statements out of smaller parts. Before building a tree, any heredocs that are found in the tokenlist are interpreted and set up. Then the parser takes the flat sequence of tokens and builds a tree structure that mirrors the nested nature of the grammar. In order to evaluate an arithmetic node, you need to know the numeric values of its subtrees, so you have to evaluate those first. That means working your way from the leaves up to the root—a post-order traversal. If I gave you an arithmetic expression, you could draw one of these trees pretty easily. These trees have a couple of different names—“parse tree” or “abstract syntax tree”. In practice, language hackers usually call them “syntax trees”, “ASTs”, or often just “trees”.
@@ -91,7 +117,7 @@ Everything up to this point is considered the front end of the implementation.
 5. Before commands (system or builtin) are executed redirections (including for heredocs) are set up.
 6. Commands are executed either by calling system commands or any of the custom builtins described above.
 
-## Grammar as Foundation
+## Grammar
 The syntax of a programming language is defined by a grammar. The syntax of a programming language is a precise description of all its grammatically correct programs. Noam Chomsky defined four categories of grammars: regular, context-free, context- sensitive, and unrestricted.
 
 ## Inspiration: Context Free Grammar (CFG). 
@@ -136,18 +162,18 @@ Some of the tokens that are of interest to us:
 
 Also there is the question of priority:
 
-- `&&` and `||` have the same precedence and are left-associative. They allow you to execute a command based on the success (`&&`) or failure (`||`) of the previous command.  
-- `;` and `&` have the same precedence, which is lower than `&&` and `||`. They allow you to separate commands (`;`) or run a command in the background (`&`).  
-- `|` and `|&` have higher precedence than `&&`, `||`, `;`, and `&`. They allow you to create pipelines, where the output of one command is used as the input of the next command (`|`), or where both the output and error output of one command are used as the input of the next command (`|&`).  
-- `(` and `)` can be used to group commands, which can override the default precedence rules.  
-- `;;`, `;&`, and `;;&` are used in the context of a case statement to separate different cases.  
-- `[[` and `]]` are used for conditional expressions.  
-- `{` and `}` are used to group commands in a block.
+- && and || have the same precedence and are left-associative. They allow you to execute a command based on the success (&&) or failure (||) of the previous command.  
+- ; and & have the same precedence, which is lower than && and ||. They allow you to separate commands (;) or run a command in the background (&).  
+- | and |& have higher precedence than &&, ||, ;, and &. They allow you to create pipelines, where the output of one command is used as the input of the next command (|), or where both the output and error output of one command are used as the input of the next command (|&).  
+- ( and ) can be used to group commands, which can override the default precedence rules.  
+- ;;, ;&, and ;;& are used in the context of a case statement to separate different cases.  
+- [[ and ]] are used for conditional expressions.  
+- { and } are used to group commands in a block.
 
 How do we write down a grammar that contains an infinite number of valid strings? We obviously can’t list them all out. Instead, we create a finite set of rules.  
 This is from the book "Crafting Interpreters" by Bob Nystrom. He explains that a grammar naturally describes the hierarchical structure of most programming language constructs. For example:  
 
-<img src="assets-md/expression_grammar.png" alt="Expression Grammar" width="800">
+<img src="assets/expression_grammar.png" alt="Expression Grammar" width="800">
 
 ## Grammar of our Shell
 This is a good starting point for our grammar.
@@ -156,15 +182,15 @@ Through reading the shell grammar page (link below) I got a better understanding
 grammar:
 to get the final table
 list    	  	-> pipeline (";" | "&" | "&&" | "||") pipeline)* [";"] | ["&"] ["\n"]
-					| "(" list ")";
+                    | "(" list ")";
 pipeline	 	->  command  (("|" | "|&" | ";" | "&&" | "||" )command)* ;
-					| "(" list ")";
+                    | "(" list ")";
 command		 	->  simple_command 
-					| builtin 
-					| DLESS 
-					| redirection
-					| [time [-p]] [!] expression
-					| "(" list ")";
+                    | builtin 
+                    | DLESS 
+                    | redirection
+                    | [time [-p]] [!] expression
+                    | "(" list ")";
 
 simple_command	-> name (args)* ;
 builtin 		-> name (args)* ; 
@@ -181,29 +207,26 @@ args 			-> FLAGS | WORD | STRING | QUOTED_STRING | SIMPLE_QUOTED_STRING | VAR_EX
 Where DLESS is the heredoc operator, and the other operators are the redirection operators.
 
 ## Lexemes
-
 Our job is to scan through the list of characters and group them together into the smallest sequences that still represent something. Each of these blobs of characters is called a lexeme.
 example of lexeme
 ```
 typedef enum e_tokentype {
-	WORD,  // Any sequence of letters, digits, and underscores
-	NUMBER, // like 42 42.42 -2 etc 
-	BUILTIN,
-	FLAGS,
-	PATHNAME, 
-	PIPE, // | - | and |& have higher precedence than &&, ||, ;, and &. 
+    WORD,  // Any sequence of letters, digits, and underscores
+    NUMBER, // like 42 42.42 -2 etc 
+    BUILTIN,
+    FLAGS,
+    PATHNAME, 
+    PIPE, // | - | and |& have higher precedence than &&, ||, ;, and &. 
 
-	AND_IF, 	// &&
-	OR_IF, // || 
-	...
+    AND_IF, 	// &&
+    OR_IF, // || 
+    ...
 } t_tokentype;
 ```
 
-More about delimiters here: [grammar](grammar.md)
-
+More about delimiters here: [grammar](docs/grammar.md)
 
 ## Parentheses
-
 ```
 cat ("hey")
 bash: syntax error near unexpected token `('
@@ -217,10 +240,9 @@ Their main use is to group arguments that get executed together when parsing the
 would ensure both commands would be executed before the result of the combined commands would be interpreted in the context of other commands and syntax surrounding the parantheses.
 Parantheses are also used in functions or for arithmetic operations, which we do not implement. 
 
-In our shell, parantheses are used to organize association in lists, i.e. which '&&' and '\|\|' operators should be grouped together.
+In our shell, parantheses are used to organize association in lists, i.e. which '&&' and '||' operators should be grouped together.
 
 ## Variable Names
-
 Variables names have stricter rules than command or file names.
 
 They match the regex pattern:
@@ -274,7 +296,7 @@ int main() {
 
     if (input != NULL) {
         printf("You entered: %s\n", input);
-		add_history(input); // Add the input to the history list
+        add_history(input); // Add the input to the history list
         free(input); // Free the memory allocated by readline
     }
 
@@ -327,12 +349,90 @@ One way to handle paths using a linked list is to create a data structure that s
 
 Once we have the linked list of directories, we can use it to search for executable files when a user enters a command in the shell. 
 
-### Implement Built-In Commands
+## Features
+### Builtins
 
-Builtin commands are special commands that are implemented by the shell itself rather than being external programs. Some common builtin commands include cd, echo, and exit. You will need to implement these commands yourself. Builtin commands such as “cd” or “exit” cannot be executed using the `execve()` function.  
+In a shell, builtins are commands that are built into the shell itself, rather than being external programs. This means that the shell executes builtins directly, without needing to fork and exec an external program. We can check if a command is a builtin like this with the `type` command in bash shell:
+```
+c4c1c1% type exit
+exit is a shell builtin
+c4c1c1% type cd  
+cd is a shell builtin
+c4c1c1% type echo
+echo is a shell builtin
+c4c1c1% type .
+. is a shell builtin
+c4c1c1% type ls
+ls is /usr/bin/ls
+[...]
+```
+The functionality of the builtin commands we implement is summarized below. The functionality is based on original bash functionality (as described in the BASH manual), while reduced in scope. 
 
-### Support Input/Output Redirection
+### `echo [-n] [arg ...]`
+(_Bash builtin command_)
+Output `args` separated by spaces and terminated with a newline. With `-n` option trailing newline is suppressed.
+Just `echo` prints a newline. `echo -n` prints nothTo clarify: should we actually treat the removal/unsetting of functions? How do we identify read-only variables and functions?ing. `echo -n "hello"` prints `hello` without a newline.  `echo -n -nnnn` prints nothing.  
+`echo -n -nwhy` prints `-nwhy`. (dont ask me why :) but I think it is since the flag is not recognized as a flag but as a string. 
+Return status is zero (usually since it is hard to fail!).  
 
+### `cd [directory]` (with relative or absolute path)
+(_original Bourne Shell builtin_)
+Used to change the current working directory to another directory. If directory is not specified the `HOME` shell variable is used. If directory is '-', it is converted to $OLDPWD before attempting directory change. 
+Successful execution of `cd` should set `PWD` to new directory and `OLDPWD` to the working directory before the change.  
+The command can fail, if the directory is not existent, if the directory is not a directory, if the directory is not readable, if the directory is not searchable, if the directory is not writable, if the directory is not accessible. Errors are printed to perror or stderr and can be like `cd: no such file or directory: /nonexistent` or `cd: permission denied: /root`.  
+Return status is zero upon success, non-zero otherwise.
+
+### `pwd` (without options)
+(_original Bourne Shell builtin_)
+Prints the absolute pathname of the current working directory (can contain symbolic links though this may be implementation defined as the normally available options either explicitly prohibit symbolic links (`-P`) or explicitly allow symbolic links (`-L`).
+Return status is zero unless an error is encountered while determining the name of the current directory (or an invalid option is supplied).
+
+### `export [name[=value]]` (without options)
+(_original Bourne Shell builtin_)
+Without any other options (as in our implementation) `name` refers to variables. Export allows to pass specified names/variable to be passed to child processes. When no arguments are provided, a list of all variables marked for export is displayed. These are the same as the variables seen when invoking 'env', minus the variable for the last command ('_='). When a value is provided after `name` and `=` the variable is set to `value`.
+To note: "All values undergo tilde expansion, parameter and variable expansion, command substitution, arithmetic expansion, and quote removal." (see 3.4 Shell Parameters in the Bash Manual)
+Return status is zero unless invalid option is supplied or one of the names is not a valid shell variable name.
+
+### `unset [name]` (without options)
+(_original Bourne Shell builtin_)
+Removes each variable or function with `name`. If no options are supplied (as in out case), each name refers to a variable. In bash, if there was no variable by that name, a function with that name, if any, would be unset. Some shell variables lose their special behavior if they are unset. Read-only variables and functions cannot be unset.
+Return status is zero unless `name` is read-only or cannot be unset.
+We implement basic read-only functionality for read-only variables that are typically passed to subprograms (i.e. also to our shell when it is started from another shell, such as bash). We do not implement functions.
+
+### `env` (without options or arguments)
+`env` is not described as a builtin in the BASH manual. The variable $ENV is described related to POSIX variant of invoking shell.
+Presumably env prints the current environment, i.e. the inherited environment plus any modifications through `export` and `unset`. 
+From bash there is a way to start the minishell without any environment variables doing:  
+```
+env -i ./minishell
+```
+In this case the environment will have only the '_' and SHLVL variables. We ensure that our shell retains core core functionality, even with limited available information from the environment (such as the home directory). System commands provided without an absolute path will not get executed as no PATH information is available but builtin commands, such as cd mostly work. 
+
+### `exit [n]` (without options)
+(_original Bourne Shell builtin_)
+The builtin command `exit`,- as the name implies -, exits the shell. The exit status is of type uint8_t and shall be set to that of the last executed command.  
+The BASH builtin allows optionally to set the exit status as an argument ([n]) which will be cast to the uint8_t type.
+
+## What Could a Dot do?
+My scanner has an option for a dot. but is a dot something recognized by the bash shell? lets find out.
+
+```
+bash-3.2$ .
+bash: .: filename argument required
+.: usage: . filename [arguments]
+```
+I asked copilot:  
+The . command in Bash is a builtin command for sourcing a file. This means it executes the file in the current shell, rather than spawning a new subshell. This is useful when you want to load a script that modifies the environment, such as setting environment variables.
+
+The . command expects a filename as an argument, but it didn't receive one.
+
+Here's an example of how to use the . command:
+```
+. ./myscript.sh
+```
+This will execute the myscript.sh script in the current shell. If myscript.sh sets any environment variables, those variables will be available in the current shell after the script is executed.
+
+### Redirection
 Input/output redirection allows the user to redirect the input or output of a command to a file instead of the screen or keyboard (standard input or output). To implement I/O redirection, we can use the dup2() function to redirect input or output to a file descriptor.
 Redirection operators in Bash allows the user to manipulate where a command reads its input from and where it writes its output to. Here are some common redirection operators:
 
@@ -373,8 +473,7 @@ A fun illustration:
 ```echo hello > world here I am```
 In this case stdout is redirected to the file "world", which is created if does not exist and then the rest of the command is executed. As a result the file world contains the string "hello here I am".
 
-### Support Pipes
-
+### Pipes
 To implement pipes, we can use the pipe() function to create a pipe and the fork() function to create a child process for each command.
 
 5. **`|` (Pipe):**
@@ -396,8 +495,8 @@ $
 ```
 After entering the command follwed by `&` the shell will display the process id of the background job and the job number.
 
-### Error Handling
 
+### Error Handling
 We distinguish fatal errors that require termination of the minishell (and freeing of all allocated memory ...) and errors that are noted to the user while program execution continues. We check the return/exit value of system calls and library functions and store it in our main struct. After the last command is executetd we check the value of this variable and update the environment variable `$?` with the value. The shell should provide meaningful error messages to the user when a command fails.
 
 Examples of the types of errors that a simple shell may encounter:
@@ -411,7 +510,6 @@ Errors that are not the direct result of errors in system functions are handled 
 
 We created a number of custom error functions to handle the different error cases. This way we could prepend and customize error messages and, e.g. also pass exit status back to the main loop.
 
-#### Error Handling in C
 Using system functions and library in C can be useful to use the functioms like `strerror()` and `perror()` to print errors. Most of these functions return a value to indicate success or failure, and set the `errno` variable to indicate the type of error that occurred.
 For example the `getcwd()` function can fail in a few scenarios, and it sets the `errno` variable to indicate the type of error. Here are some possible error codes:
 
@@ -455,7 +553,7 @@ On the other hand, `perror` is a function that prints a descriptive error messag
 perror("getcwd() error");
 ```
 
-#### Error Handling and Error Codes
+#### Error Codes
 
 In Bash, when a command finishes execution, it returns an exit status. The exit status is an integer number. To help identify the type of error, if any, Bash uses specific exit status numbers. Here are some of the most common ones:
 
@@ -471,7 +569,6 @@ In Bash, when a command finishes execution, it returns an exit status. The exit 
 
 These are just a few examples. The exact list can vary between systems. For a more comprehensive list, you can refer to the documentation for your specific system or shell.
 
-#### errno
 `errno` is a global variable that is set by system calls and some library functions in the event of an error to indicate what went wrong. Its value is significant only when the return value of the call indicated an error (i.e., -1 from most system calls; -1 or NULL from most library functions), and it is overwritten by the next function that fails.
 
 Here are some common `errno` values:
@@ -504,15 +601,14 @@ In the context of the `close` function, the relevant `errno` values are:
 
 For a complete list, you can refer to the man page by typing `man errno` in the terminal or check the official documentation for your system's C library.
 
-#### Exit Status of the Last Command.
+#### Exit Status
 In Bash, the exit status of the last command is stored in the special variable $?. You can access this variable to see the exit status of the last command that was executed.
 
 ```
 echo $?
 ```
 
-### Memory Management and Memory Leaks
-
+### Memory Management
 As our shell is written in C we have to handle memory ourselves. Using the system functions `malloc()` and `free()` was allowed, the rest was up to us.
 Generally we aim to free memory as close to its initial allocation as possible. This way we ensure to use available resources efficiently and also facilitate freeing allocated memory upon planned and unplanned program termination.
 Each execution of the main loop returns to the main prompt of our shell. All memory that was not needed for the previous loop is freed and only those parts of the program still allocated that are needed for each loop (such as the environment variables).
@@ -524,14 +620,15 @@ valgrind ./myprogram
 ```
 with flags and options as appropriate.
 
-## It is a huge project - Test the Shell
+## Testing
+### It is a huge project - Test the Shell
 
 I have a suite of tests developed for this purpose. Unit tests can be used to test functions and components of the shell, while integration tests can be used to test the shell as a whole.
 
-## The Bonus Part
+## Bonus Features
 > Your program has to implement:  
-	• && and || with parenthesis for priorities.
-	• Wildcards * should work for the current working directory.
+    • && and || with parenthesis for priorities.
+    • Wildcards * should work for the current working directory.
 
 Some examples of using `&&` (logical AND) and `||` (logical OR) with parentheses for priorities in Bash:
 
@@ -609,157 +706,26 @@ Wildcards, such as `*`, are used for pattern matching in file names. Here are so
 
 These examples demonstrate how wildcards can be used in combination with various commands for file manipulation and processing in the current working directory.
 
-## Delimiters 
-In bash, a delimiter is a character or a set of characters that separates different parts of the command line. The delimiters you've listed are a good start, but bash has a few more. Here's an expanded list:
-
-Space (' ')  
-Tab ('\t')  
-Newline ('\n')  
-Semicolon (';')  
-Pipe ('|')  
-Ampersand ('&')  
-Less than ('<')  
-Greater than ('>')  
-Open parenthesis ('(')  
-Close parenthesis (')')  
-Open curly brace ('{')  
-Close curly brace ('}')  
-Open square bracket ('[')  
-Close square bracket (']')  
-Dollar sign ('$')  
-Backtick (''`)  
-Double quote ('"')  
-Single quote ('\'')  
-Backslash ('\\')  
-Equals ('=')  
-Plus ('+')  
-Minus ('-')  
-Asterisk ('*')  
-Slash ('/')  
-Comma (',')  
-Exclamation mark ('!')  
-Tilde ('~')  
-Caret ('^')  
-Percent ('%')  
-
-
-## `{}` and `[]` in bash scripts
-they have specific meanings:
-
-`{}`: Curly braces are used in bash for variable expansion (${variable}), brace expansion ({1..10}), and to define blocks of code (like in if statements and functions).
-
-`[]`: Square brackets are used in bash for array indexing: `array[0]`, and to test conditions: `[ $a -lt 10 ]` or `[[ $a -lt 10 ]]`.
-
-Here are some examples:  
-
-Variable expansion: `echo ${variable}`  
-Brace expansion: `echo {1..10}`  
-
-When:  
-`./myscript arg1 arg2 arg3`
-
-Inside myscript, $# will be 3, because three arguments were passed to the script and I can access them using `$1`, `$2`, and `$3`.
-
-The `^` symbol in bash has a few different uses:
-1. In regular expressions, `^` is used to denote the start of a line. For example, `^abc` matches any line that starts with "abc".
-2. In parameter substitution, `${var^}` converts the first character of $var to uppercase.
-3. In parameter substitution, `${var^^}` converts all characters of $var to uppercase.
-4. In the tr command, `^` is used to denote a range of characters. For example, tr A-Z a-z converts uppercase letters to lowercase.
-5. In the `tr` command, `^` is used to complement a set of characters when it's the first character in a set. For example, `tr -d '^0-9'` deletes all characters that are not digits.
-6. In the `diff` command, `^` is used to denote lines that are different between two files.
-
-The `<>` operator in bash is used for opening a file in read-write mode. Here's an example:  
-`command <> file`
-
-This command will run command, with file opened in read-write mode on standard input.  
-
-`command 1>>file 2>&1`
-
-This command will run `command`, and append both the `stdout` and `stderr` to file.
-Bash 4 and later shortened to:  
-`command &>>file`
-
-The symbols `;;`, `;&`, and `;;&` cannot be at the beginning of a command line in bash.  
-These symbols are used in the context of a case statement in bash scripting:  
-* `;;` is used to end each case in a case statement.
-* `;&` allows execution to continue with the next case clause, rather than exiting the case statement.
-* `;;&` allows the shell to test the next pattern list in the case statement.
-Here's an example of how they might be used: 
-```bash
-case "$variable" in
-  pattern1)
-    command1
-    ;;
-  pattern2)
-    command2
-    ;&
-  pattern3)
-    command3
-    ;;&
-  *)
-    default_command
-    ;;
-esac
-```
-
-
-## Wildcards
-
-For wildcard expansion, you would typically use the glob function, as I mentioned in the previous response. Here's how you can modify your code to expand wildcards in the input:
-For example, if a user types ls *.txt, the shell should expand the *.txt wildcard to a list of all .txt files in the current directory.
-
-```bash
-#include <glob.h>
-
-// ...
-
-char *input;
-input = readline(" splash 💦 > ");
-while (input != NULL)
-{
-    add_input_to_history(input);
-
-    glob_t glob_result;
-    memset(&glob_result, 0, sizeof(glob_result));
-
-    // Expand wildcards in the input
-    if (glob(input, GLOB_TILDE, NULL, &glob_result) == 0) {
-        for (int i = 0; i < glob_result.gl_pathc; ++i) {
-            // Replace the input line with the expanded wildcard
-            rl_replace_line(glob_result.gl_pathv[i], 0);
-            // Redraw the input line
-            rl_redisplay();
-        }
-    } else {
-        ft_printf("You entered: %s\n", input);
-    }
-
-    globfree(&glob_result);
-    input = readline(" splash 💦 > ");
-}
-
-free(input);
-```
-
+### Signals
 ## Signals and ISR - Interrupt Service Routine
 
 Signals are used by the operating system to notify a process of various events, such as a segmentation fault or a user interrupt. 
 
-The `__interrupt` and `__irq` keywords are used in some programming languages and environments to declare interrupt service routines (ISRs). An ISR is a special kind of function that is executed in response to an interrupt signal.  
-An interrupt is a signal to the processor emitted by hardware or software indicating an event that needs immediate attention. The processor responds by suspending its current activities, saving its state, and executing a function called an interrupt handler (or an interrupt service routine, ISR) to deal with the event. This activity is called "servicing the interrupt."  
-The `__interrupt` or `__irq` keyword is used to tell the compiler that the declared function is an ISR. This can affect the generated code for the function, as ISRs often need to save and restore more processor state than regular functions, and may need special instructions for returning from the function.  
+The __interrupt and __irq keywords are used in some programming languages and environments to declare interrupt service routines (ISRs). An ISR is a special kind of function that is executed in response to an interrupt signal.
+An interrupt is a signal to the processor emitted by hardware or software indicating an event that needs immediate attention. The processor responds by suspending its current activities, saving its state, and executing a function called an interrupt handler (or an interrupt service routine, ISR) to deal with the event. This activity is called "servicing the interrupt."
+The __interrupt or __irq keyword is used to tell the compiler that the declared function is an ISR. This can affect the generated code for the function, as ISRs often need to save and restore more processor state than regular functions, and may need special instructions for returning from the function.
 
 ## Input Special Characters
 
-In a bash shell, you can input a character in hexadecimal using the format `$'\xHH'`, where HH is the hexadecimal value. For example, `$'\x04'` represents the character with the ASCII value 4.
-echo -e "The control character for end of transmission is `$'\x04'`"
-In this command, `echo -e` enables interpretation of backslash escapes, and `$'\x04'` is replaced by the character with the ASCII value 4.
+In a bash shell, you can input a character in hexadecimal using the format $'\xHH', where HH is the hexadecimal value. For example, $'\x04' represents the character with the ASCII value 4.
+echo -e "The control character for end of transmission is $'\x04'"
+In this command, echo -e enables interpretation of backslash escapes, and $'\x04' is replaced by the character with the ASCII value 4.
 
-In C, you can represent a character in hexadecimal by using the `\x` escape sequence followed by the hexadecimal value. For example, `\x04` represents the character with the ASCII value 4.
+In C, you can represent a character in hexadecimal by using the \x escape sequence followed by the hexadecimal value. For example, \x04 represents the character with the ASCII value 4.
 If you want to input a character in hexadecimal in your program, you can simply include it in a string or character literal. For example:
 
-`char c = '\x04';`  
-`char *s = "\x04";`
+char c = '\x04';
+char *s = "\x04";
 
 ## Expansion in Bash
 
@@ -767,7 +733,7 @@ In bash, expansion refers to the process of replacing a special character or seq
 
 - $identifier or ${identifier} is used for variable expansion. The identifier is the name of the variable. Bash replaces $identifier or ${identifier} with the value of the variable.
 ex:
-```bash
+```
 name="Alice"
 echo "Hello, $name"
 ```
@@ -987,11 +953,11 @@ This is the pseudocode for the executor which will start at the root of the AST 
 
 ```
 function execute_ast(node):
-	if node is a list (&& or ||):
+    if node is a list (&& or ||):
         status = execute_ast(node's left child)
         if (status == 0 and node's operator is AND) 
-			or (status != 0 and node's operator is OR):
-            	status = execute_ast(node's right child)
+            or (status != 0 and node's operator is OR):
+                status = execute_ast(node's right child)
     if node is a pipe:
         create a new process with fork()
         if in child process:
@@ -1003,96 +969,14 @@ function execute_ast(node):
             close write end of pipe
             redirect stdin to read end of pipe
             status = execute_ast(node's right child)
-	else if node is a builtin:
-		status = execute builtin
+    else if node is a builtin:
+        status = execute builtin
     else:
         status = execute command with fork and execve()
-	return status
+    return status
 
 start with process_node(root of AST)
 ```
-
-# The Builtins
-
-In a shell, builtins are commands that are built into the shell itself, rather than being external programs. This means that the shell executes builtins directly, without needing to fork and exec an external program. We can check if a command is a builtin like this with the `type` command in bash shell:
-```
-c4c1c1% type exit
-exit is a shell builtin
-c4c1c1% type cd  
-cd is a shell builtin
-c4c1c1% type echo
-echo is a shell builtin
-c4c1c1% type .
-. is a shell builtin
-c4c1c1% type ls
-ls is /usr/bin/ls
-[...]
-```
-The functionality of the builtin commands we implement is summarized below. The functionality is based on original bash functionality (as described in the BASH manual), while reduced in scope. 
-
-### `echo [-n] [arg ...]`
-(_Bash builtin command_)
-Output `args` separated by spaces and terminated with a newline. With `-n` option trailing newline is suppressed.
-Just `echo` prints a newline. `echo -n` prints nothTo clarify: should we actually treat the removal/unsetting of functions? How do we identify read-only variables and functions?ing. `echo -n "hello"` prints `hello` without a newline.  `echo -n -nnnn` prints nothing.  
-`echo -n -nwhy` prints `-nwhy`. (dont ask me why :) but I think it is since the flag is not recognized as a flag but as a string. 
-Return status is zero (usually since it is hard to fail!).  
-
-### `cd [directory]` (with relative or absolute path)
-(_original Bourne Shell builtin_)
-Used to change the current working directory to another directory. If directory is not specified the `HOME` shell variable is used. If directory is '-', it is converted to $OLDPWD before attempting directory change. 
-Successful execution of `cd` should set `PWD` to new directory and `OLDPWD` to the working directory before the change.  
-The command can fail, if the directory is not existent, if the directory is not a directory, if the directory is not readable, if the directory is not searchable, if the directory is not writable, if the directory is not accessible. Errors are printed to perror or stderr and can be like `cd: no such file or directory: /nonexistent` or `cd: permission denied: /root`.  
-Return status is zero upon success, non-zero otherwise.
-
-### `pwd` (without options)
-(_original Bourne Shell builtin_)
-Prints the absolute pathname of the current working directory (can contain symbolic links though this may be implementation defined as the normally available options either explicitly prohibit symbolic links (`-P`) or explicitly allow symbolic links (`-L`).
-Return status is zero unless an error is encountered while determining the name of the current directory (or an invalid option is supplied).
-
-### `export [name[=value]]` (without options)
-(_original Bourne Shell builtin_)
-Without any other options (as in our implementation) `name` refers to variables. Export allows to pass specified names/variable to be passed to child processes. When no arguments are provided, a list of all variables marked for export is displayed. These are the same as the variables seen when invoking 'env', minus the variable for the last command ('_='). When a value is provided after `name` and `=` the variable is set to `value`.
-To note: "All values undergo tilde expansion, parameter and variable expansion, command substitution, arithmetic expansion, and quote removal." (see 3.4 Shell Parameters in the Bash Manual)
-Return status is zero unless invalid option is supplied or one of the names is not a valid shell variable name.
-
-### `unset [name]` (without options)
-(_original Bourne Shell builtin_)
-Removes each variable or function with `name`. If no options are supplied (as in out case), each name refers to a variable. In bash, if there was no variable by that name, a function with that name, if any, would be unset. Some shell variables lose their special behavior if they are unset. Read-only variables and functions cannot be unset.
-Return status is zero unless `name` is read-only or cannot be unset.
-We implement basic read-only functionality for read-only variables that are typically passed to subprograms (i.e. also to our shell when it is started from another shell, such as bash). We do not implement functions.
-
-### `env` (without options or arguments)
-`env` is not described as a builtin in the BASH manual. The variable $ENV is described related to POSIX variant of invoking shell.
-Presumably env prints the current environment, i.e. the inherited environment plus any modifications through `export` and `unset`. 
-From bash there is a way to start the minishell without any environment variables doing:  
-```
-env -i ./minishell
-```
-In this case the environment will have only the '_' and SHLVL variables. We ensure that our shell retains core core functionality, even with limited available information from the environment (such as the home directory). System commands provided without an absolute path will not get executed as no PATH information is available but builtin commands, such as cd mostly work. 
-
-### `exit [n]` (without options)
-(_original Bourne Shell builtin_)
-The builtin command `exit`,- as the name implies -, exits the shell. The exit status is of type uint8_t and shall be set to that of the last executed command.  
-The BASH builtin allows optionally to set the exit status as an argument ([n]) which will be cast to the uint8_t type.
-
-## What Could a Dot do?
-My scanner has an option for a dot. but is a dot something recognized by the bash shell? lets find out.
-
-```
-bash-3.2$ .
-bash: .: filename argument required
-.: usage: . filename [arguments]
-```
-I asked copilot:  
-The . command in Bash is a builtin command for sourcing a file. This means it executes the file in the current shell, rather than spawning a new subshell. This is useful when you want to load a script that modifies the environment, such as setting environment variables.
-
-The . command expects a filename as an argument, but it didn't receive one.
-
-Here's an example of how to use the . command:
-```
-. ./myscript.sh
-```
-This will execute the myscript.sh script in the current shell. If myscript.sh sets any environment variables, those variables will be available in the current shell after the script is executed.
 
 ### history
 Though not required, we decided that our shell should also have a working history and implemented history handling and two history commands: 'history', which displays the full command history. This history is persistent across shell invocations. 'history -c' clears the history.
@@ -1138,18 +1022,19 @@ uint8_t	exit_status;
 exit_status = 0;
 waitpid(pid, &status, 0);
 if (WIFEXITED(status)) /* child exited normally */
-	exit_status = WEXITSTATUS(status);
+    exit_status = WEXITSTATUS(status);
 else if (WIFSIGNALED(status)) /* child exited on a signal */
-	exit_status = WTERMSIG(status) + 128; /* 128 is the offset for signals */
+    exit_status = WTERMSIG(status) + 128; /* 128 is the offset for signals */
 else
-	exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
+    exit_status = EXIT_FAILURE; /* child exited abnormally (should not happen)*/
 
 ... // do something with exit_status
 ```
 
 So if the child process exited normally, the exit status will be the return value of the child process. If the child process exited on a signal, the exit status will be the signal number plus 128. Taking SIGINT as example (signal number 2), the exit status will be 130. 
 
-## Debugging File Descriptors
+## Debugging
+### Debugging File Descriptors
 A student here suggested this shell command to debug file descriptors in our minishell program with the the `lsof` command:
 Run the minishell and then in a separate terminal, run the following command:  
 ```
@@ -1186,67 +1071,57 @@ minishell 180339 lbrusa    2u   CHR  136,1      0t0        4 /dev/pts/1
 
 In this case, it shows that your `minishell` process has the terminal `/dev/pts/2` open for both input and output.
 
-# Some Extra Considerations
-See the [extra.md](extra.md) file for some extra considerations and more about the evaluation of the project in the [evaluation.md](evaluation.md) file.
+## tgoto (not used in our shell)
+The tgoto function is a part of the termcap library in Unix-like operating systems. It is used to generate movement strings for the terminal.
 
-## Links
-The Bash reference manual:  
-https://www.gnu.org/software/bash/manual/bash.html  
-the canonical reference for all things compiler:  
-Compilers: Principles, Techniques, and Tools (universally known as “the Dragon Book”) .  
-Another compiler book. There is a nice explanation of creating a AST or syntax tree  
-https://craftinginterpreters.com  
+The termcap library provides a way to manipulate the terminal independent of its type. It has capabilities that describe the terminal's features and how to use them.
 
-Also the web version is freely available:  
-https://craftinginterpreters.com/parsing-expressions.html  
+Here's the prototype for tgoto:
+```
+char *tgoto(const char *cap, int col, int row);
+```
+cap is a pointer to a string containing a cursor motion capability with two parameters. This is typically obtained from a call to tgetstr.
+col and row are the column and row numbers (respectively) to which the cursor should be moved.
+The function returns a pointer to a static area containing an escape sequence that will move the cursor to the specified position.
 
-This is an important concept about grammar:  
-https://en.wikipedia.org/wiki/Backus–Naur_form  
+For example, if you have a terminal capability string for cursor motion like cm=\E[%i%d;%dH, you can use tgoto to generate a string that moves the cursor to a specific position:
+```
+char *cm = tgetstr("cm", NULL);
+char *gotostr = tgoto(cm, 10, 20);
+```
 
-This is from a programming book - Implement your own shell - GustavoRodriguez-RiveraandJustinEnnen  
-https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf  
-some blog posts:  
+In this example, gotostr will contain an escape sequence that moves the cursor to column 10, row 20.
 
-Tutorial - Write a Shell in C - Stephen Brennan  
-https://brennan.io/2015/01/16/write-a-shell-in-c/  
+Please note that termcap is quite old and has largely been replaced by terminfo and the ncurses library, which provide similar functionality but are more powerful and flexible.
 
-this is the posix shell grammar  
-https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html  
+## Some Extra Considerations
+See the [extra.md](extra.md) file for some extra considerations 
+and more about the evaluation of the project in the [evaluation.md](docs/evaluation.md) file.
+Here is the list of resources formatted in markdown:
 
-A very simple approach to start:  
-https://medium.com/@winfrednginakilonzo/guide-to-code-a-simple-shell-in-c-bd4a3a4c41cd   
+## Resources
 
-https://www.peroxide.dk/download/tutorials/pxdscript/chapter1.html  
+  - [Bash Manual](https://www.gnu.org/software/bash/manual/bash.html) - The Bash reference manual.
+  - [POSIX Shell Grammar (General)](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html) - The POSIX standard for shell grammar.
+  - [POSIX Shell Grammar (Export & Token Recognition)](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#export) - Specific section on 'export' in the POSIX shell grammar.
+  - [Token Recognition (POSIX)](https://pubs.opengroup.org/onlinepubs/009604499/utilities/xcu_chap02.html#tag_02_03) - POSIX guidelines on token recognition.
+  - [Crafting Interpreters (Book Website)](https://craftinginterpreters.com) - A book with a nice explanation of creating an AST or syntax tree.
+  - [Crafting Interpreters (Parsing Expressions Chapter)](https://craftinginterpreters.com/parsing-expressions.html) - The web version of the chapter on parsing expressions.
+  - [Compilers: Principles, Techniques, and Tools (The Dragon Book)](https://en.wikipedia.org/wiki/Compilers:_Principles,_Techniques,_and_Tools) - The canonical reference for compilers.
+  - [Backus–Naur Form](https://www.google.com/search?q=https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form) - An important concept about grammar.
+  - [Minishell Tester](https://github.com/LucasKuhn/minishell_tester?tab=readme-ov-file) - A tester for your minishell project.
+  - [Minishell Tester (Manual Tests)](https://github.com/LucasKuhn/minishell_tester/blob/main/manual_tests/mandatory) - Specific manual tests for the minishell tester.
+  - [Write a Shell in C (Tutorial)](https://brennan.io/2015/01/16/write-a-shell-in-c/) - A blog post tutorial by Stephen Brennan.
+  - [Implement your own shell (Book Chapter)](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf) - From the book by Gustavo Rodriguez-Rivera and Justin Ennen.
+  - [Guide to Code a Simple Shell in C](https://medium.com/@winfrednginakilonzo/guide-to-code-a-simple-shell-in-c-bd4a3a4c41cd) - A simple approach to start, via Medium.
+  - [Pxdscript Tutorial (Chapter 1)](https://www.peroxide.dk/download/tutorials/pxdscript/chapter1.html) - Scripting tutorial.
+  - [Linux Man Page: pipe(2)](https://man7.org/linux/man-pages/man2/pipe.2.html) - The Linux man page about pipes.
+  - [Redirections and Pipes (dup2 examples)](http://www.cs.loyola.edu/~jglenn/702/S2005/Examples/dup2.html) - Examples of `dup2` for redirections and pipes.
+  - [More on Pipes (C Tutorials)](https://people.cs.rutgers.edu/~pxk/416/notes/c-tutorials/pipe.html) - C tutorials on using pipes.
+  - [More about Pipes and Redirections (Pipes, Forks, Dups)](https://www.rozmichelle.com/pipes-forks-dups/) - Article by Roz Michelle.
+  - [GNU Readline Manual](https://web.mit.edu/gnu/doc/html/rlman_2.html) - Documentation for the Readline library.
+  - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) - A specification for adding human and machine readable meaning to commit messages.
+  - [Evolution of Different Shells](https://www.in-ulm.de/~mascheck/bourne/) - Extra facts about the evolution of shells.
+  - [Recursive Descent Parsing (Video)](https://youtu.be/SToUyjAsaFk?si=GOxMOm4uIVSPp4kO&t=1255) - Video on "Recursive Descent Parsing".
+  - [This Simple Algorithm Powers Real Interpreters: Pratt Parsing (Video)](https://youtu.be/0c8b7YfsBKs?si=JWzexQGw45B18u4r) - Video on Pratt Parsing.
 
-test your shell:  
-https://github.com/LucasKuhn/minishell_tester?tab=readme-ov-file  
-
-the linux man page about pipes:  
-https://man7.org/linux/man-pages/man2/pipe.2.html  
-
-shell posix standard grammar  
-https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#export  
-
-token recognition  
-https://pubs.opengroup.org/onlinepubs/009604499/utilities/xcu_chap02.html#tag_02_03
-
-redirections and pipes 
-http://www.cs.loyola.edu/~jglenn/702/S2005/Examples/dup2.html
-
-more pipes  
-https://people.cs.rutgers.edu/~pxk/416/notes/c-tutorials/pipe.html  
-
-trees:  
-https://youtu.be/SToUyjAsaFk?si=GOxMOm4uIVSPp4kO&t=1255
-
-readline  
-https://web.mit.edu/gnu/doc/html/rlman_2.html
-
-coding style git:  
-https://www.conventionalcommits.org/en/v1.0.0/#summary
-
-More about pipes and redirections:  
-https://www.rozmichelle.com/pipes-forks-dups/
-
-Testing:  
-https://github.com/LucasKuhn/minishell_tester/blob/main/manual_tests/mandatory
