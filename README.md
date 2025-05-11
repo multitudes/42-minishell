@@ -1143,3 +1143,6 @@ https://github.com/LucasKuhn/minishell_tester/blob/main/manual_tests/mandatory
 
 See this page for some extra facts about the evolution of different shells. 
 [https://www.in-ulm.de/~mascheck/bourne/](https://www.in-ulm.de/~mascheck/bourne/)
+
+Great video about parsing (in Rust) but adaptable to other languages  
+https://youtu.be/0c8b7YfsBKs?si=JWzexQGw45B18u4r
