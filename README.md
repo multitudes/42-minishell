@@ -4,15 +4,14 @@
 > "The number of UNIX installations has grown to 10, with more expected." (The UNIX Programmer's Manual, 2nd Edition, June, 1972.)
 
 This team project is about creating a simple shell.  
-You can read this documentation online on [github.io](https://multitudes.github.io/42-minishell/).  
 
+You can read this documentation online on [github.io](https://multitudes.github.io/42-minishell/).  
 
 We will be inspired by Bash. Bash is an acronym for ‘Bourne-Again SHell’.  
 Therefore, we gave our shell the name "splash", acronym for "SimPLy A SHell".  
 Here is a screenshot of our splash shell in action:  
 
 <img src="assets/splash.png" alt="shell" width="800">
-
 
 
 ## What is a Shell?
@@ -1078,71 +1077,31 @@ Please note that termcap is quite old and has largely been replaced by terminfo 
 ## Some Extra Considerations
 See the [extra.md](extra.md) file for some extra considerations 
 and more about the evaluation of the project in the [evaluation.md](docs/evaluation.md) file.
+Here is the list of resources formatted in markdown:
 
-## Links
-The Bash reference manual:  
-https://www.gnu.org/software/bash/manual/bash.html  
-the canonical reference for all things compiler:  
-Compilers: Principles, Techniques, and Tools (universally known as “the Dragon Book”) .  
-Another compiler book. There is a nice explanation of creating a AST or syntax tree  
-https://craftinginterpreters.com  
+## Resources
 
-Also the web version is freely available:  
-https://craftinginterpreters.com/parsing-expressions.html  
+  - [Bash Manual](https://www.gnu.org/software/bash/manual/bash.html) - The Bash reference manual.
+  - [POSIX Shell Grammar (General)](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html) - The POSIX standard for shell grammar.
+  - [POSIX Shell Grammar (Export & Token Recognition)](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#export) - Specific section on 'export' in the POSIX shell grammar.
+  - [Token Recognition (POSIX)](https://pubs.opengroup.org/onlinepubs/009604499/utilities/xcu_chap02.html#tag_02_03) - POSIX guidelines on token recognition.
+  - [Crafting Interpreters (Book Website)](https://craftinginterpreters.com) - A book with a nice explanation of creating an AST or syntax tree.
+  - [Crafting Interpreters (Parsing Expressions Chapter)](https://craftinginterpreters.com/parsing-expressions.html) - The web version of the chapter on parsing expressions.
+  - [Compilers: Principles, Techniques, and Tools (The Dragon Book)](https://en.wikipedia.org/wiki/Compilers:_Principles,_Techniques,_and_Tools) - The canonical reference for compilers.
+  - [Backus–Naur Form](https://www.google.com/search?q=https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form) - An important concept about grammar.
+  - [Minishell Tester](https://github.com/LucasKuhn/minishell_tester?tab=readme-ov-file) - A tester for your minishell project.
+  - [Minishell Tester (Manual Tests)](https://github.com/LucasKuhn/minishell_tester/blob/main/manual_tests/mandatory) - Specific manual tests for the minishell tester.
+  - [Write a Shell in C (Tutorial)](https://brennan.io/2015/01/16/write-a-shell-in-c/) - A blog post tutorial by Stephen Brennan.
+  - [Implement your own shell (Book Chapter)](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf) - From the book by Gustavo Rodriguez-Rivera and Justin Ennen.
+  - [Guide to Code a Simple Shell in C](https://medium.com/@winfrednginakilonzo/guide-to-code-a-simple-shell-in-c-bd4a3a4c41cd) - A simple approach to start, via Medium.
+  - [Pxdscript Tutorial (Chapter 1)](https://www.peroxide.dk/download/tutorials/pxdscript/chapter1.html) - Scripting tutorial.
+  - [Linux Man Page: pipe(2)](https://man7.org/linux/man-pages/man2/pipe.2.html) - The Linux man page about pipes.
+  - [Redirections and Pipes (dup2 examples)](http://www.cs.loyola.edu/~jglenn/702/S2005/Examples/dup2.html) - Examples of `dup2` for redirections and pipes.
+  - [More on Pipes (C Tutorials)](https://people.cs.rutgers.edu/~pxk/416/notes/c-tutorials/pipe.html) - C tutorials on using pipes.
+  - [More about Pipes and Redirections (Pipes, Forks, Dups)](https://www.rozmichelle.com/pipes-forks-dups/) - Article by Roz Michelle.
+  - [GNU Readline Manual](https://web.mit.edu/gnu/doc/html/rlman_2.html) - Documentation for the Readline library.
+  - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) - A specification for adding human and machine readable meaning to commit messages.
+  - [Evolution of Different Shells](https://www.in-ulm.de/~mascheck/bourne/) - Extra facts about the evolution of shells.
+  - [Recursive Descent Parsing (Video)](https://youtu.be/SToUyjAsaFk?si=GOxMOm4uIVSPp4kO&t=1255) - Video on "Recursive Descent Parsing".
+  - [This Simple Algorithm Powers Real Interpreters: Pratt Parsing (Video)](https://youtu.be/0c8b7YfsBKs?si=JWzexQGw45B18u4r) - Video on Pratt Parsing.
 
-This is an important concept about grammar:  
-https://en.wikipedia.org/wiki/Backus–Naur_form  
-
-This is from a programming book - Implement your own shell - GustavoRodriguez-RiveraandJustinEnnen  
-https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf  
-some blog posts:  
-
-Tutorial - Write a Shell in C - Stephen Brennan  
-https://brennan.io/2015/01/16/write-a-shell-in-c/  
-
-this is the posix shell grammar  
-https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html  
-
-A very simple approach to start:  
-https://medium.com/@winfrednginakilonzo/guide-to-code-a-simple-shell-in-c-bd4a3a4c41cd   
-
-https://www.peroxide.dk/download/tutorials/pxdscript/chapter1.html  
-
-test your shell:  
-https://github.com/LucasKuhn/minishell_tester?tab=readme-ov-file  
-
-the linux man page about pipes:  
-https://man7.org/linux/man-pages/man2/pipe.2.html  
-
-shell posix standard grammar  
-https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#export  
-
-token recognition  
-https://pubs.opengroup.org/onlinepubs/009604499/utilities/xcu_chap02.html#tag_02_03
-
-redirections and pipes 
-http://www.cs.loyola.edu/~jglenn/702/S2005/Examples/dup2.html
-
-more pipes  
-https://people.cs.rutgers.edu/~pxk/416/notes/c-tutorials/pipe.html  
-
-trees:  
-https://youtu.be/SToUyjAsaFk?si=GOxMOm4uIVSPp4kO&t=1255
-
-readline  
-https://web.mit.edu/gnu/doc/html/rlman_2.html
-
-coding style git:  
-https://www.conventionalcommits.org/en/v1.0.0/#summary
-
-More about pipes and redirections:  
-https://www.rozmichelle.com/pipes-forks-dups/
-
-Testing:  
-https://github.com/LucasKuhn/minishell_tester/blob/main/manual_tests/mandatory
-
-See this page for some extra facts about the evolution of different shells. 
-[https://www.in-ulm.de/~mascheck/bourne/](https://www.in-ulm.de/~mascheck/bourne/)
-
-Great video about parsing (in Rust) but adaptable to other languages  
-https://youtu.be/0c8b7YfsBKs?si=JWzexQGw45B18u4r
