@@ -93,7 +93,7 @@ Otherwise, roughly speaking, the shell reads its input and divides the input int
 The shell then parses these tokens into commands and other constructs, removes the special meaning of certain words or characters, expands others, redirects input and output as needed, executes the specified command, waits for the command’s exit status, and makes that exit status available for further inspection or processing.
 
 ## Project Requirements
-We have restrictions in what we are allowed to use, summarized here: [subject and allowed functions](docs/allowed_functions.md).  
+We have restrictions in what we are allowed to use, summarized here: [subject and allowed functions](allowed_functions.md).  
 
 ## Architecture
 A well defined architecture is a better experience for team work, but it doesnt come free, takes work and modularity is key. But when modularity doesn’t end up being helpful, it quickly becomes actively harmful and it spirals out of control.
@@ -224,7 +224,7 @@ typedef enum e_tokentype {
 } t_tokentype;
 ```
 
-More about delimiters here: [grammar](docs/grammar.md)
+More about delimiters here: [grammar](grammar.md)
 
 ## Parentheses
 ```
@@ -1096,7 +1096,7 @@ Please note that termcap is quite old and has largely been replaced by terminfo 
 
 ## Some Extra Considerations
 See the [extra.md](extra.md) file for some extra considerations 
-and more about the evaluation of the project in the [evaluation.md](docs/evaluation.md) file.
+and more about the evaluation of the project in the [evaluation.md](evaluation.md) file.
 Here is the list of resources formatted in markdown:
 
 ## Resources
