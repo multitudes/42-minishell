@@ -16,7 +16,7 @@ Here is a screenshot of our splash shell in action:
 
 # Table of Contents
 
-- [Overview]()
+- [Overview](#)
 - [What is a Shell?](#what-is-a-shell)
 - [Learning Outcomes](#learning-outcomes)
 - [Shell Concepts](#shell-concepts)
