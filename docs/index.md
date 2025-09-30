@@ -75,9 +75,9 @@ The project lies at the intersection of C programming and system programming. Ev
 - POSIX: A family of open system standards based on Unix.
 - Builtin: A command that is implemented internally by the shell itself, rather than by an executable program somewhere in the file system.
 - Operator: A control operator or a redirection operator.
-    - Control operator: A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
-    - Redirection operator: A token redirects input and out put to and from files by manipulating file descriptors: '<', '>', '>>', '&>'
-    - Heredoc: '<<'
+- Control operator: A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
+- Redirection operator: A token redirects input and out put to and from files by manipulating file descriptors: '<', '>', '>>', '&>'
+- Heredoc: '<<'
 - Exit status: The value returned by a command to its caller. The value is restricted to eight bits, so the maximum value is 255.
 - Metacharacter: A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: ‘|’, ‘&’, ‘;’, ‘(’, ‘)’, ‘<’, or ‘>’.
 - Reserved word: A word that has a special meaning to the shell. Most reserved words introduce shell flow control constructs, such as 'for' and 'while'. (not strictly enforced by the shell)
@@ -125,11 +125,11 @@ A formal grammar takes a set of atomic pieces it calls its “alphabet”. Then 
 
 A grammar naturally describes the hierarchical structure of most programming language constructs. For example, an if-else statement in Java can have
 
-```if (expression) statement else statement```
+`if (expression) statement else statement`
 
 That is, an if-else statement is the concatenation of the keyword if, an opening parenthesis, an expression, a closing parenthesis, a statement, the keyword else, and another statement. Using the variable expr to denote an expression and the variable stmt to denote a statement, this structuring rule can be expressed as 
 
-```stmt →if (expr) stmt else stmt```
+`stmt →if (expr) stmt else stmt`
 
 If you start with the rules, you can use them to generate strings that follow the grammar. Strings created this way are called derivations because each is “derived” from the rules of the grammar. In each step, you pick a rule and follow what it tells you to do. Most of the lingo around formal grammars comes from implementing them in this direction. Rules are called productions because they produce strings in the grammar.
 Each production in a context-free grammar has a head—its name—and a body which describes what it generates. In its pure form, the body is simply a list of symbols. Symbols come in two delectable flavors:
@@ -155,8 +155,8 @@ Some of the tokens that are of interest to us:
 | blank | A space or tab character. |
 | word | A sequence of characters considered as a single unit by the shell. Also known as a token. |
 | name | A word consisting only of alphanumeric characters and underscores, and beginning with an alphabetic character or an underscore. Also referred to as an identifier. |
-| metacharacter | A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: '\|', '&', ';', '(', ')', '<', or '>'. |
-| control operator | A token that performs a control function. It is a newline or one of the following: '\|\|', '&&', '&', ';', ';;', ';&', ';;&', '\|', '\|&', '(', or ')'. |
+| metacharacter | A character that, when unquoted, separates words. A metacharacter is a space, tab, newline, or one of the following characters: '|', '&', ';', '(', ')', '<', or '>'. |
+| control operator | A token that performs a control function. It is a newline or one of the following: '||', '&&', '&', ';', ';;', ';&', ';;&', '|', '|&', '(', or ')'. |
 | operator | A sequence of characters considered a single unit by the shell. It is either a word or an operator. |
 | reserved word | A word that has a special meaning to the shell. Most reserved words introduce shell flow control constructs, such as loops or conditionals. The reserved words recognized by the shell are: `! case esac do done if elif else fi for  in then until while { } time [[ ]]`
 
@@ -454,12 +454,12 @@ Redirection operators in Bash allows the user to manipulate where a command read
 4. **`<<` (Here Document):**
    - Allows you to pass multiple lines of input to a command.
    - Example:
-     ```bash
+```bash
      cat << EOF
      Line 1
      Line 2
      EOF
-     ```
+```
      This command uses a here document to pass multiple lines to the `cat` command.
 
 From the Bash manual:
@@ -470,7 +470,7 @@ Redirection must be distinguished from "Process substitution", which "allows a p
 
 Effectively, the redirection symbols are followed by a filename (or word that is expanded to a file name), which is opened for writing ('>'), writing and appending ('>>') or reading ('<') and its file descriptor then duplicated to act as stdout ('>' and '>>') or stdin ('<') depending on the redirection. So in a command comprised of several tokens, containing redirection symbols, each redirection token and the token to the right of it are interpreted, opening attempted of the file specified and file descriptor(s) duplicated. The remaining token are then passed on for execution.
 A fun illustration:
-```echo hello > world here I am```
+`echo hello > world here I am`
 In this case stdout is redirected to the file "world", which is created if does not exist and then the rest of the command is executed. As a result the file world contains the string "hello here I am".
 
 ### Pipes
@@ -635,73 +635,73 @@ Some examples of using `&&` (logical AND) and `||` (logical OR) with parentheses
 ### Using `&&` (Logical AND):
 
 1. **Basic `&&` Example:**
-   ```bash
+```bash
    command1 && command2
-   ```
+```
    - If `command1` succeeds (returns a zero exit status), then `command2` will be executed.
 
 2. **Multiple Commands with `&&`:**
-   ```bash
+```bash
    (command1 && command2) && command3
-   ```
+```
    - `command1` and `command2` are executed in sequence. If both succeed, then `command3` is executed.
 
 3. **Mixing `&&` and `||`:**
-   ```bash
+```bash
    (command1 && command2) || command3
-   ```
+```
    - If `command1` and `command2` succeed, then `command3` will not be executed. If either `command1` or `command2` fails, then `command3` will be executed.
 
 ### Using `||` (Logical OR):
 
 1. **Basic `||` Example:**
-   ```bash
+```bash
    command1 || command2
-   ```
+```
    - If `command1` fails (returns a non-zero exit status), then `command2` will be executed.
 
 2. **Multiple Commands with `||`:**
-   ```bash
+```bash
    (command1 || command2) || command3
-   ```
+```
    - `command1` is executed. If it fails, then `command2` is executed. If both fail, then `command3` is executed.
 
 3. **Mixing `&&` and `||`:**
-   ```bash
+```bash
    (command1 || command2) && command3
-   ```
+```
    - If `command1` succeeds, then `command2` will not be executed, and `command3` will be executed. If `command1` fails, then `command2` is executed, and `command3` will not be executed.
 
 Wildcards, such as `*`, are used for pattern matching in file names. Here are some examples of using wildcards in the current working directory:
 
 1. **List all files in the current directory:**
-   ```bash
+```bash
    ls *
-   ```
+```
    - This command lists all files (and directories) in the current directory.
 
 2. **Remove all text files in the current directory:**
-   ```bash
+```bash
    rm *.txt
-   ```
+```
    - This command removes all files with a `.txt` extension in the current directory.
 
 3. **Copy all `.jpg` files to another directory:**
-   ```bash
+```bash
    cp *.jpg /path/to/destination/
-   ```
+```
    - This command copies all files with a `.jpg` extension to the specified destination directory.
 
 4. **Count the lines in all `.log` files:**
-   ```bash
+```bash
    wc -l *.log
-   ```
+```
    - This command counts the number of lines in each file with a `.log` extension in the current directory.
 
 5. **Grep for a specific pattern in all `.md` files:**
-   ```bash
+```bash
    grep "pattern" *.md
-   ```
+```
    - This command searches for the specified pattern in all files with a `.md` extension.
 
 These examples demonstrate how wildcards can be used in combination with various commands for file manipulation and processing in the current working directory.
@@ -866,7 +866,9 @@ Look at these cases in bash:
 <<1 cat | <<2 cat | ( <<3 cat | <<4 cat || <<5 cat | ( <<6 cat ) && <<7 cat ) | <<8 cat <<9 | <<10 cat
 ```
 #### case 2 (syntax error):
-```<<1 cat | <<2 cat | ( <<3 cat | <<4 cat || <<5 cat | ( <<6 cat ) && <<7 cat ) | () <<8 cat <<9 | <<10 cat```
+```bash
+<<1 cat | <<2 cat | ( <<3 cat | <<4 cat || <<5 cat | ( <<6 cat ) && <<7 cat ) | () <<8 cat <<9 | <<10 cat
+```
 #### case 3 (syntax error):
 ```
 <<1 cat | <<2 cat | ( <<3 cat | <<4 cat || <<5 cat | ( <<6 cat ) && <<7 cat ) | <<8 () cat <<9 | <<10 cat
